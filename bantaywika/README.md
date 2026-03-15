@@ -6,7 +6,7 @@ The Bantay-Wika (Language Watch) project was started in 1994 by UP-SWF to track 
 
 ## Dataset
 
-Published on Hugging Face: **[sapinsapin/philippine-text-corpus](https://huggingface.co/datasets/sapinsapin/philippine-text-corpus)**
+Published on Hugging Face: **[sapinsapin/BantayWika](https://huggingface.co/datasets/sapinsapin/BantayWika)**
 
 ### Sources
 
@@ -43,15 +43,15 @@ Published on Hugging Face: **[sapinsapin/philippine-text-corpus](https://hugging
 ```python
 from datasets import load_dataset
 
-ds = load_dataset("sapinsapin/philippine-text-corpus")
+ds = load_dataset("sapinsapin/BantayWika")
 print(ds["train"][0])
 ```
 
 ## Processing
 
-- `process_corpus.py` — crawls source corpora, applies cleaning, outputs `train.jsonl` / `test.jsonl`
-- `push_corpus_to_hub.py` — uploads to Hugging Face
-- `update_corpus_card.py` — updates the dataset card only
+- `bantaywika/process_corpus.py` — crawls source corpora, applies cleaning, outputs `train.jsonl` / `test.jsonl`
+- `bantaywika/push_corpus_to_hub.py` — uploads to Hugging Face
+- `bantaywika/update_corpus_card.py` — updates the dataset card only
 
 ### Quality Filters
 
