@@ -19,6 +19,28 @@ HF_CORPUS_REPO=sapinsapin/BantayWika
 HF_TOKEN=your_hf_token
 ```
 
+## Speech Dataset — Filipino Speech Corpus (FSC)
+
+`process_fsc_parquet.py` processes the Filipino Speech Corpus into a Hugging Face Parquet dataset with raw 16kHz mono audio segments.
+
+Published dataset: [sapinsapin/filipinospeechcorpus](https://huggingface.co/datasets/sapinsapin/filipinospeechcorpus)
+
+- Parses Transcriber XML (`.trs`) files across 3 speech types: read, spontaneous, machine
+- Slices source WAV recordings into sentence-level segments at 16kHz mono
+- Outputs `audio`, `sentence`, `duration`, `num_words`, `speaker_id`, `gender`, `age_group`, `speech_type`, `source_file`
+- Parallel processing via `ProcessPoolExecutor` + background upload thread
+- Resume-safe: logs completed shards to `/tmp/fsc_shards/progress.jsonl`
+
+```bash
+source venv/bin/activate && python process_fsc_parquet.py
+```
+
+Monitor progress:
+
+```bash
+tail -f /tmp/fsc_shards/run.log
+```
+
 ## Text Corpus — BantayWika (FineWeb-compatible)
 
 See [`bantaywika/`](bantaywika/) for the full pipeline.
