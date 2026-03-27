@@ -52,7 +52,7 @@ python push_to_hub.py
 
 ---
 
-## Text Corpus — BantayWika (FineWeb-compatible)
+## Text Corpus — BantayWika (FineWeb-compatible 1990-2012)
 
 `bantaywika/process_corpus.py` processes Philippine text corpora into a FineWeb-compatible JSONL dataset.
 
@@ -81,7 +81,7 @@ See [`bantaywika/README.md`](bantaywika/README.md) for full details.
 
 ---
 
-## Web Corpus — halo-* (FineWeb-compatible)
+## Web Corpus — halo-halo (FineWeb-compatible Webscraped Data 2026)
 
 Pipeline for cleaning and preparing web-scraped Philippine language datasets from CommonCrawl into FineWeb-compatible format.
 
