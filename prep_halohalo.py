@@ -143,10 +143,8 @@ card = DatasetCard(frontmatter + f"""
 
 ## Dataset Summary
 
-`{TARGET_REPO.split("/")[-1]}` is a FineWeb-compatible pretraining text corpus for Philippine languages,
-assembled from web-scraped CommonCrawl data. It is compatible with
-[sapinsapin/BantayWika](https://huggingface.co/datasets/sapinsapin/BantayWika)
-and [HuggingFaceFW/fineweb](https://huggingface.co/datasets/HuggingFaceFW/fineweb).
+`{TARGET_REPO.split("/")[-1]}` is a Pretraining text corpus for Philippine languages,
+assembled from web-scraped data. It is compatible with [Fineweb](https://huggingface.co/datasets/HuggingFaceFW/fineweb) for LLM Pretraining.
 
 ## Source Data
 
@@ -156,7 +154,7 @@ Derived from the following cleaned datasets:
 |---|---|
 {source_rows}
 
-Raw data was sourced from CommonCrawl web crawls and filtered for Philippine languages.
+
 Each source dataset was cleaned using `clean_halo.py` to remove web boilerplate, navigation menus,
 markdown noise, HTML artifacts, and low-quality documents before being included here.
 
