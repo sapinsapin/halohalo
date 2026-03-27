@@ -1,0 +1,7 @@
+soundfile
+numpy
+librosa
+datasets
+huggingface_hub
+python-dotenv
+defusedxml
