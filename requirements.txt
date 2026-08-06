@@ -1,7 +1,19 @@
+# system dependency: ffmpeg required on PATH (WSL: sudo apt install ffmpeg)
 soundfile
 numpy
 librosa
-datasets
+datasets==2.21.0   # pinned: proven parquet write path; 3.x/4.x changed the Audio feature
 huggingface_hub
 python-dotenv
 defusedxml
+
+# GPU stages (align, qc) — see docs/livestream_pipeline.md
+# torch+torchaudio must be a version-matched pair from the same CUDA index
+# (torchaudio is in maintenance mode and tops out at 2.11):
+#   pip install torch==2.11.0+cu126 torchaudio==2.11.0+cu126 \
+#     --index-url https://download.pytorch.org/whl/cu126
+faster-whisper
+silero-vad
+onnxruntime
+jiwer
+pyloudnorm

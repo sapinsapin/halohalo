@@ -22,7 +22,7 @@ from datasets import load_dataset
 from dotenv import load_dotenv
 from huggingface_hub import DatasetCard, login
 
-from halolib.fineweb import add_fineweb_columns, append_to, push_with_retry
+from halolib.fineweb import add_fineweb_columns, append_to, push_with_retry, train_test_split
 
 load_dotenv(Path(__file__).parent / ".env")
 login(token=os.environ["HF_TOKEN"])
@@ -59,6 +59,9 @@ ds = add_fineweb_columns(ds, source=SOURCE_NAME, language=LANG_CODE, num_proc=NU
 if APPEND:
     print(f"\nDeduplicating and appending to {TARGET_REPO}...")
     ds = append_to(ds, TARGET_REPO, num_proc=NUM_PROC)
+
+print("\nApplying 90/10 train/test split...")
+ds = train_test_split(ds)
 
 print(ds)
 

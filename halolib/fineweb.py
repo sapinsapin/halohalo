@@ -8,8 +8,21 @@ FineWeb-compatible dataset utilities:
 import hashlib
 import time
 
-from datasets import Dataset, DatasetDict, concatenate_datasets, load_dataset
+from datasets import Dataset, DatasetDict, Value, concatenate_datasets, load_dataset
 from huggingface_hub import repo_exists
+
+SPLIT_RATIO = 0.9  # 90% train, 10% test
+
+
+def train_test_split(ds: DatasetDict, ratio: float = SPLIT_RATIO, seed: int = 42) -> DatasetDict:
+    """
+    Ensure a DatasetDict has train/test splits.
+    If only train exists, splits it. If both exist, returns as-is.
+    """
+    if "test" in ds:
+        return ds
+    split = ds["train"].train_test_split(test_size=1 - ratio, seed=seed)
+    return DatasetDict({"train": split["train"], "test": split["test"]})
 
 
 def add_fineweb_columns(
@@ -79,6 +92,16 @@ def dedup_against(
     return DatasetDict(deduped)
 
 
+def _align_columns(ds1: Dataset, ds2: Dataset) -> tuple:
+    """Add missing columns as empty strings so two datasets have identical features."""
+    all_cols = set(ds1.column_names) | set(ds2.column_names)
+    for col in all_cols - set(ds1.column_names):
+        ds1 = ds1.add_column(col, [""] * len(ds1))
+    for col in all_cols - set(ds2.column_names):
+        ds2 = ds2.add_column(col, [""] * len(ds2))
+    return ds1, ds2
+
+
 def append_to(
     ds: DatasetDict,
     target_repo: str,
@@ -97,12 +120,22 @@ def append_to(
     combined = {}
     for split in ds.keys():
         if split in existing:
-            combined[split] = concatenate_datasets([existing[split], ds[split]])
+            old, new = _align_columns(existing[split], ds[split])
+            combined[split] = concatenate_datasets([old, new])
         else:
             combined[split] = ds[split]
     for split in existing.keys():
         if split not in combined:
             combined[split] = existing[split]
+
+    # align all splits against each other so the final DatasetDict is consistent
+    all_cols = set()
+    for split in combined.values():
+        all_cols.update(split.column_names)
+    for split_name in combined:
+        for col in all_cols - set(combined[split_name].column_names):
+            combined[split_name] = combined[split_name].add_column(col, [""] * len(combined[split_name]))
+
     return DatasetDict(combined)
 
 

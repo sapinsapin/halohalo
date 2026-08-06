@@ -1,1 +1,11 @@
 .env
+__pycache__/
+*.pyc
+*.pyo
+venv/
+*.log
+
+# livestream pipeline data artifacts
+LivestreamCorpus/
+fsc_shards/
+*.zip

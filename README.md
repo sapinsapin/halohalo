@@ -14,6 +14,8 @@ CORPUS_DIR=/path/to/FilipinoSpeechCorpus
 CORPUS_TEXT_DIR=/path/to/_Corpora_Main/Corpora
 OUTPUT_DIR=/path/to/fsc_output
 CORPUS_OUTPUT_DIR=/path/to/corpus_output
+LIVESTREAM_DIR=/path/to/livestream_raw
+LIVESTREAM_OUTPUT_DIR=/path/to/livestream_output
 HF_REPO=sapinsapin/filipinospeechcorpus
 HF_CORPUS_REPO=sapinsapin/BantayWika
 HF_TOKEN=your_hf_token
@@ -49,6 +51,39 @@ source venv/bin/activate
 python process_fsc.py
 python push_to_hub.py
 ```
+
+---
+
+## Speech Dataset — Diarized Livestream Corpus (halo-livestream)
+
+`process_livestream.py` is a staged, incremental pipeline that turns zipped
+`{id}.json` + `{id}.mp4` diarized livestream recordings into TTS/ASR-ready
+datasets. Built for hundreds of source files — drop new zips into
+`LIVESTREAM_DIR` and re-run; only new files are processed.
+
+Stages: **parse** (segment + dedup + 16kHz decode) → **align** (MMS CTC forced
+alignment + silero VAD, GPU) → **qc** (faster-whisper round-trip CER + audio
+metrics + overlap flag, GPU) → **export** (gated 16kHz ASR + 24kHz TTS sets,
+audiofolder + parquet shards streamed to the Hub with resume).
+
+```bash
+source venv/bin/activate
+python process_livestream.py                        # all stages, new files only
+python process_livestream.py --stages export --push # publish to the Hub
+python stats_livestream.py                          # quality report
+```
+
+```
+# .env
+LIVESTREAM_DIR=/mnt/d/halohalo/LivestreamCorpus/raw
+LIVESTREAM_OUTPUT_DIR=/mnt/d/backup/dsp_bkp/Speech_Corpora/livestream_hf
+LIVESTREAM_HF_REPO=sapinsapin/halo-livestream
+```
+
+Requires `ffmpeg`; GPU stages need the alignment/QC stack (see
+[`docs/livestream_pipeline.md`](docs/livestream_pipeline.md) for the full
+pipeline reference: stage design, export gates, resume semantics, gap
+analysis).
 
 ---
 
