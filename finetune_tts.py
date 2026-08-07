@@ -171,6 +171,9 @@ def main():
                     help="base model or a local checkpoint dir to continue from")
     ap.add_argument("--synthesize-only", action="store_true",
                     help="skip training; just vocode samples from --checkpoint")
+    ap.add_argument("--push", action="store_true",
+                    help="upload the finetuned model to the Hub as "
+                         "speecht5_tts-{fsc|halohaloLS} after training")
     args = ap.parse_args()
 
     from transformers import (Seq2SeqTrainer, Seq2SeqTrainingArguments,
@@ -248,6 +251,23 @@ def main():
             ds["test"].select(range(min(16, len(ds["test"]))))]
     synthesize_samples(model, processor, out_dir,
                        torch.stack(embs).mean(0).unsqueeze(0))
+
+    if args.push:
+        from halolib.finetune import push_model_to_hub
+        push_model_to_hub(
+            out_dir / "final", "microsoft/speecht5_tts", args.dataset, "tts",
+            token=os.environ.get("HF_TOKEN"),
+            metrics={"eval_loss": trainer.state.best_metric}
+            if trainer.state.best_metric is not None else None,
+            train_summary=(
+                f"Trained for {args.max_steps} steps on "
+                f"{len(ds['train'])} clips (batch {args.batch_size}×"
+                f"{args.grad_accum}, lr {args.lr}, fp32 + gradient "
+                f"checkpointing). Synthesized listen-test samples are in "
+                f"`samples/` (speechbrain x-vector speaker conditioning + "
+                f"`microsoft/speecht5_hifigan` vocoder)."),
+            sample_files=sorted(out_dir.glob("sample_*.wav")),
+        )
 
 
 if __name__ == "__main__":

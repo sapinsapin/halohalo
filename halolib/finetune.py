@@ -13,9 +13,17 @@ Sources:
                configs are pre-gated by the processing pipeline's QC stage)
 """
 
+from pathlib import Path
+
 from datasets import Audio, DatasetDict, load_dataset
 
 TARGET_SR = 16000
+
+# hub naming: <base model basename>-<corpus suffix>
+_DATASET_SUFFIX = {"fsc": "fsc", "livestream": "halohaloLS"}
+_DATASET_REPOS = {"fsc": "sapinsapin/filipinospeechcorpus",
+                  "livestream": "sapinsapin/halo-livestream"}
+_TASK_TAGS = {"tts": "text-to-speech", "asr": "automatic-speech-recognition"}
 
 _LIVESTREAM_FILES = {
     "tts": "data/tts/{split}/*.parquet",
@@ -93,3 +101,76 @@ def load_speech_dataset(
             ds[split] = ds[split].shuffle(seed=42).select(range(n))
 
     return ds
+
+
+def push_model_to_hub(
+    final_dir: str | Path,
+    base_model: str,
+    dataset_name: str,
+    task: str,
+    token: str | None = None,
+    metrics: dict | None = None,
+    train_summary: str | None = None,
+    sample_files: list[str | Path] | None = None,
+    license: str = "mit",
+    namespace: str | None = None,
+) -> str:
+    """Upload a finetuned model dir as <ns>/<base basename>-<corpus suffix>.
+
+    `base_model` must be the canonical hub id of the base (not a resumed local
+    checkpoint path) so the repo name stays stable across continued runs.
+    Models default to the same namespace as the corpora so the project stays
+    in one place; falls back to the token's user if that org isn't writable.
+    """
+    from huggingface_hub import HfApi
+
+    api = HfApi(token=token)
+    me = api.whoami()
+    if namespace is None:
+        corpus_org = _DATASET_REPOS[dataset_name].split("/")[0]
+        namespace = (corpus_org if corpus_org in
+                     [o["name"] for o in me.get("orgs", [])] else me["name"])
+    repo_id = f"{namespace}/{base_model.split('/')[-1]}-{_DATASET_SUFFIX[dataset_name]}"
+    api.create_repo(repo_id, repo_type="model", exist_ok=True)
+
+    metric_lines = "".join(f"| {k} | {v:.4f} |\n" for k, v in (metrics or {}).items())
+    card = f"""---
+language: tl
+license: {license}
+library_name: transformers
+pipeline_tag: {_TASK_TAGS[task]}
+base_model: {base_model}
+datasets:
+- {_DATASET_REPOS[dataset_name]}
+tags:
+- {_TASK_TAGS[task]}
+- filipino
+- tagalog
+---
+
+# {repo_id.split('/')[1]}
+
+[`{base_model}`](https://huggingface.co/{base_model}) finetuned for Filipino
+(Tagalog/Taglish) on
+[`{_DATASET_REPOS[dataset_name]}`](https://huggingface.co/datasets/{_DATASET_REPOS[dataset_name]}).
+
+{train_summary or ""}
+
+{f"| metric | value |\n|---|---|\n{metric_lines}" if metric_lines else ""}
+
+Trained with `finetune_{task}.py` from the
+[halohalo](https://github.com/sapinsapin/halohalo) pipeline; the dataset
+adapter normalizes each corpus to `(audio@16k, text, speaker_id)` so corpora
+are swappable with a `--dataset` flag.
+"""
+    (Path(final_dir) / "README.md").write_text(card, encoding="utf-8")
+
+    api.upload_folder(folder_path=str(final_dir), repo_id=repo_id,
+                      commit_message=f"Upload {task} finetune ({dataset_name})")
+    for f in sample_files or []:
+        api.upload_file(path_or_fileobj=str(f), repo_id=repo_id,
+                        path_in_repo=f"samples/{Path(f).name}",
+                        commit_message=f"Add sample {Path(f).name}")
+    url = f"https://huggingface.co/{repo_id}"
+    print(f"Pushed: {url}")
+    return url

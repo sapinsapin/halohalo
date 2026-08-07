@@ -105,6 +105,9 @@ def main():
     ap.add_argument("--grad-accum", type=int, default=2)
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--num-proc", type=int, default=4)
+    ap.add_argument("--push", action="store_true",
+                    help="upload the finetuned model to the Hub as "
+                         "<model>-{fsc|halohaloLS} after training")
     args = ap.parse_args()
 
     from transformers import (Seq2SeqTrainer, Seq2SeqTrainingArguments,
@@ -168,6 +171,24 @@ def main():
     trainer.save_model(str(out_dir / "final"))
     processor.save_pretrained(str(out_dir / "final"))
     print(f"Saved: {out_dir / 'final'}")
+
+    if args.push:
+        from halolib.finetune import push_model_to_hub
+        final_eval = trainer.evaluate()
+        push_model_to_hub(
+            out_dir / "final", args.model, args.dataset, "asr",
+            token=os.environ.get("HF_TOKEN"),
+            metrics={k.removeprefix("eval_"): v for k, v in final_eval.items()
+                     if k in ("eval_wer", "eval_cer", "eval_loss")},
+            train_summary=(
+                f"Trained for {args.max_steps} steps on "
+                f"{len(ds['train'])} clips (batch {args.batch_size}×"
+                f"{args.grad_accum}, lr {args.lr}, fp16 + gradient "
+                f"checkpointing). WER/CER are on the held-out split, "
+                f"lowercased; CER is the model-selection metric (Taglish "
+                f"orthography varies at the word level)."),
+            license="apache-2.0",
+        )
 
 
 if __name__ == "__main__":
