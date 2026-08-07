@@ -54,6 +54,48 @@ python push_to_hub.py
 
 ---
 
+## Speech Dataset — Philippine Language Dataset (PLD)
+
+`process_pld_parquet.py` packages the UP-DSP Philippine Language Dataset — a
+multilingual corpus of prompted recordings across Philippine languages — into a
+Hugging Face Parquet dataset, using the same shard-and-push design as FSC.
+
+PLD needs no segmentation stage: it ships one WAV per prompt with the text
+stored inline in each session `.log`, so the pipeline is index → shard → upload.
+
+- Parses `Key = Value` session headers plus utterance rows, tolerating the
+  corpus's own quirks: a UTF-8 BOM, the misspelled `SpekaerDialect` key,
+  `NOT_RECORDED` placeholders, and transcripts containing embedded quotes
+- Classifies prompts into `read` / `isolated` / `digits` / `spontaneous`
+- Stores audio as 16kHz mono FLAC (lossless, about half the size of WAV)
+- Resumable: each uploaded shard is journaled, so an interrupted run restarts
+  where it stopped and can still rebuild the dataset card
+
+Two corpus properties that materially affect training, both encoded as columns:
+
+- **`text_is_prompt`** — `spontaneous` rows store the *elicitation question*
+  put to the speaker, not a transcript of their answer. The same question
+  repeats verbatim across speakers while the audio is 20-90s of free speech.
+  Always filter these out of supervised training.
+- **`language` vs `corpus_language`** — the English word/sentence lists
+  (`EngW.txt`, `EngSen.txt`) are read by the same speakers, so they are labeled
+  `language = "eng"` while `corpus_language` keeps the Philippine collection
+  they came from. Filtering on `language` alone stays correct.
+
+```bash
+# .env
+PLD_DIR=/mnt/d/backup/dsp_bkp/Speech_Corpora/PLD_raw/PLD
+PLD_WORK_DIR=/mnt/d/halohalo/pld_shards
+HF_PLD_REPO=sapinsapin/pld
+
+source venv/bin/activate
+python stats_pld.py                      # corpus statistics, no upload
+python process_pld_parquet.py            # all languages → Hub
+python process_pld_parquet.py --languages BIK --no-push   # local dry run
+```
+
+---
+
 ## Speech Dataset — Diarized Livestream Corpus (halo-livestream)
 
 `process_livestream.py` is a staged, incremental pipeline that turns zipped
