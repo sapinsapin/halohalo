@@ -166,6 +166,29 @@ python prep_halohalo.py sapinsapin/halo-bcl sapinsapin/halohalo --append
 
 ---
 
+## Finetuning workflows
+
+Two dataset-swappable finetuning scripts consume the published corpora. Both
+share the adapter in `halolib/finetune.py`, which normalizes either corpus to
+`(audio@16k, text, speaker_id)` — switch datasets with a flag:
+
+```bash
+# TTS — SpeechT5 + x-vector speaker conditioning (fits an 8GB card, fp32 + grad ckpt)
+python finetune_tts.py --dataset fsc --max-steps 1000
+python finetune_tts.py --dataset livestream --max-samples 500
+
+# ASR — Whisper-small seq2seq with WER/CER eval
+python finetune_asr.py --dataset fsc
+python finetune_asr.py --dataset livestream
+```
+
+Runs land in `$FINETUNE_DIR/{tts,asr}_{dataset}/` with checkpoints and (for
+TTS) post-train synthesized sample WAVs. FSC is the default TTS corpus (read
+speech); the halo-livestream TTS config becomes useful once enough files are
+processed for its gated set to grow past demo size.
+
+---
+
 ## halolib
 
 Reusable library used for preprocessing web-mined data used in `clean_halo.py` and `prep_halohalo.py`.
