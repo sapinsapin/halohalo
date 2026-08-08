@@ -163,7 +163,7 @@ the corpus supports before committing to your own run:
 | Model | Task | Base | Notes |
 |---|---|---|---|
 | [`sapinsapin/speecht5_tts-fsc`](https://huggingface.co/sapinsapin/speecht5_tts-fsc) | Text-to-speech | `microsoft/speecht5_tts` | 1,000 steps on 1,867 read clips · eval loss 0.443 · [listen to samples](https://huggingface.co/sapinsapin/speecht5_tts-fsc/tree/main/samples) |
-| [`sapinsapin/whisper-small-fsc`](https://huggingface.co/sapinsapin/whisper-small-fsc) | Speech recognition | `openai/whisper-small` | Filipino ASR finetune, WER/CER reported on the held-out split |
+| [`sapinsapin/whisper-small-fsc`](https://huggingface.co/sapinsapin/whisper-small-fsc) | Speech recognition | `openai/whisper-small` | 2,000 steps on 10k clips · **WER 15.9% · CER 7.1%** on the held-out split |
 
 Both are **demonstration baselines on a single 8 GB GPU**, not
 state-of-the-art — they exist to prove the data path end to end and to give you
