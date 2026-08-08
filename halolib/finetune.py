@@ -20,10 +20,12 @@ from datasets import Audio, DatasetDict, load_dataset
 TARGET_SR = 16000
 
 # hub naming: <base model basename>-<corpus suffix>
-_DATASET_SUFFIX = {"fsc": "fsc", "livestream": "halohaloLS"}
+_DATASET_SUFFIX = {"fsc": "fsc", "livestream": "halohaloLS", "pld": "pld"}
 _DATASET_REPOS = {"fsc": "sapinsapin/filipinospeechcorpus",
-                  "livestream": "sapinsapin/halo-livestream"}
-_TASK_TAGS = {"tts": "text-to-speech", "asr": "automatic-speech-recognition"}
+                  "livestream": "sapinsapin/halo-livestream",
+                  "pld": "sapinsapin/pld"}
+_TASK_TAGS = {"tts": "text-to-speech", "asr": "automatic-speech-recognition",
+              "s2s": "audio-to-audio"}
 
 _LIVESTREAM_FILES = {
     "tts": "data/tts/{split}/*.parquet",
@@ -38,6 +40,15 @@ _FSC_FILTERS = {
     "asr": lambda r: 0.3 <= r["duration"] <= 30.0,
 }
 
+# PLD's index has no duration (that would mean decoding 334k headers); length
+# is bounded later by the trainers' token/mel caps instead.
+_PLD_FILTERS = {
+    "tts": lambda r: (r["speech_type"] == "read"
+                      and not r["text_is_prompt"]
+                      and r["num_words"] >= 3),
+    "asr": lambda r: not r["text_is_prompt"],
+}
+
 
 def load_speech_dataset(
     name: str,
@@ -47,8 +58,13 @@ def load_speech_dataset(
     max_samples: int | None = None,
     token: str | None = None,
     num_proc: int = 1,
+    language: str | None = None,
 ) -> DatasetDict:
-    """Load `fsc` or `livestream` normalized to (audio@16k, text, speaker_id)."""
+    """Load `fsc`, `livestream` or `pld` normalized to (audio@16k, text, speaker_id).
+
+    `language` filters `pld` to one ISO 639-3 code (e.g. "bcl"); it is ignored
+    for the single-language corpora.
+    """
     if task not in ("tts", "asr"):
         raise ValueError(f"task must be tts|asr, got {task!r}")
 
@@ -80,8 +96,37 @@ def load_speech_dataset(
         ds = load_dataset("parquet", data_files=data_files, token=token)
         ds = ds.rename_column("sentence", "text")
 
+    elif name == "pld":
+        # Local-first: index the raw corpus on disk (seconds) instead of
+        # pulling 24GB of parquet back off the Hub.
+        import os
+        import random
+
+        from datasets import Dataset
+
+        from halolib.pld import index_corpus
+
+        root = Path(os.environ.get(
+            "PLD_RAW", "/mnt/d/backup/dsp_bkp/Speech_Corpora/PLD_raw/PLD"))
+        if not root.exists():
+            raise FileNotFoundError(
+                f"PLD raw corpus not found at {root}; set PLD_RAW or load "
+                f"from the Hub dataset sapinsapin/pld instead")
+
+        entries, _ = index_corpus(root)
+        filt = _PLD_FILTERS[task]
+        rows = [{"audio": str(e["wav_path"]),
+                 "text": e["sentence"],
+                 "speaker_id": e["speaker_id"]}
+                for e in entries
+                if filt(e) and (language is None or e["language"] == language)]
+        if not rows:
+            raise ValueError(f"no PLD rows for task={task} language={language!r}")
+        random.Random(42).shuffle(rows)     # session order → mixed speakers
+        ds = DatasetDict({"train": Dataset.from_list(rows)})
+
     else:
-        raise ValueError(f"unknown dataset {name!r} (expected fsc|livestream)")
+        raise ValueError(f"unknown dataset {name!r} (expected fsc|livestream|pld)")
 
     ds = ds.cast_column("audio", Audio(sampling_rate=TARGET_SR))
 
@@ -89,10 +134,17 @@ def load_speech_dataset(
     ds = ds.remove_columns([c for c in ds["train"].column_names if c not in keep])
 
     if "test" not in ds:
-        ds = DatasetDict({
-            "train": ds["train"],
-            "test": ds["train"].select(range(min(50, len(ds["train"])))),
-        })
+        n = len(ds["train"])
+        if n > 200:
+            # disjoint held-out slice
+            k = min(200, n // 10)
+            ds = DatasetDict({"train": ds["train"].select(range(k, n)),
+                              "test": ds["train"].select(range(k))})
+        else:
+            # corpus too small to give rows away (e.g. livestream seed):
+            # overlap train so training still works, eval is nominal
+            ds = DatasetDict({"train": ds["train"],
+                              "test": ds["train"].select(range(min(50, n)))})
 
     if max_samples:
         for split in ds:
@@ -114,6 +166,9 @@ def push_model_to_hub(
     sample_files: list[str | Path] | None = None,
     license: str = "mit",
     namespace: str | None = None,
+    suffix: str | None = None,
+    lang_code: str = "tl",
+    extra_tags: list[str] | None = None,
 ) -> str:
     """Upload a finetuned model dir as <ns>/<base basename>-<corpus suffix>.
 
@@ -130,12 +185,16 @@ def push_model_to_hub(
         corpus_org = _DATASET_REPOS[dataset_name].split("/")[0]
         namespace = (corpus_org if corpus_org in
                      [o["name"] for o in me.get("orgs", [])] else me["name"])
-    repo_id = f"{namespace}/{base_model.split('/')[-1]}-{_DATASET_SUFFIX[dataset_name]}"
+    repo_id = (f"{namespace}/{base_model.split('/')[-1]}-"
+               f"{suffix or _DATASET_SUFFIX[dataset_name]}")
     api.create_repo(repo_id, repo_type="model", exist_ok=True)
 
+    tag_lines = "".join(f"- {t}\n" for t in
+                        (extra_tags if extra_tags is not None
+                         else ["filipino", "tagalog"]))
     metric_lines = "".join(f"| {k} | {v:.4f} |\n" for k, v in (metrics or {}).items())
     card = f"""---
-language: tl
+language: {lang_code}
 license: {license}
 library_name: transformers
 pipeline_tag: {_TASK_TAGS[task]}
@@ -144,14 +203,11 @@ datasets:
 - {_DATASET_REPOS[dataset_name]}
 tags:
 - {_TASK_TAGS[task]}
-- filipino
-- tagalog
----
+{tag_lines}---
 
 # {repo_id.split('/')[1]}
 
-[`{base_model}`](https://huggingface.co/{base_model}) finetuned for Filipino
-(Tagalog/Taglish) on
+[`{base_model}`](https://huggingface.co/{base_model}) finetuned on
 [`{_DATASET_REPOS[dataset_name]}`](https://huggingface.co/datasets/{_DATASET_REPOS[dataset_name]}).
 
 {train_summary or ""}

@@ -136,14 +136,16 @@ class TTSDataCollator:
         return batch
 
 
-def synthesize_samples(model, processor, out_dir: Path, speaker_embedding):
-    """Vocode a couple of fixed Tagalog sentences for a quick listen test."""
+def synthesize_samples(model, processor, out_dir: Path, speaker_embedding,
+                       texts=None):
+    """Vocode a couple of sentences for a quick listen test (defaults to the
+    fixed Tagalog pair; pass texts from the corpus for other languages)."""
     import soundfile as sf
     from transformers import SpeechT5HifiGan
 
     vocoder = SpeechT5HifiGan.from_pretrained("microsoft/speecht5_hifigan").to(model.device)
     model.eval()
-    for i, text in enumerate(SAMPLE_TEXTS):
+    for i, text in enumerate(texts or SAMPLE_TEXTS):
         inputs = processor(text=text, return_tensors="pt").to(model.device)
         with torch.no_grad():
             speech = model.generate_speech(
@@ -158,7 +160,9 @@ def synthesize_samples(model, processor, out_dir: Path, speaker_embedding):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    ap.add_argument("--dataset", choices=["fsc", "livestream"], default="fsc")
+    ap.add_argument("--dataset", choices=["fsc", "livestream", "pld"], default="fsc")
+    ap.add_argument("--language", default=None,
+                    help="ISO 639-3 language filter (pld only), e.g. bcl, ceb")
     ap.add_argument("--max-samples", type=int, default=3000,
                     help="training clips to use (bounds preprocessing + epoch size)")
     ap.add_argument("--max-steps", type=int, default=1000)
@@ -181,18 +185,32 @@ def main():
 
     from halolib.finetune import load_speech_dataset
 
-    out_dir = FINETUNE_DIR / f"tts_{args.dataset}"
+    if args.dataset == "pld" and not args.language:
+        raise SystemExit("--dataset pld requires --language (e.g. --language bcl)")
+
+    run_name = (f"tts_{args.dataset}_{args.language}" if args.language
+                else f"tts_{args.dataset}")
+    out_dir = FINETUNE_DIR / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
     processor = SpeechT5Processor.from_pretrained("microsoft/speecht5_tts")
     model = SpeechT5ForTextToSpeech.from_pretrained(args.checkpoint)
     model.config.use_cache = False
 
-    print(f"Loading dataset: {args.dataset}")
+    print(f"Loading dataset: {args.dataset}"
+          + (f" [{args.language}]" if args.language else ""))
     ds = load_speech_dataset(args.dataset, task="tts",
                              max_samples=args.max_samples,
-                             token=os.environ.get("HF_TOKEN"))
+                             token=os.environ.get("HF_TOKEN"),
+                             language=args.language)
     print(ds)
+
+    # listen-test sentences in the corpus language (the fixed Tagalog pair
+    # would be nonsense for e.g. Kapampangan)
+    sample_texts = None
+    if args.dataset == "pld":
+        sample_texts = [t for raw in ds["test"]["text"]
+                        if (t := clean_text(raw)) and len(t) < 120][:2]
 
     embedder = build_speaker_embedder()
 
@@ -250,10 +268,19 @@ def main():
     embs = [torch.tensor(np.array(r["speaker_embeddings"], dtype=np.float32)) for r in
             ds["test"].select(range(min(16, len(ds["test"]))))]
     synthesize_samples(model, processor, out_dir,
-                       torch.stack(embs).mean(0).unsqueeze(0))
+                       torch.stack(embs).mean(0).unsqueeze(0),
+                       texts=sample_texts)
 
     if args.push:
         from halolib.finetune import push_model_to_hub
+        push_kwargs = {}
+        if args.dataset == "pld":
+            push_kwargs = dict(
+                suffix=f"pld-{args.language}",
+                lang_code=args.language,
+                extra_tags=["philippines", "philippine-languages",
+                            args.language],
+            )
         push_model_to_hub(
             out_dir / "final", "microsoft/speecht5_tts", args.dataset, "tts",
             token=os.environ.get("HF_TOKEN"),
@@ -267,6 +294,7 @@ def main():
                 f"`samples/` (speechbrain x-vector speaker conditioning + "
                 f"`microsoft/speecht5_hifigan` vocoder)."),
             sample_files=sorted(out_dir.glob("sample_*.wav")),
+            **push_kwargs,
         )
 
 
