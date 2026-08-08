@@ -193,21 +193,42 @@ work that most corpora can't.
 
 ## Models trained on this data
 
-No reference finetune has been trained on PLD yet. The pipeline supports it —
-add a `pld` branch to the dataset adapter and the existing trainers work
-unchanged.
+**Eleven reference finetunes** — a TTS model per language plus one multilingual
+speech-to-speech model — each with listen-test samples in its `samples/`
+directory. All were trained on a single 8 GB GPU with
+[`finetune_tts.py`](https://github.com/sapinsapin/halohalo/blob/main/finetune_tts.py) /
+[`finetune_s2s.py`](https://github.com/sapinsapin/halohalo/blob/main/finetune_s2s.py),
+so they are baselines to hear and beat, not state-of-the-art:
 
-Meanwhile, the sibling Filipino corpus has working baselines you can copy the
-recipe from:
+| Language | TTS model (`microsoft/speecht5_tts` base) |
+|---|---|
+| Bikol | [`speecht5_tts-pld-bcl`](https://huggingface.co/sapinsapin/speecht5_tts-pld-bcl) |
+| Cebuano | [`speecht5_tts-pld-ceb`](https://huggingface.co/sapinsapin/speecht5_tts-pld-ceb) |
+| English (PH) | [`speecht5_tts-pld-eng`](https://huggingface.co/sapinsapin/speecht5_tts-pld-eng) |
+| Filipino | [`speecht5_tts-pld-fil`](https://huggingface.co/sapinsapin/speecht5_tts-pld-fil) |
+| Hiligaynon | [`speecht5_tts-pld-hil`](https://huggingface.co/sapinsapin/speecht5_tts-pld-hil) |
+| Ilocano | [`speecht5_tts-pld-ilo`](https://huggingface.co/sapinsapin/speecht5_tts-pld-ilo) |
+| Pangasinan | [`speecht5_tts-pld-pag`](https://huggingface.co/sapinsapin/speecht5_tts-pld-pag) |
+| Kapampangan | [`speecht5_tts-pld-pam`](https://huggingface.co/sapinsapin/speecht5_tts-pld-pam) |
+| Tausug | [`speecht5_tts-pld-tsg`](https://huggingface.co/sapinsapin/speecht5_tts-pld-tsg) |
+| Waray | [`speecht5_tts-pld-war`](https://huggingface.co/sapinsapin/speecht5_tts-pld-war) |
 
-| Model | Task | Trained on |
-|---|---|---|
-| [`sapinsapin/speecht5_tts-fsc`](https://huggingface.co/sapinsapin/speecht5_tts-fsc) | Text-to-speech | [`filipinospeechcorpus`](https://huggingface.co/datasets/sapinsapin/filipinospeechcorpus) |
-| [`sapinsapin/whisper-small-fsc`](https://huggingface.co/sapinsapin/whisper-small-fsc) | Speech recognition | [`filipinospeechcorpus`](https://huggingface.co/datasets/sapinsapin/filipinospeechcorpus) |
+**Speech-to-speech:** [`speecht5_vc-pld`](https://huggingface.co/sapinsapin/speecht5_vc-pld)
+— any-to-any voice conversion across all ten languages, trained on
+same-sentence cross-speaker pairs mined from PLD's shared prompt lists (the
+corpus has no parallel translations, but many speakers reading the same prompt
+is exactly the parallel data voice conversion needs).
 
-**If you train something on PLD, tag this dataset in your model card** — it will
-show up here automatically, and a Bikol or Cebuano ASR baseline would be the
-first of its kind in public.
+Reproduce any of them in one command:
+
+```bash
+python finetune_tts.py --dataset pld --language ceb --push
+python finetune_s2s.py --push
+```
+
+An ASR baseline (whisper-small per language) has **not** been trained yet — a
+Bikol or Cebuano one would be the first of its kind in public. If you train
+something on PLD, tag this dataset in your model card and it will appear here.
 
 ---
 
