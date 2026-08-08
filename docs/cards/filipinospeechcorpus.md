@@ -30,15 +30,15 @@ citation: >-
 
 <div align="center">
 
-**305,246 segments · 65 hours · 125 speakers · 16kHz mono**
+**313,322 transcribed segments · 65.1 hours · 125 speakers · 16kHz mono**
 
 [![Models](https://img.shields.io/badge/finetuned_models-2-blue)](https://huggingface.co/sapinsapin)
 [![Code](https://img.shields.io/badge/pipeline-github-black)](https://github.com/sapinsapin/halohalo)
 
 </div>
 
-This is the Filipino Speech Corpus (Sagum, De La Salle University), recorded in a
-controlled setting and hand/machine transcribed with Transcriber. This repo
+This is the Filipino Speech Corpus (Sagum), recorded in a controlled setting and
+hand/machine transcribed with Transcriber. This repo
 repackages the original `.wav` + `.trs` volumes as segment-level Parquet with
 inline audio, so you can stream it without downloading and parsing XML.
 
@@ -71,13 +71,13 @@ ds = load_dataset("sapinsapin/filipinospeechcorpus")   # train + test
 ## ⚠️ Before you train
 
 **This corpus is mostly single words, not sentences.** The median segment is
-**0.62 seconds** and the mean word count is ~1.2, because 56% of it is
-machine-pre-segmented word tokens intended for unit-selection synthesis and
+**0.62 seconds** and 95% of segments are under 1.3 s, because 56% of the corpus
+is machine-pre-segmented word tokens intended for unit-selection synthesis and
 keyword work. If you load it and train directly, you will train on isolated
 words.
 
 For sentence-level ASR or TTS you want the read/spontaneous portion with a
-length filter — which leaves roughly **8,600 utterances (~7 hours)**:
+length filter — which leaves roughly **8,500 utterances (~7 hours)**:
 
 ```python
 ds = ds.filter(lambda x:
@@ -91,7 +91,7 @@ Three more things worth knowing before you spend GPU hours:
 
 | Gotcha | Detail | What to do |
 |---|---|---|
-| Extreme outliers | Longest segment is **1,639 s** (27 min); shortest is ~0 s | Always bound `duration` |
+| Extreme outliers | Longest segment is **1,640 s** (27 min); shortest is ~0 s | Always bound `duration` |
 | Speaker overlap | Split is a random 90/10 over *segments*, so speakers appear in both | Re-split on `speaker_id` for speaker-disjoint eval |
 | Narrow demographics | 97.5% of segments come from the 20–27 age band | Don't claim age robustness |
 
@@ -99,7 +99,11 @@ Three more things worth knowing before you spend GPU hours:
 
 ## What's inside
 
-**Splits**
+All statistics on this card are computed from the source corpus transcriptions
+(313,322 segments); 305,246 of those survive into the published Parquet — the
+rest are empty turns, control markers, or turns whose audio is missing.
+
+**Splits (published rows)**
 
 | Split | Segments |
 |---|---|
@@ -110,11 +114,11 @@ Three more things worth knowing before you spend GPU hours:
 **Speech types** — the three source volumes, and the reason the length
 distribution is bimodal:
 
-| `speech_type` | Share | What it is |
-|---|---|---|
-| `machine` | 56.1% | Machine pre-segmented word tokens from read speech (Volume 6) |
-| `read` | 41.5% | Hand-transcribed read speech — paragraphs, sentences, word lists |
-| `spontaneous` | 2.4% | Hand-transcribed free speech (Volume 5) |
+| `speech_type` | Segments | Share | Speakers | What it is |
+|---|---|---|---|---|
+| `machine` | 175,854 | 56.1% | 64 | Machine pre-segmented word tokens from read speech (Volume 6) |
+| `read` | 130,001 | 41.5% | 50 | Hand-transcribed read speech — paragraphs, sentences, word lists |
+| `spontaneous` | 7,467 | 2.4% | 65 | Hand-transcribed free speech (Volume 5) |
 
 **Duration**
 
@@ -123,12 +127,12 @@ distribution is bimodal:
 | Median | 0.62 s |
 | Mean | 0.75 s |
 | p95 | 1.21 s |
-| Max | 1,639.6 s |
+| Min / Max | ~0 s / 1,639.6 s |
 | Total | 65.1 h |
 
-**Speakers** — 125 total (50 read · 65 spontaneous · 64 machine; speakers
-contribute to more than one type). Gender is near-balanced at 51.8% male /
-48.2% female. Age skews hard young: 97.5% in `20-27`, 1.6% in `28-35`.
+**Speakers** — 125, near-balanced by gender (51.8% male / 48.2% female of
+segments). Age skews hard young: 97.5% in `20-27`, 1.6% in `28-35`, 0.9% in
+`36-43`.
 
 ---
 
