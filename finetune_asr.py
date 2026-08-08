@@ -104,7 +104,10 @@ def main():
     ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--grad-accum", type=int, default=2)
     ap.add_argument("--lr", type=float, default=1e-5)
-    ap.add_argument("--num-proc", type=int, default=4)
+    ap.add_argument("--num-proc", type=int, default=1,
+                    help="dataset map workers; keep 1 — multiprocess map over "
+                         "decoded audio deadlocks on this WSL2/9p setup "
+                         "(hangs at 0/N forever rather than failing)")
     ap.add_argument("--push", action="store_true",
                     help="upload the finetuned model to the Hub as "
                          "<model>-{fsc|halohaloLS} after training")
