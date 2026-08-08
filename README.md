@@ -60,6 +60,12 @@ python push_to_hub.py
 multilingual corpus of prompted recordings across Philippine languages — into a
 Hugging Face Parquet dataset, using the same shard-and-push design as FSC.
 
+Published dataset: `sapinsapin/pld` — **334,268 utterances · 448.2 hours ·
+980 speakers · 10 languages** (Bikol, Kapampangan, Cebuano, Filipino,
+Hiligaynon, Ilocano, Waray, English, Pangasinan, Tausug). Created **private**
+by default, since PLD is a third-party corpus; pass `--public` once
+redistribution terms are confirmed.
+
 PLD needs no segmentation stage: it ships one WAV per prompt with the text
 stored inline in each session `.log`, so the pipeline is index → shard → upload.
 
