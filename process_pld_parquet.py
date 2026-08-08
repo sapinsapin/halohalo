@@ -379,6 +379,10 @@ def main():
     ap.add_argument("--card-only", action="store_true", help="only refresh the dataset card")
     ap.add_argument("--audio-format", choices=["flac", "wav"], default="flac",
                     help="flac halves the upload/storage footprint, losslessly")
+    ap.add_argument("--public", action="store_true",
+                    help="create the repo public; default is private, since PLD "
+                         "is a third-party corpus whose redistribution terms "
+                         "should be confirmed before it is published")
     args = ap.parse_args()
 
     setup_logging()
@@ -419,7 +423,9 @@ def main():
         log.info(f"Resuming — {len(completed)} shards already uploaded")
 
     if not args.no_push:
-        api.create_repo(repo_id=HF_REPO, repo_type="dataset", exist_ok=True)
+        api.create_repo(repo_id=HF_REPO, repo_type="dataset", exist_ok=True,
+                        private=not args.public)
+        log.info(f"  repo {HF_REPO} ({'public' if args.public else 'private'})")
 
     def upload_and_delete(path: Path, repo_path: str, split: str,
                           idx: int, rows: int, mb: float, stats: dict):

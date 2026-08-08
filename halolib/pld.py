@@ -23,6 +23,7 @@ Parsing quirks handled here:
   * prompt sources that are not filenames ("Random Digit")
 """
 
+import os
 import re
 import unicodedata
 from pathlib import Path
@@ -37,34 +38,20 @@ _HEADER_RE = re.compile(r'^(\w+)\s*=\s*(.*?)\s*$')
 LANG_CODES = {
     "BIK": "bcl",   # Bikol Central
     "CEB": "ceb",   # Cebuano
+    "ENG": "eng",   # English (read by Filipino speakers)
+    "FIL": "fil",   # Filipino / Tagalog
     "HIL": "hil",   # Hiligaynon
     "ILO": "ilo",   # Ilocano
-    "TAG": "tgl",   # Tagalog
+    "PAG": "pag",   # Pangasinan
     "PAM": "pam",   # Kapampangan
-    "PAN": "pag",   # Pangasinan
+    "TSG": "tsg",   # Tausug
     "WAR": "war",   # Waray
-    "MRW": "mrw",   # Maranao
-    "TAU": "tsg",   # Tausug
-    "MDH": "mdh",   # Maguindanao
-    "IVA": "ivv",   # Ivatan
-    "AKL": "akl",   # Aklanon
-    "BTK": "btk",   # Batak
-    "IVT": "ivv",
-    "KIN": "kin",
-    "SBL": "sbl",   # Sambal
-    "SUR": "sgd",   # Surigaonon
-    "YAK": "yka",   # Yakan
-    "CHA": "cbk",   # Chavacano
-    "MSK": "msk",
-    "MBB": "mbb",
 }
 
 LANG_NAMES = {
-    "BIK": "Bikol", "CEB": "Cebuano", "HIL": "Hiligaynon", "ILO": "Ilocano",
-    "TAG": "Tagalog", "PAM": "Kapampangan", "PAN": "Pangasinan", "WAR": "Waray",
-    "MRW": "Maranao", "TAU": "Tausug", "MDH": "Maguindanao", "IVA": "Ivatan",
-    "AKL": "Aklanon", "SBL": "Sambal", "SUR": "Surigaonon", "YAK": "Yakan",
-    "CHA": "Chavacano",
+    "BIK": "Bikol", "CEB": "Cebuano", "ENG": "English", "FIL": "Filipino",
+    "HIL": "Hiligaynon", "ILO": "Ilocano", "PAG": "Pangasinan",
+    "PAM": "Kapampangan", "TSG": "Tausug", "WAR": "Waray",
 }
 
 
@@ -78,6 +65,7 @@ def speech_type_of(prompt_source: str) -> str:
       "Random Digit" spoken digit strings
     """
     s = prompt_source.lower()
+    # checked first: some spontaneous lists are also marked _Utt_
     if "spontaneous" in s:
         return "spontaneous"
     if "digit" in s:
@@ -87,6 +75,34 @@ def speech_type_of(prompt_source: str) -> str:
     if "_utt_" in s or s.startswith("engsen"):
         return "read"
     return "other"
+
+
+# Prompt lists that carry no Iso/Utt marker are split by their measured median
+# word count instead of by guessing from the filename: the corpus uses at least
+# five naming conventions (TGL_Cities, ILO_News_Set03, TGLNEW_Medical_xaa,
+# CEBUtt_aaaaa, 4675_ans, and some with no name at all), and word length
+# separates word lists from sentence lists cleanly across all of them.
+UNMARKED_SENTENCE_MIN_MEDIAN = 3
+
+
+def resolve_unmarked_types(rows: list[dict]) -> None:
+    """Assign `speech_type` in place for rows the filename could not classify."""
+    from statistics import median
+
+    widths: dict[str, list[int]] = {}
+    for r in rows:
+        if r["speech_type"] == "other":
+            widths.setdefault(r["prompt_source"], []).append(r["num_words"])
+    if not widths:
+        return
+
+    resolved = {
+        src: ("read" if median(w) >= UNMARKED_SENTENCE_MIN_MEDIAN else "isolated")
+        for src, w in widths.items()
+    }
+    for r in rows:
+        if r["speech_type"] == "other":
+            r["speech_type"] = resolved[r["prompt_source"]]
 
 
 def is_english_prompt(prompt_source: str) -> bool:
@@ -104,7 +120,31 @@ def prompt_category_of(prompt_source: str) -> str:
         parts = parts[1:]                       # drop the language prefix
     if parts and parts[0] in ("Iso", "Utt"):
         parts = parts[1:]                       # drop the elicitation marker
-    return "_".join(parts) if parts else stem.replace(" ", "")
+    cat = "_".join(parts) if parts else stem
+    return cat.strip() or "Unnamed"      # a few prompt lists have no name
+
+
+_MOJIBAKE_RE = re.compile(r"Ã.|Â.|â€")
+
+
+def fix_mojibake(text: str) -> str:
+    """Repair double-encoded UTF-8 (`hapÃºnan` → `hapúnan`).
+
+    A small number of session logs were written as UTF-8 bytes that had already
+    been decoded as cp1252 once, so Filipino diacritics arrive mangled. Round
+    -tripping back through cp1252/latin-1 restores them; if the round trip is
+    lossy the original is kept rather than risking a worse string.
+    """
+    if not _MOJIBAKE_RE.search(text):
+        return text
+    for codec in ("cp1252", "latin-1"):
+        try:
+            fixed = text.encode(codec).decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            continue
+        if not _MOJIBAKE_RE.search(fixed):
+            return fixed
+    return text
 
 
 def clean_transcript(text: str) -> str:
@@ -114,6 +154,7 @@ def clean_transcript(text: str) -> str:
     speaker actually read, and normalizing spelling would destroy the
     dialectal variation the corpus exists to capture.
     """
+    text = fix_mojibake(text)
     text = unicodedata.normalize("NFC", text)
     text = text.replace("’", "'").replace("‘", "'")
     text = text.replace("“", '"').replace("”", '"')
@@ -224,12 +265,18 @@ def index_corpus(pld_dir: Path, languages: list[str] | None = None) -> tuple[lis
 
         spk = speaker_meta(meta, lang_dir, log_path)
         session_dir = log_path.parent
+        # one directory listing per session beats a stat() per utterance —
+        # on a 9p-mounted drive that is ~360 syscalls saved per session
+        try:
+            present = {p.name for p in os.scandir(session_dir)}
+        except OSError:
+            present = set()
 
         for row in rows:
-            wav_path = session_dir / row["filename"]
-            if not wav_path.exists():
+            if row["filename"] not in present:
                 counts["missing_wav"] += 1
                 continue
+            wav_path = session_dir / row["filename"]
             counts["rows"] += 1
             english = is_english_prompt(row["prompt_source"])
             entries.append({
@@ -247,4 +294,6 @@ def index_corpus(pld_dir: Path, languages: list[str] | None = None) -> tuple[lis
                 **spk,
             })
 
+    # medians are corpus-wide, so this runs once over the whole index
+    resolve_unmarked_types(entries)
     return entries, counts
