@@ -14,6 +14,7 @@ entry has no honest answer to that, it does not belong here.
 | File | What's in it |
 |---|---|
 | [research-groups.md](research-groups.md) | Labs, orgs, and communities working the same problem — including the ones whose playbooks we should copy |
+| [tokenizers.md](tokenizers.md) | **Measured:** pretrained tokenizers fit Philippine languages badly (1.75–1.92× English fertility). Morfessor assessment, and what vocabulary extension would buy |
 | [datasets-benchmarks.md](datasets-benchmarks.md) | Corpora we can train on, benchmarks we must not train on, and where the Philippine gaps are |
 | [methods-and-toolkits.md](methods-and-toolkits.md) | Techniques that work when you have hundreds of hours instead of hundreds of thousands, and the software that implements them |
 | [reading-list.md](reading-list.md) | Papers worth reading properly, grouped by what they're for |

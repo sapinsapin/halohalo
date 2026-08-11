@@ -264,6 +264,7 @@ methods that survive low-resource conditions, and a reading list.
 | File | Contents |
 |---|---|
 | [research-groups.md](docs/reference/research-groups.md) | Labs and communities — [aalto-speech](https://github.com/aalto-speech) (Finnish/Sami), AI4Bharat, Masakhane, SEACrowd, Philippine institutions |
+| [tokenizers.md](docs/reference/tokenizers.md) | Measured tokenizer fit for Philippine languages, Morfessor assessment, vocabulary-extension analysis (`scripts/tokenizer_report.py`) |
 | [datasets-benchmarks.md](docs/reference/datasets-benchmarks.md) | Training corpora, frozen benchmarks, evaluation metrics |
 | [methods-and-toolkits.md](docs/reference/methods-and-toolkits.md) | Transfer learning, pseudo-labeling, forced alignment, morphological subwords, QLoRA, codec-LM TTS |
 | [reading-list.md](docs/reference/reading-list.md) | Papers, grouped by what you'd read them for |

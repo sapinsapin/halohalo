@@ -20,7 +20,7 @@ languages. Notable repositories:
 | `colloquial-Finnish-wav2vec2` | wav2vec2 finetuned for *spoken* colloquial Finnish, not the written standard |
 | `finnish-parliament-scripts` | Aligning long parliamentary audio to imperfect official transcripts |
 | `kaldi-sb-north-sme` | Northern Sami ASR across Kaldi, SpeechBrain, and wav2vec2 |
-| `morfessor`, `flatcat` | Unsupervised morphological segmentation into subword units |
+| `morfessor`, `flatcat` | Unsupervised morphological segmentation into subword units — **we tested this on our data, see [tokenizers.md](tokenizers.md)** |
 | `subword-kaldi` | Position-dependent phones in subword lexicon FSTs |
 | `multitask-wav2vec2` | Joint ASR + speech classification |
 | `speaker-diarization`, `PPG2Speech`, `slate-2025` | Diarization, pronunciation editing, spoken language assessment |
@@ -31,9 +31,10 @@ we're attempting, and the parallels are unusually direct:
 1. **Morphology.** Finnish is agglutinative with heavy inflection; Philippine
    languages are agglutinative with affixation, infixation, and reduplication
    (*sulat → sumulat → sinulatan*). Word-level vocabularies fail the same way
-   in both. Morfessor came out of this tradition, and morphology-aware subword
-   units are an open question for our tokenizers and for ASR/TTS text
-   frontends.
+   in both. Morfessor came out of this tradition — and when we ran it on PLD
+   it did find real Philippine affix boundaries (`mag+susulat`,
+   `pinag+susulat+an`, `ka+sulat+an`), though it is blind to the `-um-`/`-in-`
+   infixes Tagalog leans on. Full analysis in [tokenizers.md](tokenizers.md).
 2. **Colloquial vs standard.** Their colloquial-Finnish work exists because
    spoken Finnish diverges sharply from written Finnish. That is exactly our
    Taglish-vs-formal-Filipino problem, and it's the reason we select on CER

@@ -44,8 +44,15 @@ Philippine languages build words by affixation, infixation, and reduplication.
 Naive BPE fragments them inconsistently, which hurts both ASR language models
 and TTS text frontends. Unsupervised morphological segmentation (Morfessor,
 FlatCat — see Aalto in [research-groups.md](research-groups.md)) is the
-established alternative for morphologically rich languages. Worth an ablation
-before we commit a tokenizer for the cluster run.
+established alternative for morphologically rich languages.
+
+**Measured, not assumed** — see [tokenizers.md](tokenizers.md): Whisper's
+vocabulary costs 1.75–1.92× more tokens per word on Philippine languages than
+on English (Tagalog included, despite having a language token), and it splits
+the same stem differently in every inflected form. Morfessor generalizes to
+unseen words better than whole-word lists but cannot represent infixation.
+The recommended intervention is vocabulary *extension*, not replacement:
+~8k added tokens cuts fertility by roughly a third.
 
 ### Parameter-efficient finetuning (LoRA / QLoRA)
 

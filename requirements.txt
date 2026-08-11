@@ -17,3 +17,7 @@ silero-vad
 onnxruntime
 jiwer
 pyloudnorm
+
+# tokenizer analysis (scripts/tokenizer_report.py) — unsupervised
+# morphological segmentation, BSD-2, pure Python
+morfessor
