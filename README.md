@@ -251,3 +251,19 @@ halolib/
 from halolib import clean_text, is_usable
 from halolib.fineweb import add_fineweb_columns, append_to, push_with_retry
 ```
+
+---
+
+## Research reference
+
+[`docs/reference/`](docs/reference/) is the knowledge base for under-resourced
+language AI research behind this work: research groups solving the same
+problem, datasets and benchmarks (and which ones must never be trained on),
+methods that survive low-resource conditions, and a reading list.
+
+| File | Contents |
+|---|---|
+| [research-groups.md](docs/reference/research-groups.md) | Labs and communities — [aalto-speech](https://github.com/aalto-speech) (Finnish/Sami), AI4Bharat, Masakhane, SEACrowd, Philippine institutions |
+| [datasets-benchmarks.md](docs/reference/datasets-benchmarks.md) | Training corpora, frozen benchmarks, evaluation metrics |
+| [methods-and-toolkits.md](docs/reference/methods-and-toolkits.md) | Transfer learning, pseudo-labeling, forced alignment, morphological subwords, QLoRA, codec-LM TTS |
+| [reading-list.md](docs/reference/reading-list.md) | Papers, grouped by what you'd read them for |
