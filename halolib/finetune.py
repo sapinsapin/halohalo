@@ -123,7 +123,30 @@ def load_speech_dataset(
         if not rows:
             raise ValueError(f"no PLD rows for task={task} language={language!r}")
         random.Random(42).shuffle(rows)     # session order → mixed speakers
-        ds = DatasetDict({"train": Dataset.from_list(rows)})
+
+        # A handful of WAVs in the corpus are unreadable ("Format not
+        # recognised"). datasets.Audio decodes lazily and raises mid-training,
+        # so header-check the rows we are about to use and drop the bad ones.
+        # Only the candidate slice is checked — validating all 334k files
+        # would cost minutes for no benefit.
+        import soundfile as sf
+
+        need = (max_samples + 400) if max_samples else len(rows)
+        keep, bad = [], 0
+        for r in rows:
+            if len(keep) >= need:
+                break
+            try:
+                sf.info(r["audio"])
+            except Exception:
+                bad += 1
+                continue
+            keep.append(r)
+        if bad:
+            print(f"  skipped {bad} unreadable wav(s)")
+        if not keep:
+            raise ValueError(f"no readable PLD audio for language={language!r}")
+        ds = DatasetDict({"train": Dataset.from_list(keep)})
 
     else:
         raise ValueError(f"unknown dataset {name!r} (expected fsc|livestream|pld)")
