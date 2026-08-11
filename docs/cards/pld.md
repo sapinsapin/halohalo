@@ -44,7 +44,10 @@ tags:
 
 **334,268 utterances · 448.2 hours · 980 speakers · 10 languages · 16kHz mono**
 
+[![Demo](https://img.shields.io/badge/🎙️_try_the_models-live_demo-ff4088)](https://huggingface.co/spaces/sapinsapin/halohalo-dashboard)
 [![Code](https://img.shields.io/badge/pipeline-github-black)](https://github.com/sapinsapin/halohalo)
+
+**[▶ Try the models in your browser](https://huggingface.co/spaces/sapinsapin/halohalo-dashboard)** — transcribe, synthesize, or convert a voice in any of the ten languages, from your microphone or the preloaded clips.
 
 </div>
 

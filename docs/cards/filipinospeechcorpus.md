@@ -33,6 +33,7 @@ citation: >-
 **313,322 transcribed segments · 65.1 hours · 125 speakers · 16kHz mono**
 
 [![Models](https://img.shields.io/badge/finetuned_models-2-blue)](https://huggingface.co/sapinsapin)
+[![Demo](https://img.shields.io/badge/🎙️_try_the_models-live_demo-ff4088)](https://huggingface.co/spaces/sapinsapin/halohalo-dashboard)
 [![Code](https://img.shields.io/badge/pipeline-github-black)](https://github.com/sapinsapin/halohalo)
 
 </div>
