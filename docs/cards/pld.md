@@ -219,16 +219,48 @@ same-sentence cross-speaker pairs mined from PLD's shared prompt lists (the
 corpus has no parallel translations, but many speakers reading the same prompt
 is exactly the parallel data voice conversion needs).
 
+### Speech recognition — one model per language
+
+`openai/whisper-small` finetuned per language, scored on a held-out split.
+**CER is the selection metric**, not WER: Philippine-language orthography
+varies at the word level (hyphenation and affix spelling especially), which
+punishes WER for differences a reader would not consider errors.
+
+| Language | Model | WER | CER |
+|---|---|---|---|
+| English (PH) | [`whisper-small-pld-eng`](https://huggingface.co/sapinsapin/whisper-small-pld-eng) | 5.9% | 3.1% |
+| Cebuano | [`whisper-small-pld-ceb`](https://huggingface.co/sapinsapin/whisper-small-pld-ceb) | 11.1% | 4.5% |
+| Filipino | [`whisper-small-pld-fil`](https://huggingface.co/sapinsapin/whisper-small-pld-fil) | 11.5% | 4.6% |
+| Tausug | [`whisper-small-pld-tsg`](https://huggingface.co/sapinsapin/whisper-small-pld-tsg) | 12.5% | 4.9% |
+| Waray | [`whisper-small-pld-war`](https://huggingface.co/sapinsapin/whisper-small-pld-war) | 15.4% | 7.6% |
+| Hiligaynon | [`whisper-small-pld-hil`](https://huggingface.co/sapinsapin/whisper-small-pld-hil) | 16.1% | 8.0% |
+| Bikol | [`whisper-small-pld-bcl`](https://huggingface.co/sapinsapin/whisper-small-pld-bcl) | 17.9% | 5.6% |
+| Ilocano | [`whisper-small-pld-ilo`](https://huggingface.co/sapinsapin/whisper-small-pld-ilo) | 20.0% | 5.5% |
+| Pangasinan | [`whisper-small-pld-pag`](https://huggingface.co/sapinsapin/whisper-small-pld-pag) | 32.7% | 17.4% |
+| Kapampangan | [`whisper-small-pld-pam`](https://huggingface.co/sapinsapin/whisper-small-pld-pam) | 40.2% | 14.7% |
+
+Read these as **in-domain** numbers: PLD is prompted read speech recorded in
+controlled sessions, and the split is random over utterances, so speakers
+overlap between train and test. Expect materially worse performance on
+spontaneous or noisy audio, and re-split on `speaker_id` if you need a
+speaker-disjoint measurement.
+
+Two caveats worth stating plainly. Whisper's decoder only has language tokens
+for about 100 languages: English and Tagalog are in the vocabulary, the other
+eight here are not, so they train under the closest token (`<|tl|>`) which
+finetuning repurposes as the language slot. And Pangasinan is data-limited
+(~5.5k utterances total in the corpus), which is the main reason it trails.
+
 Reproduce any of them in one command:
 
 ```bash
 python finetune_tts.py --dataset pld --language ceb --push
+python finetune_asr.py --dataset pld --language ceb --push
 python finetune_s2s.py --push
 ```
 
-An ASR baseline (whisper-small per language) has **not** been trained yet — a
-Bikol or Cebuano one would be the first of its kind in public. If you train
-something on PLD, tag this dataset in your model card and it will appear here.
+If you train something better on PLD, tag this dataset in your model card and
+it will appear here.
 
 ---
 
