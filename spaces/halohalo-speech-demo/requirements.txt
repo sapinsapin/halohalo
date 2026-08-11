@@ -1,8 +1,7 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-huggingface_hub>=0.34
-pandas
 torch==2.11.0
 transformers==5.14.1
+gradio==6.22.0
 soundfile==0.13.1
 numpy==2.4.2
 sentencepiece

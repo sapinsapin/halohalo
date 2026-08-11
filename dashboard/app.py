@@ -111,7 +111,7 @@ def fetch():
 
 DF_KW = dict(interactive=False, wrap=True)
 
-with gr.Blocks(title="halohalo dashboard", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="halohalo — org dashboard and speech demo") as demo:
     header_md = gr.Markdown("Loading…")
     with gr.Tab("📚 Datasets"):
         datasets_df = gr.Dataframe(
@@ -119,11 +119,36 @@ with gr.Blocks(title="halohalo dashboard", theme=gr.themes.Soft()) as demo:
     with gr.Tab("🤖 Models"):
         models_df = gr.Dataframe(
             datatype=["markdown", "str", "str", "number", "number", "str"], **DF_KW)
-    refresh = gr.Button("🔄 Refresh", size="sm")
+        refresh = gr.Button("🔄 Refresh", size="sm")
+
+    # The speech tabs are additive: everything heavy in them is imported
+    # lazily, so if the ML stack is unavailable the dashboard above still
+    # works and only these tabs report the problem.
+    try:
+        import speech_demo
+        speech_demo.build_tabs()
+        demo_ok = True
+    except Exception as exc:                                  # noqa: BLE001
+        demo_ok = False
+        with gr.Tab("🎙️ Speech demo"):
+            gr.Markdown(f"Speech tabs unavailable: `{type(exc).__name__}: {exc}`")
+
+    if demo_ok:
+        gr.Markdown(
+            "---\n"
+            "The speech tabs run the org's own models: **10 ASR + 10 TTS + 1 "
+            "voice conversion**, finetuned on the Philippine Language Dataset "
+            "for Bikol, Cebuano, Filipino, Hiligaynon, Ilocano, Kapampangan, "
+            "Pangasinan, Tausug, Waray and Philippine English. They are "
+            "baselines trained on prompted read speech — accuracy drops on "
+            "spontaneous or noisy audio. Preloaded clips and voice presets "
+            "come from the corpus collected by the **UP Diliman Digital "
+            "Signal Processing Laboratory**. "
+            "[Code](https://github.com/sapinsapin/halohalo)")
 
     outputs = [header_md, datasets_df, models_df]
     demo.load(fetch, inputs=None, outputs=outputs)
     refresh.click(fetch, inputs=None, outputs=outputs)
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(theme=gr.themes.Soft())
