@@ -46,7 +46,9 @@ def prepare_dataset(ds, processor, num_proc: int):
     ds = ds.map(_process, remove_columns=cols, num_proc=num_proc)
     # Whisper's decoder context is 448 tokens; longer labels are truncated by
     # the tokenizer only at generation time, so drop them here instead.
-    ds = ds.filter(lambda r: len(r["labels"]) <= 448)
+    # input_columns keeps the filter from materializing the (large) mel
+    # features per row — it runs ~50x faster on this setup.
+    ds = ds.filter(lambda labels: len(labels) <= 448, input_columns=["labels"])
     return ds
 
 
@@ -97,7 +99,9 @@ def build_compute_metrics(processor):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    ap.add_argument("--dataset", choices=["fsc", "livestream"], default="fsc")
+    ap.add_argument("--dataset", choices=["fsc", "livestream", "pld"], default="fsc")
+    ap.add_argument("--language", default=None,
+                    help="ISO 639-3 language filter (pld only), e.g. bcl, ceb")
     ap.add_argument("--model", default="openai/whisper-small")
     ap.add_argument("--max-samples", type=int, default=10000)
     ap.add_argument("--max-steps", type=int, default=2000)
@@ -118,22 +122,35 @@ def main():
 
     from halolib.finetune import load_speech_dataset
 
-    out_dir = FINETUNE_DIR / f"asr_{args.dataset}"
+    if args.dataset == "pld" and not args.language:
+        raise SystemExit("--dataset pld requires --language (e.g. --language bcl)")
+
+    run_name = (f"asr_{args.dataset}_{args.language}" if args.language
+                else f"asr_{args.dataset}")
+    out_dir = FINETUNE_DIR / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # Whisper's decoder only has language tokens for ~100 languages: English
+    # and Tagalog are in the vocabulary, the other Philippine languages are
+    # not. Those train under the <|tl|> token — the closest relative — which
+    # finetuning effectively repurposes as the language slot.
+    whisper_lang = {"eng": "english"}.get(args.language, "tagalog")
+
     processor = WhisperProcessor.from_pretrained(
-        args.model, language="tagalog", task="transcribe")
+        args.model, language=whisper_lang, task="transcribe")
     model = WhisperForConditionalGeneration.from_pretrained(args.model)
-    model.generation_config.language = "tagalog"
+    model.generation_config.language = whisper_lang
     model.generation_config.task = "transcribe"
     # finetuned models must not inherit the base's forced en-transcribe ids
     model.generation_config.forced_decoder_ids = None
     model.config.use_cache = False
 
-    print(f"Loading dataset: {args.dataset}")
+    print(f"Loading dataset: {args.dataset}"
+          + (f" [{args.language}]" if args.language else ""))
     ds = load_speech_dataset(args.dataset, task="asr",
                              max_samples=args.max_samples,
-                             token=os.environ.get("HF_TOKEN"))
+                             token=os.environ.get("HF_TOKEN"),
+                             language=args.language)
     print(ds)
 
     print("Preprocessing (audio→log-mel, text→labels)...")
@@ -154,7 +171,8 @@ def main():
             save_steps=500,
             save_total_limit=2,
             logging_steps=25,
-            report_to=[],
+            report_to=["wandb"] if os.environ.get("WANDB_API_KEY") else [],
+            run_name=run_name,
             load_best_model_at_end=True,
             metric_for_best_model="cer",
             greater_is_better=False,
@@ -178,9 +196,18 @@ def main():
     if args.push:
         from halolib.finetune import push_model_to_hub
         final_eval = trainer.evaluate()
+        push_kwargs = {}
+        if args.dataset == "pld":
+            push_kwargs = dict(
+                suffix=f"pld-{args.language}",
+                lang_code=args.language,
+                extra_tags=["philippines", "philippine-languages",
+                            args.language, "whisper"],
+            )
         push_model_to_hub(
             out_dir / "final", args.model, args.dataset, "asr",
             token=os.environ.get("HF_TOKEN"),
+            **push_kwargs,
             metrics={k.removeprefix("eval_"): v for k, v in final_eval.items()
                      if k in ("eval_wer", "eval_cer", "eval_loss")},
             train_summary=(

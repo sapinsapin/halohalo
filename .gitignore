@@ -10,3 +10,4 @@ LivestreamCorpus/
 fsc_shards/
 *.zip
 finetune_runs/
+ts-wandb.txt
