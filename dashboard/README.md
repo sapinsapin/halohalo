@@ -60,6 +60,20 @@ Both input tabs take **microphone recording** as well as file upload, and
 Transcribe ships two preloaded clips per language with reference transcripts
 so you can compare the model against ground truth without recording anything.
 
+## Rate what you hear
+
+Each tab has a **"Was this any good?"** control. 👍 / 👎 plus an optional note
+is stored in a private dataset,
+[halohalo-feedback](https://huggingface.co/datasets/sapinsapin/halohalo-feedback),
+together with the model, language, input and output — enough to build
+human-judged evaluation sets and, over time, preference pairs for RLHF.
+
+Audio is included only if you leave the **"Include the audio"** box ticked, and
+**nothing is stored unless you click a rating button** — running a model
+without rating it leaves no trace. Ratings need a write-scoped token in the
+`FEEDBACK_TOKEN` (or `HF_TOKEN`) Space secret; without one the buttons still
+work but the panel says ratings are not being saved.
+
 ## Notes
 
 The dashboard holds no hardcoded repo list — each page load queries the Hub

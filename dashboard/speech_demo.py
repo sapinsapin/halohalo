@@ -43,7 +43,9 @@ DEFAULT = "Cebuano" if "Cebuano" in CHOICES else (CHOICES[0] if CHOICES else Non
 VOICE_INDEX = {}
 for _code, _meta in LANGS.items():
     for _v in _meta["voices"]:
-        VOICE_INDEX[f"{_meta['name']} · {_v['id']} ({_v['gender']})"] = _v
+        # carry the language so a conversion can be filed under it later
+        VOICE_INDEX[f"{_meta['name']} · {_v['id']} ({_v['gender']})"] = {
+            **_v, "language": _code}
 VOICE_LABELS = list(VOICE_INDEX)
 
 
@@ -113,31 +115,40 @@ def as_mono16k(audio):
 
 # -------------------------------------------------------------------- actions
 
-def transcribe(lang_name, audio):
+def transcribe(lang_name, audio, reference=""):
+    """Returns (text, rating context). The context is what feedback.record
+    needs to reconstruct this example later."""
     if audio is None:
-        return "Record, upload, or load a preloaded clip first."
+        return "Record, upload, or load a preloaded clip first.", None
     wav = as_mono16k(audio)
     if wav is None or len(wav) < SR * 0.2:
-        return "That clip is too short to transcribe."
+        return "That clip is too short to transcribe.", None
+    lang = NAME_TO_CODE[lang_name]
     try:
         torch = _torch()
-        proc, model = asr_model(NAME_TO_CODE[lang_name])
+        proc, model = asr_model(lang)
         feats = proc.feature_extractor(wav, sampling_rate=SR,
                                        return_tensors="pt").input_features
         with torch.no_grad():
             ids = model.generate(feats, max_new_tokens=200)
-        return proc.batch_decode(ids, skip_special_tokens=True)[0].strip()
+        text = proc.batch_decode(ids, skip_special_tokens=True)[0].strip()
     except Exception as e:                # a failed tab must not 500 the Space
-        return f"Could not transcribe: {type(e).__name__}: {e}"
+        return f"Could not transcribe: {type(e).__name__}: {e}", None
+
+    ctx = {"task": "asr", "language": lang,
+           "model": f"{ORG}/whisper-small-pld-{lang}",
+           "output_text": text, "reference_text": (reference or "").strip() or None,
+           "input_audio": (SR, wav)}
+    return text, ctx
 
 
 def synthesize(lang_name, text, voice_label):
     if not (text or "").strip():
-        return None, "Type something to synthesize."
+        return None, "Type something to synthesize.", None
     lang = NAME_TO_CODE[lang_name]
     voices = LANGS[lang]["voices"]
     if not voices:
-        return None, f"No voice preset for {lang_name}."
+        return None, f"No voice preset for {lang_name}.", None
     pick = next((v for v in voices if voice_label and v["id"] in voice_label),
                 voices[0])
     try:
@@ -148,22 +159,27 @@ def synthesize(lang_name, text, voice_label):
             speech = model.generate_speech(inputs["input_ids"],
                                            load_xvector(pick["file"]),
                                            vocoder=vocoder())
-        return (SR, speech.numpy()), f"{lang_name} · voice {pick['id']}"
+        out = (SR, speech.numpy())
     except Exception as e:
-        return None, f"Could not synthesize: {type(e).__name__}: {e}"
+        return None, f"Could not synthesize: {type(e).__name__}: {e}", None
+
+    ctx = {"task": "tts", "language": lang,
+           "model": f"{ORG}/speecht5_tts-pld-{lang}", "voice": pick["id"],
+           "input_text": text.strip(), "output_audio": out}
+    return out, f"{lang_name} · voice {pick['id']}", ctx
 
 
 def convert(audio, voice_label):
     if audio is None:
-        return None, "Record or upload the audio you want converted."
+        return None, "Record or upload the audio you want converted.", None
     wav = as_mono16k(audio)
     if wav is None or len(wav) < SR * 0.2:
-        return None, "That clip is too short to convert."
+        return None, "That clip is too short to convert.", None
     if len(wav) > SR * 12:                # keep CPU latency sane
         wav = wav[:SR * 12]
     target = VOICE_INDEX.get(voice_label)
     if target is None:
-        return None, "Pick a target voice."
+        return None, "Pick a target voice.", None
     try:
         torch = _torch()
         proc, model = vc_model()
@@ -177,9 +193,15 @@ def convert(audio, voice_label):
                                            load_xvector(target["file"]),
                                            vocoder=vocoder(),
                                            maxlenratio=VC_MAXLENRATIO)
-        return (SR, speech.numpy()), f"Converted to voice {target['id']}"
+        out = (SR, speech.numpy())
     except Exception as e:
-        return None, f"Could not convert: {type(e).__name__}: {e}"
+        return None, f"Could not convert: {type(e).__name__}: {e}", None
+
+    ctx = {"task": "s2s", "model": f"{ORG}/speecht5_vc-pld",
+           "language": target.get("language"),   # of the target voice
+           "voice": target["id"], "input_audio": (SR, wav),
+           "output_audio": out}
+    return out, f"Converted to voice {target['id']}", ctx
 
 
 # ------------------------------------------------------------------- helpers
@@ -214,6 +236,49 @@ def voices_for(lang_name):
             for v in LANGS[NAME_TO_CODE[lang_name]]["voices"]]
 
 
+def _feedback_block(what: str):
+    """Rate-this-output controls, returned so the caller can wire the state.
+
+    Ratings only leave the browser when someone clicks, and the audio
+    checkbox is shown next to the buttons rather than buried in a policy
+    paragraph — people are sending us their own voice recordings.
+    """
+    import feedback
+
+    with gr.Accordion(f"Was this {what} any good?", open=False):
+        if feedback.enabled():
+            gr.Markdown(
+                f"Ratings train the next round of models. They are stored in a "
+                f"**private** dataset (`{feedback.DETAIL}`) together with the "
+                f"text, and with the audio if you leave the box ticked.")
+        else:
+            gr.Markdown(
+                f"⚠️ Ratings are **not being saved** — {feedback.DETAIL}. The "
+                f"buttons still work so you can see the flow.")
+        comment = gr.Textbox(label="Anything to add? (optional)",
+                             placeholder="e.g. wrong word, robotic prosody, "
+                                         "clipped ending",
+                             lines=1)
+        keep = gr.Checkbox(value=True, label="Include the audio")
+        with gr.Row():
+            good = gr.Button("👍 Good", size="sm")
+            bad = gr.Button("👎 Needs work", size="sm")
+        status = gr.Markdown("")
+    return comment, keep, good, bad, status
+
+
+def _wire_feedback(state, comment, keep, good, bad, status):
+    import feedback
+
+    def rate(kind):
+        def _fn(ctx, note, keep_audio):
+            return feedback.record(kind, ctx, note, keep_audio)
+        return _fn
+
+    good.click(rate("good"), [state, comment, keep], status)
+    bad.click(rate("bad"), [state, comment, keep], status)
+
+
 # ----------------------------------------------------------------------- ui
 
 def build_tabs():
@@ -242,11 +307,14 @@ def build_tabs():
                                    interactive=False)
                 a_out = gr.Textbox(label="Model transcription", lines=4)
                 a_go = gr.Button("Transcribe", variant="primary")
+                a_state = gr.State(None)
+                a_fb = _feedback_block("transcription")
 
         a_lang.change(lambda l: gr.update(choices=sample_choices(l), value=None),
                       a_lang, a_sample)
         a_load.click(load_sample, [a_lang, a_sample], [a_audio, a_ref])
-        a_go.click(transcribe, [a_lang, a_audio], a_out)
+        a_go.click(transcribe, [a_lang, a_audio, a_ref], [a_out, a_state])
+        _wire_feedback(a_state, *a_fb)
 
     with gr.Tab("🔊 Synthesize"):
         gr.Markdown(
@@ -265,12 +333,16 @@ def build_tabs():
             with gr.Column():
                 t_audio = gr.Audio(label="Synthesized speech")
                 t_note = gr.Textbox(label="Details", interactive=False)
+                t_state = gr.State(None)
+                t_fb = _feedback_block("synthesis")
 
         t_lang.change(
             lambda l: gr.update(choices=voices_for(l),
                                 value=(voices_for(l) or [None])[0]),
             t_lang, t_voice)
-        t_go.click(synthesize, [t_lang, t_text, t_voice], [t_audio, t_note])
+        t_go.click(synthesize, [t_lang, t_text, t_voice],
+                   [t_audio, t_note, t_state])
+        _wire_feedback(t_state, *t_fb)
 
     with gr.Tab("🎭 Convert voice"):
         gr.Markdown(
@@ -291,4 +363,7 @@ def build_tabs():
             with gr.Column():
                 v_out = gr.Audio(label="Converted speech")
                 v_note = gr.Textbox(label="Details", interactive=False)
-        v_go.click(convert, [v_audio, v_target], [v_out, v_note])
+                v_state = gr.State(None)
+                v_fb = _feedback_block("conversion")
+        v_go.click(convert, [v_audio, v_target], [v_out, v_note, v_state])
+        _wire_feedback(v_state, *v_fb)
