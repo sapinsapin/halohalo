@@ -34,23 +34,53 @@ PUSH_EVERY_MIN = 5
 _lock = Lock()
 _scheduler = None
 STATUS = "disabled"
-DETAIL = "no write-scoped HF_TOKEN set on this Space"
+DETAIL = "no write-scoped token found in this Space's secrets"
+TOKEN_SOURCE = None
+
+
+TOKEN_VARS = ("FEEDBACK_TOKEN", "HF_TOKEN", "SAPINSAPINDASH", "sapinsapindash")
 
 
 def _token():
-    for var in ("FEEDBACK_TOKEN", "HF_TOKEN"):
+    """Find the write token, whatever the Space secret happens to be called.
+
+    Space secrets arrive as environment variables under the exact name they
+    were given, so a secret named for the Space rather than for this code
+    would otherwise be invisible. Preferred names are checked first; failing
+    that, any variable holding a Hugging Face token is accepted, which means
+    renaming the secret does not silently switch collection off.
+    """
+    for var in TOKEN_VARS:
         tok = os.environ.get(var)
-        if tok:
-            return tok
+        if tok and tok.strip():
+            return tok.strip()
+
+    for name, value in os.environ.items():
+        if (value and value.startswith("hf_") and len(value) > 20
+                and "\n" not in value):
+            globals()["TOKEN_SOURCE"] = name
+            return value.strip()
     return None
+
+
+def status_report() -> str:
+    """One line describing whether ratings are being saved, and from where."""
+    if enabled():
+        src = TOKEN_SOURCE or "FEEDBACK_TOKEN/HF_TOKEN"
+        return f"enabled → {REPO_ID} (token from `{src}`)"
+    return f"disabled → {DETAIL}"
 
 
 def init():
     """Start the commit scheduler if we hold a token that can write."""
-    global _scheduler, STATUS, DETAIL
+    global _scheduler, STATUS, DETAIL, TOKEN_SOURCE
     tok = _token()
     if not tok:
         return
+    for var in TOKEN_VARS:                    # record which name supplied it
+        if os.environ.get(var, "").strip() == tok:
+            TOKEN_SOURCE = var
+            break
     try:
         from huggingface_hub import CommitScheduler, HfApi
 

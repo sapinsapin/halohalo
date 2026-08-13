@@ -289,6 +289,14 @@ def build_tabs():
                         "(`assets.json`), so the speech tabs are unavailable.")
         return
 
+    # API-only: lets the Space's feedback wiring be checked from outside
+    # without clicking through the UI, since a misnamed secret fails silently.
+    import feedback as _fb
+    _status_btn = gr.Button("feedback status", visible=False)
+    _status_out = gr.Textbox(visible=False)
+    _status_btn.click(_fb.status_report, None, _status_out,
+                      api_name="feedback_status")
+
     with gr.Tab("🎙️ Transcribe"):
         gr.Markdown(
             "Record yourself, upload a file, or load a preloaded clip. Each "
