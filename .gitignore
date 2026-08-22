@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 venv/
+.venv/
 *.log
 
 # livestream pipeline data artifacts
@@ -11,3 +12,6 @@ fsc_shards/
 *.zip
 finetune_runs/
 ts-wandb.txt
+
+# raw archive staging (push_livestream_raw.py)
+raw_staging/
