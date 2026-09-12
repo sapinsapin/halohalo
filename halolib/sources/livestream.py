@@ -33,7 +33,9 @@ LANG_MAP = {
 
 # Priority order for locating the audio track inside an extracted archive.
 # Cached decodes ("_16k"/"_24k") are excluded so re-runs don't pick them up.
-AUDIO_EXTS = [".mp4", ".mov", ".m4a", ".mp3", ".wav"]
+# .m4a/.flac/.opus also cover the normalized tracks published to the raw Hub
+# dataset, so a snapshot of that dataset can be fed straight back in here.
+AUDIO_EXTS = [".mp4", ".mov", ".m4a", ".mp3", ".wav", ".flac", ".opus", ".ogg", ".webm"]
 CACHE_SUFFIXES = ("_16k", "_24k")
 
 BRACKET_RE    = re.compile(r"\[[^\]]*\]")            # [laughter], [music], [inaudible]
@@ -167,13 +169,45 @@ def _is_cache(path: Path) -> bool:
     return path.stem.endswith(CACHE_SUFFIXES)
 
 
+def _pick_audio(candidates: list[Path]) -> Path | None:
+    """First non-cache audio file, in AUDIO_EXTS priority order."""
+    for ext in AUDIO_EXTS:
+        hits = sorted(c for c in candidates if c.suffix.lower() == ext and not _is_cache(c))
+        if hits:
+            return hits[0]
+    return None
+
+
 def find_pairs(root: Path) -> list[tuple[str, Path, Path]]:
     """Discover (file_id, json_path, audio_path) triples.
 
-    Sources are .zip archives (extracted once into root/_extracted/{stem}) or
-    loose {id}.json + {id}.<ext> pairs dropped directly under root.
+    Four source layouts are accepted under `root`:
+      - audio/ + transcripts/    — the halo-livestream-raw Hub layout, so a
+                                   downloaded snapshot feeds straight back in
+      - .zip archives            — extracted once into root/_extracted/{stem}
+      - loose {id}.json + {id}.<ext> pairs
+      - a {id}/ directory holding the json and audio together (how the
+        recorder hands them over)
+
+    Duplicates across layouts are resolved by file_id, first discovery wins.
     """
-    pairs = []
+    pairs: list[tuple[str, Path, Path]] = []
+    seen: set[str] = set()
+
+    def add(file_id: str, json_path: Path, audio_path: Path) -> None:
+        if file_id in seen:
+            return
+        seen.add(file_id)
+        pairs.append((file_id, json_path, audio_path))
+
+    # Hub layout: transcripts/{id}.json alongside audio/{id}.<ext>.
+    audio_dir, transcript_dir = root / "audio", root / "transcripts"
+    if audio_dir.is_dir() and transcript_dir.is_dir():
+        for json_path in sorted(transcript_dir.glob("*.json")):
+            audio_path = _pick_audio(list(audio_dir.glob(f"{json_path.stem}.*")))
+            if audio_path is not None:
+                add(json_path.stem, json_path, audio_path)
+
     tmp_root = root / "_extracted"
     tmp_root.mkdir(parents=True, exist_ok=True)
 
@@ -193,23 +227,36 @@ def find_pairs(root: Path) -> list[tuple[str, Path, Path]]:
             print(f"  [skip] {zpath.name}: no JSON found")
             continue
 
-        audio_path = None
-        for ext in AUDIO_EXTS:
-            cands = [c for c in dest.rglob(f"*{ext}") if not _is_cache(c)]
-            if cands:
-                audio_path = cands[0]
-                break
+        audio_path = _pick_audio(list(dest.rglob("*")))
         if audio_path is None:
             print(f"  [skip] {zpath.name}: no audio track found")
             continue
 
-        pairs.append((json_files[0].stem, json_files[0], audio_path))
+        add(json_files[0].stem, json_files[0], audio_path)
 
     for json_path in sorted(root.glob("*.json")):
-        for ext in AUDIO_EXTS:
-            audio_path = json_path.with_suffix(ext)
-            if audio_path.exists():
-                pairs.append((json_path.stem, json_path, audio_path))
-                break
+        if json_path.name.endswith(".status.json"):
+            continue
+        audio_path = _pick_audio(
+            [json_path.with_suffix(ext) for ext in AUDIO_EXTS if json_path.with_suffix(ext).exists()]
+        )
+        if audio_path is not None:
+            add(json_path.stem, json_path, audio_path)
+
+    # {id}/ directories — the layout the recorder produces and the one a
+    # snapshot of the raw Hub dataset unpacks into.
+    for sub in sorted(p for p in root.iterdir() if p.is_dir()):
+        if sub.name in {"_extracted", "_staging", "audio", "transcripts"} or sub.name.startswith("."):
+            continue
+        json_files = [j for j in sub.rglob("*.json") if not j.name.endswith(".status.json")]
+        if not json_files:
+            continue
+        audio_path = _pick_audio(list(sub.rglob("*")))
+        if audio_path is None:
+            print(f"  [skip] {sub.name}/: no audio track found")
+            continue
+        # Prefer a json whose stem matches the directory, else the first found.
+        json_path = next((j for j in json_files if j.stem == sub.name), json_files[0])
+        add(json_path.stem, json_path, audio_path)
 
     return pairs

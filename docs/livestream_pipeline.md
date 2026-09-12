@@ -81,16 +81,31 @@ also work.
 
 ### 1. Source discovery — `sources/livestream.find_pairs`
 
-Globs `*.zip` under `$LIVESTREAM_DIR`, extracting each into
-`raw/_extracted/{stem}/` (skipped if the directory already exists, so
-re-runs don't re-inflate). macOS resource forks (`__MACOSX/`, `._*`) are
-filtered out during extraction.
+Four layouts are accepted under `$LIVESTREAM_DIR`, scanned in this order and
+de-duplicated by `file_id` (first discovery wins):
 
-Inside each extracted directory it locates the audio track by trying
-extensions in priority order `[.mp4, .mov, .m4a, .mp3, .wav]` and taking the
+| Layout | Where it comes from |
+|---|---|
+| `audio/{id}.<ext>` + `transcripts/{id}.json` | a downloaded [`halo-livestream-raw`](https://huggingface.co/datasets/sapinsapin/halo-livestream-raw) snapshot |
+| `{id}.zip` | archived hand-off |
+| loose `{id}.json` + `{id}.<ext>` | manual drop |
+| `{id}/` directory holding both | what the recorder hands over |
+
+Zips are extracted into `raw/_extracted/{stem}/` (skipped if the directory
+already exists, so re-runs don't re-inflate). macOS resource forks
+(`__MACOSX/`, `._*`) are filtered out during extraction.
+
+The audio track is located by trying extensions in priority order
+`[.mp4, .mov, .m4a, .mp3, .wav, .flac, .opus, .ogg, .webm]` and taking the
 first match. Files whose stem ends in `_16k`/`_24k` are excluded — these are
 the pipeline's own decode caches, and without this guard a second run would
-"discover" its own output as a new source.
+"discover" its own output as a new source. `*.status.json` is never mistaken
+for a transcript.
+
+Because the Hub layout is accepted directly, the archive round-trips: download
+`halo-livestream-raw`, point `LIVESTREAM_DIR` at it, and the pipeline rebuilds
+`halo-livestream` from the same inputs. `tests/test_find_pairs.py` covers all
+four layouts plus the dedup and cache-exclusion rules.
 
 ### 2. Audio decode — `audio.decode_audio`
 

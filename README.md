@@ -19,6 +19,11 @@ LIVESTREAM_OUTPUT_DIR=/path/to/livestream_output
 HF_REPO=sapinsapin/filipinospeechcorpus
 HF_CORPUS_REPO=sapinsapin/BantayWika
 HF_TOKEN=your_hf_token
+
+# optional — raw livestream archive (push_livestream_raw.py)
+LIVESTREAM_RAW_DIR=/path/to/livestream_raw        # defaults to LIVESTREAM_DIR
+LIVESTREAM_RAW_STAGE_DIR=/path/to/raw_staging     # defaults to <raw>/../raw_staging
+LIVESTREAM_RAW_HF_REPO=sapinsapin/halo-livestream-raw
 ```
 
 ---
@@ -131,7 +136,48 @@ LIVESTREAM_HF_REPO=sapinsapin/halo-livestream
 Requires `ffmpeg`; GPU stages need the alignment/QC stack (see
 [`docs/livestream_pipeline.md`](docs/livestream_pipeline.md) for the full
 pipeline reference: stage design, export gates, resume semantics, gap
-analysis).
+analysis) and [`docs/raw_archive.md`](docs/raw_archive.md) for the raw archive.
+
+### Raw source archive (halo-livestream-raw)
+
+`push_livestream_raw.py` publishes the *inputs* — the operator transcript plus
+the recording's audio track — so every derived artifact stays reproducible and
+future pipeline versions can be re-run over a fixed input without re-collecting
+anything.
+
+Published dataset: [sapinsapin/halo-livestream-raw](https://huggingface.co/datasets/sapinsapin/halo-livestream-raw) (gated)
+
+```bash
+source venv/bin/activate
+python push_livestream_raw.py --dry-run   # stage + report, upload nothing
+python push_livestream_raw.py             # upload new recordings only
+python push_livestream_raw.py --card-only # refresh the dataset card
+```
+
+Already-compressed audio (AAC/MP3/Opus) is **stream-copied, never re-encoded** —
+transcoding lossy audio to FLAC cannot recover what the encoder discarded and
+inflates size roughly tenfold (measured: 9.0 MB AAC → 113 MB FLAC, with a
+different decoded checksum). Only uncompressed PCM is encoded, to FLAC, which
+also sidesteps the 4 GB WAV ceiling multi-hour streams hit. Video tracks are
+dropped. Uploads are incremental, and past 1 GiB the transfer switches to a
+chunked, resumable one.
+
+The dataset is gated: full-length conversation between identifiable speakers is
+a different privacy proposition from the short segments in `halo-livestream`.
+
+```
+# .env
+LIVESTREAM_RAW_DIR=/mnt/d/halohalo/LivestreamCorpus/raw
+LIVESTREAM_RAW_HF_REPO=sapinsapin/halo-livestream-raw
+```
+
+A downloaded snapshot feeds straight back in — `find_pairs` reads the Hub's
+`audio/` + `transcripts/` layout directly:
+
+```bash
+huggingface-cli download sapinsapin/halo-livestream-raw --repo-type dataset --local-dir raw/
+LIVESTREAM_DIR=raw/ python process_livestream.py --stages parse,align,qc,export
+```
 
 ---
 
