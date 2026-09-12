@@ -53,6 +53,10 @@ PROCESSED_REPO = os.environ.get("LIVESTREAM_HF_REPO", "sapinsapin/halo-livestrea
 # Above this staged size, use the chunked/resumable uploader.
 LARGE_THRESHOLD_BYTES = 1 << 30  # 1 GiB
 
+# Gating applied when this script creates the repo. Raw recordings must never
+# be reachable ungated, so a new repo starts closed and is widened by hand.
+NEW_REPO_GATING = "manual"
+
 log = logging.getLogger("livestream-raw")
 
 
@@ -91,6 +95,16 @@ def stage(file_id_filter: str | None) -> list[raw.RawRecord]:
         records.append(record)
 
     return records
+
+
+
+def current_gating(api: HfApi, token: str | None) -> str | None:
+    """Whatever the Hub currently has, or None if the repo is ungated/absent."""
+    try:
+        gated = api.dataset_info(REPO, token=token).gated
+    except RepositoryNotFoundError:
+        return None
+    return gated if isinstance(gated, str) else None
 
 
 # ---------------------------------------------------------------------- upload
@@ -209,8 +223,9 @@ extra_gated_fields:
 >
 > Full-length conversation between named, identifiable speakers is a very
 > different privacy proposition from the short segments in the processed
-> dataset. Access is manually reviewed. If you want segmented, quality-scored
-> audio for training, use [`{PROCESSED_REPO}`](https://huggingface.co/datasets/{PROCESSED_REPO}) instead — it needs no approval.
+> dataset, so access here is gated: request it and agree to the terms above.
+> If what you want is segmented, quality-scored audio for training, reach for
+> [`{PROCESSED_REPO}`](https://huggingface.co/datasets/{PROCESSED_REPO}) instead.
 
 ## What this is
 
@@ -314,9 +329,13 @@ def main() -> int:
     parser.add_argument("--repo", default=REPO, help=f"target dataset repo (default {REPO})")
     parser.add_argument(
         "--gated",
-        default="manual",
-        choices=["manual", "auto", "off"],
-        help="Hub access gating (default manual)",
+        default="keep",
+        choices=["keep", "manual", "auto", "off"],
+        help=(
+            "Hub access gating. Default 'keep' leaves an existing repo's setting "
+            f"alone (a new repo is created with '{NEW_REPO_GATING}'), so a routine "
+            "upload never overrides a change made in the dashboard."
+        ),
     )
     parser.add_argument("--force", action="store_true", help="re-upload even if sizes match")
     args = parser.parse_args()
@@ -384,13 +403,24 @@ def main() -> int:
     DatasetCard(build_card(records)).push_to_hub(REPO, repo_type="dataset", token=token)
     log.info("Card pushed.")
 
-    if args.gated != "off":
-        api.update_repo_settings(REPO, repo_type="dataset", gated=args.gated, token=token)
-        log.info("Gating set to %s.", args.gated)
-        if created:
-            # Safe now: the gate is in place before anything becomes listable.
-            api.update_repo_settings(REPO, repo_type="dataset", private=False, token=token)
-            log.info("Repo made public (gated).")
+    # Gating is a policy decision that outlives any one upload. Only a new repo
+    # gets a gate applied by default; an existing one keeps whatever it has
+    # unless --gated says otherwise, so routine uploads can't quietly widen or
+    # narrow access that someone set deliberately.
+    gating = NEW_REPO_GATING if (args.gated == "keep" and created) else args.gated
+
+    if gating != "keep":
+        api.update_repo_settings(
+            REPO, repo_type="dataset", gated=(False if gating == "off" else gating), token=token
+        )
+        log.info("Gating set to %s.", gating)
+    else:
+        log.info("Gating left as-is (%s).", current_gating(api, token) or "ungated")
+
+    if created:
+        # Safe now: the gate is in place before anything becomes listable.
+        api.update_repo_settings(REPO, repo_type="dataset", private=False, token=token)
+        log.info("Repo made public (gated).")
 
     log.info("\nhttps://huggingface.co/datasets/%s", REPO)
     return 0

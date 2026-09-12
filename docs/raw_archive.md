@@ -79,18 +79,27 @@ the part of a livestream recording carrying the most personal data.
 
 ## Gating
 
-The dataset is **gated (`manual`)**: publicly listed and documented, but the
-files require an approved access request.
+The dataset is **gated**: publicly listed and documented, but the files require
+an access request against the terms in the card.
 
-This is a deliberate asymmetry with `halo-livestream`, which is open. A
-30-second segment stripped of context is a very different disclosure from 27
-unbroken minutes of named people discussing their income. The processed dataset
-carries the research value; the raw archive carries the exposure.
+The reason is the asymmetry in exposure. A 30-second segment stripped of
+context is a very different disclosure from 27 unbroken minutes of named people
+discussing their income. The processed dataset carries most of the research
+value; the raw archive carries most of the risk. Gate them accordingly — and
+note that "accordingly" can change, which is why nothing here hard-codes what
+`halo-livestream`'s own setting happens to be today.
 
 `push_livestream_raw.py` creates the repo **private**, uploads, pushes the card
 containing `extra_gated_prompt`/`extra_gated_fields`, applies gating, and only
 then flips it public. Creating it public first would leave a window in which
 the audio was world-readable before the gate existed.
+
+**A routine upload never changes gating.** `--gated` defaults to `keep`: a new
+repo is created `manual`, and an existing one is left exactly as it is. Access
+policy is usually adjusted in the dashboard, and a re-upload silently reverting
+that would be a quiet security regression — the failure mode is a dataset that
+looks gated in the console until the next `push` widens it. Pass `--gated
+auto|manual|off` to change it deliberately.
 
 Verify the gate is live:
 
@@ -100,7 +109,8 @@ curl -s -o /dev/null -w "%{http_code}\n" -L \
 # 401 — README.md at the same path returns 200
 ```
 
-Pass `--gated off` to skip gating (leaves an existing repo's visibility alone).
+`--gated off` removes the gate entirely — only for a dataset that should be
+openly downloadable.
 
 ## Provenance caveat
 
