@@ -74,10 +74,11 @@ def stage(file_id_filter: str | None) -> list[raw.RawRecord]:
     if not pairs:
         raise SystemExit(f"No (json, audio) sources found under {RAW_DIR}")
 
+    known = raw.read_index(STAGE_DIR)
     records = []
     for file_id, json_path, audio_path in pairs:
         try:
-            record = raw.build_record(file_id, json_path, audio_path, STAGE_DIR)
+            record = raw.build_record(file_id, json_path, audio_path, STAGE_DIR, known)
         except raw.RawError as err:
             log.error("  [skip] %s: %s", file_id, err)
             continue
@@ -156,17 +157,21 @@ def upload(api: HfApi, token: str, records: list[raw.RawRecord], staged_bytes: i
 
 # ------------------------------------------------------------------------ card
 
-def build_card(records: list[raw.RawRecord]) -> str:
-    total_seconds = sum(r.probe.duration for r in records)
-    total_bytes = sum(r.audio_bytes for r in records)
-    speakers = sum(r.meta.get("speaker_count") or 0 for r in records)
-    languages = sorted({r.meta.get("primary_language", "") for r in records} - {""})
+def build_card(index_rows: list[dict]) -> str:
+    """Render the card from the full index — never from one run's subset."""
+    num = lambda row, key: row.get(key) or 0  # noqa: E731 - tiny local accessor
+
+    total_seconds = sum(float(num(r, "duration_seconds")) for r in index_rows)
+    total_bytes = sum(int(num(r, "audio_bytes")) for r in index_rows)
+    speakers = sum(int(num(r, "speaker_count")) for r in index_rows)
+    languages = sorted({str(r.get("primary_language") or "") for r in index_rows} - {""})
 
     rows = "\n".join(
-        f"| `{r.file_id[:16]}…` | {raw.human_duration(r.probe.duration)} | "
-        f"{r.probe.codec} {r.probe.sample_rate} Hz / {r.probe.channels} ch | "
-        f"{raw.human_bytes(r.audio_bytes)} | {r.meta.get('speaker_count') or '—'} |"
-        for r in sorted(records, key=lambda r: r.file_id)
+        f"| `{str(r.get('file_id', ''))[:16]}…` | "
+        f"{raw.human_duration(float(num(r, 'duration_seconds')))} | "
+        f"{r.get('codec', '?')} {num(r, 'sample_rate')} Hz / {num(r, 'channels')} ch | "
+        f"{raw.human_bytes(int(num(r, 'audio_bytes')))} | {r.get('speaker_count') or '—'} |"
+        for r in index_rows
     )
 
     return f"""---
@@ -212,7 +217,7 @@ extra_gated_fields:
 
 <div align="center">
 
-**{len(records)} recording(s) · {raw.human_duration(total_seconds)} · {raw.human_bytes(total_bytes)}**
+**{len(index_rows)} recording(s) · {raw.human_duration(total_seconds)} · {raw.human_bytes(total_bytes)}**
 
 [![Pipeline](https://img.shields.io/badge/pipeline-github-black)](https://github.com/sapinsapin/halohalo)
 [![Processed](https://img.shields.io/badge/processed-{PROCESSED_REPO.split('/')[-1]}-yellow)](https://huggingface.co/datasets/{PROCESSED_REPO})
@@ -357,7 +362,8 @@ def main() -> int:
         log.error("Nothing staged.")
         return 1
 
-    index_path = raw.write_index(records, STAGE_DIR)
+    index_rows = raw.merge_index(records, STAGE_DIR)
+    index_file = raw.index_path(STAGE_DIR)
     staged_bytes = sum(r.audio_bytes for r in records)
     log.info("")
     log.info(
@@ -366,7 +372,7 @@ def main() -> int:
         raw.human_bytes(staged_bytes),
         raw.human_duration(sum(r.probe.duration for r in records)),
     )
-    log.info("Index: %s", index_path)
+    log.info("Index: %s (%d recording(s) total)", index_file, len(index_rows))
 
     if args.dry_run:
         log.info("\n--dry-run: nothing uploaded.")
@@ -392,7 +398,7 @@ def main() -> int:
         else:
             log.info("All recordings already on the Hub at matching sizes — skipping upload.")
             api.upload_file(
-                path_or_fileobj=str(index_path),
+                path_or_fileobj=str(index_file),
                 path_in_repo="index.jsonl",
                 repo_id=REPO,
                 repo_type="dataset",
@@ -400,7 +406,7 @@ def main() -> int:
                 commit_message="Refresh index",
             )
 
-    DatasetCard(build_card(records)).push_to_hub(REPO, repo_type="dataset", token=token)
+    DatasetCard(build_card(index_rows)).push_to_hub(REPO, repo_type="dataset", token=token)
     log.info("Card pushed.")
 
     # Gating is a policy decision that outlives any one upload. Only a new repo

@@ -205,8 +205,43 @@ def transcript_summary(json_path: Path) -> dict:
     }
 
 
-def build_record(file_id: str, json_path: Path, audio_src: Path, stage_dir: Path) -> RawRecord:
-    """Normalize one (json, audio) pair into `stage_dir` and describe it."""
+def index_path(stage_dir: Path) -> Path:
+    return stage_dir / "index.jsonl"
+
+
+def read_index(stage_dir: Path) -> dict[str, dict]:
+    """Previously indexed rows, keyed by file_id. Empty if there is no index."""
+    path = index_path(stage_dir)
+    if not path.exists():
+        return {}
+    rows: dict[str, dict] = {}
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue  # a truncated write should not poison the whole index
+            if isinstance(row, dict) and row.get("file_id"):
+                rows[row["file_id"]] = row
+    return rows
+
+
+def build_record(
+    file_id: str,
+    json_path: Path,
+    audio_src: Path,
+    stage_dir: Path,
+    known: dict[str, dict] | None = None,
+) -> RawRecord:
+    """Normalize one (json, audio) pair into `stage_dir` and describe it.
+
+    A matching row in `known` (same file, same size) lets the digests be reused
+    instead of re-read. Hashing is O(bytes), so without this a re-run over an
+    archive of multi-hour streams re-reads the entire archive to add one file.
+    """
     audio_dir = stage_dir / "audio"
     transcript_dir = stage_dir / "transcripts"
     transcript_dir.mkdir(parents=True, exist_ok=True)
@@ -217,28 +252,50 @@ def build_record(file_id: str, json_path: Path, audio_src: Path, stage_dir: Path
     if not transcript_path.exists():
         shutil.copy2(json_path, transcript_path)
 
+    audio_bytes = audio_path.stat().st_size
+    cached = (known or {}).get(file_id) or {}
+    reusable = (
+        cached.get("audio_bytes") == audio_bytes
+        and isinstance(cached.get("audio_sha256"), str)
+        and isinstance(cached.get("transcript_sha256"), str)
+    )
+
     return RawRecord(
         file_id=file_id,
         audio_name=audio_path.name,
         transcript_name=transcript_path.name,
         probe=probe,
-        audio_sha256=sha256(audio_path),
-        audio_bytes=audio_path.stat().st_size,
-        transcript_sha256=sha256(transcript_path),
+        audio_sha256=cached["audio_sha256"] if reusable else sha256(audio_path),
+        audio_bytes=audio_bytes,
+        transcript_sha256=(
+            cached["transcript_sha256"] if reusable else sha256(transcript_path)
+        ),
         stream_copied=copied,
         source_name=audio_src.name,
         meta=transcript_summary(json_path),
     )
 
 
-def write_index(records: list[RawRecord], stage_dir: Path) -> Path:
-    """One JSON object per recording, sorted by file_id for a stable diff."""
-    path = stage_dir / "index.jsonl"
-    rows = sorted((r.index_row() for r in records), key=lambda r: r["file_id"])
-    with open(path, "w", encoding="utf-8") as f:
-        for row in rows:
+def merge_index(records: list[RawRecord], stage_dir: Path) -> list[dict]:
+    """Fold this run's records into the index and return every row.
+
+    The index describes the whole dataset, not one run. Processing a single
+    recording (`--file-id`) must not rewrite it down to that one row — doing so
+    would drop every other recording from the published index and from the card
+    built off it.
+    """
+    rows = read_index(stage_dir)
+    for record in records:
+        rows[record.file_id] = record.index_row()
+
+    ordered = sorted(rows.values(), key=lambda r: str(r.get("file_id", "")))
+    path = index_path(stage_dir)
+    tmp = path.with_suffix(".jsonl.part")
+    with open(tmp, "w", encoding="utf-8") as f:
+        for row in ordered:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
-    return path
+    tmp.replace(path)  # atomic: never leave a half-written index behind
+    return ordered
 
 
 def human_bytes(n: float) -> str:
