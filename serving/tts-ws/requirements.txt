@@ -1,0 +1,19 @@
+# Derived from Spaces/halohalo-dashboard/requirements.txt (the known-good pin
+# set already running SpeechT5 on a free CPU Space), minus gradio and pandas,
+# plus the WebSocket stack.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.11.0
+transformers==5.14.1
+numpy==2.4.2
+sentencepiece
+huggingface_hub>=0.34
+
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+# Pinned deliberately, not just for reproducibility: declaring websockets
+# explicitly is the reported fix for WebSocket handshakes 404-ing behind the
+# Hugging Face Spaces proxy.
+websockets==17.1
+
+# tools/ws_client.py only — writes the verification wav. Tiny, kept in.
+soundfile==0.13.1

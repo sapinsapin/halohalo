@@ -1,0 +1,10 @@
+.git
+.gitattributes
+__pycache__
+*.pyc
+.venv
+venv
+docs
+tools/test_*.py
+out*.wav
+out*.pcm

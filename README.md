@@ -283,6 +283,46 @@ processed for its gated set to grow past demo size.
 
 ---
 
+## Serving — TTS over WebSocket
+
+[`serving/tts-ws/`](serving/tts-ws/) streams synthesized speech to hardware and
+embedded clients: send a line of text over a WebSocket, get raw PCM back as it
+is synthesized. Built for an integration with Agora, a language-learning
+hardware maker, so the wire format is fixed and header-free for a
+microcontroller to hand straight to a DAC.
+
+```
+client -> {"text": "Magandang umaga po."}     one JSON frame
+server -> <binary frames>                     PCM S16LE, 16 kHz, mono, no header
+server -> {"type":"end"}                       or {"type":"error","message":"..."}
+```
+
+Serves `speecht5_tts-pld-<lang>` (see *Finetuning workflows* above) with the
+`microsoft/speecht5_hifigan` vocoder and a precomputed x-vector. Those
+checkpoints emit 16 kHz natively, so nothing is resampled. Revisions are pinned
+by commit sha in `pins.py` and baked into the image, which then runs offline.
+
+```bash
+cd serving/tts-ws
+docker build -t sapin-tts-ws . && docker run --rm -p 7860:7860 sapin-tts-ws
+python tools/ws_client.py ws://localhost:7860/tts "Magandang umaga po."
+```
+
+| File | Contents |
+|---|---|
+| [docs/AGORA_INTEGRATION.md](serving/tts-ws/docs/AGORA_INTEGRATION.md) | The partner-facing contract: endpoint, every frame format and error string, latency, cancellation, C and Python receive loops |
+| `protocol.py` | The wire contract, isolated. The terminal frames are frozen byte strings — embedded firmware compares them literally |
+| `textseg.py` | Sentence segmentation. Only ever splits at clause boundaries; a mid-clause cut makes the unreliable stop token ramble |
+| `tts.py` | CPU synthesis ported from `dashboard/speech_demo.py`, plus float32 to PCM S16LE |
+| `tools/` | Reference client with signal checks, protocol conformance suite, host viability probe |
+
+Two measured constraints worth knowing before choosing a host: **CPU is the
+binding one** — time to first audio is 3.2 s on 2 cores, 6.7 s on 1, and 268 s
+on 0.1, so fractional-CPU tiers are unusable — while **memory is not**, since
+the weights are mmapped and one language fits in a hard 512 MB cap.
+
+---
+
 ## halolib
 
 Reusable library used for preprocessing web-mined data used in `clean_halo.py` and `prep_halohalo.py`.
