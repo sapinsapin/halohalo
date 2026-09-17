@@ -5,14 +5,17 @@ One endpoint, one request message, raw PCM back. No authentication.
 
 ## 1. Endpoint
 
-    wss://sapinsapin-tts-ws.hf.space/tts
+    ws://104.208.87.149:8765/tts
 
-Standard HTTP/1.1 WebSocket upgrade (`Sec-WebSocket-Key`, version 13). Port 443,
-TLS with SNI required.
+**Plain `ws://`, no TLS.** Standard HTTP/1.1 WebSocket upgrade
+(`Sec-WebSocket-Key`, version 13). No authentication. Static IP, so the address
+will not move; the host is in Azure East Asia (Hong Kong), roughly 30 ms from
+Manila.
 
-If your client cannot do TLS — no TLS stack, no CA bundle, or no SNI — tell us
-and we will give you a plain `ws://<ip>:<port>/tts` host instead. That is a
-hosting change on our side only; the protocol below does not change.
+Being unencrypted is deliberate for this first test, so your client needs no TLS
+stack, no CA bundle and no SNI. It does mean the audio and text cross the public
+internet in cleartext — fine for test sentences, worth revisiting before anything
+real. We can add TLS on request.
 
 **The handshake must be HTTP/1.1.** A WebSocket upgrade sent over HTTP/2 is
 meaningless, and a TLS front end that negotiated h2 will answer it with **404**
@@ -24,7 +27,7 @@ curl -so /dev/null -w '%{http_code} over %{http_version}\n' \
   -H 'Connection: Upgrade' -H 'Upgrade: websocket' \
   -H 'Sec-WebSocket-Version: 13' \
   -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' \
-  https://<host>/tts
+  http://104.208.87.149:8765/tts
 # 404 over 2      <- curl negotiated HTTP/2
 # 101 over 1.1    <- same request with --http1.1
 ```
@@ -152,15 +155,14 @@ bounded by roughly 5. A piece already being synthesized when you disconnect
 runs to completion internally and is discarded; nothing further is sent.
 
 One caveat, measured rather than assumed. If you perform a **graceful** close
-(send a close frame and wait for ours) while audio is still streaming, and the
-endpoint is behind a reverse proxy — a Cloudflare tunnel, or Hugging Face Spaces
-— the proxy keeps accepting our frames and delays the closing handshake. Your
-`close()` can then block for up to your own close timeout, around 10 seconds.
+(send a close frame and wait for ours) while audio is still streaming, your
+`close()` may block for up to your own close timeout — we measured about 10
+seconds. The synthesis itself stops on time; only the handshake is slow, because
+the host is CPU-constrained and the event loop is slow to answer while a
+synthesis is running.
 
-Synthesis still stops on time; only the handshake is slow. If you simply drop
-the socket, which is what most firmware does, you never see this. A direct
-connection (no proxy) closes in milliseconds. Tell us if graceful close
-latency matters to you and we will host without a proxy in the path.
+If you simply drop the socket, which is what most firmware does, you never see
+this. Tell us if graceful-close latency matters and we will look at it.
 
 Reusing the socket is fine: after `end` you may send another `{"text": ...}` on
 the same connection. One request at a time, though — wait for `end` or `error`
@@ -169,26 +171,32 @@ against. An idle socket is closed after 60 s, and any connection after 300 s.
 
 ## 8. Latency
 
-Measured on an Apple M5, Filipino, one warm instance. The free Hugging Face CPU
-instance is slower — expect roughly 2-3x these numbers.
+Measured on the live host, Filipino, warm instance:
 
 | Text | Time to first audio | Audio produced |
 |---|---|---|
-| 35 characters, one sentence | 0.87 s | 2.10 s |
-| 118 characters, two clauses | 1.33 s | 8.50 s |
+| 35 characters, one sentence | 3.9 s | 2.06 s |
+| 63 characters, one sentence | 8.4 s | 3.84 s |
+| 128 characters, two clauses | 5.5 s | 5.52 s |
 
-Synthesis runs about 5x faster than realtime once warm, so after the first
-frame the audio arrives faster than it plays. Time to first audio is set by the
-first sentence, which is deliberately kept short.
+Synthesis runs at roughly **2x slower than realtime**, so audio does *not* arrive
+faster than it plays. **Buffer a whole sentence before playing it** rather than
+playing bytes as they arrive, or you will underrun mid-word.
+
+Time to first audio is set by the first sentence, which we keep deliberately
+short — note the 128-character case is *faster* to first audio than the
+63-character one, because it splits at its comma and the opening segment is
+smaller.
+
+The host is a burstable instance, so **please pace your tests** rather than
+looping them. Sustained hammering throttles the CPU and these numbers get worse.
 
 Two cold-start cases to plan around:
 
-- A newly started instance takes tens of seconds to load models. `/healthz`
-  returns 503 until it is ready.
-- A free Hugging Face Space **sleeps after about 48 hours idle**, and a
-  WebSocket handshake to a sleeping Space fails rather than waiting for it to
-  wake. Hit `https://sapinsapin-tts-ws.hf.space/healthz` a few minutes before a
-  scheduled test.
+- A newly started instance takes ~40 s to load models. `/healthz` returns 503
+  until it is ready, and `{"ready":true,...}` once it is.
+- The service restarts automatically on reboot, but if `/healthz` is
+  unreachable, tell us — it is a demo host, not a production cluster.
 
 ## 9. Known limits
 
@@ -199,6 +207,10 @@ Two cold-start cases to plan around:
 - Each sentence is synthesized independently, so intonation does not carry
   across sentence boundaries. Expect a slight reset at each full stop.
 - These are read-speech baselines, not production voices.
+- Three languages are served here — Filipino (`fil`), Cebuano (`ceb`) and
+  Hiligaynon (`hil`). Filipino is the default.
+- The host is a **burstable free-tier instance**. It is sized for an integration
+  test, not for load. Please space your requests out.
 - One synthesis runs at a time per instance. Concurrent requests queue for up
   to 15 s, then get `server busy, retry`.
 
@@ -207,7 +219,7 @@ Two cold-start cases to plan around:
 Pseudocode for the whole exchange:
 
 ```c
-ws = ws_connect("wss://sapinsapin-tts-ws.hf.space/tts");   // TLS + SNI
+ws = ws_connect("ws://104.208.87.149:8765/tts");   // plain ws, no TLS
 ws_send_text(ws, "{\"text\":\"Magandang umaga po.\"}");
 
 for (;;) {
@@ -253,14 +265,58 @@ async with websockets.connect(URL, max_size=None) as ws:
 
 ## 11. Questions we need answered
 
-These decide the hosting and the frame size, and we would rather set them
-correctly than have you work around a bad default:
+TLS is settled — this endpoint is plain `ws://`, so that question is gone. Four
+left, and they only affect defaults we can change on our side:
 
-1. Can your client do TLS (`wss://`)? Does it validate certificates, and does
-   it send SNI? If not, we will host plain `ws://` on a dedicated port.
-2. Is the handshake a standard HTTP/1.1 upgrade with `Sec-WebSocket-Key`?
-3. How large is your receive buffer — is 3200 bytes per frame fine, or should
-   we ship 1024?
-4. Does your client reply to WebSocket ping frames automatically? We ping every
+1. Is the handshake a standard HTTP/1.1 upgrade with `Sec-WebSocket-Key`?
+2. How large is your receive buffer — is 3200 bytes per frame fine, or should we
+   ship 1024?
+3. Does your client reply to WebSocket ping frames automatically? We ping every
    20 s and allow 60 s to respond.
-5. Do you want frames paced to realtime, or will you buffer a burst?
+4. Do you want frames paced to realtime, or will you buffer a burst? Right now we
+   send as fast as the connection drains.
+
+## 12. Testing from the command line
+
+`curl` cannot do this — it has no `ws`/`wss` protocol in most builds, including
+Apple's, and its CLI cannot send a message then read frames. Use `websocat`
+(`brew install websocat`, or your distro's package).
+
+Full exchange, showing the audio frame count and the terminal message:
+
+```bash
+echo '{"text":"Hello, this is a Sapin TTS test."}' \
+ | timeout 30 websocat -t -n --base64 --binary-prefix 'AUDIO ' --text-prefix 'JSON ' \
+   ws://104.208.87.149:8765/tts \
+ | awk '/^AUDIO/{n++} /^JSON/{printf "%d audio frames, then %s\n", n, substr($0,6); fflush(); exit}'
+```
+
+```
+16 audio frames, then {"type":"end"}
+```
+
+Two flags are load-bearing. **`-n`** (`--no-close`) stops websocat sending a
+close frame when stdin ends — without it the server correctly treats EOF as a
+cancel and you get nothing. **`timeout`** is needed because we keep the socket
+open for 60 s after `end` so you can send another request; the output appears
+immediately, only the shell waits.
+
+Save the raw PCM exactly as the device receives it:
+
+```bash
+echo '{"text":"Hello, this is a Sapin TTS test."}' \
+ | timeout 30 websocat -t -n --base64 --binary-prefix 'AUDIO ' --text-prefix 'JSON ' \
+   ws://104.208.87.149:8765/tts \
+ | awk '/^AUDIO/{print substr($0,7)} /^JSON/{exit}' | base64 -d > sapin.pcm
+
+ffplay -f s16le -ar 16000 -ac 1 -i sapin.pcm
+```
+
+Those `ffplay` flags are required precisely because there is no WAV header.
+
+Error cases return on the first frame, so they need no tricks:
+
+```bash
+echo '{"text":""}'     | websocat -t -1 ws://104.208.87.149:8765/tts
+echo 'not json'        | websocat -t -1 ws://104.208.87.149:8765/tts
+```
