@@ -132,9 +132,30 @@ def decode_tokens(snac_model, tokens: list[int], device: str) -> np.ndarray:
     return audio[0, 0].cpu().numpy()
 
 
-def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int):
-    """(audio, text, speaker_id) rows -> input_ids/labels, loss on speech only."""
+def cache_path(cache_root, dataset: str, language: str | None, split: str) -> Path:
+    return Path(cache_root) / f"snac_{dataset}_{language or 'all'}_{split}.jsonl"
+
+
+def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
+                   cache: Path | None = None):
+    """(audio, text, speaker_id) rows -> input_ids/labels, loss on speech only.
+
+    SNAC encoding is codec inference on the GPU, and it used to run inside
+    every training job and die with it: a preempted run re-encoded the whole
+    corpus on restart, and each arm of an ablation paid the cost again for the
+    same audio. The tokens depend only on the waveform, so cache them keyed by
+    (dataset, language, split) and reuse them across arms, runs and languages.
+    """
+    import json
+
     import librosa
+
+    if cache and cache.exists():
+        examples = [json.loads(line) for line in cache.read_text().splitlines()]
+        keep = [e for e in examples if len(e["input_ids"]) <= max_tokens]
+        print(f"  snac cache: {cache} ({len(keep)} of {len(examples)} within "
+              f"{max_tokens} tokens)")
+        return keep
 
     examples = []
     skipped = 0
@@ -159,17 +180,24 @@ def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int):
         prefix = [SOH] + text_ids + [EOT, EOH, SOAI, SOS]
         input_ids = prefix + audio_tokens + [EOS_SPEECH, EOAI]
 
-        if len(input_ids) > max_tokens:
-            skipped += 1
-            continue
-
         # -100 over the prompt: grade the model on producing speech, not on
         # parroting back the text it was given
         labels = [-100] * len(prefix) + input_ids[len(prefix):]
-        examples.append({"input_ids": input_ids, "labels": labels})
+        # `length` feeds group_by_length, which batches similar-length
+        # sequences so a batch is not padded out to its longest member
+        examples.append({"input_ids": input_ids, "labels": labels,
+                         "length": len(input_ids)})
 
     print(f"  built {len(examples)} examples ({skipped} skipped)")
-    return examples
+    if cache:
+        # cache every example, then apply --max-tokens on read: a later run
+        # with a longer budget must not have to re-encode the corpus
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        tmp = cache.with_suffix(f".tmp{os.getpid()}")
+        tmp.write_text("\n".join(json.dumps(e) for e in examples))
+        tmp.rename(cache)
+        print(f"  snac cached: {cache}")
+    return [e for e in examples if len(e["input_ids"]) <= max_tokens]
 
 
 class OrpheusCollator:
@@ -228,10 +256,31 @@ def main():
     ap.add_argument("--language", default=None, help="ISO 639-3 filter (pld)")
     ap.add_argument("--max-samples", type=int, default=2000)
     ap.add_argument("--max-steps", type=int, default=1500)
+    # Defaults below are the 8 GB recipe. On the 96 GB RTX PRO 6000 use
+    # --cloud, which sets the batch, precision and optimiser in one flag.
     ap.add_argument("--batch-size", type=int, default=1)
     ap.add_argument("--grad-accum", type=int, default=16)
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--lora-rank", type=int, default=16)
+    ap.add_argument("--full", action="store_true",
+                    help="full bf16 finetune instead of LoRA: ~53 GB of "
+                         "optimiser state, so a big card only")
+    ap.add_argument("--no-quant", action="store_true",
+                    help="load the base in bf16 rather than 4-bit NF4. "
+                         "Quantisation is a memory compromise, and on a card "
+                         "with spare memory it only makes the matmuls slower")
+    ap.add_argument("--no-grad-checkpoint", action="store_true",
+                    help="stop recomputing activations; ~25%% faster when the "
+                         "memory is there")
+    ap.add_argument("--cloud", action="store_true",
+                    help="one flag for the RTX PRO 6000: no quantisation, no "
+                         "checkpointing, batch 8, fused optimiser, LoRA r=64")
+    ap.add_argument("--snac-cache", default=os.environ.get(
+        "SNAC_CACHE", str(Path(os.environ.get("PLD_WORK_DIR", ".")) / "snac_cache")),
+        help="where encoded SNAC tokens are reused across runs and arms")
+    ap.add_argument("--dataloader-workers", type=int, default=2)
+    ap.add_argument("--profile", action="store_true",
+                    help="profile ~10 steps and stop; trains nothing")
     ap.add_argument("--max-tokens", type=int, default=1408,
                     help="sequence cap; 87.5 audio tokens per second of speech")
     ap.add_argument("--base-model", default=BASE_MODEL)
@@ -242,6 +291,18 @@ def main():
                     help="speaker_id to condition synthesis on")
     ap.add_argument("--push", action="store_true")
     args = ap.parse_args()
+    if args.cloud:
+        # the 8 GB defaults cost the ASR bake-off half its throughput before
+        # they were found; make the big-card recipe a single flag instead of
+        # six that have to be remembered together
+        args.no_quant = True
+        args.no_grad_checkpoint = True
+        if args.batch_size == 1:
+            args.batch_size, args.grad_accum = 8, 1
+        if args.lora_rank == 16 and not args.full:
+            args.lora_rank = 64
+        if args.dataloader_workers == 2:
+            args.dataloader_workers = 8
 
     from peft import LoraConfig, PeftModel, get_peft_model
     from transformers import (AutoModelForCausalLM, AutoTokenizer,
@@ -255,17 +316,22 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
+    quantize = not (args.no_quant or args.full)
     quant = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_use_double_quant=True,
-    )
+    ) if quantize else None
     model = AutoModelForCausalLM.from_pretrained(
         args.base_model, quantization_config=quant,
         dtype=torch.bfloat16, device_map={"": 0} if device == "cuda" else None,
         attn_implementation="sdpa",
     )
+    print(f"  base: {'4-bit NF4' if quantize else 'bf16'}, "
+          f"{'full finetune' if args.full else f'LoRA r={args.lora_rank}'}, "
+          f"batch {args.batch_size}x{args.grad_accum}, "
+          f"checkpointing {'off' if args.no_grad_checkpoint else 'on'}")
     model.config.use_cache = False
 
     snac_model = load_snac(device)
@@ -285,27 +351,44 @@ def main():
     print(ds)
 
     print("Encoding audio to SNAC tokens...")
-    train_ex = build_examples(ds["train"], tokenizer, snac_model, device,
-                              args.max_tokens)
-    eval_ex = build_examples(ds["test"], tokenizer, snac_model, device,
-                             args.max_tokens)
+    train_ex = build_examples(
+        ds["train"], tokenizer, snac_model, device, args.max_tokens,
+        cache=cache_path(args.snac_cache, args.dataset, args.language, "train"))
+    eval_ex = build_examples(
+        ds["test"], tokenizer, snac_model, device, args.max_tokens,
+        cache=cache_path(args.snac_cache, args.dataset, args.language, "test"))
     if not train_ex:
         raise SystemExit("no training examples survived filtering")
+    # the codec is only needed for encoding and for the listen test; freeing it
+    # returns ~1 GB and stops it holding fragments of the allocator
+    del snac_model
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    snac_model = None
 
-    from peft import prepare_model_for_kbit_training
-    model = prepare_model_for_kbit_training(
-        model, use_gradient_checkpointing=True)
-    model = get_peft_model(model, LoraConfig(
-        r=args.lora_rank,
-        lora_alpha=args.lora_rank * 2,
-        lora_dropout=0.0,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj"],
-        bias="none",
-        task_type="CAUSAL_LM",
-        use_rslora=True,
-    ))
-    model.print_trainable_parameters()
+    if args.full:
+        # Nothing to graft on: train the checkpoint itself. Embeddings stay
+        # trainable here (unlike the LoRA path) because the audio tokens are
+        # what we are teaching, and at bf16 the 157k-token vocab is affordable.
+        # checkpointing is set from TrainingArguments below
+        print(f"  full finetune: "
+              f"{sum(p.numel() for p in model.parameters()) / 1e9:.2f}B params")
+    else:
+        if quantize:
+            from peft import prepare_model_for_kbit_training
+            model = prepare_model_for_kbit_training(
+                model, use_gradient_checkpointing=not args.no_grad_checkpoint)
+        model = get_peft_model(model, LoraConfig(
+            r=args.lora_rank,
+            lora_alpha=args.lora_rank * 2,
+            lora_dropout=0.0,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj"],
+            bias="none",
+            task_type="CAUSAL_LM",
+            use_rslora=True,
+        ))
+        model.print_trainable_parameters()
 
     trainer = Trainer(
         args=TrainingArguments(
@@ -316,19 +399,27 @@ def main():
             lr_scheduler_type="cosine",
             warmup_steps=100,
             max_steps=args.max_steps,
-            gradient_checkpointing=True,
+            gradient_checkpointing=not args.no_grad_checkpoint,
             bf16=True,
-            optim="paged_adamw_8bit",
+            # paged 8-bit Adam exists to survive an 8 GB card; with memory to
+            # spare, fused AdamW is both faster and exact
+            optim=("adamw_torch_fused" if args.no_quant or args.full
+                   else "paged_adamw_8bit"),
+            # audio token sequences run 300-1400 long, so padding to the
+            # longest in a random batch wastes a large fraction of every step
+            group_by_length=True,
+            length_column_name="length",
             eval_strategy="steps",
             eval_steps=250,
             save_steps=250,
             save_total_limit=2,
             logging_steps=10,
-            report_to=[],
+            report_to=["wandb"] if os.environ.get("WANDB_API_KEY") else [],
+            run_name=f"orpheus_{tag}",
             load_best_model_at_end=True,
             greater_is_better=False,
             label_names=["labels"],
-            dataloader_num_workers=2,
+            dataloader_num_workers=args.dataloader_workers,
             remove_unused_columns=False,
         ),
         model=model,
@@ -337,12 +428,19 @@ def main():
         data_collator=OrpheusCollator(tokenizer.pad_token_id or 128263),
     )
 
+    if args.profile:
+        from halolib.profiling import profiler_callback
+        trainer.add_callback(profiler_callback(out_dir))
+        trainer.train()
+        return
+
     trainer.train()
     trainer.save_model(str(out_dir / "final"))
     tokenizer.save_pretrained(str(out_dir / "final"))
     print(f"Saved: {out_dir / 'final'}")
 
     voice = args.voice or str(ds["train"][0]["speaker_id"])
+    snac_model = load_snac(device)      # freed after encoding; needed again here
     synthesize_samples(model, tokenizer, snac_model, out_dir, voice, device)
 
     if args.push:
