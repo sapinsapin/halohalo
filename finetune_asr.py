@@ -7,8 +7,12 @@ Swappable dataset via --dataset:
   livestream — sapinsapin/halo-livestream asr config (QC-gated stream clips)
 
 Model: openai/whisper-small (244M) by default — the standard 8GB-card choice:
-fp16 training with batch 8 fits ~6GB. whisper-medium needs gradient
+mixed-precision training with batch 8 fits ~6GB. whisper-medium needs gradient
 checkpointing and ~7.5GB (tight when the desktop shares the card).
+
+Precision is bf16 wherever the card supports it (Ampere and later), fp16
+otherwise. whisper-large-v3 in the cloud bake-off needs bf16: at 1.55B
+parameters fp16 overflows to NaN loss.
 
 The recipe is the canonical HF seq2seq one: log-mel inputs from the feature
 extractor, tokenized labels with BOS stripped, generation-based eval scored
@@ -25,6 +29,11 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+# Whisper's mels are a fixed 30 s, so this matters less here than in the CTC
+# arm (see finetune_ctc.py), but keeping both arms on the same allocator makes
+# their step times comparable.
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+
 import torch
 from dotenv import load_dotenv
 
@@ -35,19 +44,22 @@ SR = 16000
 
 
 def prepare_dataset(ds, processor, num_proc: int):
-    def _process(batch):
-        audio = batch["audio"]
-        batch["input_features"] = processor.feature_extractor(
-            audio["array"], sampling_rate=SR).input_features[0]
-        batch["labels"] = processor.tokenizer(batch["text"]).input_ids
-        return batch
+    """Tokenize labels up front; leave log-mel features to the collator.
 
-    cols = [c for c in ds["train"].column_names if c not in ("input_features", "labels")]
-    ds = ds.map(_process, remove_columns=cols, num_proc=num_proc)
+    Precomputing features used to materialise an 80x3000 float32 mel (about
+    1 MB, padded to 30 s whatever the clip length) for every row. At 25k clips
+    that is ~25 GB held in RAM, which pushed WSL into swap on a nearly full C:
+    and took the VM down on 2026-09-17. Computing them per batch costs a few
+    milliseconds a clip on the dataloader workers and holds one batch at a
+    time. The features are identical either way.
+    """
+    # input_columns keeps the map from decoding audio it does not need
+    ds = ds.map(lambda text: {"labels": processor.tokenizer(text).input_ids},
+                input_columns=["text"], num_proc=num_proc)
+    keep = {"audio", "labels"}
+    ds = ds.remove_columns([c for c in ds["train"].column_names if c not in keep])
     # Whisper's decoder context is 448 tokens; longer labels are truncated by
     # the tokenizer only at generation time, so drop them here instead.
-    # input_columns keeps the filter from materializing the (large) mel
-    # features per row — it runs ~50x faster on this setup.
     ds = ds.filter(lambda labels: len(labels) <= 448, input_columns=["labels"])
     return ds
 
@@ -57,8 +69,9 @@ class ASRDataCollator:
     processor: object
 
     def __call__(self, features):
-        input_features = [{"input_features": f["input_features"]} for f in features]
-        batch = self.processor.feature_extractor.pad(input_features, return_tensors="pt")
+        batch = self.processor.feature_extractor(
+            [f["audio"]["array"] for f in features], sampling_rate=SR,
+            return_tensors="pt")
 
         label_features = [{"input_ids": f["labels"]} for f in features]
         labels_batch = self.processor.tokenizer.pad(label_features, return_tensors="pt")
@@ -99,7 +112,9 @@ def build_compute_metrics(processor):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    ap.add_argument("--dataset", choices=["fsc", "livestream", "pld"], default="fsc")
+    ap.add_argument("--dataset", choices=["fsc", "livestream", "pld", "fsc+pld"], default="fsc",
+                    help="fsc+pld concatenates both corpora (equal shares of "
+                         "--max-samples); use with --language fil")
     ap.add_argument("--language", default=None,
                     help="ISO 639-3 language filter (pld only), e.g. bcl, ceb")
     ap.add_argument("--model", default="openai/whisper-small")
@@ -109,12 +124,41 @@ def main():
     ap.add_argument("--grad-accum", type=int, default=2)
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--num-proc", type=int, default=1,
-                    help="dataset map workers; keep 1 — multiprocess map over "
-                         "decoded audio deadlocks on this WSL2/9p setup "
-                         "(hangs at 0/N forever rather than failing)")
+                    help="dataset map workers; keep 1 on WSL — multiprocess "
+                         "map over decoded audio deadlocks on WSL2/9p (hangs "
+                         "at 0/N forever rather than failing). On a Linux "
+                         "cloud VM raise it: prep is otherwise minutes of idle GPU")
+    ap.add_argument("--dataloader-workers", type=int, default=2)
+    # Mid-training evals are generative and cost ~8 minutes over the full test
+    # set: at eval_steps=500 that was ~40% of a run's wall clock. Select the
+    # checkpoint on a fixed subsample; the reported number still comes from a
+    # final pass over the whole test set.
+    ap.add_argument("--eval-samples", type=int, default=500,
+                    help="clips used for mid-training evals (0 = all)")
+    ap.add_argument("--eval-steps", type=int, default=1000)
+    ap.add_argument("--gen-max-length", type=int, default=128,
+                    help="225 is Whisper's long-form default; PLD prompts are "
+                         "single sentences, and generation time scales with it")
+    ap.add_argument("--attn", default="sdpa",
+                    choices=["sdpa", "flash_attention_2", "eager"],
+                    help="sdpa is PyTorch's fused attention; the Whisper "
+                         "encoder runs 1500 frames per clip, where it pays off")
+    ap.add_argument("--compile", action="store_true",
+                    help="torch.compile the model: fuses the many small "
+                         "kernels the profile showed, at a few minutes of "
+                         "compile time on the first step")
+    ap.add_argument("--profile", action="store_true",
+                    help="profile ~10 steps and stop: prints where step time "
+                         "goes and writes a Chrome trace. Trains nothing.")
+    ap.add_argument("--no-grad-checkpoint", action="store_true",
+                    help="trade memory for ~25%% more speed where the card has "
+                         "headroom")
     ap.add_argument("--push", action="store_true",
                     help="upload the finetuned model to the Hub as "
                          "<model>-{fsc|halohaloLS} after training")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue from the newest checkpoint in the run dir "
+                         "if one exists; required for preemptible cloud VMs")
     args = ap.parse_args()
 
     from transformers import (Seq2SeqTrainer, Seq2SeqTrainingArguments,
@@ -122,11 +166,12 @@ def main():
 
     from halolib.finetune import load_speech_dataset
 
-    if args.dataset == "pld" and not args.language:
+    if "pld" in args.dataset and not args.language:
         raise SystemExit("--dataset pld requires --language (e.g. --language bcl)")
 
-    run_name = (f"asr_{args.dataset}_{args.language}" if args.language
-                else f"asr_{args.dataset}")
+    ds_tag = args.dataset.replace("+", "-")
+    run_name = (f"asr_{ds_tag}_{args.language}" if args.language
+                else f"asr_{ds_tag}")
     out_dir = FINETUNE_DIR / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -138,7 +183,12 @@ def main():
 
     processor = WhisperProcessor.from_pretrained(
         args.model, language=whisper_lang, task="transcribe")
-    model = WhisperForConditionalGeneration.from_pretrained(args.model)
+    # transformers 5 loads weights in the checkpoint's own dtype, and
+    # whisper-large-v3 ships fp16. Mixed precision wants fp32 master weights,
+    # and generation-based eval crashed on fp16 weights meeting fp32 log-mels
+    # ("Input type (float) and bias type (c10::Half) should be the same").
+    model = WhisperForConditionalGeneration.from_pretrained(
+        args.model, dtype=torch.float32, attn_implementation=args.attn)
     model.generation_config.language = whisper_lang
     model.generation_config.task = "transcribe"
     # finetuned models must not inherit the base's forced en-transcribe ids
@@ -147,14 +197,26 @@ def main():
 
     print(f"Loading dataset: {args.dataset}"
           + (f" [{args.language}]" if args.language else ""))
+    # num_proc matters more than it looks: selecting one language means three
+    # filter passes over PLD's 300k rows, ~6 minutes each single-process with
+    # the GPU idle the whole time
     ds = load_speech_dataset(args.dataset, task="asr",
                              max_samples=args.max_samples,
                              token=os.environ.get("HF_TOKEN"),
+                             num_proc=args.num_proc,
                              language=args.language)
     print(ds)
 
-    print("Preprocessing (audio→log-mel, text→labels)...")
+    print("Preprocessing (text→labels; log-mels are computed per batch)...")
     ds = prepare_dataset(ds, processor, args.num_proc)
+
+    # fixed subsample, so every checkpoint of every arm is selected on the
+    # same clips; seeded, so re-running a preempted job scores the same set
+    eval_ds = ds["test"]
+    if args.eval_samples and len(eval_ds) > args.eval_samples:
+        eval_ds = eval_ds.shuffle(seed=42).select(range(args.eval_samples))
+        print(f"  mid-training eval on {len(eval_ds)} of {len(ds['test'])} "
+              f"clips; final metric uses all of them")
 
     trainer = Seq2SeqTrainer(
         args=Seq2SeqTrainingArguments(
@@ -164,12 +226,23 @@ def main():
             learning_rate=args.lr,
             warmup_steps=200,
             max_steps=args.max_steps,
-            gradient_checkpointing=True,
-            fp16=torch.cuda.is_available(),
+            gradient_checkpointing=not args.no_grad_checkpoint,
+            # bf16 wherever the card supports it (Ampere and later). fp16 on a
+            # 1.55B model such as whisper-large-v3 overflows to NaN loss, and
+            # the CTC arm of the bake-off already trains in bf16 — matching the
+            # precision keeps that comparison about the model, not the dtype.
+            bf16=torch.cuda.is_available() and torch.cuda.is_bf16_supported(),
+            fp16=torch.cuda.is_available() and not torch.cuda.is_bf16_supported(),
             eval_strategy="steps",
-            eval_steps=500,
-            save_steps=500,
+            eval_steps=args.eval_steps,
+            save_steps=args.eval_steps,
             save_total_limit=2,
+            per_device_eval_batch_size=args.batch_size,
+            # fused AdamW: one kernel for the whole parameter update instead of
+            # a launch per tensor, which the low SM occupancy said we were
+            # paying for
+            optim="adamw_torch_fused" if torch.cuda.is_available() else "adamw_torch",
+            torch_compile=args.compile,
             logging_steps=25,
             report_to=["wandb"] if os.environ.get("WANDB_API_KEY") else [],
             run_name=run_name,
@@ -177,29 +250,70 @@ def main():
             metric_for_best_model="cer",
             greater_is_better=False,
             predict_with_generate=True,
-            generation_max_length=225,
-            dataloader_num_workers=2,
+            generation_max_length=args.gen_max_length,
+            # features are computed in the collator, so the workers do the
+            # decode + log-mel work (~30 ms a clip) that used to be a map
+            dataloader_num_workers=args.dataloader_workers,
             remove_unused_columns=False,
         ),
         model=model,
         train_dataset=ds["train"],
-        eval_dataset=ds["test"],
+        eval_dataset=eval_ds,
         data_collator=ASRDataCollator(processor),
         compute_metrics=build_compute_metrics(processor),
     )
 
-    trainer.train()
+    # On a preemptible VM the process can die at any moment; --resume picks up
+    # the newest checkpoint instead of restarting the run. Harmless on the
+    # first launch (no checkpoint yet -> fresh start).
+    if args.profile:
+        # profiling stops after a handful of steps and writes no model
+        from halolib.profiling import profiler_callback
+        trainer.add_callback(profiler_callback(out_dir))
+        trainer.train()
+        return
+
+    ckpt = None
+    if args.resume:
+        from halolib.finetune import latest_checkpoint
+        ckpt = latest_checkpoint(out_dir)
+        print(f"resume: {ckpt or 'no checkpoint found, starting fresh'}")
+    trainer.train(resume_from_checkpoint=ckpt)
     trainer.save_model(str(out_dir / "final"))
     processor.save_pretrained(str(out_dir / "final"))
     print(f"Saved: {out_dir / 'final'}")
 
+    # Same record finetune_ctc.py writes, so the bake-off report can put this
+    # run beside the CTC arms and state which split produced its number.
+    # load_best_model_at_end has restored the best checkpoint; score it once on
+    # the WHOLE test set, since mid-training evals only saw a subsample.
+    import json as _json
+    best = trainer.evaluate(ds["test"], metric_key_prefix="eval")
+    print(f"final eval on {len(ds['test'])} clips: "
+          f"CER {best.get('eval_cer')} WER {best.get('eval_wer')}")
+    split_kind = "random-overlapping"
+    if args.language and os.environ.get("PLD_SPLIT") != "random":
+        try:
+            from halolib.splits import load_spec
+            load_spec(args.language)
+            split_kind = "frozen-disjoint"
+        except FileNotFoundError:
+            pass
+    (out_dir / "result.json").write_text(_json.dumps({
+        "encoder": args.model, "units": "bpe", "dataset": args.dataset,
+        "language": args.language, "split": split_kind,
+        "steps": args.max_steps, "train_rows": len(ds["train"]),
+        "eval_cer": best.get("eval_cer"), "eval_wer": best.get("eval_wer"),
+        "eval_loss": best.get("eval_loss"),
+    }, indent=1))
+
     if args.push:
         from halolib.finetune import push_model_to_hub
-        final_eval = trainer.evaluate()
+        final_eval = best   # already the full-test-set pass, do not redo it
         push_kwargs = {}
-        if args.dataset == "pld":
+        if "pld" in args.dataset:
             push_kwargs = dict(
-                suffix=f"pld-{args.language}",
+                suffix=f"{ds_tag}-{args.language}",
                 lang_code=args.language,
                 extra_tags=["philippines", "philippine-languages",
                             args.language, "whisper"],
@@ -217,7 +331,8 @@ def main():
                 f"checkpointing). WER/CER are on the held-out split, "
                 f"lowercased; CER is the model-selection metric (Taglish "
                 f"orthography varies at the word level)."),
-            license="apache-2.0",
+            # PLD is CC-BY-NC and research-only; the weights inherit that
+            license="cc-by-nc-4.0" if "pld" in args.dataset else "apache-2.0",
         )
 
 
