@@ -54,6 +54,10 @@ CODEBOOK_STRIDE = 4096
 
 DIGIT_RE = re.compile(r"\d")
 
+# word delimiter for the spelled-out frontends, as in finetune_ctc
+DELIM = "|"
+PUNCT_RE = re.compile(r"[^\w\s']")
+
 SAMPLE_TEXTS = [
     "Magandang umaga po sa inyong lahat.",
     "Salamat sa pakikinig, hanggang sa muli.",
@@ -136,8 +140,38 @@ def cache_path(cache_root, dataset: str, language: str | None, split: str) -> Pa
     return Path(cache_root) / f"snac_{dataset}_{language or 'all'}_{split}.jsonl"
 
 
+def frontend_text(text: str, units: str) -> str:
+    """The text as the model is asked to read it — the R2 question, put to a
+    codec LM instead of a CTC head.
+
+    `bpe` is the raw sentence through Llama's tokenizer as shipped, which is
+    what Orpheus was pretrained on. The other two spell the sentence out in
+    units the tokenizer never saw as units, on the theory that a model with no
+    Philippine pretraining does better shown structure than left to infer it.
+    Same word-delimiter convention as the CTC arm (finetune_ctc.text_to_units),
+    so the two ablations are readable side by side.
+
+    This is a different mechanism from the CTC ablation: there the units were
+    the output alphabet, here they are the conditioning text. The CTC result
+    (characters beat syllables) therefore does not settle this one.
+    """
+    if units == "bpe":
+        return text
+    from halolib.syllables import units as syl_units
+    if units == "syllable":
+        return " ".join(syl_units(text, english="chars", delim=DELIM))
+    # the syllabifier drops punctuation, so the char arm must too: the two
+    # spelled-out arms have to differ in units and nothing else
+    out = []
+    for i, w in enumerate(PUNCT_RE.sub("", text.lower()).split()):
+        if i:
+            out.append(DELIM)
+        out.extend(list(w))
+    return " ".join(out)
+
+
 def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
-                   cache: Path | None = None):
+                   units: str = "bpe", cache: Path | None = None):
     """(audio, text, speaker_id) rows -> input_ids/labels, loss on speech only.
 
     SNAC encoding is codec inference on the GPU, and it used to run inside
@@ -145,40 +179,57 @@ def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
     corpus on restart, and each arm of an ablation paid the cost again for the
     same audio. The tokens depend only on the waveform, so cache them keyed by
     (dataset, language, split) and reuse them across arms, runs and languages.
+
+    The cache holds audio tokens and the raw sentence, not the assembled
+    sequence: --units changes only the prompt, so all three frontends of the
+    ablation share one cache and only the first of them pays for encoding.
     """
     import json
 
     import librosa
 
+    rows = None
     if cache and cache.exists():
-        examples = [json.loads(line) for line in cache.read_text().splitlines()]
-        keep = [e for e in examples if len(e["input_ids"]) <= max_tokens]
-        print(f"  snac cache: {cache} ({len(keep)} of {len(examples)} within "
-              f"{max_tokens} tokens)")
-        return keep
+        rows = [json.loads(line) for line in cache.read_text().splitlines()]
+        print(f"  snac cache: {cache} ({len(rows)} clips)")
 
-    examples = []
-    skipped = 0
-    for row in ds_split:
-        text = clean_text(row["text"])
-        if text is None:
-            skipped += 1
-            continue
+    if rows is None:
+        rows, skipped = [], 0
+        for row in ds_split:
+            text = clean_text(row["text"])
+            if text is None:
+                skipped += 1
+                continue
 
-        audio = row["audio"]
-        wav = np.asarray(audio["array"], dtype=np.float32)
-        if audio["sampling_rate"] != SNAC_SR:
-            # FSC is 16kHz; SNAC needs 24kHz. This adds no content above 8kHz
-            # — a data ceiling documented in the pilot plan, not a bug.
-            wav = librosa.resample(wav, orig_sr=audio["sampling_rate"],
-                                   target_sr=SNAC_SR)
+            audio = row["audio"]
+            wav = np.asarray(audio["array"], dtype=np.float32)
+            if audio["sampling_rate"] != SNAC_SR:
+                # FSC is 16kHz; SNAC needs 24kHz. This adds no content above
+                # 8kHz — a data ceiling documented in the pilot plan, not a bug.
+                wav = librosa.resample(wav, orig_sr=audio["sampling_rate"],
+                                       target_sr=SNAC_SR)
 
-        audio_tokens = encode_audio(snac_model, wav, device)
+            rows.append({"audio_tokens": encode_audio(snac_model, wav, device),
+                         "text": text,
+                         "speaker_id": str(row["speaker_id"])})
 
-        prompt = f"{row['speaker_id']}: {text}"
+        print(f"  encoded {len(rows)} clips ({skipped} skipped)")
+        if cache:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            tmp = cache.with_suffix(f".tmp{os.getpid()}")
+            tmp.write_text("\n".join(json.dumps(r) for r in rows))
+            tmp.rename(cache)          # atomic: a killed run leaves no half file
+            print(f"  snac cached: {cache}")
+
+    examples, too_long = [], 0
+    for r in rows:
+        prompt = f"{r['speaker_id']}: {frontend_text(r['text'], units)}"
         text_ids = tokenizer(prompt, add_special_tokens=False).input_ids
         prefix = [SOH] + text_ids + [EOT, EOH, SOAI, SOS]
-        input_ids = prefix + audio_tokens + [EOS_SPEECH, EOAI]
+        input_ids = prefix + r["audio_tokens"] + [EOS_SPEECH, EOAI]
+        if len(input_ids) > max_tokens:
+            too_long += 1
+            continue
 
         # -100 over the prompt: grade the model on producing speech, not on
         # parroting back the text it was given
@@ -188,16 +239,9 @@ def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
         examples.append({"input_ids": input_ids, "labels": labels,
                          "length": len(input_ids)})
 
-    print(f"  built {len(examples)} examples ({skipped} skipped)")
-    if cache:
-        # cache every example, then apply --max-tokens on read: a later run
-        # with a longer budget must not have to re-encode the corpus
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        tmp = cache.with_suffix(f".tmp{os.getpid()}")
-        tmp.write_text("\n".join(json.dumps(e) for e in examples))
-        tmp.rename(cache)
-        print(f"  snac cached: {cache}")
-    return [e for e in examples if len(e["input_ids"]) <= max_tokens]
+    print(f"  {len(examples)} examples, units={units} "
+          f"({too_long} over {max_tokens} tokens)")
+    return examples
 
 
 class OrpheusCollator:
@@ -254,6 +298,10 @@ def main():
     ap.add_argument("--dataset", choices=["fsc", "livestream", "pld"],
                     default="fsc")
     ap.add_argument("--language", default=None, help="ISO 639-3 filter (pld)")
+    ap.add_argument("--units", choices=["bpe", "syllable", "char"],
+                    default="bpe",
+                    help="text frontend: the P1 ablation in "
+                         "docs/tts_sota_plan.md. bpe is Orpheus as pretrained")
     ap.add_argument("--max-samples", type=int, default=2000)
     ap.add_argument("--max-steps", type=int, default=1500)
     # Defaults below are the 8 GB recipe. On the 96 GB RTX PRO 6000 use
@@ -312,6 +360,7 @@ def main():
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tag = args.dataset + (f"_{args.language}" if args.language else "")
+    tag = f"{args.units}_{tag}"
     out_dir = FINETUNE_DIR / f"orpheus_{tag}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -353,9 +402,11 @@ def main():
     print("Encoding audio to SNAC tokens...")
     train_ex = build_examples(
         ds["train"], tokenizer, snac_model, device, args.max_tokens,
+        units=args.units,
         cache=cache_path(args.snac_cache, args.dataset, args.language, "train"))
     eval_ex = build_examples(
         ds["test"], tokenizer, snac_model, device, args.max_tokens,
+        units=args.units,
         cache=cache_path(args.snac_cache, args.dataset, args.language, "test"))
     if not train_ex:
         raise SystemExit("no training examples survived filtering")
