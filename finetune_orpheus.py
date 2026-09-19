@@ -136,6 +136,24 @@ def decode_tokens(snac_model, tokens: list[int], device: str) -> np.ndarray:
     return audio[0, 0].cpu().numpy()
 
 
+def to_snac_rate(wav: np.ndarray, sr: int) -> np.ndarray:
+    """Resample to SNAC's 24kHz. The corpora are 16kHz, which is exactly 3/2,
+    and polyphase resampling does that in about 1.5 ms a clip where librosa's
+    default took 60 ms on the VM (measured, both paths, same clip). Over a
+    10k-clip corpus that is 25 seconds instead of 10 minutes, per language.
+
+    Upsampling adds no content above 8kHz either way — a data ceiling
+    documented in the pilot plan, not a bug.
+    """
+    if sr == SNAC_SR:
+        return wav
+    from fractions import Fraction
+
+    from scipy.signal import resample_poly
+    r = Fraction(SNAC_SR, int(sr)).limit_denominator(1000)
+    return resample_poly(wav, r.numerator, r.denominator).astype(np.float32)
+
+
 def cache_path(cache_root, dataset: str, language: str | None, split: str,
                n_rows: int) -> Path:
     """Cache file for one (dataset, language, split) at one corpus size.
@@ -194,8 +212,6 @@ def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
     """
     import json
 
-    import librosa
-
     rows = None
     if cache and cache.exists():
         rows = [json.loads(line) for line in cache.read_text().splitlines()]
@@ -210,12 +226,8 @@ def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
                 continue
 
             audio = row["audio"]
-            wav = np.asarray(audio["array"], dtype=np.float32)
-            if audio["sampling_rate"] != SNAC_SR:
-                # FSC is 16kHz; SNAC needs 24kHz. This adds no content above
-                # 8kHz — a data ceiling documented in the pilot plan, not a bug.
-                wav = librosa.resample(wav, orig_sr=audio["sampling_rate"],
-                                       target_sr=SNAC_SR)
+            wav = to_snac_rate(np.asarray(audio["array"], dtype=np.float32),
+                               audio["sampling_rate"])
 
             rows.append({"audio_tokens": encode_audio(snac_model, wav, device),
                          "text": text,
@@ -343,6 +355,10 @@ def main():
     ap.add_argument("--dataloader-workers", type=int, default=2)
     ap.add_argument("--profile", action="store_true",
                     help="profile ~10 steps and stop; trains nothing")
+    ap.add_argument("--cache-only", action="store_true",
+                    help="build the dataset and SNAC caches, then exit. Warms "
+                         "a cold VM without loading the 3B model, so the "
+                         "first real run starts at step 0")
     ap.add_argument("--max-tokens", type=int, default=1408,
                     help="sequence cap; 87.5 audio tokens per second of speech")
     ap.add_argument("--base-model", default=BASE_MODEL)
@@ -381,6 +397,23 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
+
+    if args.cache_only:
+        # deliberately before the base model is touched: 6.6 GB of weights are
+        # irrelevant to encoding audio, and skipping them is most of the point
+        from halolib.finetune import load_speech_dataset as _load
+        ds = _load(args.dataset, task="tts", max_samples=args.max_samples,
+                   token=os.environ.get("HF_TOKEN"), num_proc=args.num_proc,
+                   language=args.language)
+        snac_model = load_snac(device)
+        for split in ("train", "test"):
+            build_examples(
+                ds[split], tokenizer, snac_model, device, args.max_tokens,
+                units=args.units,
+                cache=cache_path(args.snac_cache, args.dataset, args.language,
+                                 split, len(ds[split])))
+        print(f"caches warm: {args.dataset} {args.language or 'all'}")
+        return
     quantize = not (args.no_quant or args.full)
     quant = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -476,8 +509,10 @@ def main():
             optim=("adamw_torch_fused" if args.no_quant or args.full
                    else "paged_adamw_8bit"),
             # audio token sequences run 300-1400 long, so padding to the
-            # longest in a random batch wastes a large fraction of every step
-            group_by_length=True,
+            # longest in a random batch wastes a large fraction of every step.
+            # transformers 5 replaced the group_by_length flag with this
+            # strategy string; the flag is gone, not deprecated.
+            train_sampling_strategy="group_by_length",
             length_column_name="length",
             eval_strategy="steps",
             eval_steps=250,

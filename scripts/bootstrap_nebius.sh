@@ -48,6 +48,9 @@ pip install -q -r requirements.txt
 # training stack not in requirements.txt (that file covers the data pipeline)
 pip install -q transformers accelerate peft bitsandbytes wandb speechbrain \
     sentencepiece evaluate
+# TTS: the SNAC codec for the Orpheus arm. Missing it cost a cloud run on
+# 2026-09-19, found only when the trainer reached its first import.
+pip install -q snac
 # torch and torchaudio must be a version-matched pair from the same CUDA index.
 # Pinned last: silero-vad caps torchaudio<2.10 and would otherwise downgrade the
 # pair on a fresh VM (but not on a re-run), so two VMs ended up on different
