@@ -174,6 +174,17 @@ def synth_mms(rows, device):
         print(f"  mms {l}: done ({repo})", flush=True)
 
 
+def adapter_name(adapter: str) -> str:
+    """Name a run after its run dir, not its leaf.
+
+    Every arm's adapter lives at <run>/final, so naming by the leaf makes all
+    three arms of an ablation "orpheus_final" and they overwrite each other's
+    results.
+    """
+    q = Path(adapter)
+    return "orpheus_" + (q.parent.name if q.name == "final" else q.name)
+
+
 def synth_orpheus(rows, adapter, device):
     """LoRA adapter on the Orpheus base, 4-bit. Untested until the first PLD
     adapter exists; mirrors finetune_orpheus.synthesize_samples."""
@@ -189,7 +200,7 @@ def synth_orpheus(rows, adapter, device):
                                                bnb_4bit_compute_dtype=torch.bfloat16))
     model = PeftModel.from_pretrained(model, adapter).eval()
     snac = fo.load_snac(device)
-    name = "orpheus_" + Path(adapter).name
+    name = adapter_name(adapter)
     for r in rows:
         out = WORK / "out" / name / r["lang"] / f"{r['i']:02d}.wav"
         if out.exists():
@@ -241,7 +252,7 @@ def stage_score(models, device):
     results_path = WORK / "results.json"
     results = json.loads(results_path.read_text()) if results_path.exists() else {}
     names = ["reference"] + [m if not m.startswith("orpheus:") else
-                             "orpheus_" + Path(m.split(":", 1)[1]).name for m in models]
+                             adapter_name(m.split(":", 1)[1]) for m in models]
 
     for l in LANGS:
         lrows = [r for r in rows if r["lang"] == l and len(normalize(r["text"])) >= 3]
