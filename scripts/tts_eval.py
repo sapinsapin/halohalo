@@ -182,38 +182,98 @@ def adapter_name(adapter: str) -> str:
     results.
     """
     q = Path(adapter)
-    return "orpheus_" + (q.parent.name if q.name == "final" else q.name)
+    name = q.parent.name if q.name == "final" else q.name
+    return name if name.startswith("orpheus") else "orpheus_" + name
 
 
-def synth_orpheus(rows, adapter, device):
-    """LoRA adapter on the Orpheus base, 4-bit. Untested until the first PLD
-    adapter exists; mirrors finetune_orpheus.synthesize_samples."""
+def adapter_spec(adapter: str) -> tuple[str, str]:
+    """(units, language) from a run dir named orpheus_<units>_<dataset>_<lang>.
+
+    Both matter at synthesis time. The units decide how the text is spelled out
+    before it reaches the tokenizer, and an arm evaluated on a frontend it was
+    not trained on is measuring the wrong thing. The language decides which
+    sentences to synthesize at all: these adapters are per-language, so running
+    them over all ten languages is ten times the work for nine languages of
+    noise.
+    """
+    q = Path(adapter)
+    name = q.parent.name if q.name == "final" else q.name
+    parts = name.split("_")           # orpheus, <units>, <dataset>, <lang>
+    units = parts[1] if len(parts) > 1 else "bpe"
+    lang = parts[-1]
+    return units, lang
+
+
+def synth_orpheus(rows, adapter, device, batch_size=8):
+    """LoRA adapter on the Orpheus base.
+
+    bf16, not 4-bit: the adapters were trained against a bf16 base, and on a
+    96 GB card quantising for inference only mismatches the adapter and slows
+    generation down (measured at minutes per clip in 4-bit).
+
+    Generation is batched. Prompts are left-padded so every sequence in a batch
+    ends at the same position, which is what lets one `generate` call serve the
+    whole batch: with right padding the model would continue from the padding
+    instead of from the prompt.
+    """
     import torch
     from peft import PeftModel
-    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+    from transformers import AutoModelForCausalLM, AutoTokenizer
     import finetune_orpheus as fo
+
+    units, lang = adapter_spec(adapter)
+    rows = [r for r in rows if r["lang"] == lang]
+    name = adapter_name(adapter)
+    print(f"  {name}: {len(rows)} sentences, units={units}, lang={lang}",
+          flush=True)
 
     tok = AutoTokenizer.from_pretrained(fo.BASE_MODEL)
     model = AutoModelForCausalLM.from_pretrained(
-        fo.BASE_MODEL, device_map={"": 0},
-        quantization_config=BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                                               bnb_4bit_compute_dtype=torch.bfloat16))
+        fo.BASE_MODEL, device_map={"": 0}, dtype=torch.bfloat16,
+        attn_implementation="sdpa")
     model = PeftModel.from_pretrained(model, adapter).eval()
     snac = fo.load_snac(device)
-    name = adapter_name(adapter)
+    pad_id = tok.pad_token_id or 128263
+
+    todo = []
     for r in rows:
         out = WORK / "out" / name / r["lang"] / f"{r['i']:02d}.wav"
-        if out.exists():
-            continue
-        out.parent.mkdir(parents=True, exist_ok=True)
-        ids = tok(f"{r['speaker_id']}: {r['text']}", add_special_tokens=False).input_ids
-        prompt = torch.tensor([[fo.SOH] + ids + [fo.EOT, fo.EOH, fo.SOAI, fo.SOS]], device=device)
+        if not out.exists():
+            todo.append((r, out))
+
+    for k in range(0, len(todo), batch_size):
+        chunk = todo[k:k + batch_size]
+        prompts = []
+        for r, _ in chunk:
+            # the same frontend the arm was trained with, or the arm is being
+            # asked to read text in a notation it never saw
+            text = fo.frontend_text(r["text"], units)
+            ids = tok(f"{r['speaker_id']}: {text}",
+                      add_special_tokens=False).input_ids
+            prompts.append([fo.SOH] + ids + [fo.EOT, fo.EOH, fo.SOAI, fo.SOS])
+
+        width = max(len(q) for q in prompts)
+        input_ids = torch.full((len(prompts), width), pad_id, dtype=torch.long)
+        attn = torch.zeros((len(prompts), width), dtype=torch.long)
+        for i, q in enumerate(prompts):       # left pad
+            input_ids[i, width - len(q):] = torch.tensor(q, dtype=torch.long)
+            attn[i, width - len(q):] = 1
+        input_ids, attn = input_ids.to(device), attn.to(device)
+
         with torch.inference_mode():
-            gen = model.generate(prompt, max_new_tokens=1400, do_sample=True, temperature=0.6,
-                                 top_p=0.9, repetition_penalty=1.1, eos_token_id=fo.EOS_SPEECH,
-                                 pad_token_id=tok.pad_token_id or 128263)
-        wav = fo.decode_tokens(snac, gen[0, prompt.shape[1]:].tolist(), device)
-        _write(out, wav, fo.SNAC_SR)
+            gen = model.generate(input_ids, attention_mask=attn,
+                                 max_new_tokens=1400, do_sample=True,
+                                 temperature=0.6, top_p=0.9,
+                                 repetition_penalty=1.1,
+                                 eos_token_id=fo.EOS_SPEECH,
+                                 pad_token_id=pad_id)
+
+        for i, (_, out) in enumerate(chunk):
+            out.parent.mkdir(parents=True, exist_ok=True)
+            wav = fo.decode_tokens(snac, gen[i, width:].tolist(), device)
+            _write(out, wav, fo.SNAC_SR)
+        print(f"    {min(k + batch_size, len(todo))}/{len(todo)}", flush=True)
+
     print(f"  {name}: done", flush=True)
     return name
 
