@@ -136,8 +136,16 @@ def decode_tokens(snac_model, tokens: list[int], device: str) -> np.ndarray:
     return audio[0, 0].cpu().numpy()
 
 
-def cache_path(cache_root, dataset: str, language: str | None, split: str) -> Path:
-    return Path(cache_root) / f"snac_{dataset}_{language or 'all'}_{split}.jsonl"
+def cache_path(cache_root, dataset: str, language: str | None, split: str,
+               n_rows: int) -> Path:
+    """Cache file for one (dataset, language, split) at one corpus size.
+
+    n_rows is in the name because --max-samples changes what the split holds:
+    without it a 20k-clip run would silently reuse a 2k-clip cache from an
+    earlier smoke test and train on a tenth of the data it was asked for.
+    """
+    return (Path(cache_root) /
+            f"snac_{dataset}_{language or 'all'}_{split}_{n_rows}.jsonl")
 
 
 def frontend_text(text: str, units: str) -> str:
@@ -326,6 +334,12 @@ def main():
     ap.add_argument("--snac-cache", default=os.environ.get(
         "SNAC_CACHE", str(Path(os.environ.get("PLD_WORK_DIR", ".")) / "snac_cache")),
         help="where encoded SNAC tokens are reused across runs and arms")
+    ap.add_argument("--num-proc", type=int, default=1,
+                    help="dataset filter workers. Selecting one language means "
+                         "filter passes over PLD's ~300k rows; at num_proc=1 "
+                         "that is ~10 minutes of idle GPU per run. Keep 1 on "
+                         "WSL, where multiprocess map over decoded audio "
+                         "deadlocks on 9p; raise it on a Linux cloud VM")
     ap.add_argument("--dataloader-workers", type=int, default=2)
     ap.add_argument("--profile", action="store_true",
                     help="profile ~10 steps and stop; trains nothing")
@@ -351,6 +365,8 @@ def main():
             args.lora_rank = 64
         if args.dataloader_workers == 2:
             args.dataloader_workers = 8
+        if args.num_proc == 1:
+            args.num_proc = 8
 
     from peft import LoraConfig, PeftModel, get_peft_model
     from transformers import (AutoModelForCausalLM, AutoTokenizer,
@@ -396,6 +412,7 @@ def main():
     ds = load_speech_dataset(args.dataset, task="tts",
                              max_samples=args.max_samples,
                              token=os.environ.get("HF_TOKEN"),
+                             num_proc=args.num_proc,
                              language=args.language)
     print(ds)
 
@@ -403,11 +420,13 @@ def main():
     train_ex = build_examples(
         ds["train"], tokenizer, snac_model, device, args.max_tokens,
         units=args.units,
-        cache=cache_path(args.snac_cache, args.dataset, args.language, "train"))
+        cache=cache_path(args.snac_cache, args.dataset, args.language, "train",
+                         len(ds["train"])))
     eval_ex = build_examples(
         ds["test"], tokenizer, snac_model, device, args.max_tokens,
         units=args.units,
-        cache=cache_path(args.snac_cache, args.dataset, args.language, "test"))
+        cache=cache_path(args.snac_cache, args.dataset, args.language, "test",
+                         len(ds["test"])))
     if not train_ex:
         raise SystemExit("no training examples survived filtering")
     # the codec is only needed for encoding and for the listen test; freeing it
