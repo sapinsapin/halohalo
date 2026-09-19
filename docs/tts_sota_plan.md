@@ -39,25 +39,44 @@ uk-south2.
 |---|---|---|
 | base weights | 4-bit NF4 quantised | **bf16, unquantised** |
 | trainable | LoRA r=16 on projections | LoRA r=64, or `--full` |
-| batch × accum | 1 × 16 | **8–16 × 1** |
+| batch × accum | 1 × 16 | **8 × 1** (16 does not fit — measured) |
 | gradient checkpointing | on | **off** |
 | optimiser | `paged_adamw_8bit` | `adamw_torch_fused` (full) / fused (LoRA) |
-| SNAC tokens | re-encoded every run, one clip at a time | **cached to disk, encoded in batches** |
+| SNAC tokens | re-encoded every run, librosa resampling | **cached to disk, polyphase resampling (40× faster)** |
 | batching | padded to longest in batch | length-grouped |
 
 4-bit quantisation is not free accuracy-wise — it is a memory compromise we no
 longer need, and it makes every matmul slower than bf16 on a card with tensor
 cores to spare.
 
-**Memory budget for a full 3.3B finetune** (bf16 weights, fp32 optimiser state):
-weights 6.6 GB + grads 6.6 GB + AdamW moments 26.4 GB + fp32 master 13.2 GB
-≈ **53 GB**, leaving ~40 GB for activations — roughly batch 8 at 1408 tokens
-with checkpointing off. Estimates, to be confirmed with `--profile` before the
-fleet runs; if they are wrong, `adamw_bnb_8bit` frees ~20 GB at some quality
-risk, and gradient checkpointing comes back as the last resort, not the first.
+**Measured on 2026-09-19** (`--profile`, 6 steps, Cebuano, 9,270 examples):
 
-Qwen3-TTS-1.7B full finetune is about half that (~27 GB), so it has room for
-batch 16–32.
+| | |
+|---|---|
+| LoRA r=64, bf16 base, batch 8, no checkpointing | **72.1 GiB of 95 GiB** |
+| GPU/CPU time ratio | 1.83 |
+| dominant kernels | bf16 tensor-core GEMMs (cutlass) |
+
+That is far more than a 97M-parameter adapter should need, and the reason is
+the **156,939-token vocabulary**: the logits tensor is batch x sequence x 157k,
+several GiB in bf16 before the loss upcasts it. The estimate this section used
+to carry — 53 GiB for a full finetune, leaving room for batch 8 — ignored that
+and was wrong in the direction that matters.
+
+Consequences, replacing the earlier plan:
+
+- **LoRA at batch 8 is already near the card's limit.** Do not raise the batch;
+  raising `--max-tokens` costs memory quadratically through attention and
+  linearly through the logits.
+- **A full 3.3B finetune does not fit at batch 8.** Its optimiser state alone
+  is ~40 GiB on top of what is already resident. If the `--full` vs LoRA
+  comparison is worth running, it needs batch 2, `adamw_bnb_8bit`, or
+  gradient checkpointing back on — i.e. it is no longer free, and P2 should
+  treat it as a separate costed experiment rather than the default.
+- Qwen3-TTS-1.7B should be far cheaper per step regardless: its codec runs at
+  12.5 Hz against SNAC's 87.5 tokens/second, and its vocabulary is a fraction
+  of Orpheus's.
+
 
 ### The preprocessing debt is the real cost
 

@@ -367,6 +367,9 @@ def main():
     ap.add_argument("--synthesize-only", action="store_true")
     ap.add_argument("--voice", default=None,
                     help="speaker_id to condition synthesis on")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue from the newest complete checkpoint in the "
+                         "run dir; required on a preemptible VM")
     ap.add_argument("--push", action="store_true")
     args = ap.parse_args()
     if args.cloud:
@@ -539,7 +542,15 @@ def main():
         trainer.train()
         return
 
-    trainer.train()
+    # On a preemptible VM the process can die at any moment; --resume picks up
+    # from the newest checkpoint that finished writing rather than step 0.
+    ckpt = None
+    if args.resume:
+        from halolib.finetune import latest_checkpoint
+        ckpt = latest_checkpoint(out_dir)
+        print(f"  resuming from {ckpt}" if ckpt else "  no checkpoint, from scratch")
+
+    trainer.train(resume_from_checkpoint=ckpt)
     trainer.save_model(str(out_dir / "final"))
     tokenizer.save_pretrained(str(out_dir / "final"))
     print(f"Saved: {out_dir / 'final'}")
