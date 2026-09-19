@@ -120,7 +120,10 @@ def main():
         wav = to_qwen_rate(np.asarray(audio["array"], dtype=np.float32),
                            audio["sampling_rate"])
         p = wav_dir / f"{i:06d}.wav"
-        sf.write(p, wav, QWEN_SR)
+        # PCM_16 rather than the float32 default: half the disk for a
+        # corpus that is 16-bit at source anyway, and the VM shares one
+        # 484 GB root disk between weights, caches and checkpoints
+        sf.write(p, wav, QWEN_SR, subtype="PCM_16")
         paths.append(str(p))
         texts.append(row["text"])
         speakers.append(str(row["speaker_id"]))
