@@ -85,6 +85,28 @@ so the pipeline is not starving the GPU. Attention was already flash-backed
 SDPA before the "switch to SDPA" change — transformers picks it by default, and
 that suggestion bought nothing.
 
+## The frozen splits do not retrofit (found 2026-09-19)
+
+A7 asks for the published fleet to be re-measured on the frozen splits so it can
+sit beside the bake-off numbers. It cannot be done that way.
+
+The fleet was trained before the splits existed, on the hub's random split.
+Measured on Cebuano: the frozen spec holds out 28 speakers and 866 prompts, and
+**20.3% of the hub train split's 51,205 Cebuano clips belong to them** — 10,042
+clips from those 28 speakers alone. Scoring those checkpoints on the frozen test
+set is scoring them on speakers they trained on.
+
+It shows up exactly as you would expect. `whisper-small-pld-ceb` scores **10.75%
+CER** on the frozen ceb test set against whisper-large-v3's **16.38%** on the
+same split. A 244M model does not beat a 1.55B model on held-out speech; it wins
+when the speech is not held out for it.
+
+The honest fleet column therefore needs retraining on the frozen train splits,
+which is what `scripts/retrain_fleet_frozen.sh` does — whisper-small, ten
+languages, roughly 2.5 GPU-hours. Until that runs, the dataset card's numbers
+and any re-measured ones are both in-domain in different ways, and neither
+belongs beside the bake-off's.
+
 ## Next
 
 - Fix and re-run the four w2v-bert arms (R1 is incomplete without them).

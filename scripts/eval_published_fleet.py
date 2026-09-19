@@ -10,6 +10,13 @@ has never heard saying a sentence it has never seen". The R1 bake-off measured
 the new models honestly. This measures the fleet the same way, so the two can
 sit in one table.
 
+**This does not produce the honest column A7 asked for, and 2026-09-19 is
+when we found out.** The published checkpoints trained on the hub's random
+split, which overlaps the frozen test set: on ceb, 20.3% of their training
+clips come from the frozen split's held-out speakers and prompts. Their
+scores here are therefore on speakers they have heard. The honest column
+needs scripts/retrain_fleet_frozen.sh, which retrains on the frozen splits.
+
 Inference only — no training, no GPU-hours beyond generation. Runs happily on a
 small card: whisper-small is 244M and fp16 at batch 8 needs about 2 GB.
 
@@ -128,8 +135,15 @@ def main():
         r = results.get(lang)
         if r:
             print(f"| {lang} | {r['cer']*100:.2f} | {r['wer']*100:.2f} | {r['n']} |")
-    print(f"\nFrozen speaker- and prompt-disjoint splits. Not comparable with "
-          f"the in-domain numbers on the dataset card.")
+    print()
+    print("READ THIS BEFORE QUOTING THE TABLE. These checkpoints were")
+    print("trained before the splits were frozen, on the hub's random")
+    print("split. Measured on ceb, 20.3% of their training clips belong to")
+    print("the speakers and prompts the frozen split holds out: 10,042")
+    print("clips from the 28 frozen test speakers. So this is not a")
+    print("held-out score, it is a score on speakers the model has heard.")
+    print("For an honest fleet column, retrain on the frozen train splits:")
+    print("  bash scripts/retrain_fleet_frozen.sh")
     print(f"Saved: {results_path}")
 
 
