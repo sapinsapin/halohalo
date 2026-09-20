@@ -106,6 +106,40 @@ Judge: round-trip CER via `whisper-large-v3-pld-{lang}` — **the new bake-off
 winners, not the whisper-small fleet** — plus a listen test. Decision recorded
 in this file before P2 starts. **~6 GPU-h.**
 
+### P1 result — characters win (2026-09-20)
+
+Six arms, 2000 steps each, 50 frozen sentences per arm, round-trip CER through
+`whisper-large-v3-pld-{lang}` (which exists for exactly these two languages).
+
+| frontend | ceb CER% | pam CER% | mean |
+|---|---|---|---|
+| **char** | **6.1** | **4.3** | **5.2** |
+| syllable | 7.2 | 5.2 | 6.2 |
+| bpe | 9.4 | 4.3 | 6.85 |
+| *reference (human recordings)* | *3.4* | *1.3* | — |
+
+**Decision: char for P2.** It wins Cebuano outright, ties BPE on Kapampangan,
+and beats syllables on both. Note what this does *not* say: spelling a sentence
+out beats sending it through Llama's BPE, but the syllable arm — the one the
+tokenizer work was built for — loses to plain characters in both languages,
+just as it did in the CTC ablation. Two different mechanisms, same verdict.
+
+Speaker similarity does not separate the arms (0.32–0.51, no ordering that
+matches CER), so it did not enter the decision.
+
+**Three caveats, all live:**
+
+1. **50 sentences per arm.** A one-point CER gap here is not resolvable from
+   this sample; the ceb bpe-vs-char gap of 3.3 points is. Kapampangan's tie is
+   a tie, not evidence char is better there.
+2. **Not comparable to the 2026-09-15 baseline table.** That one was judged by
+   `whisper-small-pld-{lang}` and reported a ceb judge floor of 7.3% where this
+   run's floor is 3.4%. Against a different judge, MMS-TTS's 17.8% on ceb and
+   these 6.1% are two different measurements, not a comparison. **Re-score
+   MMS-TTS and SpeechT5 with this judge before claiming the bar is cleared.**
+3. **The judge is ours**, trained on the same corpus. P5's independent judge
+   stays a requirement before publication.
+
 ### P2. Orpheus per language, winning frontend — all ten + FSC
 
 Full finetune where it fits, LoRA r=64 otherwise; the choice is itself measured

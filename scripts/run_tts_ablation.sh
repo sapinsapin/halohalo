@@ -28,7 +28,7 @@ echo "=== ablation start $(date -u +%F' '%T) langs='$LANGS' arms='$ARMS' steps=$
 for lang in $LANGS; do
     # One prewarm per language rather than one per arm: the SNAC cache is
     # keyed by audio, so all three arms read the same file.
-    bash scripts/prewarm_tts.sh "$lang"
+    SAMPLES="$SAMPLES" bash scripts/prewarm_tts.sh "$lang"
 
     for units in $ARMS; do
         name="orpheus_${units}_pld_${lang}"

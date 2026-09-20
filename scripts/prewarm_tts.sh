@@ -22,6 +22,9 @@ cd "$(dirname "$0")/.."
 
 LANGS=${*:-ceb pam}
 PY=venv/bin/python3
+# Must match the training run's --max-samples: the SNAC cache is keyed by
+# corpus size, so a prewarm at any other size is one the run never reads.
+SAMPLES=${SAMPLES:-20000}
 
 echo "=== prewarming: $LANGS"
 
@@ -42,7 +45,8 @@ for lang in $LANGS; do
     # --cache-only stops before the base model loads: encoding audio does not
     # need 3.3B parameters resident, and on a preemptible VM the shorter the
     # unprotected window the better
-    $PY finetune_orpheus.py --cache-only --cloud --dataset pld --language "$lang"
+    $PY finetune_orpheus.py --cache-only --cloud --dataset pld --language "$lang" \
+        --max-samples "$SAMPLES"
 done
 
 wait $weights
