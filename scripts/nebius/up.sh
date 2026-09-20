@@ -9,7 +9,9 @@
 #   bash scripts/nebius/up.sh --create   # also allowed to create a new VM
 source "$(dirname "$0")/common.sh"
 
-state="$(vm_state)"
+# vm_state returns 1 for "no such VM" as well as for a CLI failure; under
+# set -e that would exit before the create branch below is ever reached
+state="$(vm_state)" || true
 case "$state" in
   "")
     if [ "${1:-}" != "--create" ]; then

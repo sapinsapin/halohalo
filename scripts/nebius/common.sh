@@ -25,7 +25,7 @@ vm_field() {  # vm_field '{.status.state}' -> value; empty + rc 1 if the CLI fai
     if [ $rc -ne 0 ]; then
         if grep -qi 'open browser\|auth\|token' <<<"$out"; then
             echo "!! Nebius CLI is not signed in. In a WSL terminal run:  nebius iam whoami" >&2
-        elif ! grep -qi 'not found' <<<"$out"; then
+        elif ! grep -qi 'not found\|notfound\|no instance found' <<<"$out"; then
             echo "!! nebius: $(head -1 <<<"$out")" >&2
         fi
         return 1
