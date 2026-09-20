@@ -20,6 +20,7 @@ cd "$(dirname "$0")/.."
 WORK=${PLD_WORK_DIR:-/mnt/data/pld_shards}
 QVENV=${QVENV:-venv_qwen}
 REST=${REST:-bcl eng fil hil ilo pag tsg war}
+SAMPLES=${SAMPLES:-20000}
 
 for s in tts_pam tts_score2; do
     while tmux has-session -t "$s" 2>/dev/null; do
@@ -51,8 +52,12 @@ fi
 echo "=== 2. SNAC caches for the remaining languages"
 for lang in $REST; do
     echo "--- $lang"
+    # --max-samples matters: the cache is keyed by corpus size so a 2k
+    # cache cannot masquerade as a full one, which means a prewarm at the
+    # trainer's 2000 default is one the fleet will never read. Match it.
     venv/bin/python3 finetune_orpheus.py --cache-only --cloud \
-        --dataset pld --language "$lang" 2>&1 | grep -vE 'examples/s|it/s'
+        --dataset pld --language "$lang" --max-samples "$SAMPLES" \
+        2>&1 | grep -vE 'examples/s|it/s'
 done
 
 echo "=== queue done $(date -u +%F' '%T)"

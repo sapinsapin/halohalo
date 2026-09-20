@@ -385,7 +385,7 @@ def stage_table():
     log_wandb(results)
     names = ["reference"] + sorted(n for n in results if n != "reference")
     for metric, fmt in (("cer", lambda v: f"{v*100:.1f}"), ("spk_sim", lambda v: f"{v:.2f}")):
-        print(f"\n**{metric}** (round-trip with `{JUDGE}-pld-{{lang}}`; reference = judge floor)\n")
+        print(f"\n**{metric}** (round-trip with the per-language judge printed above; reference = judge floor)\n")
         print("| model | " + " | ".join(LANGS) + " |")
         print("|---|" + "---|" * len(LANGS))
         for name in names:
@@ -397,22 +397,37 @@ def stage_table():
 
 
 JUDGE = os.environ.get("TTS_JUDGE", "whisper-large-v3")
+JUDGE_PINNED = "TTS_JUDGE" in os.environ
+_JUDGE_CACHE: dict[str, str] = {}
 
 
 def judge_model(lang: str) -> str:
     """The ASR model that re-transcribes synthesized speech.
 
-    Defaults to the bake-off winner rather than the whisper-small fleet the
-    first table used: whisper-large-v3-pld-ceb scores 16.4% CER on held-out
-    human speech where the small model scores far worse, and a weak judge
-    charges TTS for its own transcription errors.
+    Prefers the bake-off winner, whisper-large-v3-pld-<lang>, because a weak
+    judge charges TTS for its own transcription errors. But that model exists
+    only for the languages the bake-off covered — ceb and pam — so every other
+    language falls back to the whisper-small fleet, and the fallback is printed
+    rather than silent: a table whose rows were judged by different models has
+    to say so.
 
-    Still our own model, trained on the same corpus as the systems it scores.
-    docs/tts_sota_plan.md P5 keeps an independent judge (Omnilingual ASR) as
-    the requirement before any published claim. TTS_JUDGE overrides it, e.g.
-    whisper-small to reproduce the 2026-09-15 table.
+    Still our own models on our own corpus. docs/tts_sota_plan.md P5 keeps an
+    independent judge (Omnilingual ASR) as the requirement before publication.
+    TTS_JUDGE pins one judge for every language.
     """
-    return f"{ORG}/{JUDGE}-pld-{lang}"
+    from huggingface_hub import repo_exists
+
+    if lang in _JUDGE_CACHE:
+        return _JUDGE_CACHE[lang]
+
+    want = f"{ORG}/{JUDGE}-pld-{lang}"
+    if JUDGE_PINNED or repo_exists(want, token=os.environ.get("HF_TOKEN")):
+        _JUDGE_CACHE[lang] = want
+    else:
+        fallback = f"{ORG}/whisper-small-pld-{lang}"
+        print(f"  judge: {want} does not exist, using {fallback} for {lang}")
+        _JUDGE_CACHE[lang] = fallback
+    return _JUDGE_CACHE[lang]
 
 
 def main():
