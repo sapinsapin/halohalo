@@ -165,6 +165,17 @@ def main():
                     help="trade memory for ~25%% more speed; safe on a card "
                          "with headroom (the 1B encoder at batch 16 uses "
                          "~40 GB of the 96 GB RTX PRO 6000)")
+    ap.add_argument("--optim", default=None,
+                    help="override the optimiser, e.g. adamw_bnb_8bit. Fused "
+                         "AdamW keeps 8 bytes of state per parameter, which is "
+                         "56 GB for the 7B encoder on its own; bitsandbytes' "
+                         "8-bit Adam keeps 2")
+    ap.add_argument("--bf16-weights", action="store_true",
+                    help="hold the weights in bf16 rather than fp32: halves "
+                         "weights and gradients (28 GB -> 14 GB each at 7B). "
+                         "The fallback when 8-bit Adam alone does not fit — "
+                         "small updates round away in bf16, so prefer fp32 "
+                         "weights whenever they fit")
     ap.add_argument("--max-seconds", type=float, default=20.0)
     ap.add_argument("--resume", action="store_true",
                     help="continue from the newest checkpoint (preemptible VMs)")
@@ -254,6 +265,7 @@ def main():
     Model = Wav2Vec2BertForCTC if kind == "wav2vec2-bert" else Wav2Vec2ForCTC
     model = Model.from_pretrained(
         repo,
+        dtype=torch.bfloat16 if args.bf16_weights else torch.float32,
         attn_implementation=args.attn,
         vocab_size=len(vocab),
         ctc_loss_reduction="mean",
@@ -307,7 +319,8 @@ def main():
             eval_strategy="steps",
             eval_steps=args.eval_steps if not args.smoke else 4,
             save_steps=args.eval_steps if not args.smoke else 4,
-            optim="adamw_torch_fused" if torch.cuda.is_available() else "adamw_torch",
+            optim=args.optim or ("adamw_torch_fused" if torch.cuda.is_available()
+                                 else "adamw_torch"),
             torch_compile=args.compile,
             save_total_limit=2,
             logging_steps=25,
