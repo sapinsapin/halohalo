@@ -183,6 +183,35 @@ Hardware: upstream's loop is `batch_size=2`, grad-accum 4, bf16, FlashAttention
 with 125-frame sequences the card should take **batch 32–64**; confirm with
 `--profile` on the first run rather than assuming.
 
+### P6. Scale: Fish Audio S2 Pro (added 2026-09-20)
+
+Licence is set aside for the research track, which puts the largest open TTS
+back in scope. Checked against the Hub and the repo rather than the survey:
+
+- `fishaudio/s2-pro`, ungated. **4B slow AR + 400M fast AR** over a 10-codebook
+  codec (`codec.pth` ships with it). `model_type: fish_qwen3_omni`.
+- Of our ten languages it lists only **`tl`**. Everything else is transfer, as
+  with Orpheus and Qwen3-TTS.
+- `fishaudio/fish-speech` ships a LoRA pipeline — extract VQ codes, build the
+  dataset, `train.py` with `r_8_alpha_16` or `r_32_alpha_16_fast`, then
+  `merge_lora.py`. Data is one folder per speaker of audio plus `.lab` text,
+  which the Qwen export's wavs already are, less the `.lab` files.
+
+Two things unverified, and both can sink it:
+
+1. **The finetune config targets `openaudio-s1-mini`**, and reads a
+   `tokenizer.tiktoken`; S2 Pro ships `tokenizer.json`. The model code mentions
+   the qwen3 architecture, so it probably loads, but nobody has shown the
+   finetune path running on S2 Pro. Smoke-test before budgeting.
+2. **Upstream advises against it**: "we highly do not recommend fine-tuning an
+   RL-trained model", because it shifts the distribution the RL stage tuned.
+   S2 Pro is that kind of model. So the honest comparison is three rows —
+   S2 Pro zero-shot on `tl`/fil, S2 Pro + LoRA, and Orpheus-char — and the
+   finetune may lose to its own zero-shot.
+
+Own venv, as with qwen-tts. Runs on the 1 TB VM. **~1 engineer-day to a smoke
+test, then ~10 GPU-h** for ceb + pam + fil.
+
 ### P4. Multilingual adapter (S3)
 
 One model, ten languages, language tags; compared against the per-language
