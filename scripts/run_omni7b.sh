@@ -36,7 +36,7 @@ for lang in $LANGS; do
         2>&1 | tr '\r' '\n' | grep -vE 'examples/s|it/s\]$'
 
     if [ -f "$RUNS/$name/result.json" ]; then
-        echo "$name: OK $(date -u +%T) $(python3 -c "import json;d=json.load(open('$RUNS/$name/result.json'));print(f\"CER {d.get('cer',0)*100:.2f} WER {d.get('wer',0)*100:.2f}\")")" | tee -a "$SUMMARY"
+        echo "$name: OK $(date -u +%T) $(python3 -c "import json;d=json.load(open('$RUNS/$name/result.json'));print(f\"CER {d.get("eval_cer",0)*100:.2f} WER {d.get("eval_wer",0)*100:.2f}\")")" | tee -a "$SUMMARY"
         rm -rf "$RUNS/$name"/checkpoint-*
     else
         echo "$name: FAILED $(date -u +%T)" | tee -a "$SUMMARY"
