@@ -176,6 +176,15 @@ def main():
                          "The fallback when 8-bit Adam alone does not fit — "
                          "small updates round away in bf16, so prefer fp32 "
                          "weights whenever they fit")
+    ap.add_argument("--normalise", action="store_true",
+                    help="train and score on halolib.finetune.normalise_text: "
+                         "no stress accents, no punctuation. Run dir gains _norm")
+    ap.add_argument("--init-from", default=None,
+                    help="a finetuned CTC checkpoint (hub id or dir) to continue "
+                         "from instead of the SSL encoder. The encoder is where "
+                         "the compute went and the audio has not changed, so a "
+                         "label change does not need a restart; head rows are "
+                         "carried over for every unit both vocabularies share")
     ap.add_argument("--max-seconds", type=float, default=20.0)
     ap.add_argument("--resume", action="store_true",
                     help="continue from the newest checkpoint (preemptible VMs)")
@@ -201,6 +210,8 @@ def main():
     repo, kind = ENCODERS[args.encoder]
     tag = f"{args.dataset.replace('+', '-')}" + (f"_{args.language}" if args.language else "")
     run_name = f"ctc_{args.encoder}_{args.units}_{tag}"
+    if args.normalise:
+        run_name += "_norm"
     out_dir = FINETUNE_DIR / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -219,6 +230,12 @@ def main():
     # exists to make. Both drop digit-bearing rows — the same choice the TTS
     # harness makes, and a standing reminder that numeral verbalisation is an
     # open gap (plan §4, text normalisation).
+    if args.normalise:
+        from halolib.finetune import normalise_text
+        ds = ds.map(lambda text: {"text": normalise_text(text)},
+                    input_columns=["text"])
+        ds = ds.filter(lambda text: bool(text), input_columns=["text"])
+
     digit = re.compile(r"\d")
     before = {k: len(v) for k, v in ds.items()}
     ds = ds.filter(lambda r: not digit.search(r["text"] or ""))
@@ -263,8 +280,17 @@ def main():
     print(ds)
 
     Model = Wav2Vec2BertForCTC if kind == "wav2vec2-bert" else Wav2Vec2ForCTC
+    old_vocab = None
+    if args.init_from:
+        src = Path(args.init_from) / "vocab.json"
+        if not src.exists():
+            from huggingface_hub import hf_hub_download
+            src = Path(hf_hub_download(args.init_from, "vocab.json",
+                                       token=os.environ.get("HF_TOKEN")))
+        old_vocab = json.loads(src.read_text(encoding="utf-8"))
     model = Model.from_pretrained(
-        repo,
+        args.init_from or repo,
+        ignore_mismatched_sizes=bool(args.init_from),
         dtype=torch.bfloat16 if args.bf16_weights else torch.float32,
         attn_implementation=args.attn,
         vocab_size=len(vocab),
@@ -276,6 +302,31 @@ def main():
         layerdrop=0.0,
         mask_time_prob=0.05,
     )
+    if old_vocab is not None:
+        # The new head was just re-initialised because its size changed. Put
+        # back what the old one knew: a row per unit, and every unit the two
+        # vocabularies share is the same symbol with the same meaning.
+        from safetensors import safe_open
+        from huggingface_hub import snapshot_download
+        root = (Path(args.init_from) if Path(args.init_from).is_dir() else
+                Path(snapshot_download(args.init_from, allow_patterns=["*.safetensors", "*.json"],
+                                       token=os.environ.get("HF_TOKEN"))))
+        old_w = old_b = None
+        for shard in sorted(root.glob("*.safetensors")):
+            with safe_open(str(shard), "pt") as fh:
+                if "lm_head.weight" in fh.keys():
+                    old_w, old_b = fh.get_tensor("lm_head.weight"), fh.get_tensor("lm_head.bias")
+        kept = 0
+        if old_w is not None:
+            with torch.no_grad():
+                for unit, new_i in vocab.items():
+                    if unit in old_vocab:
+                        model.lm_head.weight[new_i] = old_w[old_vocab[unit]].to(model.lm_head.weight.dtype)
+                        model.lm_head.bias[new_i] = old_b[old_vocab[unit]].to(model.lm_head.bias.dtype)
+                        kept += 1
+        print(f"  init from {args.init_from}: head rows carried over for {kept} "
+              f"of {len(vocab)} units (old vocab {len(old_vocab)})")
+
     # The SSL checkpoints are *ForPreTraining; the CTC head is new by design.
     if hasattr(model, "freeze_feature_encoder"):
         model.freeze_feature_encoder()      # conv frontend: pretrained, tiny, unstable to tune

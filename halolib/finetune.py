@@ -52,6 +52,29 @@ _PLD_FILTERS = {
 }
 
 
+def normalise_text(text: str) -> str:
+    """Lowercase, drop stress accents and punctuation, single spaces.
+
+    PLD's transcripts mark stress (ganína, ihúnong) and keep punctuation; 35%
+    of Cebuano reference words carry one or the other. Neither is part of how
+    the languages are ordinarily written, and an ASR model is not being asked
+    for them. Measured 2026-09-21 on the frozen ceb split, scoring the same
+    hypotheses with and without them moved whisper-large-v3 from 36.9 to 24.2
+    WER and omni-1B from 51.5 to 39.5 — twelve points of "error" in both that
+    were orthography. Apostrophes stay: they are letters here (mo'y, di').
+
+    A view over the corpus, not a replacement for it: the raw text is what a
+    stress-marking model would need.
+    """
+    import re
+    import unicodedata
+
+    t = unicodedata.normalize("NFD", (text or "").lower())
+    t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+    t = unicodedata.normalize("NFC", t).replace("’", "'").replace("‘", "'")
+    return " ".join(re.sub(r"[^\w\s']", " ", t).split())
+
+
 def load_speech_dataset(
     name: str,
     task: str,

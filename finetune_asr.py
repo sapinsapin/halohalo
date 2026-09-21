@@ -156,6 +156,11 @@ def main():
     ap.add_argument("--push", action="store_true",
                     help="upload the finetuned model to the Hub as "
                          "<model>-{fsc|halohaloLS} after training")
+    ap.add_argument("--normalise", action="store_true",
+                    help="train and score on halolib.finetune.normalise_text: "
+                         "no stress accents, no punctuation. Run dir gains "
+                         "_norm. To continue a finetuned model rather than "
+                         "restart, pass it as --model")
     ap.add_argument("--resume", action="store_true",
                     help="continue from the newest checkpoint in the run dir "
                          "if one exists; required for preemptible cloud VMs")
@@ -172,6 +177,8 @@ def main():
     ds_tag = args.dataset.replace("+", "-")
     run_name = (f"asr_{ds_tag}_{args.language}" if args.language
                 else f"asr_{ds_tag}")
+    if args.normalise:
+        run_name += "_norm"
     out_dir = FINETUNE_DIR / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -208,6 +215,11 @@ def main():
     print(ds)
 
     print("Preprocessing (text→labels; log-mels are computed per batch)...")
+    if args.normalise:
+        from halolib.finetune import normalise_text
+        ds = ds.map(lambda text: {"text": normalise_text(text)},
+                    input_columns=["text"])
+        ds = ds.filter(lambda text: bool(text), input_columns=["text"])
     ds = prepare_dataset(ds, processor, args.num_proc)
 
     # fixed subsample, so every checkpoint of every arm is selected on the

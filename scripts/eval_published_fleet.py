@@ -92,6 +92,9 @@ def evaluate(lang: str, device: str, batch_size: int, max_clips: int,
             print(f"    {i}/{len(test)}", flush=True)
 
     out = score(refs, hyps)
+    # kept so a result can be re-scored under another text normalisation
+    # without another pass through the model
+    out.update(refs=list(refs), hyps=list(hyps))
     out.update(model=model_id, language=lang,
                seconds=round(time.perf_counter() - t0, 1))
     print(f"  {lang}: CER {out['cer']*100:.2f}%  WER {out['wer']*100:.2f}%  "
@@ -105,11 +108,13 @@ def main():
     ap.add_argument("--model-template", default=f"{ORG}/whisper-small-pld-{{lang}}")
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--batch-size", type=int, default=8)
+    ap.add_argument("--out", default="published_fleet_eval",
+                    help="results dir under FINETUNE_DIR; one per model family")
     ap.add_argument("--max-clips", type=int, default=0,
                     help="cap the test split (0 = all of it)")
     args = ap.parse_args()
 
-    out_dir = FINETUNE_DIR / "published_fleet_eval"
+    out_dir = FINETUNE_DIR / args.out
     out_dir.mkdir(parents=True, exist_ok=True)
     results_path = out_dir / "results.json"
     # resumable: a card-by-card re-measurement should survive an interrupted run
