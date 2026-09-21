@@ -125,6 +125,63 @@ This is the step most likely to beat Whisper and the least certain to. It only
 makes sense if D1–D3 leave a gap, and it does not fit the remaining ~$30 of
 credit alongside the TTS work.
 
+## 2b. Results so far (2026-09-22)
+
+**D0 changed the diagnosis before D1 ran.** Scoring the *same* hypotheses with
+stress accents and punctuation stripped from both sides:
+
+| Cebuano, 2781 clips | as scored, CER / WER | normalised, CER / WER |
+|---|---|---|
+| whisper-large-v3 | 16.39 / 36.87 | 12.15 / 24.20 |
+| omni-1B | 20.11 / 51.51 | 16.41 / 39.51 |
+
+Twelve WER points in *both* models were orthography: PLD marks stress on about
+a third of words and an ASR model is not asked for it. So section 1's reading
+of the CER-tie/WER-gap as "a missing language model" was partly wrong — but only
+partly, because the gap between the two models survives normalisation intact
+(24 vs 40). The decoder question stands; the ruler was bent.
+
+Acted on: `halolib.finetune.normalise_text`, `--normalise` in both trainers,
+and all four models continued 1500 steps on normalised labels
+(`scripts/run_normalised.sh`; published as `*-norm`). Whisper ceb 10.77 / 22.53,
+pam 5.08 / 19.80; omni-1B ceb 12.55 / 34.80, pam 8.46 / 35.39. Most of that
+gain was the fairer scoring, not the retraining.
+
+**D0 on the errors themselves** (omni-1B, un-normalised scoring):
+
+| | ceb | pam |
+|---|---|---|
+| word errors that are substitutions | 77% | — |
+| substitutions within edit distance 2 of the right word | 45% | 54% |
+| … and the right word appears in the training text | 20% | 35% |
+| test words never seen in training text | 32% | 21% |
+
+The last row is the split working as designed — no test prompt appears in
+training — and it caps what a train-text LM can do.
+
+**D1, train-text 4-gram KenLM, alpha/beta tuned on 200 held-out clips:**
+
+| omni-1B greedy → + LM | CER | WER |
+|---|---|---|
+| ceb | 19.98 → 19.14 | 51.26 → **46.77** (−4.5) |
+| pam | 11.43 → 10.56 | 43.15 → **36.49** (−6.7) |
+
+Real, free, streaming-safe, and exactly where D0 said it would land: pam gains
+more because more of its errors were reachable. The gate was "ceb WER ≤ 40";
+this LM alone does not clear it. The next step within D1 is an external-text LM
+(the FineWeb-2 ingests) with the test-prompt overlap check, which is where the
+remaining headroom is — the current LM has 4,864 distinct pam sentences to
+learn from.
+
+**D2, first arm: negative.** omni-1B at 15000 steps scored 16.90 CER against
+17.04 at 5000, with dev CER flat and noisy over the last 6000. Training budget
+is not the gap. InterCTC and a small subword vocabulary remain untested.
+
+**Where that leaves D3/D4.** After normalisation and the LM, omni-1B trails
+Whisper by ~12 WER points on both languages under like-for-like scoring. That
+is the decoder's share, and it is what a joint CTC/attention decoder (D3) would
+have to earn. Not funded within the current credit.
+
 ## 3. What would count as success
 
 - **Primary:** beat whisper-large-v3 on ceb WER (36.8) with a permissively

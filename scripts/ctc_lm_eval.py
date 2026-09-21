@@ -80,7 +80,8 @@ def stage_logits(args):
         "\n".join(norm(t) for t in train["text"]), encoding="utf-8")
 
     extractor = AutoFeatureExtractor.from_pretrained(mid, token=tok)
-    model = Wav2Vec2ForCTC.from_pretrained(mid, token=tok, dtype=torch.float16)
+    dt = torch.float32 if args.fp32 else torch.float16
+    model = Wav2Vec2ForCTC.from_pretrained(mid, token=tok, dtype=dt)
     model = model.to("cuda").eval()
 
     logps, refs, greedy = [], [], []
@@ -88,7 +89,7 @@ def stage_logits(args):
         row = test[i]
         x = extractor(row["audio"]["array"], sampling_rate=SR, return_tensors="pt")
         with torch.inference_mode():
-            lp = model(x.input_values.to("cuda", torch.float16)).logits[0] \
+            lp = model(x.input_values.to("cuda", dt)).logits[0] \
                 .float().log_softmax(-1).cpu().numpy()
         logps.append(lp.astype(np.float16))
         refs.append(norm(row["text"]))
@@ -219,6 +220,10 @@ def main():
     ap.add_argument("stage", choices=["logits", "errors", "lm"])
     ap.add_argument("--language", required=True)
     ap.add_argument("--size", default="1B", help="1B fits an 8 GB card; 7B does not")
+    ap.add_argument("--fp32", action="store_true",
+                    help="fp16 fits an 8 GB card but scored 20.1 CER where the "
+                         "bake-off measured 17.0 on the same clips; use fp32 "
+                         "wherever there is room")
     ap.add_argument("--arpa", default=None)
     ap.add_argument("--beam", type=int, default=100)
     ap.add_argument("--dev", type=int, default=200)
