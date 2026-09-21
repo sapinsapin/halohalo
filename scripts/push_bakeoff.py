@@ -33,6 +33,7 @@ SCALE_NOTE = {"omniASR_W2V_7B_SSL": (
     "96 GB card. Kept in case a better decoder than a linear CTC head can use "
     "what the encoder knows.")}
 
+ORG = "sapinsapin"
 FINETUNE_DIR = Path(os.environ.get("FINETUNE_DIR", ROOT / "finetune_runs"))
 
 
@@ -98,6 +99,15 @@ def plan(run_dir: Path) -> dict | None:
     if res.get("dataset") != "pld" or not res.get("language"):
         return None
     lang, units = res["language"], res.get("units", "")
+    # A _norm run continued a finished sapinsapin/ model on normalised text.
+    # Its card names the original base, is suffixed -norm, and says what it
+    # was continued from and why; the run dir's own name carries the flag.
+    norm = run_dir.name.endswith("_norm")
+    continued_from = None
+    if norm and res["encoder"].startswith(f"{ORG}/"):
+        continued_from = res["encoder"]
+        res["encoder"] = ("openai/whisper-large-v3" if "whisper-large-v3" in continued_from
+                          else "ylacombe/" + continued_from.split("/")[1].split("-ctc-")[0])
     metrics = {k.removeprefix("eval_"): v for k, v in res.items()
                if k in ("eval_cer", "eval_wer", "eval_loss") and v is not None}
     split = res.get("split", "unknown")
@@ -106,9 +116,19 @@ def plan(run_dir: Path) -> dict | None:
         task="asr", token=os.environ.get("HF_TOKEN"), metrics=metrics,
         license="cc-by-nc-4.0", lang_code=lang,
     )
+    if norm:
+        common["train_summary_prefix"] = (
+            f"**Normalised text.** Trained and scored on transcripts with stress "
+            f"accents and punctuation removed (halolib.finetune.normalise_text). "
+            f"PLD marks stress on about a third of words and an ASR model is not "
+            f"asked for it; scoring the *same* hypotheses with and without them "
+            f"moved whisper-large-v3 on Cebuano from 36.9 to 24.2 WER. Continued "
+            f"for {res['steps']} steps from {continued_from}, whose encoder had "
+            f"already seen this audio — a label change does not need a restart. "
+            f"Outputs are lowercase with no punctuation or accents. ")
     if run_dir.name.startswith("ctc_"):
         return common | dict(
-            suffix=f"ctc-{units}-pld_{lang}",
+            suffix=f"ctc-{units}-pld_{lang}" + ("-norm" if norm else ""),
             extra_tags=["philippines", "philippine-languages", "ctc", lang,
                         "bakeoff"],
             train_summary=(
@@ -123,7 +143,7 @@ def plan(run_dir: Path) -> dict | None:
         )
     if run_dir.name.startswith("asr_"):
         return common | dict(
-            suffix=f"pld-{lang}",
+            suffix=f"pld-{lang}" + ("-norm" if norm else ""),
             extra_tags=["philippines", "philippine-languages", lang, "whisper",
                         "bakeoff"],
             train_summary=(
@@ -162,6 +182,8 @@ def main() -> None:
         sys.exit(f"nothing finished to push in {FINETUNE_DIR}")
     for d, p in todo:
         name = f"{p['base_model'].split('/')[-1]}-{p['suffix']}"
+        if "train_summary_prefix" in p:
+            p["train_summary"] = p.pop("train_summary_prefix") + p["train_summary"]
         print(f"{d.name} -> {name}  {p['metrics']}")
         if not args.dry_run:
             push_model_to_hub(**p)
