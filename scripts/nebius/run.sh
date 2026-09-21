@@ -40,7 +40,7 @@ have=\$(cat $DATA_ROOT/.bootstrapped 2>/dev/null || true)
 boot=""
 [ "\$want" = "\$have" ] || boot="bash scripts/bootstrap_nebius.sh && "
 # the paths bootstrap writes to .env, exported for scripts that read the environment
-env="export HF_HOME=$DATA_ROOT/hf_cache FINETUNE_DIR=$DATA_ROOT/finetune_runs PLD_WORK_DIR=$DATA_ROOT/pld_shards PLD_SOURCE=hub; $passthru"
+env="export HF_HOME=$DATA_ROOT/hf_cache FINETUNE_DIR=$DATA_ROOT/finetune_runs PLD_WORK_DIR=$DATA_ROOT/pld_shards HF_XET_CACHE=$DATA_ROOT/hf_cache/xet PLD_SOURCE=hub; $passthru"
 tmux new -d -s '$session' "\$env { \$boot $cmd ; } 2>&1 | tee -a $DATA_ROOT/logs/$session.log"
 echo "started '$session'\${boot:+ (bootstrap first)}; log: $DATA_ROOT/logs/$session.log"
 REMOTE
