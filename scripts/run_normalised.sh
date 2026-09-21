@@ -27,10 +27,14 @@ export FINETUNE_DIR="$OUT"
 echo "=== normalised continuation start $(date -u +%F' '%T) langs='$LANGS'" | tee -a "$SUMMARY"
 
 first=${LANGS%% *}
-if ! FINETUNE_DIR="$OUT/smoke" venv/bin/python3 finetune_ctc.py --encoder omni-1b \
+FINETUNE_DIR="$OUT/smoke" venv/bin/python3 finetune_ctc.py --encoder omni-1b \
         --language "$first" --units char --normalise --smoke \
         --init-from "sapinsapin/omniASR_W2V_1B_SSL-ctc-char-pld_${first}" \
-        --num-proc 8 2>&1 | tr '\r' '\n' | tee /tmp/norm_smoke.txt | grep -q "head rows carried over"; then
+        --num-proc 8 > /tmp/norm_smoke.raw 2>&1
+# grep the finished file, not the live pipe: grep -q exits at its first match,
+# the writer dies of SIGPIPE, and pipefail reports a passing smoke as failed
+tr '\r' '\n' < /tmp/norm_smoke.raw > /tmp/norm_smoke.txt
+if ! grep -q "head rows carried over" /tmp/norm_smoke.txt || grep -q Traceback /tmp/norm_smoke.txt; then
     echo "smoke FAILED $(date -u +%T)" | tee -a "$SUMMARY"
     grep -vE '^\s*$' /tmp/norm_smoke.txt | tail -12 | tee -a "$SUMMARY"
     exit 1
