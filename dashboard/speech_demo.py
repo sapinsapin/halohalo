@@ -23,6 +23,7 @@ halohalo repo), so speechbrain is not a runtime dependency here.
 """
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -261,20 +262,33 @@ def ctc_decode(ids, id2unit: dict) -> str:
     return "".join(out).replace(DELIM, " ").strip()
 
 
+def _hub_token():
+    """The SpeechT5 TTS repos were made private on 2026-09-22 (Orpheus replaced
+    them as the published TTS; these stay only to keep this tab alive on a CPU
+    Space). A private repo loads only with a token, and the Space's secret has
+    gone by several names — the same list feedback.py searches."""
+    for var in ("HF_TOKEN", "FEEDBACK_TOKEN", "SAPINSAPINDASH", "sapinsapindash"):
+        if os.environ.get(var):
+            return os.environ[var]
+    return None
+
+
 @lru_cache(maxsize=2)
 def tts_model(lang: str):
     from transformers import SpeechT5ForTextToSpeech, SpeechT5Processor
     repo = f"{ORG}/speecht5_tts-pld-{lang}"
-    return (SpeechT5Processor.from_pretrained(repo),
-            SpeechT5ForTextToSpeech.from_pretrained(repo).eval())
+    tok = _hub_token()
+    return (SpeechT5Processor.from_pretrained(repo, token=tok),
+            SpeechT5ForTextToSpeech.from_pretrained(repo, token=tok).eval())
 
 
 @lru_cache(maxsize=1)
 def vc_model():
     from transformers import SpeechT5ForSpeechToSpeech, SpeechT5Processor
     repo = f"{ORG}/speecht5_vc-pld"
-    return (SpeechT5Processor.from_pretrained(repo),
-            SpeechT5ForSpeechToSpeech.from_pretrained(repo).eval())
+    tok = _hub_token()
+    return (SpeechT5Processor.from_pretrained(repo, token=tok),
+            SpeechT5ForSpeechToSpeech.from_pretrained(repo, token=tok).eval())
 
 
 @lru_cache(maxsize=1)
