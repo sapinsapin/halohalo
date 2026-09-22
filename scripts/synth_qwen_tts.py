@@ -31,6 +31,7 @@ import torch
 FINETUNE_DIR = Path(os.environ.get("FINETUNE_DIR", "/mnt/data/finetune_runs"))
 WORK = FINETUNE_DIR / "tts_eval"
 BASE = "Qwen/Qwen3-TTS-12Hz-1.7B-Base"
+MAX_TOKENS = int(25 * 12.5)
 
 
 def pick_refs(rows):
@@ -67,9 +68,15 @@ def synth(model_path, name, rows, device):
                 done += 1
                 continue
             ref = refs[r["i"]]
+            # Cap generation. The default is 8192 codec tokens, eleven minutes
+            # at 12.5 Hz, and the first run produced 136 s clips for 4 s
+            # sentences: a model that has not learned to stop will fill that.
+            # 25 s is generous for any sentence in the set; a clip that hits
+            # it is a failure the duration ratio in the score will show.
             wavs, sr = model.generate_voice_clone(
                 text=r["text"], language="Auto",
-                ref_audio=ref["ref"], ref_text=ref["text"])
+                ref_audio=ref["ref"], ref_text=ref["text"],
+                max_new_tokens=MAX_TOKENS)
             sf.write(str(out), wavs[0], sr)
             done += 1
         print(f"  {name} {lang}: {done} wavs ({self_refs} self-referenced)", flush=True)
