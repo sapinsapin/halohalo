@@ -124,8 +124,37 @@ this closely related. The quantised model is tens of MB against GlotLID's
 1.7 GB and runs an order of magnitude faster, which matters at web scale.
 
 Results go to `$FINETUNE_DIR/lid/results.json` and the model card; `--push`
-publishes to `sapinsapin/halo-lid`. Current numbers are in
-[`reference/datasets-benchmarks.md`](reference/datasets-benchmarks.md).
+publishes to `sapinsapin/halo-lid`.
+
+### LID rounds so far (2026-09-22)
+
+Scored on the **PLD held-out set** (3,966 human-labelled sentences), the
+only test set whose labels don't come from a model:
+
+| round | change | acc | macro F1 | ≤5 words | fil | war | tsg |
+|---|---|---|---|---|---|---|---|
+| r1 | page labels as-is | *(mixed test set; eng 0.63)* | | | | | |
+| r2 | + relabel confident English, cap classes at 20k | 0.854 | 0.833 | 0.722 | 0.759 | 0.763 | 0.822 |
+| **r3** | + **consensus labels** for web text, + scraped shards | **0.882** | **0.864** | **0.748** | **0.887** | 0.714 | 0.794 |
+| GlotLID v3 | reference | 0.704 | 0.737 | 0.437 | 0.864 | 0.496 | 0.336 |
+
+What each round taught us:
+
+- **r1 → r2.** Web sentences inherit their page's label, so English
+  sentences on Hiligaynon pages trained the model to call English `hil`.
+- **r2 → r3.** Some page labels are simply wrong. The r2 model rejected
+  5,747 FineWeb-2 *Filipino* pages as Hiligaynon; tracing that back
+  showed `sapinsapin/halo-hil` is mostly English and Tagalog (GlotLID, 2,000
+  sampled sentences: 44 % eng, 21 % fil, 12 % hil). r3 trains on a web
+  sentence only when GlotLID agrees with its page label, which dropped
+  38k `hil`-labelled sentences.
+- **Still open.** Waray and Tausug slipped in r3. Their test sets are small
+  (224 and 107), so it's borderline, but the likely cause is consensus
+  labelling: it starves exactly the languages GlotLID is weak on. The next
+  round should exempt tsg/war web text from consensus, or weight their PLD
+  data up.
+- **Don't read the web-test numbers as a comparison** from r3 on. Web labels
+  are GlotLID consensus, so GlotLID scores ~1.0 on them by construction.
 
 The loop that makes it improve "as we go": accepted pages where **both**
 models agreed with score ≥ 0.9 are folded back in with
@@ -151,6 +180,28 @@ carry no transcript: this is raw speech for the livestream pipeline's
 align / qc / pseudo-label path, not a finished dataset. `summary.json`
 reports CC hours found per language, which is the number that decides
 whether YouTube is worth pursuing for a given language at all.
+
+**First run (2026-09-22), 8 queries per language:** Creative Commons speech
+in Philippine languages on YouTube is effectively **zero**: no CC video in
+any of the nine, one in English. LID-matched non-CC speech does exist:
+
+| lang | found | LID-matched | CC | matched hours |
+|---|---|---|---|---|
+| ilo | 115 | 85 | 0 | 71.1 |
+| pam | 88 | 45 | 0 | 16.3 |
+| hil | 109 | 40 | 0 | 5.4 |
+| bcl | 98 | 26 | 0 | 4.3 |
+| ceb | 102 | 18 | 0 | 4.2 |
+| war | 101 | 30 | 0 | 3.7 |
+| fil | 99 | 22 | 0 | 2.6 |
+| tsg | 80 | 4 | 0 | 2.5 |
+| pag | 79 | 8 | 0 | 0.6 |
+
+So for speech, the web route is a **permissions** problem, not a discovery
+problem. The candidates files list channels: the next step is to ask
+channel owners (regional radio, church, and LGU channels especially) for
+permission, not to widen the search. The `--all-licenses` switch exists for
+research use under a clear legal basis, not as a default.
 
 ## What "AI-ready" means here, concretely
 

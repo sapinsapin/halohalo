@@ -160,7 +160,7 @@ transcripts are CC-BY-NC**, so they stay out of any commercial-track mix
 |---|---|---|---|
 | FineWeb-2 via `scrape_web.py --backend fineweb2` | all 9 PH | bulk web text, LID-gated, bot/MT-farm filtered | ODC-By |
 | Tavily scrape (`scrape_web.py`, default backend) | all 10 | fresh, targeted text beyond CommonCrawl; the lever for the small languages | per-site; provenance kept per row |
-| halohalo + BantayWika | fil, hil, bcl (+ilo, ceb) | curated literary and web text | per card |
+| halohalo + BantayWika | fil, hil, bcl (+ilo, ceb) | curated literary and web text — **re-gate per sentence with LID first**: `halo-hil` is mostly English and Tagalog under a `hil` label (see `reference/datasets-benchmarks.md`) | per card |
 | BalitaNLP | fil | news | **[verify licence]** |
 | Indonesian / Malay (FineWeb-2 `ind_Latn`, `zsm_Latn`) | — | related-language bridge (ablation) | ODC-By |
 | English replay (FineWeb-Edu sample) | eng | anti-forgetting | ODC-By |

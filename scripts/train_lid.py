@@ -18,12 +18,13 @@ across speakers; a random split would leak them):
   FineWeb-2  ind_Latn / zsm_Latn -> "other"         (Hub)     labels: FW-2 LID
 
 Label noise, and what we do about it. Web sentences inherit their *page's*
-language, so an English sentence on a Hiligaynon news page arrives labelled
-`hil`. Round 1 trained on that as-is and learned to call English `hil`
-(eng accuracy 0.63). Now every web sentence is checked by GlotLID first and
-relabelled `eng` when GlotLID is confident it's English — English is the one
-language GlotLID is reliably good at here, so it's a trustworthy teacher for
-exactly that correction and no other.
+language, and some pages' labels are wrong outright. Round 1 trained on page
+labels and learned to call English `hil` (eng accuracy 0.63). Round 2
+relabelled confident English, but still trusted the rest — and halo-hil turns
+out to be largely Tagalog and English, so round 2 learned "Tagalog news is
+Hiligaynon" and the Filipino scrape rejected 5,747 genuine Filipino pages.
+Round 3 uses consensus labels: a web sentence trains only if GlotLID agrees
+with its page label (confident English moves to `eng`). See consensus_web.
 
 Evaluation reports two held-out sets separately:
   pld  — human-labelled prompts; the number to trust
@@ -124,17 +125,38 @@ def gather(token: str | None, extra_parquet: Path | None) -> list[tuple[str, str
     return rows
 
 
-def relabel_web_english(rows, glot: GlotLID) -> list[tuple[str, str, str]]:
-    """Web sentences GlotLID is confident are English become `eng`."""
-    out, moved = [], Counter()
+def consensus_web(rows, glot: GlotLID) -> list[tuple[str, str, str]]:
+    """Keep a web sentence only where GlotLID agrees with its page label.
+
+    Page labels are not sentence labels, and some page labels are simply
+    wrong: an audit of sapinsapin/halo-hil found GlotLID calls 44 % of its
+    sentences English, 21 % Filipino and 12 % Hiligaynon (Tagalog tabloid
+    content under a `hil` label). Round 2 trained on those labels and learned
+    "Tagalog news is Hiligaynon"; the Filipino scrape then rejected 5,747
+    FineWeb-2 Filipino pages as hil. So web text now enters training only as
+    consensus: GlotLID's label == page label, or confident English (moved to
+    `eng`). PLD sentences carry human labels and bypass this.
+
+    The cost is that web data shrinks for languages GlotLID is weak on (tsg,
+    war) — which is fine, because PLD covers those and their web data is tiny.
+    """
+    out, moved, dropped, kept = [], Counter(), Counter(), Counter()
     for lang, text, src in rows:
-        if src == "web" and lang != "eng":
+        if src == "web":
             p = glot.predict(text)
             if p.lang == "eng" and p.score >= ENG_RELABEL_SCORE:
-                moved[lang] += 1
+                if lang != "eng":
+                    moved[lang] += 1
                 lang = "eng"
+            elif p.lang != lang:
+                dropped[lang] += 1
+                continue
+            else:
+                kept[lang] += 1
         out.append((lang, text, src))
-    print(f"  relabelled web->eng: {sum(moved.values())}  {dict(moved)}")
+    print(f"  web consensus: kept {sum(kept.values())} {dict(kept)}")
+    print(f"  web -> eng:    {sum(moved.values())} {dict(moved)}")
+    print(f"  web dropped:   {sum(dropped.values())} {dict(dropped)}")
     return out
 
 
@@ -239,7 +261,7 @@ def main():
     print("gathering ...")
     rows = gather(token, args.extra_parquet)
     if glot:
-        rows = relabel_web_english(rows, glot)
+        rows = consensus_web(rows, glot)
     train, test, kept = cap_and_split(rows, args.max_per_lang)
     print("  kept: " + "  ".join(f"{l}={n}" for l, n in sorted(kept.items())))
     write_ft(train, OUT / "train.txt")
