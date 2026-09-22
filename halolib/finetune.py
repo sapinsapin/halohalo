@@ -366,6 +366,75 @@ _LANG_NAMES = {"bcl": "Central Bikol", "ceb": "Cebuano", "eng": "Philippine Engl
                "war": "Waray", "tl": "Filipino"}
 
 
+# The one model a non-specialist should reach for per language and task, so
+# every other card can point at it. Update when a better one is published.
+_BEST_ASR = {l: f"whisper-large-v3-pld-{l}-norm"
+             for l in ("bcl", "ceb", "fil", "hil", "ilo", "pag", "pam", "tsg", "war")}
+_BEST_TTS = {l: f"orpheus-3b-0.1-pretrained-char-pld-{l}"
+             for l in ("bcl", "ceb", "eng", "fil", "hil", "ilo", "pam", "tsg", "war")}
+
+
+def _plain_words(name, task, lang, lang_code, metrics, norm, frozen, is_orpheus):
+    """The section for someone who will never read the rest of the card: what
+    it does, what to give it, what comes back, how good it is in ordinary
+    terms, and whether they should be looking at a different model."""
+    cer, wer = metrics.get("cer"), metrics.get("wer")
+    best = (_BEST_TTS if task == "tts" else _BEST_ASR).get(lang_code)
+    lines = []
+    if task == "tts":
+        lines.append(
+            f"This model **reads {lang} text aloud**. Give it a sentence, and it "
+            f"produces a short audio clip of a voice from the training recordings "
+            f"saying it.")
+        if cer is not None:
+            lines.append(
+                f"How good is it? When we play its output to a speech recogniser, "
+                f"about **{max(0, 100 - cer * 100):.0f} of every 100 characters** "
+                f"come back right (for a real human recording the figure is about "
+                f"97-99). Below about 90 the speech is hard to follow.")
+        lines.append(
+            "It needs a GPU and the halohalo code to run; it is not a one-line "
+            "download-and-play model yet.")
+    else:
+        lines.append(
+            f"This model **turns recorded {lang} speech into text**. Give it an "
+            f"audio clip (a WAV file, 16 kHz, one channel), and it returns what "
+            f"was said.")
+        if cer is not None and wer is not None:
+            heard = ("on sentences it had never seen, spoken by people it had "
+                     "never heard" if frozen else
+                     "on recordings similar to its training data, which flatters it")
+            lines.append(
+                f"How good is it? Tested {heard}, it gets about "
+                f"**{max(0, 100 - cer * 100):.0f} of every 100 characters** and "
+                f"**{max(0, 100 - wer * 100):.0f} of every 100 words** right. "
+                f"Word accuracy is the one you will notice.")
+        if norm:
+            lines.append(
+                "It writes everything in **lowercase, without punctuation or "
+                "accent marks**. If you need those, they have to be added afterwards.")
+        lines.append(
+            "It was trained on clear, read speech recorded for a corpus. Expect "
+            "worse results on conversations, phone calls, music in the "
+            "background, or a speaker switching languages mid-sentence.")
+    if best and best != name:
+        lines.append(
+            f"**Not sure which model to pick?** For {lang}, use "
+            f"[`{best}`](https://huggingface.co/sapinsapin/{best}) — it is the most "
+            f"accurate one this organisation has published. This one exists for "
+            f"comparison and research.")
+    elif best == name:
+        lines.append(
+            f"**This is the one to use** for {lang} "
+            f"{'text-to-speech' if task == 'tts' else 'speech recognition'} "
+            f"from this organisation, as of the date on this card.")
+    elif task == "asr" and lang_code == "eng":
+        lines.append(
+            "There is no held-out-tested Philippine English model here yet; "
+            "for English, a general Whisper model will serve better.")
+    return "\n\n".join(lines)
+
+
 def _model_card(repo_id, base_model, dataset_name, task, lang_code, license,
                 extra_tags, metrics, train_summary, suffix) -> str:
     """The README for a published model. Every section is there so a reader
@@ -526,7 +595,11 @@ finetuned on the [Philippine Language Dataset](https://huggingface.co/datasets/{
 (PLD), read speech collected by the UP Diliman Digital Signal Processing
 Laboratory. Part of the [halohalo](https://github.com/sapinsapin/halohalo) project.
 
-## Method
+## In plain words
+
+{_plain_words(name, task, lang, lang_code, metrics, norm, frozen, is_orpheus)}
+
+## Method (for practitioners)
 
 {train_summary}
 
