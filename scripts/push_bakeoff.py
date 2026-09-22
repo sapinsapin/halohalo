@@ -159,6 +159,8 @@ def plan(run_dir: Path) -> dict | None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--cards-only", action="store_true",
+                    help="rewrite and upload README.md only; weights untouched")
     ap.add_argument("--max-cer", type=float, default=0.8,
                     help="skip runs that did not learn (CER at or above this); "
                          "1.0 publishes everything")
@@ -186,7 +188,7 @@ def main() -> None:
             p["train_summary"] = p.pop("train_summary_prefix") + p["train_summary"]
         print(f"{d.name} -> {name}  {p['metrics']}")
         if not args.dry_run:
-            push_model_to_hub(**p)
+            push_model_to_hub(**p, cards_only=args.cards_only)
 
 
 if __name__ == "__main__":
