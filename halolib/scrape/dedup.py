@@ -73,5 +73,10 @@ class DedupIndex:
             self.n_near += 1
             return "near"
         self.hashes.add(h)
+        # Keys are only labels for the index, and callers pass URLs — which are
+        # not unique in every corpus (halo-hil repeats them). Uniquify rather
+        # than letting MinHashLSH raise on a collision.
+        if key in self.lsh:
+            key = f"{key}#{len(self.hashes)}"
         self.lsh.insert(key, m)
         return None
