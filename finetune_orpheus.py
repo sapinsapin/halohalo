@@ -54,6 +54,10 @@ CODEBOOK_STRIDE = 4096
 
 DIGIT_RE = re.compile(r"\d")
 
+# word delimiter for the spelled-out frontends, as in finetune_ctc
+DELIM = "|"
+PUNCT_RE = re.compile(r"[^\w\s']")
+
 SAMPLE_TEXTS = [
     "Magandang umaga po sa inyong lahat.",
     "Salamat sa pakikinig, hanggang sa muli.",
@@ -132,43 +136,131 @@ def decode_tokens(snac_model, tokens: list[int], device: str) -> np.ndarray:
     return audio[0, 0].cpu().numpy()
 
 
-def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int):
-    """(audio, text, speaker_id) rows -> input_ids/labels, loss on speech only."""
-    import librosa
+def to_snac_rate(wav: np.ndarray, sr: int) -> np.ndarray:
+    """Resample to SNAC's 24kHz. The corpora are 16kHz, which is exactly 3/2,
+    and polyphase resampling does that in about 1.5 ms a clip where librosa's
+    default took 60 ms on the VM (measured, both paths, same clip). Over a
+    10k-clip corpus that is 25 seconds instead of 10 minutes, per language.
 
-    examples = []
-    skipped = 0
-    for row in ds_split:
-        text = clean_text(row["text"])
-        if text is None:
-            skipped += 1
-            continue
+    Upsampling adds no content above 8kHz either way — a data ceiling
+    documented in the pilot plan, not a bug.
+    """
+    if sr == SNAC_SR:
+        return wav
+    from fractions import Fraction
 
-        audio = row["audio"]
-        wav = np.asarray(audio["array"], dtype=np.float32)
-        if audio["sampling_rate"] != SNAC_SR:
-            # FSC is 16kHz; SNAC needs 24kHz. This adds no content above 8kHz
-            # — a data ceiling documented in the pilot plan, not a bug.
-            wav = librosa.resample(wav, orig_sr=audio["sampling_rate"],
-                                   target_sr=SNAC_SR)
+    from scipy.signal import resample_poly
+    r = Fraction(SNAC_SR, int(sr)).limit_denominator(1000)
+    return resample_poly(wav, r.numerator, r.denominator).astype(np.float32)
 
-        audio_tokens = encode_audio(snac_model, wav, device)
 
-        prompt = f"{row['speaker_id']}: {text}"
+def cache_path(cache_root, dataset: str, language: str | None, split: str,
+               n_rows: int) -> Path:
+    """Cache file for one (dataset, language, split) at one corpus size.
+
+    n_rows is in the name because --max-samples changes what the split holds:
+    without it a 20k-clip run would silently reuse a 2k-clip cache from an
+    earlier smoke test and train on a tenth of the data it was asked for.
+    """
+    return (Path(cache_root) /
+            f"snac_{dataset}_{language or 'all'}_{split}_{n_rows}.jsonl")
+
+
+def frontend_text(text: str, units: str) -> str:
+    """The text as the model is asked to read it — the R2 question, put to a
+    codec LM instead of a CTC head.
+
+    `bpe` is the raw sentence through Llama's tokenizer as shipped, which is
+    what Orpheus was pretrained on. The other two spell the sentence out in
+    units the tokenizer never saw as units, on the theory that a model with no
+    Philippine pretraining does better shown structure than left to infer it.
+    Same word-delimiter convention as the CTC arm (finetune_ctc.text_to_units),
+    so the two ablations are readable side by side.
+
+    This is a different mechanism from the CTC ablation: there the units were
+    the output alphabet, here they are the conditioning text. The CTC result
+    (characters beat syllables) therefore does not settle this one.
+    """
+    if units == "bpe":
+        return text
+    from halolib.syllables import units as syl_units
+    if units == "syllable":
+        return " ".join(syl_units(text, english="chars", delim=DELIM))
+    # the syllabifier drops punctuation, so the char arm must too: the two
+    # spelled-out arms have to differ in units and nothing else
+    out = []
+    for i, w in enumerate(PUNCT_RE.sub("", text.lower()).split()):
+        if i:
+            out.append(DELIM)
+        out.extend(list(w))
+    return " ".join(out)
+
+
+def build_examples(ds_split, tokenizer, snac_model, device, max_tokens: int,
+                   units: str = "bpe", cache: Path | None = None):
+    """(audio, text, speaker_id) rows -> input_ids/labels, loss on speech only.
+
+    SNAC encoding is codec inference on the GPU, and it used to run inside
+    every training job and die with it: a preempted run re-encoded the whole
+    corpus on restart, and each arm of an ablation paid the cost again for the
+    same audio. The tokens depend only on the waveform, so cache them keyed by
+    (dataset, language, split) and reuse them across arms, runs and languages.
+
+    The cache holds audio tokens and the raw sentence, not the assembled
+    sequence: --units changes only the prompt, so all three frontends of the
+    ablation share one cache and only the first of them pays for encoding.
+    """
+    import json
+
+    rows = None
+    if cache and cache.exists():
+        rows = [json.loads(line) for line in cache.read_text().splitlines()]
+        print(f"  snac cache: {cache} ({len(rows)} clips)")
+
+    if rows is None:
+        rows, skipped = [], 0
+        for row in ds_split:
+            text = clean_text(row["text"])
+            if text is None:
+                skipped += 1
+                continue
+
+            audio = row["audio"]
+            wav = to_snac_rate(np.asarray(audio["array"], dtype=np.float32),
+                               audio["sampling_rate"])
+
+            rows.append({"audio_tokens": encode_audio(snac_model, wav, device),
+                         "text": text,
+                         "speaker_id": str(row["speaker_id"])})
+
+        print(f"  encoded {len(rows)} clips ({skipped} skipped)")
+        if cache:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            tmp = cache.with_suffix(f".tmp{os.getpid()}")
+            tmp.write_text("\n".join(json.dumps(r) for r in rows))
+            tmp.rename(cache)          # atomic: a killed run leaves no half file
+            print(f"  snac cached: {cache}")
+
+    examples, too_long = [], 0
+    for r in rows:
+        prompt = f"{r['speaker_id']}: {frontend_text(r['text'], units)}"
         text_ids = tokenizer(prompt, add_special_tokens=False).input_ids
         prefix = [SOH] + text_ids + [EOT, EOH, SOAI, SOS]
-        input_ids = prefix + audio_tokens + [EOS_SPEECH, EOAI]
-
+        input_ids = prefix + r["audio_tokens"] + [EOS_SPEECH, EOAI]
         if len(input_ids) > max_tokens:
-            skipped += 1
+            too_long += 1
             continue
 
         # -100 over the prompt: grade the model on producing speech, not on
         # parroting back the text it was given
         labels = [-100] * len(prefix) + input_ids[len(prefix):]
-        examples.append({"input_ids": input_ids, "labels": labels})
+        # `length` feeds group_by_length, which batches similar-length
+        # sequences so a batch is not padded out to its longest member
+        examples.append({"input_ids": input_ids, "labels": labels,
+                         "length": len(input_ids)})
 
-    print(f"  built {len(examples)} examples ({skipped} skipped)")
+    print(f"  {len(examples)} examples, units={units} "
+          f"({too_long} over {max_tokens} tokens)")
     return examples
 
 
@@ -226,12 +318,47 @@ def main():
     ap.add_argument("--dataset", choices=["fsc", "livestream", "pld"],
                     default="fsc")
     ap.add_argument("--language", default=None, help="ISO 639-3 filter (pld)")
+    ap.add_argument("--units", choices=["bpe", "syllable", "char"],
+                    default="bpe",
+                    help="text frontend: the P1 ablation in "
+                         "docs/tts_sota_plan.md. bpe is Orpheus as pretrained")
     ap.add_argument("--max-samples", type=int, default=2000)
     ap.add_argument("--max-steps", type=int, default=1500)
+    # Defaults below are the 8 GB recipe. On the 96 GB RTX PRO 6000 use
+    # --cloud, which sets the batch, precision and optimiser in one flag.
     ap.add_argument("--batch-size", type=int, default=1)
     ap.add_argument("--grad-accum", type=int, default=16)
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--lora-rank", type=int, default=16)
+    ap.add_argument("--full", action="store_true",
+                    help="full bf16 finetune instead of LoRA: ~53 GB of "
+                         "optimiser state, so a big card only")
+    ap.add_argument("--no-quant", action="store_true",
+                    help="load the base in bf16 rather than 4-bit NF4. "
+                         "Quantisation is a memory compromise, and on a card "
+                         "with spare memory it only makes the matmuls slower")
+    ap.add_argument("--no-grad-checkpoint", action="store_true",
+                    help="stop recomputing activations; ~25%% faster when the "
+                         "memory is there")
+    ap.add_argument("--cloud", action="store_true",
+                    help="one flag for the RTX PRO 6000: no quantisation, no "
+                         "checkpointing, batch 8, fused optimiser, LoRA r=64")
+    ap.add_argument("--snac-cache", default=os.environ.get(
+        "SNAC_CACHE", str(Path(os.environ.get("PLD_WORK_DIR", ".")) / "snac_cache")),
+        help="where encoded SNAC tokens are reused across runs and arms")
+    ap.add_argument("--num-proc", type=int, default=1,
+                    help="dataset filter workers. Selecting one language means "
+                         "filter passes over PLD's ~300k rows; at num_proc=1 "
+                         "that is ~10 minutes of idle GPU per run. Keep 1 on "
+                         "WSL, where multiprocess map over decoded audio "
+                         "deadlocks on 9p; raise it on a Linux cloud VM")
+    ap.add_argument("--dataloader-workers", type=int, default=2)
+    ap.add_argument("--profile", action="store_true",
+                    help="profile ~10 steps and stop; trains nothing")
+    ap.add_argument("--cache-only", action="store_true",
+                    help="build the dataset and SNAC caches, then exit. Warms "
+                         "a cold VM without loading the 3B model, so the "
+                         "first real run starts at step 0")
     ap.add_argument("--max-tokens", type=int, default=1408,
                     help="sequence cap; 87.5 audio tokens per second of speech")
     ap.add_argument("--base-model", default=BASE_MODEL)
@@ -240,8 +367,25 @@ def main():
     ap.add_argument("--synthesize-only", action="store_true")
     ap.add_argument("--voice", default=None,
                     help="speaker_id to condition synthesis on")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue from the newest complete checkpoint in the "
+                         "run dir; required on a preemptible VM")
     ap.add_argument("--push", action="store_true")
     args = ap.parse_args()
+    if args.cloud:
+        # the 8 GB defaults cost the ASR bake-off half its throughput before
+        # they were found; make the big-card recipe a single flag instead of
+        # six that have to be remembered together
+        args.no_quant = True
+        args.no_grad_checkpoint = True
+        if args.batch_size == 1:
+            args.batch_size, args.grad_accum = 8, 1
+        if args.lora_rank == 16 and not args.full:
+            args.lora_rank = 64
+        if args.dataloader_workers == 2:
+            args.dataloader_workers = 8
+        if args.num_proc == 1:
+            args.num_proc = 8
 
     from peft import LoraConfig, PeftModel, get_peft_model
     from transformers import (AutoModelForCausalLM, AutoTokenizer,
@@ -251,21 +395,44 @@ def main():
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tag = args.dataset + (f"_{args.language}" if args.language else "")
+    tag = f"{args.units}_{tag}"
     out_dir = FINETUNE_DIR / f"orpheus_{tag}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
+
+    if args.cache_only:
+        # deliberately before the base model is touched: 6.6 GB of weights are
+        # irrelevant to encoding audio, and skipping them is most of the point
+        from halolib.finetune import load_speech_dataset as _load
+        ds = _load(args.dataset, task="tts", max_samples=args.max_samples,
+                   token=os.environ.get("HF_TOKEN"), num_proc=args.num_proc,
+                   language=args.language)
+        snac_model = load_snac(device)
+        for split in ("train", "test"):
+            build_examples(
+                ds[split], tokenizer, snac_model, device, args.max_tokens,
+                units=args.units,
+                cache=cache_path(args.snac_cache, args.dataset, args.language,
+                                 split, len(ds[split])))
+        print(f"caches warm: {args.dataset} {args.language or 'all'}")
+        return
+    quantize = not (args.no_quant or args.full)
     quant = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_use_double_quant=True,
-    )
+    ) if quantize else None
     model = AutoModelForCausalLM.from_pretrained(
         args.base_model, quantization_config=quant,
         dtype=torch.bfloat16, device_map={"": 0} if device == "cuda" else None,
         attn_implementation="sdpa",
     )
+    print(f"  base: {'4-bit NF4' if quantize else 'bf16'}, "
+          f"{'full finetune' if args.full else f'LoRA r={args.lora_rank}'}, "
+          f"batch {args.batch_size}x{args.grad_accum}, "
+          f"checkpointing {'off' if args.no_grad_checkpoint else 'on'}")
     model.config.use_cache = False
 
     snac_model = load_snac(device)
@@ -281,31 +448,53 @@ def main():
     ds = load_speech_dataset(args.dataset, task="tts",
                              max_samples=args.max_samples,
                              token=os.environ.get("HF_TOKEN"),
+                             num_proc=args.num_proc,
                              language=args.language)
     print(ds)
 
     print("Encoding audio to SNAC tokens...")
-    train_ex = build_examples(ds["train"], tokenizer, snac_model, device,
-                              args.max_tokens)
-    eval_ex = build_examples(ds["test"], tokenizer, snac_model, device,
-                             args.max_tokens)
+    train_ex = build_examples(
+        ds["train"], tokenizer, snac_model, device, args.max_tokens,
+        units=args.units,
+        cache=cache_path(args.snac_cache, args.dataset, args.language, "train",
+                         len(ds["train"])))
+    eval_ex = build_examples(
+        ds["test"], tokenizer, snac_model, device, args.max_tokens,
+        units=args.units,
+        cache=cache_path(args.snac_cache, args.dataset, args.language, "test",
+                         len(ds["test"])))
     if not train_ex:
         raise SystemExit("no training examples survived filtering")
+    # the codec is only needed for encoding and for the listen test; freeing it
+    # returns ~1 GB and stops it holding fragments of the allocator
+    del snac_model
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    snac_model = None
 
-    from peft import prepare_model_for_kbit_training
-    model = prepare_model_for_kbit_training(
-        model, use_gradient_checkpointing=True)
-    model = get_peft_model(model, LoraConfig(
-        r=args.lora_rank,
-        lora_alpha=args.lora_rank * 2,
-        lora_dropout=0.0,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj"],
-        bias="none",
-        task_type="CAUSAL_LM",
-        use_rslora=True,
-    ))
-    model.print_trainable_parameters()
+    if args.full:
+        # Nothing to graft on: train the checkpoint itself. Embeddings stay
+        # trainable here (unlike the LoRA path) because the audio tokens are
+        # what we are teaching, and at bf16 the 157k-token vocab is affordable.
+        # checkpointing is set from TrainingArguments below
+        print(f"  full finetune: "
+              f"{sum(p.numel() for p in model.parameters()) / 1e9:.2f}B params")
+    else:
+        if quantize:
+            from peft import prepare_model_for_kbit_training
+            model = prepare_model_for_kbit_training(
+                model, use_gradient_checkpointing=not args.no_grad_checkpoint)
+        model = get_peft_model(model, LoraConfig(
+            r=args.lora_rank,
+            lora_alpha=args.lora_rank * 2,
+            lora_dropout=0.0,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj"],
+            bias="none",
+            task_type="CAUSAL_LM",
+            use_rslora=True,
+        ))
+        model.print_trainable_parameters()
 
     trainer = Trainer(
         args=TrainingArguments(
@@ -316,19 +505,29 @@ def main():
             lr_scheduler_type="cosine",
             warmup_steps=100,
             max_steps=args.max_steps,
-            gradient_checkpointing=True,
+            gradient_checkpointing=not args.no_grad_checkpoint,
             bf16=True,
-            optim="paged_adamw_8bit",
+            # paged 8-bit Adam exists to survive an 8 GB card; with memory to
+            # spare, fused AdamW is both faster and exact
+            optim=("adamw_torch_fused" if args.no_quant or args.full
+                   else "paged_adamw_8bit"),
+            # audio token sequences run 300-1400 long, so padding to the
+            # longest in a random batch wastes a large fraction of every step.
+            # transformers 5 replaced the group_by_length flag with this
+            # strategy string; the flag is gone, not deprecated.
+            train_sampling_strategy="group_by_length",
+            length_column_name="length",
             eval_strategy="steps",
             eval_steps=250,
             save_steps=250,
             save_total_limit=2,
             logging_steps=10,
-            report_to=[],
+            report_to=["wandb"] if os.environ.get("WANDB_API_KEY") else [],
+            run_name=f"orpheus_{tag}",
             load_best_model_at_end=True,
             greater_is_better=False,
             label_names=["labels"],
-            dataloader_num_workers=2,
+            dataloader_num_workers=args.dataloader_workers,
             remove_unused_columns=False,
         ),
         model=model,
@@ -337,12 +536,27 @@ def main():
         data_collator=OrpheusCollator(tokenizer.pad_token_id or 128263),
     )
 
-    trainer.train()
+    if args.profile:
+        from halolib.profiling import profiler_callback
+        trainer.add_callback(profiler_callback(out_dir))
+        trainer.train()
+        return
+
+    # On a preemptible VM the process can die at any moment; --resume picks up
+    # from the newest checkpoint that finished writing rather than step 0.
+    ckpt = None
+    if args.resume:
+        from halolib.finetune import latest_checkpoint
+        ckpt = latest_checkpoint(out_dir)
+        print(f"  resuming from {ckpt}" if ckpt else "  no checkpoint, from scratch")
+
+    trainer.train(resume_from_checkpoint=ckpt)
     trainer.save_model(str(out_dir / "final"))
     tokenizer.save_pretrained(str(out_dir / "final"))
     print(f"Saved: {out_dir / 'final'}")
 
     voice = args.voice or str(ds["train"][0]["speaker_id"])
+    snac_model = load_snac(device)      # freed after encoding; needed again here
     synthesize_samples(model, tokenizer, snac_model, out_dir, voice, device)
 
     if args.push:

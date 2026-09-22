@@ -20,7 +20,7 @@ Published under [sapinsapin](https://huggingface.co/sapinsapin); cards in
 | `pld` *(private)* | 448 h, 10 languages, 980 speakers | UP-DSP. Bilingual speakers read both English and Philippine-language prompts — a rare same-speaker cross-lingual seed. Redistribution terms unresolved. |
 | `halo-livestream` | growing | Spontaneous Taglish from diarized streams, QC-gated by our own pipeline. The only spontaneous code-switched speech we control. |
 | `BantayWika` | text | Literary/reference corpora, FineWeb-compatible. |
-| `halohalo` (+ `halo-tgl`/`hil`/`bcl`) | text | Cleaned CommonCrawl web text per language. |
+| `halohalo` (+ `halo-tgl`/`hil`/`bcl`) | text | Cleaned CommonCrawl web text per language. **`halo-hil` is mostly not Hiligaynon** — audited 2026-09-22: GlotLID labels 44 % of a 2,000-sentence sample English, 21 % Filipino, 12 % Hiligaynon (much of it Tagalog tabloid content and site boilerplate). Do not use its `hil` label as ground truth; filter per sentence with LID first. |
 
 **Gap we own:** no public benchmark measures Taglish code-switching. Building
 one from held-out livestream + FSC spontaneous data is the highest-value eval

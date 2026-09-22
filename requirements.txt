@@ -21,3 +21,11 @@ pyloudnorm
 # tokenizer analysis (scripts/tokenizer_report.py) — unsupervised
 # morphological segmentation, BSD-2, pure Python
 morfessor
+
+# seeded web scrape + language ID (scrape_web.py, scripts/train_lid.py,
+# halolib/lid.py, halolib/scrape/)
+tavily-python
+trafilatura
+fasttext-wheel
+datasketch
+yt-dlp

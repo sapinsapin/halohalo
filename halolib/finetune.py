@@ -20,10 +20,12 @@ from datasets import Audio, DatasetDict, load_dataset
 TARGET_SR = 16000
 
 # hub naming: <base model basename>-<corpus suffix>
-_DATASET_SUFFIX = {"fsc": "fsc", "livestream": "halohaloLS", "pld": "pld"}
+_DATASET_SUFFIX = {"fsc": "fsc", "livestream": "halohaloLS", "pld": "pld",
+                   "fsc+pld": "fsc-pld"}
 _DATASET_REPOS = {"fsc": "sapinsapin/filipinospeechcorpus",
                   "livestream": "sapinsapin/halo-livestream",
-                  "pld": "sapinsapin/pld"}
+                  "pld": "sapinsapin/pld",
+                  "fsc+pld": "sapinsapin/pld"}      # namespace lookup only
 _TASK_TAGS = {"tts": "text-to-speech", "asr": "automatic-speech-recognition",
               "s2s": "audio-to-audio"}
 
@@ -50,6 +52,29 @@ _PLD_FILTERS = {
 }
 
 
+def normalise_text(text: str) -> str:
+    """Lowercase, drop stress accents and punctuation, single spaces.
+
+    PLD's transcripts mark stress (ganína, ihúnong) and keep punctuation; 35%
+    of Cebuano reference words carry one or the other. Neither is part of how
+    the languages are ordinarily written, and an ASR model is not being asked
+    for them. Measured 2026-09-21 on the frozen ceb split, scoring the same
+    hypotheses with and without them moved whisper-large-v3 from 36.9 to 24.2
+    WER and omni-1B from 51.5 to 39.5 — twelve points of "error" in both that
+    were orthography. Apostrophes stay: they are letters here (mo'y, di').
+
+    A view over the corpus, not a replacement for it: the raw text is what a
+    stress-marking model would need.
+    """
+    import re
+    import unicodedata
+
+    t = unicodedata.normalize("NFD", (text or "").lower())
+    t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+    t = unicodedata.normalize("NFC", t).replace("’", "'").replace("‘", "'")
+    return " ".join(re.sub(r"[^\w\s']", " ", t).split())
+
+
 def load_speech_dataset(
     name: str,
     task: str,
@@ -67,6 +92,23 @@ def load_speech_dataset(
     """
     if task not in ("tts", "asr"):
         raise ValueError(f"task must be tts|asr, got {task!r}")
+
+    if "+" in name:
+        # Combined corpora, e.g. "fsc+pld": load each part (already cast to
+        # the shared schema), give each an equal share of max_samples so a
+        # 305k-row corpus cannot drown a 50k-row one, then concatenate.
+        # Motivated by the FSC/PLD cross-evaluation in docs/pld_models_plan.md
+        # §3.2b: each per-corpus model collapses on the other corpus.
+        from datasets import concatenate_datasets
+        parts = name.split("+")
+        share = max_samples // len(parts) if max_samples else None
+        loaded = [load_speech_dataset(p, task, livestream_repo=livestream_repo,
+                                      fsc_repo=fsc_repo, max_samples=share,
+                                      token=token, num_proc=num_proc,
+                                      language=language) for p in parts]
+        return DatasetDict({
+            split: concatenate_datasets([d[split] for d in loaded]).shuffle(seed=42)
+            for split in ("train", "test")})
 
     if name == "fsc":
         ds = load_dataset(fsc_repo, token=token)
@@ -108,18 +150,128 @@ def load_speech_dataset(
 
         root = Path(os.environ.get(
             "PLD_RAW", "/mnt/d/backup/dsp_bkp/Speech_Corpora/PLD_raw/PLD"))
+
+        # Cloud path: no raw corpus on the machine, so read the published
+        # parquet instead. Set PLD_SOURCE=hub explicitly, or let it fall back
+        # automatically when the raw tree is absent (a Nebius VM). The Hub
+        # rows carry the same speech_type / text_is_prompt / num_words fields
+        # the local index does, so _PLD_FILTERS applies unchanged.
+        if os.environ.get("PLD_SOURCE") == "hub" or not root.exists():
+            filt = _PLD_FILTERS[task]
+            keep_cols = {"audio", "text", "speaker_id"}
+
+            # Selecting one language means three passes over PLD's ~300k rows
+            # (the task+language filter, then train and test assignment). That
+            # is minutes of idle GPU at the start of *every* run, and the
+            # bake-off runs many arms per language. Cache the filtered, split
+            # corpus once per (task, language, split kind) and reuse it.
+            split_kind = ("random" if os.environ.get("PLD_SPLIT") == "random"
+                          else "frozen")
+            cache_root = Path(os.environ.get(
+                "PLD_DS_CACHE", Path(os.environ.get("PLD_WORK_DIR", ".")) / "ds_cache"))
+            cached = cache_root / f"pld_{task}_{language or 'all'}_{split_kind}"
+            if cached.is_dir():
+                from datasets import load_from_disk
+                print(f"  dataset cache: {cached}")
+                ds = load_from_disk(str(cached))
+                if max_samples:
+                    for split in ds:
+                        n = min(max_samples if split == "train"
+                                else max(50, max_samples // 10), len(ds[split]))
+                        ds[split] = ds[split].shuffle(seed=42).select(range(n))
+                return ds
+
+            hub = load_dataset(_DATASET_REPOS["pld"], token=token)
+
+            def _keep(r):
+                return filt(r) and (language is None or r["language"] == language)
+
+            hub = hub.filter(_keep, num_proc=num_proc)
+            # Same frozen split as the local path: rebuild train/test from the
+            # pooled rows rather than trusting the published random split,
+            # whose speakers and prompts overlap.
+            if language and os.environ.get("PLD_SPLIT") != "random":
+                try:
+                    from datasets import concatenate_datasets
+
+                    from halolib.splits import assign, load_spec
+                    spec = load_spec(language)
+                    pooled = concatenate_datasets([hub[s] for s in sorted(hub)])
+                    hub = DatasetDict({
+                        w: pooled.filter(lambda r, w=w: assign(r, spec) == w,
+                                         num_proc=num_proc)
+                        for w in ("train", "test")})
+                    print(f"  split: frozen speaker+prompt-disjoint "
+                          f"({len(hub['train'])} train / {len(hub['test'])} test)")
+                except FileNotFoundError:
+                    print("  split: published random split — speakers and "
+                          "prompts overlap; in-domain numbers only")
+            hub = hub.rename_column("sentence", "text")
+            hub = hub.remove_columns(
+                [c for c in hub["train"].column_names if c not in keep_cols])
+            if not len(hub["train"]):
+                raise ValueError(
+                    f"no PLD rows on the Hub for task={task} language={language!r}")
+            ds = hub
+            # fall through to the shared cast / max_samples handling below
+            ds = ds.cast_column("audio", Audio(sampling_rate=TARGET_SR))
+            # cache before subsetting, so runs with different --max-samples
+            # share it. Written to a temp dir first: a job killed mid-write
+            # must not leave a half-corpus that later runs would trust.
+            try:
+                tmp = cached.with_name(cached.name + f".tmp{os.getpid()}")
+                ds.save_to_disk(str(tmp))
+                tmp.rename(cached)
+                print(f"  dataset cached: {cached}")
+            except Exception as e:      # a cache is an optimisation, never a hard failure
+                print(f"  dataset cache skipped ({type(e).__name__}: {e})")
+            if max_samples:
+                for split in ds:
+                    n = min(max_samples if split == "train"
+                            else max(50, max_samples // 10), len(ds[split]))
+                    ds[split] = ds[split].shuffle(seed=42).select(range(n))
+            return ds
+
         if not root.exists():
             raise FileNotFoundError(
-                f"PLD raw corpus not found at {root}; set PLD_RAW or load "
-                f"from the Hub dataset sapinsapin/pld instead")
+                f"PLD raw corpus not found at {root}; set PLD_RAW, or set "
+                f"PLD_SOURCE=hub to read sapinsapin/pld from the Hub")
 
         entries, _ = index_corpus(root)
         filt = _PLD_FILTERS[task]
-        rows = [{"audio": str(e["wav_path"]),
-                 "text": e["sentence"],
-                 "speaker_id": e["speaker_id"]}
-                for e in entries
-                if filt(e) and (language is None or e["language"] == language)]
+
+        # Frozen speaker- AND prompt-disjoint split when one exists for this
+        # language. PLD is a prompt corpus, so a speaker-only split still
+        # trains on every test sentence and the resulting CER is in-domain
+        # only (docs/pld_sota_track.md §6). Falls back to the historical
+        # random split when no spec is built, so older runs stay reproducible.
+        spec = None
+        # PLD_SPLIT=random forces the historical split. Needed whenever a run
+        # must stay comparable with a model already published on that split,
+        # because compare_and_push_asr.py gates against the published CER.
+        if language and os.environ.get("PLD_SPLIT") != "random":
+            try:
+                from halolib.splits import assign, load_spec
+                spec = load_spec(language)
+                s = spec["stats"]
+                print(f"  split: frozen speaker+prompt-disjoint "
+                      f"({s['train']} train / {s['test']} test rows available)")
+            except FileNotFoundError:
+                print("  split: random over utterances — no frozen spec, so "
+                      "speakers and prompts overlap; in-domain numbers only")
+
+        rows = []
+        for e in entries:
+            if not filt(e) or (language is not None and e["language"] != language):
+                continue
+            row = {"audio": str(e["wav_path"]), "text": e["sentence"],
+                   "speaker_id": e["speaker_id"]}
+            if spec is not None:
+                where = assign(e, spec)
+                if where is None:          # the disjointness remainder
+                    continue
+                row["_split"] = where
+            rows.append(row)
         if not rows:
             raise ValueError(f"no PLD rows for task={task} language={language!r}")
         random.Random(42).shuffle(rows)     # session order → mixed speakers
@@ -131,22 +283,32 @@ def load_speech_dataset(
         # would cost minutes for no benefit.
         import soundfile as sf
 
-        need = (max_samples + 400) if max_samples else len(rows)
-        keep, bad = [], 0
+        if spec is None:
+            budget = {"train": (max_samples + 400) if max_samples else len(rows)}
+        else:
+            n = max_samples or len(rows)
+            budget = {"train": n, "test": max(50, n // 10)}
+        keep = {"train": [], "test": []}
+        bad = 0
         for r in rows:
-            if len(keep) >= need:
-                break
+            where = r.pop("_split", "train")
+            if len(keep[where]) >= budget.get(where, 0):
+                if all(len(keep[k]) >= v for k, v in budget.items()):
+                    break
+                continue
             try:
                 sf.info(r["audio"])
             except Exception:
                 bad += 1
                 continue
-            keep.append(r)
+            keep[where].append(r)
         if bad:
             print(f"  skipped {bad} unreadable wav(s)")
-        if not keep:
+        if not keep["train"]:
             raise ValueError(f"no readable PLD audio for language={language!r}")
-        ds = DatasetDict({"train": Dataset.from_list(keep)})
+        ds = DatasetDict({"train": Dataset.from_list(keep["train"])})
+        if keep["test"]:
+            ds["test"] = Dataset.from_list(keep["test"])
 
     else:
         raise ValueError(f"unknown dataset {name!r} (expected fsc|livestream|pld)")
@@ -176,6 +338,26 @@ def load_speech_dataset(
             ds[split] = ds[split].shuffle(seed=42).select(range(n))
 
     return ds
+
+
+def latest_checkpoint(out_dir: str | Path) -> str | None:
+    """Newest checkpoint that was fully written, or None.
+
+    A VM that dies mid-save leaves a checkpoint directory holding only the
+    config files; handing that to trainer.train() fails with "Can't find a
+    valid checkpoint" and the run never restarts. Skip back to the newest
+    one that has both weights and trainer state.
+    """
+    ckpts = sorted(Path(out_dir).glob("checkpoint-*"),
+                   key=lambda p: int(p.name.split("-")[-1]), reverse=True)
+    for c in ckpts:
+        weights = any((c / f).exists() for f in (
+            "model.safetensors", "model.safetensors.index.json",
+            "pytorch_model.bin", "pytorch_model.bin.index.json"))
+        if weights and (c / "trainer_state.json").exists():
+            return str(c)
+        print(f"resume: skipping incomplete {c.name}")
+    return None
 
 
 def push_model_to_hub(

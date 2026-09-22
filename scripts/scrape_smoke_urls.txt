@@ -1,0 +1,15 @@
+# Smoke-test URL list for `scrape_web.py --backend direct --urls scripts/scrape_smoke_urls.txt`
+# One page per language on hosts that exist for all ten PLD languages, plus
+# deliberate wrong-language and boilerplate pages so the LID gate has
+# something to reject. Wikipedia is used here ONLY as a smoke test: Cebuano
+# and Waray Wikipedia are ~95 % bot-written and are excluded from real runs.
+https://bcl.wikipedia.org/wiki/Bikol_Sentral
+https://ceb.wikipedia.org/wiki/Sugbo_(dakbayan)
+https://hil.wikipedia.org/wiki/Hiligaynon
+https://ilo.wikipedia.org/wiki/Pagsasao_nga_Ilokano
+https://pag.wikipedia.org/wiki/Pangasinan
+https://pam.wikipedia.org/wiki/Amanung_Kapampangan
+https://war.wikipedia.org/wiki/Winaray
+https://tl.wikipedia.org/wiki/Wikang_Filipino
+https://en.wikipedia.org/wiki/Tausug_language
+https://tl.wikipedia.org/wiki/Lungsod_ng_Maynila

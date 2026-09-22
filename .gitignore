@@ -10,8 +10,12 @@ venv/
 LivestreamCorpus/
 fsc_shards/
 *.zip
-finetune_runs/
+finetune_runs*/
 ts-wandb.txt
 
 # raw archive staging (push_livestream_raw.py)
 raw_staging/
+ts-nebtok.txt
+
+# frozen PLD split specs hold corpus prompt text (CC-BY-NC, research-only)
+splits/
