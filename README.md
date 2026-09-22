@@ -19,6 +19,7 @@ LIVESTREAM_OUTPUT_DIR=/path/to/livestream_output
 HF_REPO=sapinsapin/filipinospeechcorpus
 HF_CORPUS_REPO=sapinsapin/BantayWika
 HF_TOKEN=your_hf_token
+TAVILY_API_KEY=your_tavily_key      # default search backend for scrape_web.py
 ```
 
 ---
@@ -211,6 +212,26 @@ python prep_halohalo.py sapinsapin/halo-hil sapinsapin/halohalo
 python prep_halohalo.py sapinsapin/halo-tgl sapinsapin/halohalo --append
 python prep_halohalo.py sapinsapin/halo-bcl sapinsapin/halohalo --append
 ```
+
+---
+
+## Web scrape — seeded text + voice for all ten languages
+
+`scrape_web.py` uses the corpora we hold (PLD, halohalo, BantayWika) as seeds:
+distinctive words per language become search queries, hits are gated by
+language identification (our HaloLID + GlotLID), cleaned, deduplicated, and
+written as FineWeb-schema parquet with per-URL provenance. Resumable.
+Backends: **Tavily (default)**, `direct` URL lists, `fineweb2`.
+
+```bash
+python scrape_web.py --langs ceb,war --max-docs 200        # text, Tavily
+python scrape_web.py --backend fineweb2 --max-docs 2000    # retained corpus source
+python scrape_web.py --voice --langs ilo --download-audio  # YouTube, CC-only
+python scrape_web.py --push                                # append to sapinsapin/halo-{lang}
+python scripts/train_lid.py --push                         # retrain + publish sapinsapin/halo-lid
+```
+
+See [`docs/web_scrape_pipeline.md`](docs/web_scrape_pipeline.md).
 
 ---
 
