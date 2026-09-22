@@ -360,6 +360,203 @@ def latest_checkpoint(out_dir: str | Path) -> str | None:
     return None
 
 
+_LANG_NAMES = {"bcl": "Central Bikol", "ceb": "Cebuano", "eng": "Philippine English",
+               "fil": "Filipino", "hil": "Hiligaynon", "ilo": "Ilocano",
+               "pag": "Pangasinan", "pam": "Kapampangan", "tsg": "Tausug",
+               "war": "Waray", "tl": "Filipino"}
+
+
+def _model_card(repo_id, base_model, dataset_name, task, lang_code, license,
+                extra_tags, metrics, train_summary, suffix) -> str:
+    """The README for a published model. Every section is there so a reader
+    who never opens the repo can answer: what is this, what was it trained on,
+    how was the number measured, how do I run it, and what should I not
+    conclude from it."""
+    name = repo_id.split("/")[1]
+    lang = _LANG_NAMES.get(lang_code, lang_code)
+    norm = suffix.endswith("-norm")
+    is_whisper = "whisper" in base_model
+    is_ctc = "omniASR" in base_model or "w2v" in base_model
+    is_orpheus = "orpheus" in base_model
+    frozen = "frozen" in train_summary or "disjoint" in train_summary
+    tag_lines = "".join(f"- {t}\n" for t in
+                        (extra_tags if extra_tags is not None else ["filipino", "tagalog"]))
+    metric_lines = "".join(f"| {k} | {v:.4f} |\n" for k, v in metrics.items())
+    ds_repo = _DATASET_REPOS[dataset_name]
+
+    if frozen:
+        split_text = (
+            "**Frozen speaker- and prompt-disjoint split** of PLD (`splits/pld_*.json` "
+            "in the repo): no test speaker and no test sentence appears anywhere in "
+            "training. Numbers on this split are not comparable with the in-domain "
+            "figures on the dataset card, which share both, and are typically "
+            "several times higher for that reason.")
+    else:
+        split_text = (
+            "Random split of the corpus, which shares speakers and prompt sentences "
+            "between train and test. Optimistic; not comparable with speaker-disjoint "
+            "numbers.")
+
+    if task == "tts":
+        metric_text = (
+            "Round-trip intelligibility: 50 frozen test sentences are synthesized, "
+            "transcribed by an ASR judge (`whisper-large-v3-pld-<lang>` where it "
+            "exists, else `whisper-small-pld-<lang>`), and scored against the text. "
+            "`cer`/`wer` are character and word error rates after lowercasing and "
+            "stripping punctuation and accents. `spk_sim` is ECAPA cosine similarity "
+            "to the human recording of the same sentence (1.0 = same voice). The "
+            "human recordings themselves score 1-3% CER through the same judge; "
+            "that is the floor.")
+    elif norm:
+        metric_text = (
+            "`cer` and `wer` are character and word error rates on the whole test "
+            "split, hypothesis and reference both lowercased, whitespace-normalised, "
+            "and with stress accents and punctuation removed "
+            "(`halolib.finetune.normalise_text`). PLD marks stress on about a third "
+            "of words and an ASR model is not asked for it: scoring the same "
+            "hypotheses with and without them moved whisper-large-v3 on Cebuano "
+            "from 36.9 to 24.2 WER. `eval_loss` is the training objective on the "
+            "test split.")
+    else:
+        metric_text = (
+            "`cer` and `wer` are character and word error rates on the whole test "
+            "split, hypothesis and reference both lowercased and whitespace-"
+            "normalised. Accents and punctuation in the reference count as errors "
+            "when missing, which is strict: PLD marks stress on about a third of "
+            "words. The `-norm` variant of this model uses the other convention. "
+            "`eval_loss` is the training objective on the test split.")
+
+    if is_whisper:
+        usage = f"""```python
+from transformers import WhisperForConditionalGeneration, WhisperProcessor
+import torch, soundfile as sf
+
+proc = WhisperProcessor.from_pretrained("{repo_id}")
+model = WhisperForConditionalGeneration.from_pretrained("{repo_id}").eval()
+wav, sr = sf.read("clip.wav")          # 16 kHz mono
+feats = proc(wav, sampling_rate=16000, return_tensors="pt").input_features
+with torch.no_grad():
+    ids = model.generate(feats, task="transcribe", max_new_tokens=200)
+print(proc.batch_decode(ids, skip_special_tokens=True)[0])
+```
+Languages other than Filipino and English were trained under Whisper's `<|tl|>`
+token, the closest one it has; do not pass a `language=` argument."""
+        if norm:
+            usage += "\nOutput is lowercase with no punctuation or accents."
+    elif is_ctc:
+        usage = f"""```python
+from transformers import AutoFeatureExtractor, Wav2Vec2ForCTC
+import torch, json, soundfile as sf
+from huggingface_hub import hf_hub_download
+
+repo = "{repo_id}"
+extractor = AutoFeatureExtractor.from_pretrained(repo)
+model = Wav2Vec2ForCTC.from_pretrained(repo).eval()
+vocab = json.load(open(hf_hub_download(repo, "vocab.json")))
+id2unit = {{i: u for u, i in vocab.items()}}
+
+wav, sr = sf.read("clip.wav")          # 16 kHz mono
+x = extractor(wav, sampling_rate=16000, return_tensors="pt").input_values
+with torch.no_grad():
+    ids = model(x).logits[0].argmax(-1).tolist()
+out, prev = [], None                    # greedy CTC: collapse repeats, drop blank (0)
+for i in ids:
+    if i != prev and i != 0:
+        out.append(id2unit[i])
+    prev = i
+print("".join(out).replace("|", " ").strip())
+```
+A 4-gram word LM over PLD's training transcripts, fused with `pyctcdecode`,
+lowers WER by a further 4-7 points (`scripts/ctc_lm_eval.py` in the repo)."""
+    elif is_orpheus:
+        units = suffix.split("-")[0]
+        usage = f"""This is a LoRA adapter on `{base_model}`; audio is SNAC codec tokens.
+```python
+from peft import PeftModel
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+base = "{base_model}"
+tok = AutoTokenizer.from_pretrained(base)
+model = AutoModelForCausalLM.from_pretrained(base, dtype=torch.bfloat16, device_map="cuda")
+model = PeftModel.from_pretrained(model, "{repo_id}").eval()
+```
+Then follow `finetune_orpheus.py` in the halohalo repo: build the prompt with
+`frontend_text(text, "{units}")` -- **the adapter was trained on `{units}` text and
+must be prompted the same way** -- wrap it in the SOH/EOT/EOH/SOAI/SOS framing,
+generate, and decode the tokens with `decode_tokens` through SNAC 24 kHz.
+`scripts/tts_eval.py --stage synth` does all of this."""
+    else:
+        usage = f"See `finetune_{task}.py` in the halohalo repo."
+
+    caveats = []
+    if task == "tts":
+        caveats += ["50 sentences per language resolves a gap of a few CER points, "
+                    "not of one.",
+                    "The judge is our own ASR model, trained on the same corpus; an "
+                    "independent judge is still owed before these numbers are cited.",
+                    "Read, prompted speech only. Spontaneous or noisy input is out of "
+                    "domain."]
+    else:
+        caveats += ["Trained on read, prompted speech; accuracy drops on spontaneous "
+                    "or noisy audio.",
+                    "One corpus, one recording setup. Cross-corpus tests on Filipino "
+                    "showed large drops for models of this kind."]
+    if not frozen:
+        caveats.append("Scored on an overlapping split; expect much worse on unseen speakers.")
+    caveat_lines = "".join(f"- {c}\n" for c in caveats)
+    kind = "text-to-speech" if task == "tts" else "speech recognition"
+
+    return f"""---
+language: {lang_code}
+license: {license}
+library_name: {"peft" if is_orpheus else "transformers"}
+pipeline_tag: {_TASK_TAGS[task]}
+base_model: {base_model}
+datasets:
+- {ds_repo}
+tags:
+- {_TASK_TAGS[task]}
+{tag_lines}---
+
+# {name}
+
+**{lang} {kind}**: [`{base_model}`](https://huggingface.co/{base_model})
+finetuned on the [Philippine Language Dataset](https://huggingface.co/datasets/{ds_repo})
+(PLD), read speech collected by the UP Diliman Digital Signal Processing
+Laboratory. Part of the [halohalo](https://github.com/sapinsapin/halohalo) project.
+
+## Method
+
+{train_summary}
+
+## Evaluation
+
+{split_text}
+
+{metric_text}
+
+| metric | value |
+|---|---|
+{metric_lines}
+## How to use
+
+{usage}
+
+## Caveats
+
+{caveat_lines}
+## Licence
+
+`{license}`. PLD is CC-BY-NC and research-only, so every model trained on it
+inherits that regardless of the base model's own licence. The base model's
+terms apply in addition.
+
+Trained with `finetune_{task}.py` from halohalo; the dataset adapter
+normalises each corpus to `(audio@16k, text, speaker_id)`.
+"""
+
+
 def push_model_to_hub(
     final_dir: str | Path,
     base_model: str,
@@ -374,6 +571,7 @@ def push_model_to_hub(
     suffix: str | None = None,
     lang_code: str = "tl",
     extra_tags: list[str] | None = None,
+    cards_only: bool = False,
 ) -> str:
     """Upload a finetuned model dir as <ns>/<base basename>-<corpus suffix>.
 
@@ -398,34 +596,19 @@ def push_model_to_hub(
                         (extra_tags if extra_tags is not None
                          else ["filipino", "tagalog"]))
     metric_lines = "".join(f"| {k} | {v:.4f} |\n" for k, v in (metrics or {}).items())
-    card = f"""---
-language: {lang_code}
-license: {license}
-library_name: transformers
-pipeline_tag: {_TASK_TAGS[task]}
-base_model: {base_model}
-datasets:
-- {_DATASET_REPOS[dataset_name]}
-tags:
-- {_TASK_TAGS[task]}
-{tag_lines}---
-
-# {repo_id.split('/')[1]}
-
-[`{base_model}`](https://huggingface.co/{base_model}) finetuned on
-[`{_DATASET_REPOS[dataset_name]}`](https://huggingface.co/datasets/{_DATASET_REPOS[dataset_name]}).
-
-{train_summary or ""}
-
-{f"| metric | value |\n|---|---|\n{metric_lines}" if metric_lines else ""}
-
-Trained with `finetune_{task}.py` from the
-[halohalo](https://github.com/sapinsapin/halohalo) pipeline; the dataset
-adapter normalizes each corpus to `(audio@16k, text, speaker_id)` so corpora
-are swappable with a `--dataset` flag.
-"""
+    card = _model_card(repo_id, base_model, dataset_name, task, lang_code,
+                       license, extra_tags, metrics or {}, train_summary or "",
+                       suffix or "")
     (Path(final_dir) / "README.md").write_text(card, encoding="utf-8")
 
+    if cards_only:
+        # refresh the README of a repo whose weights are already up
+        api.upload_file(path_or_fileobj=str(Path(final_dir) / "README.md"),
+                        path_in_repo="README.md", repo_id=repo_id,
+                        commit_message="Refresh model card")
+        url = f"https://huggingface.co/{repo_id}"
+        print(f"Card refreshed: {url}")
+        return url
     api.upload_folder(folder_path=str(final_dir), repo_id=repo_id,
                       commit_message=f"Upload {task} finetune ({dataset_name})")
     for f in sample_files or []:

@@ -113,12 +113,29 @@ the speech work already uses.
 | metric | per language | why |
 |---|---|---|
 | **bits per byte** on held-out text | all 10 | Tokenizer-independent, so bases with different tokenizers and extended vocabularies compare fairly. Perplexity doesn't. Held-out = speaker/document-disjoint slices of scrape + halohalo, decontaminated. |
-| **Belebele** reading comprehension | the languages it covers | Multiple-choice, parallel across languages, so gains are comparable across languages. **[verify coverage per language]** |
-| **SIB-200** topic classification | the languages it covers | Also derived from FLORES; cheap, few-shot. **[verify coverage]** |
-| **FLORES-200** fil/ceb/ilo/war/… ↔ eng | the languages it covers | Few-shot translation, chrF++. Also a check on the parallel-data ablation. **[verify coverage]** |
+| **Belebele** reading comprehension | **tgl, ceb, ilo, war** (verified 2026-09-22: 4 of our 10 among its 122 configs) | Multiple-choice, parallel across languages, so gains are comparable across languages. |
+| **SIB-200** topic classification | **tgl, ceb, ilo, pag, war** (verified: 5 of 10 among 205 configs) | Derived from FLORES; cheap, few-shot. |
+| **FLORES-200** ↔ eng | at least **tgl, ceb, ilo, pag, war** (inferred: SIB-200 is built from FLORES-200 and covers these) | Few-shot translation, chrF++. Also a check on the parallel-data ablation. |
 | **Filipino LLM suites** (FilBench, Global-MMLU fil, SEA-HELM fil) | fil | Filipino has dedicated suites; use them rather than inventing one. **[verify availability and licences]** |
 | **English retention** (MMLU, HellaSwag, ARC subset) | eng | CPT's known failure mode is forgetting. Report the delta. |
 | **Native-speaker generation review** | fil, ceb, hil, ilo first | 50 prompts per language, blind A/B against the base. The only check that catches fluent nonsense. |
+
+**The coverage gap is the real problem.** Five of the ten languages —
+**bcl, hil, pam, tsg, and eng-as-Philippine-English** — appear in *no*
+standard NLU benchmark. For them, bits per byte and native-speaker review are
+the only signals, and bits per byte cannot tell whether the model learned
+Philippine grammar or just memorised surface statistics. So phase 0 must also
+build:
+
+- **A morphological probe set.** Austronesian voice/focus alternation (actor,
+  patient, locative, instrument), aspect and reduplication are what make these
+  languages distinct, and nothing in MMLU, Belebele or SIB-200 touches them.
+  Extract 50–200 verb lemmas per language from PLD transcripts and build
+  minimal pairs with a native speaker or a reference grammar. Cheap
+  (~$200–500 of annotator time) and it is the only diagnostic that answers the
+  question the whole project is about.
+- **A code-switching probe**, from held-out livestream Taglish, since that is
+  how people actually write.
 
 Deliverable: `scripts/eval_llm.py` with one row per (model, language,
 metric), and the base-model scores published *before* training starts, so
@@ -288,3 +305,55 @@ evaluation.
    helped.
 3. Let the running FineWeb-2 scrapes (fil, pam) finish, then regenerate §1.2
    from measured counts instead of estimates.
+
+---
+
+## 11. External review, 2026-09-22
+
+Reviewed by `deepseek-v4-pro` via the NYO connector (GLM 5.3 and Kimi K3 both
+failed to answer). Its factual claims were checked rather than taken on trust,
+and two were wrong — a useful reminder to verify a reviewer as carefully as
+the plan.
+
+**Accepted, and changed above or to be changed:**
+
+1. **The LID gate throws away code-switched text**, which is the normal
+   register in the Philippines. Requiring ≥0.6 sentence agreement rejects a
+   page that is 70 % Filipino and 30 % English — 182 of the 278 Filipino
+   rejections in the re-scrape were exactly this. *Change:* move to a
+   language-*proportion* rule (keep if the target language is ≥50 % of words,
+   ≥30 % for the small languages), record the proportion per row, and keep
+   the mixed pages tagged rather than dropped.
+2. **No morphological evaluation.** Added to phase 0 above.
+3. **The 4-epoch cap is prescriptive where the paper is descriptive.**
+   Muennighoff et al. report diminishing returns around four epochs in a
+   compute-optimal regime with plenty of unique data; for Tausug (~0.3 M
+   tokens) the binding question is overfitting, not epoch count. *Change:*
+   per-language early stopping on validation bits per byte, with the cap as a
+   default rather than a rule.
+4. **α = 0.3 starves the smallest languages.** Recompute the mix from the
+   measured token table and floor each language's share, rather than taking
+   α from high-resource multilingual work.
+5. **"Data-bound, not compute-bound" is asserted, not tested.** Add a cheap
+   ablation: the same compute on an unfiltered FineWeb-2 dump versus the
+   gated mix. If the gate doesn't win, the data engine isn't earning its
+   keep.
+6. **40 % MFU is optimistic** for single-card full-parameter training with
+   deep gradient accumulation. Re-estimate from a measured step rate before
+   committing; budget 30 %.
+
+**Rejected, with evidence:**
+
+- *"Belebele covers only Filipino; Cebuano, Ilocano and Waray are absent"*
+  (stated at very high confidence) — **wrong**: Belebele's 122 configs
+  include `ceb_Latn`, `ilo_Latn`, `tgl_Latn`, `war_Latn`.
+- *"SIB-200 includes no Philippine language"* (high confidence) — **wrong**:
+  its 205 configs include `ceb_Latn`, `ilo_Latn`, `pag_Latn`, `tgl_Latn`,
+  `war_Latn`.
+
+**Accepted as a caveat on our own claim:** HaloLID's win over GlotLID is
+measured on PLD-domain text, which is HaloLID's training *domain* even though
+the test sentences are held out and deduplicated. We have no human-labelled
+*web* benchmark, so the honest statement is "better on PLD-domain text, and
+unmeasured on web text against human labels". Building a small human-labelled
+web set (say 100 sentences per language) is the fix, and it is cheap.
