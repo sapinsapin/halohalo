@@ -20,7 +20,7 @@ Published under [sapinsapin](https://huggingface.co/sapinsapin); cards in
 | `pld` *(private)* | 448 h, 10 languages, 980 speakers | UP-DSP. Bilingual speakers read both English and Philippine-language prompts — a rare same-speaker cross-lingual seed. Redistribution terms unresolved. |
 | `halo-livestream` | growing | Spontaneous Taglish from diarized streams, QC-gated by our own pipeline. The only spontaneous code-switched speech we control. |
 | `BantayWika` | text | Literary/reference corpora, FineWeb-compatible. |
-| `halohalo` (+ `halo-tgl`/`hil`/`bcl`) | text | Cleaned CommonCrawl web text per language. **`halo-hil` is mostly not Hiligaynon** — audited 2026-09-22: GlotLID labels 44 % of a 2,000-sentence sample English, 21 % Filipino, 12 % Hiligaynon (much of it Tagalog tabloid content and site boilerplate). Do not use its `hil` label as ground truth; filter per sentence with LID first. |
+| `halohalo` (+ `halo-tgl`/`hil`/`bcl`) | text | Cleaned CommonCrawl web text per language. **`halo-hil` was mostly not Hiligaynon and has been re-filtered** — audited 2026-09-22 (GlotLID called 44 % of a sentence sample English, 21 % Filipino, 12 % Hiligaynon). `scripts/refilter_corpus.py` re-gated it per sentence: 9,860 → **500 documents / 176k words**, mean Hiligaynon share 0.66. The old revision is still in the repo's git history. `halo-bcl` (69 % bcl) and `halo-tgl` (78 % fil) were audited the same way and are sound. |
 
 **Gap we own:** no public benchmark measures Taglish code-switching. Building
 one from held-out livestream + FSC spontaneous data is the highest-value eval
