@@ -1,0 +1,353 @@
+{
+ "as_of": "2026-09-22",
+ "systems": {
+  "speecht5": "SpeechT5",
+  "mms": "MMS-TTS",
+  "orpheus_char": "Orpheus 3B",
+  "qwen3tts_base": "Qwen3-TTS 1.7B, zero-shot"
+ },
+ "languages": {
+  "bcl": {
+   "scores": {
+    "human": 0.0061396776669224865,
+    "speecht5": 0.7375287797390637,
+    "mms": 0.07866462010744436,
+    "orpheus": 0.0437,
+    "speecht5_spk_sim": 0.41657602693885565,
+    "orpheus_spk_sim": 0.4613,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Malinaw ba ining pigdiskusionan sa enterong istoria? Ieksplikar.",
+     "speaker": "BIK_0982",
+     "files": {
+      "human": "samples/compare/bcl_00_human.ogg",
+      "speecht5": "samples/compare/bcl_00_speecht5.ogg",
+      "mms": "samples/compare/bcl_00_mms.ogg",
+      "orpheus_char": "samples/compare/bcl_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Magkarigos aro-aldaw asin dae lingawang linigon nin sabon an puerta o ari.",
+     "speaker": "BIK_0895",
+     "files": {
+      "human": "samples/compare/bcl_01_human.ogg",
+      "speecht5": "samples/compare/bcl_01_speecht5.ogg",
+      "mms": "samples/compare/bcl_01_mms.ogg",
+      "orpheus_char": "samples/compare/bcl_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "ceb": {
+   "scores": {
+    "human": 0.034151034151034154,
+    "speecht5": 0.4704184704184704,
+    "mms": 0.42857142857142855,
+    "orpheus": 0.0611,
+    "speecht5_spk_sim": 0.3753731496632099,
+    "orpheus_spk_sim": 0.3612,
+    "qwen3tts_base": 0.08802308802308802,
+    "qwen3tts_base_spk_sim": 0.774799433350563
+   },
+   "clips": [
+    {
+     "text": "\"Maayo ka, nakakaon ka mag linugaw; hasta ko wa tawon.\"",
+     "speaker": "CEB_0314",
+     "files": {
+      "human": "samples/compare/ceb_00_human.ogg",
+      "speecht5": "samples/compare/ceb_00_speecht5.ogg",
+      "mms": "samples/compare/ceb_00_mms.ogg",
+      "orpheus_char": "samples/compare/ceb_00_orpheus_char.ogg",
+      "qwen3tts_base": "samples/compare/ceb_00_qwen3tts_base.ogg"
+     }
+    },
+    {
+     "text": "Si Índay Flora ang ámong kamagulángan sa ámong pamílya.",
+     "speaker": "CEB_0312",
+     "files": {
+      "human": "samples/compare/ceb_01_human.ogg",
+      "speecht5": "samples/compare/ceb_01_speecht5.ogg",
+      "mms": "samples/compare/ceb_01_mms.ogg",
+      "orpheus_char": "samples/compare/ceb_01_orpheus_char.ogg",
+      "qwen3tts_base": "samples/compare/ceb_01_qwen3tts_base.ogg"
+     }
+    }
+   ]
+  },
+  "eng": {
+   "scores": {
+    "human": 0.0,
+    "speecht5": 0.3148148148148148,
+    "mms": 0.021367521367521368,
+    "orpheus": 0.0076,
+    "speecht5_spk_sim": 0.4169654296711087,
+    "orpheus_spk_sim": 0.2261,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Are the products in Bench nice?",
+     "speaker": "ENG_1879",
+     "files": {
+      "human": "samples/compare/eng_00_human.ogg",
+      "speecht5": "samples/compare/eng_00_speecht5.ogg",
+      "mms": "samples/compare/eng_00_mms.ogg",
+      "orpheus_char": "samples/compare/eng_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "The freeway was built on an important historical valley.",
+     "speaker": "BIK_0978",
+     "files": {
+      "human": "samples/compare/eng_01_human.ogg",
+      "speecht5": "samples/compare/eng_01_speecht5.ogg",
+      "mms": "samples/compare/eng_01_mms.ogg",
+      "orpheus_char": "samples/compare/eng_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "fil": {
+   "scores": {
+    "human": 0.019230769230769232,
+    "speecht5": 0.3242397137745975,
+    "mms": 0.05858676207513417,
+    "orpheus": 0.059,
+    "speecht5_spk_sim": 0.533814837038517,
+    "orpheus_spk_sim": 0.3625,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Muli na namang bumaba ang presyo ng langis sa pandaigdigang pamilihan.",
+     "speaker": "FIL_0008",
+     "files": {
+      "human": "samples/compare/fil_00_human.ogg",
+      "speecht5": "samples/compare/fil_00_speecht5.ogg",
+      "mms": "samples/compare/fil_00_mms.ogg",
+      "orpheus_char": "samples/compare/fil_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Pinuri ng APEC ang ekonomiya ng Pilipinas",
+     "speaker": "FIL_0064",
+     "files": {
+      "human": "samples/compare/fil_01_human.ogg",
+      "speecht5": "samples/compare/fil_01_speecht5.ogg",
+      "mms": "samples/compare/fil_01_mms.ogg",
+      "orpheus_char": "samples/compare/fil_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "hil": {
+   "scores": {
+    "human": 0.002691065662002153,
+    "speecht5": 1.0823466092572658,
+    "mms": 0.08719052744886975,
+    "orpheus": 0.0522,
+    "speecht5_spk_sim": 0.42510050697252155,
+    "orpheus_spk_sim": 0.2838,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Daku nga ani ang atong nabaton,",
+     "speaker": "HIL_0623",
+     "files": {
+      "human": "samples/compare/hil_00_human.ogg",
+      "speecht5": "samples/compare/hil_00_speecht5.ogg",
+      "mms": "samples/compare/hil_00_mms.ogg",
+      "orpheus_char": "samples/compare/hil_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Ano ang ginluto ni Michelle?",
+     "speaker": "HIL_0717",
+     "files": {
+      "human": "samples/compare/hil_01_human.ogg",
+      "speecht5": "samples/compare/hil_01_speecht5.ogg",
+      "mms": "samples/compare/hil_01_mms.ogg",
+      "orpheus_char": "samples/compare/hil_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "ilo": {
+   "scores": {
+    "human": 0.008756567425569177,
+    "speecht5": 0.7587565674255692,
+    "mms": 0.13747810858143608,
+    "orpheus": 0.0762,
+    "speecht5_spk_sim": 0.37504190960899,
+    "orpheus_spk_sim": 0.2959,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Ayan tay kadi? tiendaan wennu eskwela?",
+     "speaker": "ILO_1724",
+     "files": {
+      "human": "samples/compare/ilo_00_human.ogg",
+      "speecht5": "samples/compare/ilo_00_speecht5.ogg",
+      "mms": "samples/compare/ilo_00_mms.ogg",
+      "orpheus_char": "samples/compare/ilo_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Ubbing, ana ti ub-ubraen yu nu awan serrek yu?",
+     "speaker": "ILO_1707",
+     "files": {
+      "human": "samples/compare/ilo_01_human.ogg",
+      "speecht5": "samples/compare/ilo_01_speecht5.ogg",
+      "mms": "samples/compare/ilo_01_mms.ogg",
+      "orpheus_char": "samples/compare/ilo_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "pag": {
+   "scores": {
+    "human": 0.017967434025828188,
+    "speecht5": 3.1701291409320604,
+    "mms": 0.05614823133071308,
+    "orpheus": null,
+    "speecht5_spk_sim": 0.28726443991065026,
+    "orpheus_spk_sim": null,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Anggapoy sirit lan sirit.(formal) Ag kayo sirit lan sirit (informal)",
+     "speaker": "PAG_1222",
+     "files": {
+      "human": "samples/compare/pag_00_human.ogg",
+      "speecht5": "samples/compare/pag_00_speecht5.ogg",
+      "mms": "samples/compare/pag_00_mms.ogg",
+      "orpheus_char": "samples/compare/pag_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Pawel kayo kayari sakey ya simba",
+     "speaker": "PAG_1226",
+     "files": {
+      "human": "samples/compare/pag_01_human.ogg",
+      "speecht5": "samples/compare/pag_01_speecht5.ogg",
+      "mms": "samples/compare/pag_01_mms.ogg",
+      "orpheus_char": "samples/compare/pag_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "pam": {
+   "scores": {
+    "human": 0.012968967114404817,
+    "speecht5": 0.952292728114868,
+    "mms": 0.07364520611394164,
+    "orpheus": 0.0431,
+    "speecht5_spk_sim": 0.33548367222771047,
+    "orpheus_spk_sim": 0.3503,
+    "qwen3tts_base": 0.03473830477072719,
+    "qwen3tts_base_spk_sim": 0.7774769097566605
+   },
+   "clips": [
+    {
+     "text": "Kulayan ya ing palis ning ustung sagut.",
+     "speaker": "PAM_0528",
+     "files": {
+      "human": "samples/compare/pam_00_human.ogg",
+      "speecht5": "samples/compare/pam_00_speecht5.ogg",
+      "mms": "samples/compare/pam_00_mms.ogg",
+      "orpheus_char": "samples/compare/pam_00_orpheus_char.ogg",
+      "qwen3tts_base": "samples/compare/pam_00_qwen3tts_base.ogg"
+     }
+    },
+    {
+     "text": "Pigaganakan de ing lage na ning anak da.",
+     "speaker": "PAM_0498",
+     "files": {
+      "human": "samples/compare/pam_01_human.ogg",
+      "speecht5": "samples/compare/pam_01_speecht5.ogg",
+      "mms": "samples/compare/pam_01_mms.ogg",
+      "orpheus_char": "samples/compare/pam_01_orpheus_char.ogg",
+      "qwen3tts_base": "samples/compare/pam_01_qwen3tts_base.ogg"
+     }
+    }
+   ]
+  },
+  "tsg": {
+   "scores": {
+    "human": 0.00045998160073597056,
+    "speecht5": 0.4319227230910764,
+    "mms": null,
+    "orpheus": 0.1247,
+    "speecht5_spk_sim": 0.4764703375287354,
+    "orpheus_spk_sim": 0.233,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Makug aku iban ku kamu",
+     "speaker": "TSG_1445",
+     "files": {
+      "human": "samples/compare/tsg_00_human.ogg",
+      "speecht5": "samples/compare/tsg_00_speecht5.ogg",
+      "orpheus_char": "samples/compare/tsg_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Wayruun hapusun magtipon, wayruun masayang",
+     "speaker": "TSG_1463",
+     "files": {
+      "human": "samples/compare/tsg_01_human.ogg",
+      "speecht5": "samples/compare/tsg_01_speecht5.ogg",
+      "orpheus_char": "samples/compare/tsg_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  },
+  "war": {
+   "scores": {
+    "human": 0.00688360450563204,
+    "speecht5": 0.3573216520650814,
+    "mms": 0.0769712140175219,
+    "orpheus": 0.0732,
+    "speecht5_spk_sim": 0.40245734293013813,
+    "orpheus_spk_sim": 0.3001,
+    "qwen3tts_base": null,
+    "qwen3tts_base_spk_sim": null
+   },
+   "clips": [
+    {
+     "text": "Kumpleto ba hiya hin bakuna?",
+     "speaker": "WAR_1046",
+     "files": {
+      "human": "samples/compare/war_00_human.ogg",
+      "speecht5": "samples/compare/war_00_speecht5.ogg",
+      "mms": "samples/compare/war_00_mms.ogg",
+      "orpheus_char": "samples/compare/war_00_orpheus_char.ogg"
+     }
+    },
+    {
+     "text": "Diri magririko pagnegosyo hin hugaw!",
+     "speaker": "WAR_1015",
+     "files": {
+      "human": "samples/compare/war_01_human.ogg",
+      "speecht5": "samples/compare/war_01_speecht5.ogg",
+      "mms": "samples/compare/war_01_mms.ogg",
+      "orpheus_char": "samples/compare/war_01_orpheus_char.ogg"
+     }
+    }
+   ]
+  }
+ }
+}

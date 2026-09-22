@@ -36,6 +36,14 @@ def _manifest_counts():
         return "?", {}
 
 
+def _licence(info):
+    """`license:cc-by-nc-4.0` is how the Hub returns it in the tag list. Worth
+    a column of its own: the corpus is CC-BY-NC, so anything trained on it is
+    research-only regardless of what its base model allowed."""
+    return next((t.split(":", 1)[1] for t in (getattr(info, "tags", None) or [])
+                 if t.startswith("license:")), "—")
+
+
 def _public_row(info, kind):
     url_prefix = {"dataset": "datasets/", "model": "", "space": "spaces/"}[kind]
     name = info.id.split("/", 1)[1]
@@ -43,6 +51,7 @@ def _public_row(info, kind):
         "Name": f"[{name}](https://huggingface.co/{url_prefix}{info.id})",
         "Visibility": "public",
         "Task": getattr(info, "pipeline_tag", None) or "—",
+        "Licence": _licence(info),
         "Downloads (30d)": getattr(info, "downloads", 0) or 0,
         "Likes": getattr(info, "likes", 0) or 0,
         "Updated": (info.last_modified.strftime("%Y-%m-%d")
@@ -52,7 +61,8 @@ def _public_row(info, kind):
 
 def _private_row():
     return {"Name": MASKED, "Visibility": "private", "Task": "—",
-            "Downloads (30d)": None, "Likes": None, "Updated": "—"}
+            "Licence": "—", "Downloads (30d)": None, "Likes": None,
+            "Updated": "—"}
 
 
 def _table(items, kind, n_private, with_task=False):
@@ -60,7 +70,7 @@ def _table(items, kind, n_private, with_task=False):
                  key=lambda i: -(getattr(i, "downloads", 0) or 0))
     rows = [_public_row(i, kind) for i in pub]
     rows += [_private_row() for _ in range(n_private)]
-    df = pd.DataFrame(rows, columns=["Name", "Visibility", "Task",
+    df = pd.DataFrame(rows, columns=["Name", "Visibility", "Task", "Licence",
                                      "Downloads (30d)", "Likes", "Updated"])
     if not with_task:
         df = df.drop(columns=["Task"])
@@ -70,10 +80,11 @@ def _table(items, kind, n_private, with_task=False):
 def fetch():
     api = HfApi(token=TOKEN)
     datasets = list(api.list_datasets(
-        author=ORG, expand=["downloads", "likes", "lastModified", "private"]))
+        author=ORG, expand=["downloads", "likes", "lastModified", "private",
+                            "tags"]))
     models = list(api.list_models(
         author=ORG, expand=["downloads", "likes", "lastModified", "private",
-                            "pipeline_tag"]))
+                            "pipeline_tag", "tags"]))
 
     # private rows: live from the API when a token can see them, otherwise
     # from the name-free snapshot manifest
@@ -115,10 +126,12 @@ with gr.Blocks(title="halohalo — org dashboard and speech demo") as demo:
     header_md = gr.Markdown("Loading…")
     with gr.Tab("📚 Datasets"):
         datasets_df = gr.Dataframe(
-            datatype=["markdown", "str", "number", "number", "str"], **DF_KW)
+            datatype=["markdown", "str", "str", "number", "number", "str"],
+            **DF_KW)
     with gr.Tab("🤖 Models"):
         models_df = gr.Dataframe(
-            datatype=["markdown", "str", "str", "number", "number", "str"], **DF_KW)
+            datatype=["markdown", "str", "str", "str", "number", "number",
+                      "str"], **DF_KW)
         refresh = gr.Button("🔄 Refresh", size="sm")
 
     # The speech tabs are additive: everything heavy in them is imported
@@ -134,17 +147,37 @@ with gr.Blocks(title="halohalo — org dashboard and speech demo") as demo:
             gr.Markdown(f"Speech tabs unavailable: `{type(exc).__name__}: {exc}`")
 
     if demo_ok:
+        n_asr = sum(len(v) for v in speech_demo.MODELS.values())
+        n_heard = sum(1 for v in speech_demo.COMPARE["languages"].values()
+                      if v["scores"].get("orpheus") is not None)
         gr.Markdown(
-            "---\n"
-            "The speech tabs run the org's own models: **10 ASR + 10 TTS + 1 "
-            "voice conversion**, finetuned on the Philippine Language Dataset "
-            "for Bikol, Cebuano, Filipino, Hiligaynon, Ilocano, Kapampangan, "
-            "Pangasinan, Tausug, Waray and Philippine English. They are "
-            "baselines trained on prompted read speech — accuracy drops on "
-            "spontaneous or noisy audio. Preloaded clips and voice presets "
-            "come from the corpus collected by the **UP Diliman Digital "
-            "Signal Processing Laboratory**. "
-            "[Code](https://github.com/sapinsapin/halohalo)")
+            f"---\n"
+            f"The speech tabs run the org's own models: **{n_asr} ASR + 10 TTS "
+            f"+ 1 voice conversion** live, plus the Orpheus 3B voices heard "
+            f"pre-rendered in Compare voices ({n_heard} languages), finetuned "
+            f"on the Philippine Language Dataset for Bikol, Cebuano, Filipino, "
+            f"Hiligaynon, Ilocano, Kapampangan, Pangasinan, Tausug, Waray and "
+            f"Philippine English. Most are baselines trained on prompted read "
+            f"speech — accuracy drops on spontaneous or noisy audio.\n\n"
+            f"**Read the error rates with their labels.** *in-domain* means the "
+            f"whisper-small baselines' split, which shares speakers and "
+            f"sentences with training and flatters the model. *frozen-disjoint* "
+            f"means no test speaker or sentence was seen in training: the "
+            f"whisper-large-v3 and Omnilingual CTC models report that, and it "
+            f"is the honest number. *normalised* means the model was trained and "
+            f"scored with stress accents and punctuation removed — PLD marks "
+            f"stress on about a third of words — which lowers the word error "
+            f"rate by ten points or more for reasons that have nothing to do "
+            f"with recognition; those models output lowercase text without "
+            f"accents. whisper-large-v3-\\*-norm is the current best ASR for "
+            f"nine languages (Philippine English is being re-run). In Compare "
+            f"voices, Orpheus 3B beats MMS-TTS on seven of nine languages, and "
+            f"the untrained Qwen3-TTS base is the best voice match we have "
+            f"measured; both are judged by our own ASR on 50 sentences, which "
+            f"is a first look, not a verdict. Preloaded clips and voice presets "
+            f"come from the corpus collected by the **UP Diliman Digital Signal "
+            f"Processing Laboratory**. "
+            f"[Code](https://github.com/sapinsapin/halohalo)")
 
     outputs = [header_md, datasets_df, models_df]
     demo.load(fetch, inputs=None, outputs=outputs)
