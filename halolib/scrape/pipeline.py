@@ -51,6 +51,12 @@ class ScrapeConfig:
     shard_rows: int = 1000
     use_glotlid: bool = True
     refresh_seeds: bool = False
+    # Cap accepted documents per host per language. Off by default: for the
+    # smallest languages one site may be most of what exists, and the CPT mix
+    # is the right place to rebalance. The summary always reports the top
+    # hosts so the skew is visible either way (Bikol's first Tavily run was
+    # 41 % jw.org).
+    max_per_host: int | None = None
 
 
 class ShardWriter:
@@ -159,7 +165,9 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
         seeded = dedup.seed_from_parquet(writer.existing_shards())
         stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetched": 0,
                  "raw_fallback": 0, "fetch_fail": 0, "too_short": 0,
-                 "lid_reject": 0, "dup": 0, "accepted": 0, "resumed_rows": seeded}
+                 "lid_reject": 0, "dup": 0, "host_capped": 0, "accepted": 0,
+                 "resumed_rows": seeded}
+        per_host: dict[str, int] = {}
         print(f"\n[{lang}] backend={backend.name} resumed={seeded} rows, "
               f"{len(manifest.seen)} urls in manifest")
         t0 = time.time()
@@ -180,6 +188,11 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                     break
                 if hit.url in manifest.seen:
                     stats["skipped_seen"] += 1
+                    continue
+                host = hit.url.split("/")[2].lower() if hit.url.count("/") >= 2 else "?"
+                if cfg.max_per_host and per_host.get(host, 0) >= cfg.max_per_host:
+                    stats["host_capped"] += 1
+                    manifest.record(hit.url, "host_capped", lang=lang, host=host)
                     continue
 
                 text, title, date = hit.raw_text, hit.title, hit.extra.get("date")
@@ -225,11 +238,17 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 manifest.record(hit.url, "accepted", lang=lang, hash=row["content_hash"],
                                 words=row["word_count"], lid=round(verdict.score, 3))
                 stats["accepted"] += 1
+                per_host[host] = per_host.get(host, 0) + 1
 
         writer.flush()
         stats["seconds"] = round(time.time() - t0, 1)
+        top = sorted(per_host.items(), key=lambda kv: -kv[1])[:5]
+        stats["top_hosts"] = {h: n for h, n in top}
         summary[lang] = stats
-        print(f"[{lang}] " + "  ".join(f"{k}={v}" for k, v in stats.items()))
+        print(f"[{lang}] " + "  ".join(f"{k}={v}" for k, v in stats.items() if k != "top_hosts"))
+        if top and stats["accepted"]:
+            print(f"[{lang}] top hosts: " + ", ".join(
+                f"{h} {n} ({n / stats['accepted']:.0%})" for h, n in top))
 
     (cfg.out_dir / "text" / "summary.json").write_text(json.dumps(summary, indent=1))
     return summary

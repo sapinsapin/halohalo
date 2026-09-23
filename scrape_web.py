@@ -48,6 +48,9 @@ def main():
     ap.add_argument("--lid-min-score", type=float, default=0.6)
     ap.add_argument("--lid-min-agreement", type=float, default=0.6)
     ap.add_argument("--no-glotlid", action="store_true", help="HaloLID only (faster, no 1.7 GB model)")
+    ap.add_argument("--max-per-host", type=int, default=None,
+                    help="cap accepted documents per host per language (off by default; "
+                         "the summary always reports the top hosts)")
     ap.add_argument("--refresh-seeds", action="store_true")
     ap.add_argument("--no-text", action="store_true", help="skip the text scrape")
     ap.add_argument("--voice", action="store_true", help="YouTube discovery with the same seeds")
@@ -80,6 +83,7 @@ def main():
         max_docs_per_lang=args.max_docs, min_words=args.min_words,
         lid_min_score=args.lid_min_score, lid_min_agreement=args.lid_min_agreement,
         use_glotlid=not args.no_glotlid, refresh_seeds=args.refresh_seeds,
+        max_per_host=args.max_per_host,
     )
 
     print("loading language ID ...")

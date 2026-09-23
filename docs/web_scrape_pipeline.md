@@ -70,11 +70,28 @@ seed the dedup index, seeds are cached. Kill it and re-run.
 ## Backends
 
 **Tavily (default).** `TavilyBackend` calls `search(query, search_depth=
-"advanced", include_raw_content=True)`, so each hit arrives with its extracted
-page text and the fetcher is only used for hits that came back empty. Needs
+"advanced", include_raw_content=True, exclude_domains=…)`. Needs
 `TAVILY_API_KEY`; without it the driver exits with the instruction, it does
 not silently fall back. `tests/test_scrape.py` verifies the adapter against a
 stub client so the default path is covered without a key or network.
+
+Two things the first live runs (2026-09-23) taught, both now built in:
+
+- **Social and video domains are excluded.** The very first Hiligaynon query
+  returned three Facebook posts with zero extractable text — each one a
+  wasted credit and a wasted fetch. Facebook, Instagram, TikTok, X, YouTube,
+  Pinterest and Threads are excluded by default.
+- **`raw_content` is a whole-page dump, not an article.** Every accepted
+  document began with the site's menu (`* HOME * BOMBO TUGUEGARAO * BOMBO
+  LAOAG …`). Hits are therefore flagged `page_dump`, and the pipeline fetches
+  the live page and extracts the main text with trafilatura, using the dump
+  only when the fetch yields nothing. In the Hiligaynon pilot 11 of 17 pages
+  came through the fetch path; the fallback is cleaned by the two menu rules
+  described under *Stages*.
+
+Cost: an advanced search is 2 credits, so 20 queries per language is ~40
+credits, ~400 for all ten — inside Tavily's free tier. Wall-clock is set by
+the polite fetcher (one request per second per host), not by the API.
 
 **direct.** A file of URLs. No search. For curated domain lists (regional
 newspapers, radio station sites, government portals in the language) and for
@@ -217,9 +234,13 @@ research use under a clear legal basis, not as a default.
 
 ## Known limits
 
-- Tavily has not been exercised live in this repo; the adapter is tested
-  against its documented response shape only. First real run: `--langs ceb
-  --max-docs 20` and read the manifest.
+- **Host skew.** Search results for a small language cluster on whichever
+  sites publish in it at all: Bikol's first Tavily run was 41 % jw.org, with
+  two more religious sites in its top six. Real Bikol, but a corpus that is
+  half scripture is a narrow one. The summary prints the top hosts per
+  language and `--max-per-host` can cap them; by default nothing is capped,
+  because for the smallest languages one site may be most of what exists and
+  the pretraining mix is the right place to rebalance.
 - Wikipedia in the smoke list is a smoke list. ceb/war Wikipedia are excluded
   from real runs for the reason above.
 - YouTube auto-captions are not used as transcripts. They are wrong often
