@@ -50,6 +50,7 @@ def test_tavily_search_maps_results():
     kw = stub.calls[0]
     assert kw["include_raw_content"] is True and kw["max_results"] == 5
     assert kw["search_depth"] == "advanced"
+    assert "facebook.com" in kw["exclude_domains"]      # login-walled, no text
 
 
 def test_tavily_extract_fills_missing():
