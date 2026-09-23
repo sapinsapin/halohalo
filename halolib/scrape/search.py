@@ -49,11 +49,18 @@ class SearchBackend(Protocol):
 # Tavily (default)
 # ----------------------------------------------------------------------------
 
+# Login-walled or video platforms: Tavily returns them, but there is no page
+# text to extract, so each hit is a wasted credit and a wasted fetch. The
+# first hil query returned three Facebook posts with 0 characters of text.
+SOCIAL_DOMAINS = ["facebook.com", "instagram.com", "tiktok.com", "twitter.com",
+                  "x.com", "youtube.com", "pinterest.com", "threads.net"]
+
+
 class TavilyBackend:
     name = "tavily"
 
     def __init__(self, api_key: str | None = None, search_depth: str = "advanced",
-                 client=None):
+                 client=None, exclude_domains: list[str] | None = None):
         key = api_key or os.environ.get("TAVILY_API_KEY")
         if client is None and not key:
             raise MissingCredential(
@@ -64,6 +71,7 @@ class TavilyBackend:
             client = TavilyClient(api_key=key)
         self.client = client
         self.search_depth = search_depth
+        self.exclude_domains = SOCIAL_DOMAINS if exclude_domains is None else exclude_domains
 
     def search(self, query: str, lang: str, max_results: int = 10) -> list[Hit]:
         resp = self.client.search(
@@ -71,6 +79,7 @@ class TavilyBackend:
             search_depth=self.search_depth,
             max_results=max_results,
             include_raw_content=True,      # full page text, so no fetch needed
+            exclude_domains=self.exclude_domains,
         )
         hits = []
         for r in resp.get("results", []):
@@ -80,7 +89,9 @@ class TavilyBackend:
             hits.append(Hit(
                 url=url, title=r.get("title") or "", snippet=r.get("content") or "",
                 raw_text=r.get("raw_content") or None, backend=self.name, query=query,
-                extra={"score": r.get("score")},
+                # raw_content is a whole-page dump (menus included), so the
+                # pipeline re-extracts from the live page when it can
+                extra={"score": r.get("score"), "page_dump": True},
             ))
         return hits
 

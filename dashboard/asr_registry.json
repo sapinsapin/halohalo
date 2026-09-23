@@ -82,22 +82,6 @@
       "wer": 0.4962
     },
     {
-      "repo": "sapinsapin/omniASR_W2V_1B_SSL-ctc-syllable-pld_ceb",
-      "name": "omniASR_W2V_1B_SSL-ctc-syllable-pld_ceb",
-      "language": "ceb",
-      "kind": "ctc",
-      "units": "syllable",
-      "params": 964325395,
-      "weights_gib": 3.59,
-      "runnable": true,
-      "licence": "cc-by-nc-4.0",
-      "base_model": "ylacombe/omniASR_W2V_1B_SSL",
-      "split": "frozen-disjoint",
-      "normalised": false,
-      "cer": 0.2279,
-      "wer": 0.5412
-    },
-    {
       "repo": "sapinsapin/whisper-large-v3-pld-ceb",
       "name": "whisper-large-v3-pld-ceb",
       "language": "ceb",
@@ -368,22 +352,6 @@
       "normalised": false,
       "cer": 0.1021,
       "wer": 0.4152
-    },
-    {
-      "repo": "sapinsapin/omniASR_W2V_1B_SSL-ctc-syllable-pld_pam",
-      "name": "omniASR_W2V_1B_SSL-ctc-syllable-pld_pam",
-      "language": "pam",
-      "kind": "ctc",
-      "units": "syllable",
-      "params": 964302337,
-      "weights_gib": 3.59,
-      "runnable": true,
-      "licence": "cc-by-nc-4.0",
-      "base_model": "ylacombe/omniASR_W2V_1B_SSL",
-      "split": "frozen-disjoint",
-      "normalised": false,
-      "cer": 0.1415,
-      "wer": 0.4426
     },
     {
       "repo": "sapinsapin/whisper-large-v3-pld-pam",

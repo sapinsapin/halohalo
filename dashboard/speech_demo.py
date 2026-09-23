@@ -23,6 +23,7 @@ halohalo repo), so speechbrain is not a runtime dependency here.
 """
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -71,14 +72,33 @@ except (OSError, json.JSONDecodeError):
 REGISTRY_AS_OF = _REGISTRY.get("as_of")
 
 
+# The one ASR model per language a visitor should try first: the most accurate
+# one this org has published on the honest split. Kept in step with
+# halolib.finetune._BEST_ASR; English has no held-out-tested model yet.
+RECOMMENDED_ASR = {c: f"whisper-large-v3-pld-{c}-norm"
+                   for c in ("bcl", "ceb", "fil", "hil", "ilo", "pag", "pam", "tsg", "war")}
+
+
+def _status(m):
+    """What a model is *for*, in one word a visitor can act on."""
+    if m["name"] == RECOMMENDED_ASR.get(m["language"]):
+        return "recommended"
+    if m["name"] == f"whisper-small-pld-{m['language']}":
+        return "fast baseline"
+    return "research"
+
+
 def _label(m):
-    """One line a person can choose between: family, size, and the headline
-    error rate *with its split*, since in-domain and frozen-disjoint numbers
-    for the same language differ by up to a factor of seven."""
+    """One line a person can choose between: what it is for, family, size,
+    and the headline error rate *with its split*, since in-domain and
+    frozen-disjoint numbers for the same language differ by up to a factor
+    of seven."""
     size = f"{(m['params'] or 0) / 1e6:.0f}M" if m.get("params") else "?"
     conv = " normalised" if m.get("normalised") else ""
     cer = f" · CER {m['cer'] * 100:.1f}% {m['split']}{conv}" if m.get("cer") else ""
-    return f"{m['name']} · {size}{cer}"
+    mark = {"recommended": "★ RECOMMENDED · ", "fast baseline": "fast baseline · ",
+            "research": "research · "}[_status(m)]
+    return f"{mark}{m['name']} · {size}{cer}"
 
 
 # {language code: [model dict, ...]}. The language's own whisper-small
@@ -93,9 +113,12 @@ for _m in _REGISTRY["models"]:
     if not _m.get("runnable", True):
         continue
     MODELS.setdefault(_m["language"], []).append(_m)
+# recommended first, so it is the default; then the fast baseline; then the
+# research entries by size
 for _code in MODELS:
-    MODELS[_code].sort(key=lambda m, c=_code: (
-        m["name"] != f"whisper-small-pld-{c}", m.get("params") or 0, m["name"]))
+    MODELS[_code].sort(key=lambda m: (
+        {"recommended": 0, "fast baseline": 1, "research": 2}[_status(m)],
+        m.get("params") or 0, m["name"]))
 MODEL_BY_LABEL = {_label(m): m for ms in MODELS.values() for m in ms}
 
 
@@ -179,6 +202,19 @@ def model_note(label):
     if m.get("base_model"):
         bits.append(f"finetuned from `{m['base_model']}`")
     note = " · ".join(bits)
+    st = _status(m)
+    if st == "recommended":
+        note += ("<br>**Recommended.** The most accurate model for this "
+                 "language here; use this one unless you need speed.")
+    elif st == "fast baseline":
+        rec = RECOMMENDED_ASR.get(m["language"])
+        note += ("<br>**Fast baseline.** Quickest to load and run; for the best "
+                 f"accuracy pick `{rec}`." if rec else
+                 "<br>**Baseline.** The only model offered for this language.")
+    else:
+        rec = RECOMMENDED_ASR.get(m["language"])
+        note += ("<br>**Research entry**, kept for comparison"
+                 + (f"; `{rec}` is the one to use." if rec else "."))
     if m.get("cer"):
         wer = f", WER {m['wer'] * 100:.1f}%" if m.get("wer") else ""
         note += (f"<br>Card reports **CER {m['cer'] * 100:.1f}%**{wer} on the "
@@ -261,20 +297,33 @@ def ctc_decode(ids, id2unit: dict) -> str:
     return "".join(out).replace(DELIM, " ").strip()
 
 
+def _hub_token():
+    """The SpeechT5 TTS repos were made private on 2026-09-22 (Orpheus replaced
+    them as the published TTS; these stay only to keep this tab alive on a CPU
+    Space). A private repo loads only with a token, and the Space's secret has
+    gone by several names — the same list feedback.py searches."""
+    for var in ("HF_TOKEN", "FEEDBACK_TOKEN", "SAPINSAPINDASH", "sapinsapindash"):
+        if os.environ.get(var):
+            return os.environ[var]
+    return None
+
+
 @lru_cache(maxsize=2)
 def tts_model(lang: str):
     from transformers import SpeechT5ForTextToSpeech, SpeechT5Processor
     repo = f"{ORG}/speecht5_tts-pld-{lang}"
-    return (SpeechT5Processor.from_pretrained(repo),
-            SpeechT5ForTextToSpeech.from_pretrained(repo).eval())
+    tok = _hub_token()
+    return (SpeechT5Processor.from_pretrained(repo, token=tok),
+            SpeechT5ForTextToSpeech.from_pretrained(repo, token=tok).eval())
 
 
 @lru_cache(maxsize=1)
 def vc_model():
     from transformers import SpeechT5ForSpeechToSpeech, SpeechT5Processor
     repo = f"{ORG}/speecht5_vc-pld"
-    return (SpeechT5Processor.from_pretrained(repo),
-            SpeechT5ForSpeechToSpeech.from_pretrained(repo).eval())
+    tok = _hub_token()
+    return (SpeechT5Processor.from_pretrained(repo, token=tok),
+            SpeechT5ForSpeechToSpeech.from_pretrained(repo, token=tok).eval())
 
 
 @lru_cache(maxsize=1)
@@ -506,15 +555,20 @@ def build_tabs():
         _n_models = sum(len(v) for v in MODELS.values())
         gr.Markdown(
             f"Record yourself, upload a file, or load a preloaded clip. "
-            f"**{_n_models} models** are on offer across the ten languages: "
-            f"the whisper-small baselines, and for Cebuano and Kapampangan the "
-            f"bake-off entries — whisper-large-v3 and the Omnilingual 1B "
-            f"encoder with a CTC head over characters or syllables. Pick one "
-            f"per language and compare them on the same clip. **The first run "
-            f"of a model downloads and loads it — 1 GB for whisper-small, up "
-            f"to 6 GB for large-v3, minutes either way. After that a clip "
-            f"takes seconds** (the CTC models are the quickest: one forward "
-            f"pass, no autoregressive decoding).")
+            f"**{_n_models} models** are on offer across the ten languages, "
+            f"and the dropdown opens on the one to try: **★ RECOMMENDED** is "
+            f"the most accurate model this org has published for that "
+            f"language, scored on speakers and sentences it never saw in "
+            f"training. It writes lowercase text without punctuation or "
+            f"accents. The **fast baseline** (whisper-small) loads in seconds "
+            f"and runs quickest, but its score comes from an easier test that "
+            f"shares speakers with training, so it will do worse on your "
+            f"voice than its number suggests. **Research** entries exist for "
+            f"comparison. **The first run of a model downloads it — 1 GB for "
+            f"whisper-small, 6 GB for the recommended large-v3, several "
+            f"minutes on this free CPU; after that a clip takes seconds.** "
+            f"Philippine English has no recommended model yet: its "
+            f"held-out run is still being fixed.")
         if TOO_BIG:
             gr.Markdown("Also trained, but too large for this free CPU Space: "
                         + "; ".join(_too_big_entry(m) for m in TOO_BIG) + ".")
@@ -551,8 +605,14 @@ def build_tabs():
                    [a_out, a_state])
         _wire_feedback(a_state, *a_fb)
 
-    with gr.Tab("🔊 Synthesize"):
+    with gr.Tab("🔊 Synthesize (retired baseline)"):
         gr.Markdown(
+            "**This tab runs the org's retired SpeechT5 baselines, not its "
+            "published TTS.** They are the only text-to-speech a free CPU can "
+            "run live, and by our own measurement they are unintelligible in "
+            "most of the ten languages. **To hear the real models — Orpheus 3B, "
+            "which beats Meta's MMS-TTS on seven of nine languages — open "
+            "🎧 Compare voices**, where its output is pre-rendered. "
             "Type text in the chosen language and hear it spoken by one of "
             "that language's speakers. Write numbers as words — the training "
             "text contains no verbalized numerals.")
@@ -580,7 +640,7 @@ def build_tabs():
         _wire_feedback(t_state, *t_fb)
 
     if COMPARE_CHOICES:
-        with gr.Tab("🎧 Compare voices"):
+        with gr.Tab("🎧 Compare voices — the published TTS"):
             gr.Markdown(
                 "The same sentences, spoken by a person and by each TTS "
                 "system. **Orpheus 3B** (9 languages) is the org's newest TTS "

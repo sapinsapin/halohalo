@@ -203,18 +203,29 @@ directory. All were trained on a single 8 GB GPU with
 [`finetune_s2s.py`](https://github.com/sapinsapin/halohalo/blob/main/finetune_s2s.py),
 so they are baselines to hear and beat, not state-of-the-art:
 
-| Language | TTS model (`microsoft/speecht5_tts` base) |
+| Language | TTS model (`unsloth/orpheus-3b-0.1-pretrained` base, LoRA) |
 |---|---|
-| Bikol | [`speecht5_tts-pld-bcl`](https://huggingface.co/sapinsapin/speecht5_tts-pld-bcl) |
-| Cebuano | [`speecht5_tts-pld-ceb`](https://huggingface.co/sapinsapin/speecht5_tts-pld-ceb) |
-| English (PH) | [`speecht5_tts-pld-eng`](https://huggingface.co/sapinsapin/speecht5_tts-pld-eng) |
-| Filipino | [`speecht5_tts-pld-fil`](https://huggingface.co/sapinsapin/speecht5_tts-pld-fil) |
-| Hiligaynon | [`speecht5_tts-pld-hil`](https://huggingface.co/sapinsapin/speecht5_tts-pld-hil) |
-| Ilocano | [`speecht5_tts-pld-ilo`](https://huggingface.co/sapinsapin/speecht5_tts-pld-ilo) |
-| Pangasinan | [`speecht5_tts-pld-pag`](https://huggingface.co/sapinsapin/speecht5_tts-pld-pag) |
-| Kapampangan | [`speecht5_tts-pld-pam`](https://huggingface.co/sapinsapin/speecht5_tts-pld-pam) |
-| Tausug | [`speecht5_tts-pld-tsg`](https://huggingface.co/sapinsapin/speecht5_tts-pld-tsg) |
-| Waray | [`speecht5_tts-pld-war`](https://huggingface.co/sapinsapin/speecht5_tts-pld-war) |
+| Bikol | [`orpheus-3b-0.1-pretrained-char-pld-bcl`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-bcl) |
+| Cebuano | [`orpheus-3b-0.1-pretrained-char-pld-ceb`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-ceb) |
+| English (PH) | [`orpheus-3b-0.1-pretrained-char-pld-eng`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-eng) |
+| Filipino | [`orpheus-3b-0.1-pretrained-char-pld-fil`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-fil) |
+| Hiligaynon | [`orpheus-3b-0.1-pretrained-char-pld-hil`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-hil) |
+| Ilocano | [`orpheus-3b-0.1-pretrained-char-pld-ilo`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-ilo) |
+| Kapampangan | [`orpheus-3b-0.1-pretrained-char-pld-pam`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-pam) |
+| Tausug | [`orpheus-3b-0.1-pretrained-char-pld-tsg`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-tsg) |
+| Waray | [`orpheus-3b-0.1-pretrained-char-pld-war`](https://huggingface.co/sapinsapin/orpheus-3b-0.1-pretrained-char-pld-war) |
+| Pangasinan | none published: 1,445 clips was too few to learn from (36% round-trip CER) |
+
+These are the **Orpheus 3B** adapters published 2026-09-21. Each card carries a
+round-trip intelligibility score on 50 held-out sentences, judged by our own
+ASR; they beat Meta's MMS-TTS on seven of the nine languages. They need a GPU
+and the halohalo code to run.
+
+The earlier `speecht5_tts-pld-*` fleet (SpeechT5, 2,000 clips per language) was
+made private on 2026-09-22: measured the same way, it was unintelligible in
+eight of ten languages (27–317% CER). It still powers the Synthesize tab of the
+[dashboard Space](https://huggingface.co/spaces/sapinsapin/halohalo-dashboard),
+which runs on a CPU, but should not be built on.
 
 **Speech-to-speech:** [`speecht5_vc-pld`](https://huggingface.co/sapinsapin/speecht5_vc-pld)
 — any-to-any voice conversion across all ten languages, trained on

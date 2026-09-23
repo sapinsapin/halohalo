@@ -25,8 +25,25 @@ from halolib.lid import LANGS, Ensemble
 
 from .dedup import DedupIndex, content_hash
 from .fetch import Fetcher
-from .search import DEFAULT_BACKEND, get_backend
+from .search import DEFAULT_BACKEND, fw2_excluded, get_backend
 from .seeds import prepare_seeds
+
+# Hosts whose content we must not redistribute regardless of language: song
+# lyrics are copyrighted text, and lyrics sites turn up in Filipino search
+# results (genius.com was in the first Tavily run's top five). Checked on
+# every backend, FineWeb-2 included.
+EXCLUDED_HOSTS = ("genius.com", "azlyrics.com", "lyrics.com", "musixmatch.com",
+                  "lyricstranslate.com", "letras.com", "lyricsmode.com", "songlyrics.com",
+                  "metrolyrics.com", "smule.com")
+
+
+def excluded_host(url: str) -> bool:
+    try:
+        host = url.split("/")[2].lower()
+    except IndexError:
+        return False
+    return any(host == h or host.endswith("." + h) for h in EXCLUDED_HOSTS)
+
 
 COLUMNS = ["id", "text", "url", "date", "dump", "file_path", "detected_lang",
            "word_count", "title", "source", "language", "token_count",
@@ -46,11 +63,21 @@ class ScrapeConfig:
     max_results: int = 10
     max_docs_per_lang: int = 500
     min_words: int = 30
+    # A whole Cebuano Bible (477k words, ccel.org) was 84 % of Cebuano's first
+    # Tavily run by words. One page should not be a language's corpus, and
+    # scripture is already over-represented in these languages' web text.
+    max_words: int = 20000
     lid_min_score: float = 0.6
     lid_min_agreement: float = 0.6
     shard_rows: int = 1000
     use_glotlid: bool = True
     refresh_seeds: bool = False
+    # Cap accepted documents per host per language. Off by default: for the
+    # smallest languages one site may be most of what exists, and the CPT mix
+    # is the right place to rebalance. The summary always reports the top
+    # hosts so the skew is visible either way (Bikol's first Tavily run was
+    # 41 % jw.org).
+    max_per_host: int | None = None
 
 
 class ShardWriter:
@@ -157,9 +184,11 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
         manifest = Manifest(lang_dir / "manifest.jsonl")
         dedup = DedupIndex()
         seeded = dedup.seed_from_parquet(writer.existing_shards())
-        stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetch_fail": 0,
-                 "too_short": 0, "lid_reject": 0, "dup": 0, "accepted": 0,
-                 "resumed_rows": seeded}
+        stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetched": 0,
+                 "raw_fallback": 0, "fetch_fail": 0, "too_short": 0, "too_long": 0,
+                 "lid_reject": 0, "dup": 0, "host_excluded": 0, "host_capped": 0,
+                 "accepted": 0, "resumed_rows": seeded}
+        per_host: dict[str, int] = {}
         print(f"\n[{lang}] backend={backend.name} resumed={seeded} rows, "
               f"{len(manifest.seen)} urls in manifest")
         t0 = time.time()
@@ -181,22 +210,49 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 if hit.url in manifest.seen:
                     stats["skipped_seen"] += 1
                     continue
+                # lyrics sites (copyright) on every backend, and the ceb/war
+                # bot-Wikipedia + MT-farm rule that FineWeb-2 ingestion already
+                # applies — search backends find those same hosts
+                if excluded_host(hit.url) or fw2_excluded(hit.url, lang):
+                    stats["host_excluded"] += 1
+                    manifest.record(hit.url, "host_excluded", lang=lang)
+                    continue
+                host = hit.url.split("/")[2].lower() if hit.url.count("/") >= 2 else "?"
+                if cfg.max_per_host and per_host.get(host, 0) >= cfg.max_per_host:
+                    stats["host_capped"] += 1
+                    manifest.record(hit.url, "host_capped", lang=lang, host=host)
+                    continue
 
-                # text: from the backend if it has it, else fetch + extract
                 text, title, date = hit.raw_text, hit.title, hit.extra.get("date")
-                if not text:
-                    page = fetcher.fetch(hit.url)
-                    if page is None or not page.text:
+                # A search backend's raw_content is the whole page, menus and
+                # all. Extract the main text from the live page instead, and
+                # fall back to the dump only when the fetch gives us nothing.
+                if not text or hit.extra.get("page_dump"):
+                    try:
+                        page = fetcher.fetch(hit.url)
+                    except Exception as exc:        # one bad page must not end the run
+                        print(f"  fetch error {hit.url[:80]}: {type(exc).__name__}: {exc}")
+                        page = None
+                    if page is not None and page.text and len(page.text.split()) >= cfg.min_words:
+                        text, title, date = page.text, page.title or title, page.date or date
+                        stats["fetched"] += 1
+                    elif not text:
                         stats["fetch_fail"] += 1
                         manifest.record(hit.url, "fetch_fail", lang=lang,
                                         http=getattr(page, "status", 0))
                         continue
-                    text, title, date = page.text, page.title or title, page.date
+                    else:
+                        stats["raw_fallback"] += 1
 
                 cleaned = clean_text(text)
                 if not is_usable(cleaned, min_words=cfg.min_words):
                     stats["too_short"] += 1
                     manifest.record(hit.url, "too_short", lang=lang)
+                    continue
+                n_words = len(cleaned.split())
+                if cfg.max_words and n_words > cfg.max_words:
+                    stats["too_long"] += 1
+                    manifest.record(hit.url, "too_long", lang=lang, words=n_words)
                     continue
 
                 verdict = lid.identify(cleaned)
@@ -219,11 +275,17 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 manifest.record(hit.url, "accepted", lang=lang, hash=row["content_hash"],
                                 words=row["word_count"], lid=round(verdict.score, 3))
                 stats["accepted"] += 1
+                per_host[host] = per_host.get(host, 0) + 1
 
         writer.flush()
         stats["seconds"] = round(time.time() - t0, 1)
+        top = sorted(per_host.items(), key=lambda kv: -kv[1])[:5]
+        stats["top_hosts"] = {h: n for h, n in top}
         summary[lang] = stats
-        print(f"[{lang}] " + "  ".join(f"{k}={v}" for k, v in stats.items()))
+        print(f"[{lang}] " + "  ".join(f"{k}={v}" for k, v in stats.items() if k != "top_hosts"))
+        if top and stats["accepted"]:
+            print(f"[{lang}] top hosts: " + ", ".join(
+                f"{h} {n} ({n / stats['accepted']:.0%})" for h, n in top))
 
     (cfg.out_dir / "text" / "summary.json").write_text(json.dumps(summary, indent=1))
     return summary
