@@ -88,8 +88,7 @@ class Fetcher:
                 buf += chunk
                 if len(buf) > MAX_BYTES:
                     break
-            r.encoding = r.encoding or "utf-8"
-            return buf.decode(r.encoding, errors="replace"), 200
+            return decode_body(buf, r.encoding), 200
         except requests.RequestException:
             return None, 0
 
@@ -98,6 +97,22 @@ class Fetcher:
         if html is None:
             return Page(url, "", status=status)
         return extract(html, url, status)
+
+
+def decode_body(buf: bytes, declared: str | None) -> str:
+    """Decode a response body without trusting the declared charset.
+
+    Servers declare nonsense ("charset=empty" took down a ten-language run
+    with LookupError: unknown encoding). Try the declared encoding, then
+    UTF-8, and never raise."""
+    for enc in (declared, "utf-8"):
+        if not enc:
+            continue
+        try:
+            return buf.decode(enc, errors="replace")
+        except LookupError:
+            continue
+    return buf.decode("utf-8", errors="replace")
 
 
 def extract(html: str, url: str, status: int = 200) -> Page | None:

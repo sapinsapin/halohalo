@@ -28,6 +28,23 @@ from .fetch import Fetcher
 from .search import DEFAULT_BACKEND, get_backend
 from .seeds import prepare_seeds
 
+# Hosts whose content we must not redistribute regardless of language: song
+# lyrics are copyrighted text, and lyrics sites turn up in Filipino search
+# results (genius.com was in the first Tavily run's top five). Checked on
+# every backend, FineWeb-2 included.
+EXCLUDED_HOSTS = ("genius.com", "azlyrics.com", "lyrics.com", "musixmatch.com",
+                  "lyricstranslate.com", "letras.com", "lyricsmode.com", "songlyrics.com",
+                  "metrolyrics.com", "smule.com")
+
+
+def excluded_host(url: str) -> bool:
+    try:
+        host = url.split("/")[2].lower()
+    except IndexError:
+        return False
+    return any(host == h or host.endswith("." + h) for h in EXCLUDED_HOSTS)
+
+
 COLUMNS = ["id", "text", "url", "date", "dump", "file_path", "detected_lang",
            "word_count", "title", "source", "language", "token_count",
            "content_hash", "crawled_at",
@@ -165,8 +182,8 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
         seeded = dedup.seed_from_parquet(writer.existing_shards())
         stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetched": 0,
                  "raw_fallback": 0, "fetch_fail": 0, "too_short": 0,
-                 "lid_reject": 0, "dup": 0, "host_capped": 0, "accepted": 0,
-                 "resumed_rows": seeded}
+                 "lid_reject": 0, "dup": 0, "host_excluded": 0, "host_capped": 0,
+                 "accepted": 0, "resumed_rows": seeded}
         per_host: dict[str, int] = {}
         print(f"\n[{lang}] backend={backend.name} resumed={seeded} rows, "
               f"{len(manifest.seen)} urls in manifest")
@@ -189,6 +206,10 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 if hit.url in manifest.seen:
                     stats["skipped_seen"] += 1
                     continue
+                if excluded_host(hit.url):
+                    stats["host_excluded"] += 1
+                    manifest.record(hit.url, "host_excluded", lang=lang)
+                    continue
                 host = hit.url.split("/")[2].lower() if hit.url.count("/") >= 2 else "?"
                 if cfg.max_per_host and per_host.get(host, 0) >= cfg.max_per_host:
                     stats["host_capped"] += 1
@@ -200,7 +221,11 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 # all. Extract the main text from the live page instead, and
                 # fall back to the dump only when the fetch gives us nothing.
                 if not text or hit.extra.get("page_dump"):
-                    page = fetcher.fetch(hit.url)
+                    try:
+                        page = fetcher.fetch(hit.url)
+                    except Exception as exc:        # one bad page must not end the run
+                        print(f"  fetch error {hit.url[:80]}: {type(exc).__name__}: {exc}")
+                        page = None
                     if page is not None and page.text and len(page.text.split()) >= cfg.min_words:
                         text, title, date = page.text, page.title or title, page.date or date
                         stats["fetched"] += 1

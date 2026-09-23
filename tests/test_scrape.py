@@ -109,6 +109,24 @@ def test_vertical_bullet_menu_is_dropped():
     assert "malawig kag detalyado" in out
 
 
+def test_lyrics_hosts_are_excluded_everywhere():
+    from halolib.scrape.pipeline import excluded_host
+    assert excluded_host("https://genius.com/Artist-song-lyrics")
+    assert excluded_host("https://www.azlyrics.com/lyrics/x/y.html")      # subdomain
+    assert not excluded_host("https://www.bomboradyo.com/balita")
+    assert not excluded_host("https://notgenius.com/page")                  # suffix trap
+    assert not excluded_host("nonsense")
+
+
+def test_decode_body_survives_bogus_charset():
+    from halolib.scrape.fetch import decode_body
+    body = "Maayong buntag — ₱45 milyon".encode("utf-8")
+    assert decode_body(body, "empty") == "Maayong buntag — ₱45 milyon"      # the crash case
+    assert decode_body(body, None) == "Maayong buntag — ₱45 milyon"
+    assert decode_body(body, "utf-8") == "Maayong buntag — ₱45 milyon"
+    assert decode_body(b"\xff\xfe", "not-a-codec")                           # never raises
+
+
 def test_dedup_exact_and_near():
     d = DedupIndex()
     words = ("ang balita karon adlawa mahitungod sa siyudad sa sugbo ug sa mga tawo nga "
