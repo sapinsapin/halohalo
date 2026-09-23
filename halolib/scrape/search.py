@@ -60,7 +60,12 @@ class TavilyBackend:
     name = "tavily"
 
     def __init__(self, api_key: str | None = None, search_depth: str = "advanced",
-                 client=None, exclude_domains: list[str] | None = None):
+                 client=None, exclude_domains: list[str] | None = None,
+                 include_domains: list[str] | None = None):
+        # include_domains restricts a search to sites we already know publish
+        # in the language — the flywheel's host-expansion pass. Such searches
+        # can use "basic" depth (1 credit instead of 2): the site does the
+        # narrowing, the ranking has little left to do.
         key = api_key or os.environ.get("TAVILY_API_KEY")
         if client is None and not key:
             raise MissingCredential(
@@ -72,15 +77,19 @@ class TavilyBackend:
         self.client = client
         self.search_depth = search_depth
         self.exclude_domains = SOCIAL_DOMAINS if exclude_domains is None else exclude_domains
+        self.include_domains = include_domains or None
 
     def search(self, query: str, lang: str, max_results: int = 10) -> list[Hit]:
-        resp = self.client.search(
+        kwargs = dict(
             query=query,
             search_depth=self.search_depth,
             max_results=max_results,
             include_raw_content=True,      # full page text, so no fetch needed
             exclude_domains=self.exclude_domains,
         )
+        if self.include_domains:
+            kwargs["include_domains"] = self.include_domains
+        resp = self.client.search(**kwargs)
         hits = []
         for r in resp.get("results", []):
             url = r.get("url")
