@@ -204,8 +204,17 @@ only test set whose labels don't come from a model:
 |---|---|---|---|---|---|---|---|
 | r1 | page labels as-is | *(mixed test set; eng 0.63)* | | | | | |
 | r2 | + relabel confident English, cap classes at 20k | 0.854 | 0.833 | 0.722 | 0.759 | 0.763 | 0.822 |
-| **r3** | + **consensus labels** for web text, + scraped shards | **0.882** | **0.864** | **0.748** | **0.887** | 0.714 | 0.794 |
-| GlotLID v3 | reference | 0.704 | 0.737 | 0.437 | 0.864 | 0.496 | 0.336 |
+| r3 | + **consensus labels** for web text, + scraped shards | 0.882 | 0.864 | 0.748 | 0.887 | 0.714 | 0.794 |
+| **r4** | + flywheel round 1 (Tavily + expansion pages folded in) | **0.894** | **0.879** | **0.764** | **0.930** | **0.804** | **0.822** |
+| GlotLID v3 | reference | 0.705 | 0.752 | 0.428 | 0.878 | 0.598 | 0.439 |
+
+- **r3 → r4.** The flywheel's first round added 622 web pages, and the
+  retrain recovered exactly the two languages r3 had lost: Waray 0.714 →
+  0.804, Tausug 0.794 → 0.822. The mechanism is the one predicted above —
+  consensus labelling had starved them of web text, and the new pages
+  (Tausug's training rows grew from 4,611 to 5,465) fed them again. Small
+  dips on bcl (0.855 → 0.843) and hil (0.853 → 0.824); macro F1 up, so
+  promoted.
 
 What each round taught us:
 
@@ -316,6 +325,31 @@ python scripts/flywheel.py --rounds 1 --langs tsg,war --no-lid
 Everything accumulates in place: shards, manifests, `used_queries.json`, and
 one JSON line per round in `finetune_runs/flywheel/rounds.jsonl` with credits
 before/after, documents and words gained per language, and the LID decision.
+
+### Round 1 (2026-09-23): 10 seed + 4 expansion queries per language
+
+| lang | accepted | words | expansion hosts (examples) |
+|---|---|---|---|
+| eng | 117 | 181,643 | — |
+| fil | 97 | 124,886 | remate.ph, pep.ph |
+| bcl | 84 | 86,444 | bicolmail.net, bicolstandard.com, magbikolkita.com |
+| ilo | 66 | 53,444 | tawidnewsmag.com, nordis.net, ilocossentinel.com |
+| pam | 59 | 47,717 | punto.com.ph, kapampanganlibrary.whereishome.info |
+| hil | 54 | 55,921 | aksyonradyoiloilo.com.ph, rmniloilo.net, digicastnegros.com |
+| war | 45 | 39,778 | tacloban.bomboradyo.com, isumat.com, tacloban.gov.ph |
+| ceb | 43 | 28,952 | sunstar.com.ph, rmn.ph, archives.pia.gov.ph |
+| pag | 33 | 54,230 | punch.dagupan.com, vinceimbat.com |
+| tsg | 24 | 22,082 | — (no eligible hosts yet) |
+| **total** | **622** | **695,097** | |
+
+Tausug went from 9 accepted in the one-shot run to 24 — the web-derived seed
+terms (`hambuuk dayn ampa sabab`) find Tausug pages where read-prompt
+vocabulary found English pages *about* Tausug. Cebuano's count is net of the
+MT-farm purge that ran during the round. ~240 credits.
+
+The round also surfaced the two exclusions above (MT farms by path,
+adult hosts) and cost one lesson in robustness: the process died silently
+during the LID retrain, so the record is now written before that step.
 
 ## What "AI-ready" means here, concretely
 
