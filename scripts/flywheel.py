@@ -157,7 +157,11 @@ def retrain_lid(min_delta: float = -0.002) -> dict:
     cmd = [sys.executable, str(ROOT / "scripts" / "train_lid.py"),
            "--extra-parquet", str(SCRAPE / "text")]
     t0 = time.time()
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+    # Log to a file, not a pipe: the run is long, its output is worth keeping,
+    # and a parent that dies mid-way must not take the trainer's output with it.
+    log_path = FLY / f"train_lid_{datetime.now(timezone.utc):%Y%m%dT%H%M}.log"
+    with open(log_path, "w", encoding="utf-8") as log:
+        proc = subprocess.run(cmd, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, text=True)
     after = lid_pld_f1(LID_DIR / "results.json") if proc.returncode == 0 else None
 
     promoted = (after is not None) and (before is None or after - before >= min_delta)
@@ -167,7 +171,29 @@ def retrain_lid(min_delta: float = -0.002) -> dict:
                 shutil.copy2(backup / f, LID_DIR / f)
     return {"before_f1": before, "after_f1": after, "promoted": promoted,
             "seconds": round(time.time() - t0), "returncode": proc.returncode,
-            "tail": proc.stdout.strip().splitlines()[-3:] if proc.stdout else proc.stderr[-300:]}
+            "log": str(log_path)}
+
+
+def gained_since(langs, t0_iso: str) -> dict[str, dict]:
+    """Documents and words accepted per language since an ISO timestamp,
+    from the manifests. Unlike a shard tally this is unaffected by purges
+    that run mid-round (the first round's tally showed Cebuano at -412
+    documents because an MT-farm purge happened while it ran)."""
+    out = {}
+    for lang in langs:
+        d = w = 0
+        mp = SCRAPE / "text" / lang / "manifest.jsonl"
+        if mp.exists():
+            for ln in mp.read_text(encoding="utf-8").splitlines():
+                try:
+                    r = json.loads(ln)
+                except json.JSONDecodeError:
+                    continue
+                if r.get("status") == "accepted" and r.get("ts", "") >= t0_iso:
+                    d += 1
+                    w += r.get("words", 0)
+        out[lang] = {"docs": d, "words": w}
+    return out
 
 
 def run_round(rnd: int, args, langs) -> dict:
@@ -190,7 +216,7 @@ def run_round(rnd: int, args, langs) -> dict:
             return {"round": rnd, "skipped": "no credits"}
 
     lid = default_ensemble(True)
-    before = tally(langs)
+    round_start = datetime.now(timezone.utc).isoformat(timespec="seconds")
     seeds = prepare_seeds(SCRAPE / "seeds", langs=langs, n_queries=args.queries_per_lang,
                           refresh=True, token=os.environ.get("HF_TOKEN"),
                           query_seed=1000 + rnd, include_scrape=True,
@@ -218,25 +244,31 @@ def run_round(rnd: int, args, langs) -> dict:
                                max_docs_per_lang=args.max_docs)
             summary2.update(run_text(cfg, lid))
 
-    after = tally(langs)
-    gained = {l: {"docs": after[l]["docs"] - before[l]["docs"],
-                  "words": after[l]["words"] - before[l]["words"]} for l in langs}
+    gained = gained_since(langs, round_start)
     print("gained this round: " + "  ".join(f"{l}={g['docs']}d/{g['words']:,}w" for l, g in gained.items()))
 
-    lid_info = {} if args.no_lid else retrain_lid()
-    if lid_info:
-        print(f"LID: pld macro-F1 {lid_info['before_f1']} -> {lid_info['after_f1']}  "
-              f"{'PROMOTED' if lid_info['promoted'] else 'kept previous'}")
+    def _slim(summary):
+        return {l: {k: v for k, v in s.items() if k in ("hits", "accepted", "lid_reject", "fetch_fail")}
+                for l, s in summary.items()}
 
     rec = {"round": rnd, "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+           "round_start": round_start,
            "queries_per_lang": args.queries_per_lang, "expand_queries": args.expand_queries,
            "credits_before": left, "credits_after": credits_left(None),
-           "gained": gained, "totals": after, "lid": lid_info,
-           "seed_pass": {l: {k: v for k, v in s.items() if k in ("hits", "accepted", "lid_reject", "fetch_fail")}
-                         for l, s in summary1.items()},
-           "expand_pass": {l: {k: v for k, v in s.items() if k in ("hits", "accepted", "lid_reject", "fetch_fail")}
-                           for l, s in summary2.items()}}
+           "gained": gained, "totals": tally(langs), "lid": {"status": "pending"},
+           "seed_pass": _slim(summary1), "expand_pass": _slim(summary2)}
     FLY.mkdir(parents=True, exist_ok=True)
+    # Write the scrape accounting now: the LID retrain takes ten minutes and a
+    # parent killed during it must not lose the round (round 1 did).
+    rec_path = FLY / f"round_{rnd:03d}.json"
+    rec_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1))
+
+    lid_info = {"status": "skipped"} if args.no_lid else retrain_lid()
+    if "before_f1" in lid_info:
+        print(f"LID: pld macro-F1 {lid_info['before_f1']} -> {lid_info['after_f1']}  "
+              f"{'PROMOTED' if lid_info['promoted'] else 'kept previous'}")
+    rec["lid"] = lid_info
+    rec_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1))
     with open(FLY / "rounds.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     return rec
