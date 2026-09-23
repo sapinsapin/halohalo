@@ -93,6 +93,46 @@ Cost: an advanced search is 2 credits, so 20 queries per language is ~40
 credits, ~400 for all ten — inside Tavily's free tier. Wall-clock is set by
 the polite fetcher (one request per second per host), not by the API.
 
+### First full Tavily run (2026-09-23), 20 queries × 10 hits per language
+
+After the gate, dedup, the 20k-word cap, and the host exclusions:
+
+| lang | accepted | words | LID rejects | fetch fails | note |
+|---|---|---|---|---|---|
+| bcl | 108 | 108,716 | 32 | 16 | 41 % jw.org |
+| ceb | 69 | 128,757 | 59 | 39 | a 477k-word Bible capped out |
+| eng | 110 | 214,876 | 0 | 82 | |
+| fil | 40 | 60,270 | 68 | 47 | 55 of the rejects were English pages |
+| hil | 94 | 45,723 | 43 | 40 | Bombo Radyo, Digicast Negros |
+| ilo | 70 | 149,940 | 21 | 34 | |
+| pag | 98 | 87,551 | 25 | 16 | 46 % jw.org |
+| pam | 39 | 56,868 | 69 | 36 | |
+| tsg | **9** | 9,916 | 78 | 46 | 70 of the rejects were English pages *about* Tausug |
+| war | 49 | 80,269 | 51 | 42 | 13 bot-Wikipedia pages purged |
+| **total** | **686** | **942,886** | | | |
+
+Together with the FineWeb-2 pass the scrape now holds **21,936 documents /
+11.4 M words** across the ten languages.
+
+What the numbers say:
+
+- **The gate is not over-filtering code-switched text.** Where rejections
+  are high (fil, tsg), the rejected pages were identified as *English*
+  outright — search results for a small language are dominated by pages
+  about it in English. Only a handful of rejections were target-language
+  pages under the agreement threshold (fil 6, tsg 3, all at 0.56–0.58).
+- **Tausug is search-limited, not gate-limited.** Nine pages from 200 hits.
+  More queries won't fix that; the fix is a curated `direct` list of the few
+  sites that publish in Tausug, and the community drive.
+- **Scripture dominates the small languages** (jw.org, bible.com, ebible.org,
+  churchofjesuschrist.org are top hosts for bcl, pag, war, tsg). It is real
+  text in the language, and it is a narrow register; the CPT mix has to
+  account for it, which is why `top_hosts` is in every summary.
+- **Whole-document giants were the biggest distortion**: a 477k-word Cebuano
+  Bible, a 221k-word Waray one, PDFs of the *Pasyon*. 23 + 13 documents over
+  20k words (1.4 M + 0.7 M words) sit in `text_overlength/`, not in the
+  shards.
+
 **direct.** A file of URLs. No search. For curated domain lists (regional
 newspapers, radio station sites, government portals in the language) and for
 smoke tests — `scripts/scrape_smoke_urls.txt` has one page per language.
