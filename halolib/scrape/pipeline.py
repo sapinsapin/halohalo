@@ -37,12 +37,51 @@ EXCLUDED_HOSTS = ("genius.com", "azlyrics.com", "lyrics.com", "musixmatch.com",
                   "metrolyrics.com", "smule.com")
 
 
+# Adult sites: not redistributable in a public research corpus. Matched by
+# name fragments because the long tail is unbounded (the flywheel's first
+# Filipino expansion pass selected filipinosexstories.com as a "known-good
+# host" — it had produced accepted Filipino pages).
+ADULT_HOST_FRAGMENTS = ("sexstories", "porn", "xxx", "hentai", "xvideo", "xnxx", "sextape",
+                        "escort", "nsfw", "camgirl", "onlyfans", "adultfriend", "kantutan",
+                        "sex-stories", "sexstory", "erotic")
+
+
 def excluded_host(url: str) -> bool:
     try:
         host = url.split("/")[2].lower()
     except IndexError:
         return False
+    if any(frag in host for frag in ADULT_HOST_FRAGMENTS):
+        return True
     return any(host == h or host.endswith("." + h) for h in EXCLUDED_HOSTS)
+
+
+# Machine-translation farms put the language code in the URL *path* —
+# alltechbuzz.net/ceb/..., qc-solar.com/pag/..., pilotech.ai/pam/... — corporate
+# and content sites machine-translating their copy into every language. Of
+# ~450 accepted hosts matching this shape on 2026-09-23, nearly all were
+# manufacturers, casino sites and Spanish tech blogs "in Cebuano". The rule
+# is the subdomain rule one slash later. The exceptions are publishers whose
+# translations are made by people, and they are listed by name.
+MT_PATH_CODES = {"ceb", "pag", "pam", "bik", "bcl", "war", "ilo", "hil", "tl", "fil", "tgl", "tsg"}
+HUMAN_TRANSLATION_HOSTS = (
+    "jw.org", "ebible.org", "bible.com", "bible.is", "biblegateway.com", "biblia.chat",
+    "mormon.org", "lds.org", "churchofjesuschrist.org", "egwwritings.org",
+    "globalrecordings.net", "dawnbible.com", "christianscience.com",
+    "digitallibrary.io", "familysearch.org", "fema.gov", "justice.gov", "wikimedia.org",
+)
+
+
+def mt_path_excluded(url: str) -> bool:
+    try:
+        _, _, host, seg = url.split("/", 3)[:4] if url.count("/") >= 3 else (None, None, url.split("/")[2], "")
+    except (IndexError, ValueError):
+        return False
+    host = host.lower()
+    first = seg.split("/", 1)[0].split("?", 1)[0].split("#", 1)[0].lower()
+    if first not in MT_PATH_CODES:
+        return False
+    return not any(host == h or host.endswith("." + h) for h in HUMAN_TRANSLATION_HOSTS)
 
 
 COLUMNS = ["id", "text", "url", "date", "dump", "file_path", "detected_lang",
@@ -213,7 +252,7 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 # lyrics sites (copyright) on every backend, and the ceb/war
                 # bot-Wikipedia + MT-farm rule that FineWeb-2 ingestion already
                 # applies — search backends find those same hosts
-                if excluded_host(hit.url) or fw2_excluded(hit.url, lang):
+                if excluded_host(hit.url) or fw2_excluded(hit.url, lang) or mt_path_excluded(hit.url):
                     stats["host_excluded"] += 1
                     manifest.record(hit.url, "host_excluded", lang=lang)
                     continue

@@ -50,7 +50,8 @@ def _code(c: str) -> str:
 
 
 def load_seed_texts(max_per_lang: int = 20000, token: str | None = None,
-                    include_hub: bool = True) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
+                    include_hub: bool = True, scrape_dir: Path | None = None,
+                    ) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
     """({lang: [text, ...]}, {lang: PLD vocabulary}) from PLD plus the Hub
     text corpora. The PLD vocabulary is human-written and is used to anchor
     keywords (see anchor_to_vocab)."""
@@ -105,6 +106,23 @@ def load_seed_texts(max_per_lang: int = 20000, token: str | None = None,
                 else:
                     dropped += 1
             print(f"  seeds: {repo}: kept {kept} docs, dropped {dropped} (wiki chrome / off-language)")
+
+    if scrape_dir is not None:
+        # The flywheel: pages the gate accepted with both models agreeing and
+        # high confidence become seed text for the next round's queries. Web
+        # prose is a better source of search terms than read prompts, and
+        # each round's finds shape the next round's searches.
+        import glob
+
+        import pyarrow.parquet as pq
+        n0 = sum(len(v) for v in by_lang.values())
+        for f in sorted(glob.glob(str(scrape_dir / "*" / "shard-*.parquet"))):
+            t = pq.read_table(f, columns=["language", "text", "lid_models_agree", "lid_score"])
+            for lang, text, agree, score in zip(*(t.column(c).to_pylist() for c in
+                                                  ("language", "text", "lid_models_agree", "lid_score"))):
+                if agree and score >= 0.9 and lang in LANGS and len(by_lang[lang]) < max_per_lang:
+                    by_lang[lang].append(text[:4000])
+        print(f"  seeds: scrape shards: +{sum(len(v) for v in by_lang.values()) - n0} texts")
 
     return dict(by_lang), dict(pld_vocab)
 
@@ -167,9 +185,12 @@ def contrastive_keywords(texts_by_lang: dict[str, list[str]], top_n: int = 60,
 
 
 def build_queries(keywords: list[tuple[str, float]], n_queries: int = 20,
-                  terms_per_query: int = 3, seed: int = 42) -> list[str]:
+                  terms_per_query: int = 3, seed: int = 42,
+                  exclude: set[str] | None = None) -> list[str]:
     """Combine distinctive terms into queries. Deterministic given the seed so
-    a re-run finds the same pages and the manifest can skip them."""
+    a re-run finds the same pages and the manifest can skip them; a different
+    seed (the flywheel passes the round number) samples different
+    combinations, and `exclude` keeps spent queries out."""
     import random
     rng = random.Random(seed)
     words = [w for w, _ in keywords]
@@ -177,7 +198,7 @@ def build_queries(keywords: list[tuple[str, float]], n_queries: int = 20,
         return []
     top = words[: max(terms_per_query * 4, 12)]
     queries: list[str] = []
-    seen = set()
+    seen = set(exclude or ())
     for _ in range(n_queries * 5):
         if len(queries) >= n_queries:
             break
@@ -189,16 +210,29 @@ def build_queries(keywords: list[tuple[str, float]], n_queries: int = 20,
 
 
 def prepare_seeds(out_dir: Path, langs=LANGS, n_queries: int = 20, refresh: bool = False,
-                  token: str | None = None) -> dict[str, dict]:
-    """Mine keywords once, cache per language as JSON, and return
-    {lang: {"keywords": [...], "queries": [...]}}."""
+                  token: str | None = None, query_seed: int = 42,
+                  include_scrape: bool = False, used_queries_path: Path | None = None,
+                  ) -> dict[str, dict]:
+    """Mine keywords, cache per language as JSON, and return
+    {lang: {"keywords": [...], "queries": [...]}}.
+
+    `include_scrape` folds accepted scrape pages into the seed text and
+    `used_queries_path` records every query ever issued so a later round never
+    repeats one — together these are what make repeated rounds find new
+    pages instead of the same ones."""
     out_dir.mkdir(parents=True, exist_ok=True)
     cached = {l: out_dir / f"{l}.json" for l in langs}
     if not refresh and all(p.exists() for p in cached.values()):
         return {l: json.loads(p.read_text()) for l, p in cached.items()}
 
-    print("  seeds: mining keywords from PLD / halohalo / BantayWika ...")
-    texts, pld_vocab = load_seed_texts(token=token)
+    used: dict[str, list[str]] = {}
+    if used_queries_path and used_queries_path.exists():
+        used = json.loads(used_queries_path.read_text())
+
+    scrape_dir = (out_dir.parent / "text") if include_scrape else None
+    print("  seeds: mining keywords from PLD / halohalo"
+          + (" / accepted scrape pages" if include_scrape else "") + " ...")
+    texts, pld_vocab = load_seed_texts(token=token, scrape_dir=scrape_dir)
     kws = contrastive_keywords(texts, top_n=400)
     seeds = {}
     for lang in langs:
@@ -206,12 +240,18 @@ def prepare_seeds(out_dir: Path, langs=LANGS, n_queries: int = 20, refresh: bool
         # a keyword that English speakers also write finds English pages.
         eng = pld_vocab.get("eng", set()) if lang != "eng" else set()
         kw = anchor_to_vocab(kws.get(lang, []), pld_vocab.get(lang, set()), exclude=eng)[:60]
+        queries = build_queries(kw, n_queries=n_queries, seed=query_seed,
+                                exclude=set(used.get(lang, [])))
         seeds[lang] = {
             "keywords": [[w, round(s, 3)] for w, s in kw],
-            "queries": build_queries(kw, n_queries=n_queries),
+            "queries": queries,
             "n_seed_texts": len(texts.get(lang, [])),
+            "query_seed": query_seed,
         }
         cached[lang].write_text(json.dumps(seeds[lang], ensure_ascii=False, indent=1))
+        used.setdefault(lang, []).extend(q for q in queries if q not in used.get(lang, []))
         print(f"  seeds: {lang}: {seeds[lang]['n_seed_texts']} texts -> "
               f"{[w for w, _ in kw[:8]]}")
+    if used_queries_path:
+        used_queries_path.write_text(json.dumps(used, ensure_ascii=False, indent=1))
     return seeds

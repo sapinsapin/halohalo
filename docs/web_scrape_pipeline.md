@@ -128,6 +128,18 @@ What the numbers say:
   churchofjesuschrist.org are top hosts for bcl, pag, war, tsg). It is real
   text in the language, and it is a narrow register; the CPT mix has to
   account for it, which is why `top_hosts` is in every summary.
+- **Machine-translation farms hide in the URL path, not just the subdomain.**
+  `alltechbuzz.net/ceb/…`, `qc-solar.com/pag/…`, `pilotech.ai/pam/…`: about
+  450 accepted hosts had a language-code first path segment, and nearly all
+  were manufacturers, casino sites and Spanish tech blogs "in Cebuano".
+  `mt_path_excluded` now applies the subdomain rule one slash later, with a
+  named allowlist for human-translation publishers (jw.org, ebible.org, the
+  LDS sites, Global Digital Library). It purged 601 documents, 467 of them
+  Cebuano. A tempting shortcut — *"a host accepted in ≥3 languages is a
+  farm"* — was tested first and is **wrong here**: the multi-language hosts
+  are the Philippine Information Agency, Bombo Radyo, RMN and SunStar's
+  regional editions, i.e. the best sources we have. Genuine multilingual
+  publishing is common in the Philippines; don't penalise it.
 - **Whole-document giants were the biggest distortion**: a 477k-word Cebuano
   Bible, a 221k-word Waray one, PDFs of the *Pasyon*. 23 + 13 documents over
   20k words (1.4 M + 0.7 M words) sit in `text_overlength/`, not in the
@@ -192,8 +204,17 @@ only test set whose labels don't come from a model:
 |---|---|---|---|---|---|---|---|
 | r1 | page labels as-is | *(mixed test set; eng 0.63)* | | | | | |
 | r2 | + relabel confident English, cap classes at 20k | 0.854 | 0.833 | 0.722 | 0.759 | 0.763 | 0.822 |
-| **r3** | + **consensus labels** for web text, + scraped shards | **0.882** | **0.864** | **0.748** | **0.887** | 0.714 | 0.794 |
-| GlotLID v3 | reference | 0.704 | 0.737 | 0.437 | 0.864 | 0.496 | 0.336 |
+| r3 | + **consensus labels** for web text, + scraped shards | 0.882 | 0.864 | 0.748 | 0.887 | 0.714 | 0.794 |
+| **r4** | + flywheel round 1 (Tavily + expansion pages folded in) | **0.894** | **0.879** | **0.764** | **0.930** | **0.804** | **0.822** |
+| GlotLID v3 | reference | 0.705 | 0.752 | 0.428 | 0.878 | 0.598 | 0.439 |
+
+- **r3 → r4.** The flywheel's first round added 622 web pages, and the
+  retrain recovered exactly the two languages r3 had lost: Waray 0.714 →
+  0.804, Tausug 0.794 → 0.822. The mechanism is the one predicted above —
+  consensus labelling had starved them of web text, and the new pages
+  (Tausug's training rows grew from 4,611 to 5,465) fed them again. Small
+  dips on bcl (0.855 → 0.843) and hil (0.853 → 0.824); macro F1 up, so
+  promoted.
 
 What each round taught us:
 
@@ -259,6 +280,76 @@ problem. The candidates files list channels: the next step is to ask
 channel owners (regional radio, church, and LGU channels especially) for
 permission, not to widen the search. The `--all-licenses` switch exists for
 research use under a clear legal basis, not as a default.
+
+## The flywheel — scrape, accumulate, improve LID, iterate
+
+`scripts/flywheel.py` turns the one-shot scrape into a loop in which each
+round is seeded by the rounds before it:
+
+```
+        ┌──────────────────────────────────────────────────────────┐
+        │                                                          │
+  PLD + halohalo + accepted pages ──► seeds ──► scrape ──► expand ─┤
+        (keywords re-mined each round,   (Tavily,   (same sites,   │
+         new query combinations,          advanced)  basic depth)  │
+         spent queries never reused)                               │
+                                                                   ▼
+                          rounds.jsonl ◄── LID retrain, promote only if
+                                            PLD macro-F1 does not regress
+```
+
+- **Seeds from what we found.** `load_seed_texts(scrape_dir=…)` folds in every
+  accepted page whose two LID verdicts agreed at ≥0.9 confidence. Web prose
+  yields better search terms than read prompts, and each round's finds shape
+  the next round's queries. The query sampler takes the round number as its
+  seed, so combinations differ, and `seeds/used_queries.json` guarantees a
+  query is never issued twice.
+- **Expansion inside known-good hosts.** The hosts that produced accepted
+  pages become `include_domains` for a second pass at basic depth (1 credit
+  a query instead of 2). Scripture mirrors, bot encyclopedias and generic
+  platforms are excluded from expansion, so the loop does not amplify the
+  sources that already dominate the small languages.
+- **LID never regresses.** After each round HaloLID is retrained with the
+  accumulated shards and promoted only if macro F1 on the human-labelled PLD
+  set holds (within 0.002); otherwise the previous model is restored. The
+  gate for round *n+1* is at least as good as the gate for round *n*.
+- **Credit-aware.** Each round reads Tavily's usage endpoint and scales its
+  query counts to what the plan has left rather than overrunning it.
+
+```bash
+python scripts/flywheel.py --rounds 1                          # ~240 credits at defaults
+python scripts/flywheel.py --rounds 2 --queries-per-lang 6 --expand-queries 4
+python scripts/flywheel.py --rounds 1 --langs tsg,war --no-lid
+```
+
+Everything accumulates in place: shards, manifests, `used_queries.json`, and
+one JSON line per round in `finetune_runs/flywheel/rounds.jsonl` with credits
+before/after, documents and words gained per language, and the LID decision.
+
+### Round 1 (2026-09-23): 10 seed + 4 expansion queries per language
+
+| lang | accepted | words | expansion hosts (examples) |
+|---|---|---|---|
+| eng | 117 | 181,643 | — |
+| fil | 97 | 124,886 | remate.ph, pep.ph |
+| bcl | 84 | 86,444 | bicolmail.net, bicolstandard.com, magbikolkita.com |
+| ilo | 66 | 53,444 | tawidnewsmag.com, nordis.net, ilocossentinel.com |
+| pam | 59 | 47,717 | punto.com.ph, kapampanganlibrary.whereishome.info |
+| hil | 54 | 55,921 | aksyonradyoiloilo.com.ph, rmniloilo.net, digicastnegros.com |
+| war | 45 | 39,778 | tacloban.bomboradyo.com, isumat.com, tacloban.gov.ph |
+| ceb | 43 | 28,952 | sunstar.com.ph, rmn.ph, archives.pia.gov.ph |
+| pag | 33 | 54,230 | punch.dagupan.com, vinceimbat.com |
+| tsg | 24 | 22,082 | — (no eligible hosts yet) |
+| **total** | **622** | **695,097** | |
+
+Tausug went from 9 accepted in the one-shot run to 24 — the web-derived seed
+terms (`hambuuk dayn ampa sabab`) find Tausug pages where read-prompt
+vocabulary found English pages *about* Tausug. Cebuano's count is net of the
+MT-farm purge that ran during the round. ~240 credits.
+
+The round also surfaced the two exclusions above (MT farms by path,
+adult hosts) and cost one lesson in robustness: the process died silently
+during the LID retrain, so the record is now written before that step.
 
 ## What "AI-ready" means here, concretely
 
