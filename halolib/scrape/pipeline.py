@@ -157,9 +157,9 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
         manifest = Manifest(lang_dir / "manifest.jsonl")
         dedup = DedupIndex()
         seeded = dedup.seed_from_parquet(writer.existing_shards())
-        stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetch_fail": 0,
-                 "too_short": 0, "lid_reject": 0, "dup": 0, "accepted": 0,
-                 "resumed_rows": seeded}
+        stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetched": 0,
+                 "raw_fallback": 0, "fetch_fail": 0, "too_short": 0,
+                 "lid_reject": 0, "dup": 0, "accepted": 0, "resumed_rows": seeded}
         print(f"\n[{lang}] backend={backend.name} resumed={seeded} rows, "
               f"{len(manifest.seen)} urls in manifest")
         t0 = time.time()
@@ -182,16 +182,22 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                     stats["skipped_seen"] += 1
                     continue
 
-                # text: from the backend if it has it, else fetch + extract
                 text, title, date = hit.raw_text, hit.title, hit.extra.get("date")
-                if not text:
+                # A search backend's raw_content is the whole page, menus and
+                # all. Extract the main text from the live page instead, and
+                # fall back to the dump only when the fetch gives us nothing.
+                if not text or hit.extra.get("page_dump"):
                     page = fetcher.fetch(hit.url)
-                    if page is None or not page.text:
+                    if page is not None and page.text and len(page.text.split()) >= cfg.min_words:
+                        text, title, date = page.text, page.title or title, page.date or date
+                        stats["fetched"] += 1
+                    elif not text:
                         stats["fetch_fail"] += 1
                         manifest.record(hit.url, "fetch_fail", lang=lang,
                                         http=getattr(page, "status", 0))
                         continue
-                    text, title, date = page.text, page.title or title, page.date
+                    else:
+                        stats["raw_fallback"] += 1
 
                 cleaned = clean_text(text)
                 if not is_usable(cleaned, min_words=cfg.min_words):

@@ -81,6 +81,34 @@ def test_fw2_exclusions():
     assert not fw2_excluded("https://www.sunstar.com.ph/cebu/x", "ceb")
 
 
+def test_nav_lines_are_boilerplate():
+    from halolib.cleaner import clean_text, is_nav_line
+    assert is_nav_line("* HOME * BOMBO TUGUEGARAO * BOMBO LAOAG * BOMBO VIGAN * BOMBO CAUAYAN")
+    assert is_nav_line("Wednesday, September 23  * Top Stories * Statement  * Balita Hiligaynon * Digicast Negros")
+    assert is_nav_line("Home | About Us | Contact | Privacy | Terms")
+    # real Hiligaynon prose with asterisks or spacing must survive
+    assert not is_nav_line("Presyo sang humay ang yara karon sa P18 pesos ang kilo, suno sa mga rice farmers.")
+    assert not is_nav_line("Ginsiling ni Mayor nga ang programa * bag-o * kag * importante gid para sa siyudad.")
+    out = clean_text("* HOME * NEWS * SPORTS * OPINION * CONTACT\nAng pondo para sa year-end "
+                     "incentives nagalakip sang milyon para sa mga empleyado sang kapitolyo.")
+    assert "HOME" not in out and "nagalakip" in out
+
+
+def test_vertical_bullet_menu_is_dropped():
+    from halolib.cleaner import clean_text
+    # the philippinerevolution.nu dump: one menu item per line
+    page = ("* HR/IHL\n* Languages\n* Subscribe\n* Contact\n\n* Home\n* About Us\n"
+            "+ CPP Constitution and Program\n+ Great Achievements of the CPP\n"
+            "Ginpahayag sang 62nd IBPA nga patay ang duha ka soldado sa engkwentro sa Capiz.\n"
+            "* isa ka punto nga malawig kag detalyado nga ginhambal sang tagapamaba sa sini nga hitabo\n"
+            "* ikaduha nga punto nga malawig man kag may yara sang dugang nga konteksto para sa mga mamumugon")
+    out = clean_text(page)
+    assert "Languages" not in out and "Constitution" not in out
+    assert "Ginpahayag" in out
+    # a short run of long bullet points is content, not a menu
+    assert "malawig kag detalyado" in out
+
+
 def test_dedup_exact_and_near():
     d = DedupIndex()
     words = ("ang balita karon adlawa mahitungod sa siyudad sa sugbo ug sa mga tawo nga "

@@ -49,8 +49,53 @@ BOILERPLATE_PATTERNS = [
 ]
 
 
+_NAV_SEP = re.compile(r"\s+[\*·•|]\s+|\s{3,}")
+
+
+def is_nav_line(line: str, min_items: int = 4, max_words: int = 4) -> bool:
+    """A menu bar flattened onto one line: several short items separated by
+    ' * ', ' · ', ' | ' or runs of spaces — what page dumps turn a site's
+    navigation into ("* HOME * BOMBO TUGUEGARAO * BOMBO LAOAG * ..."). Real
+    prose almost never has four or more such short segments in a row."""
+    parts = [p.strip() for p in _NAV_SEP.split(line.strip(" *·•|")) if p.strip()]
+    if len(parts) < min_items:
+        return False
+    short = sum(len(p.split()) <= max_words for p in parts)
+    return short / len(parts) >= 0.8
+
+
 def is_boilerplate_line(line: str) -> bool:
-    return any(p.search(line) for p in BOILERPLATE_PATTERNS)
+    return is_nav_line(line) or any(p.search(line) for p in BOILERPLATE_PATTERNS)
+
+
+_BULLET = re.compile(r"^\s*[\*\-\+•·]\s+(.*)$")
+
+
+def bullet_menu_runs(lines: list[str], min_run: int = 4, max_words: int = 5) -> set[int]:
+    """Indices of lines that belong to a vertical menu: a run of `min_run` or
+    more consecutive bullet lines that are each at most `max_words` long.
+    Page dumps render site navigation this way ("* HR/IHL", "* Languages",
+    "* Subscribe", ...). A genuine bulleted list of short items is also
+    caught, which is an acceptable loss: such lists carry little language
+    signal and a lot of them are menus."""
+    drop: set[int] = set()
+    run: list[int] = []
+
+    def flush():
+        if len(run) >= min_run:
+            drop.update(run)
+        run.clear()
+
+    for i, line in enumerate(lines):
+        m = _BULLET.match(line)
+        if m and len(m.group(1).split()) <= max_words:
+            run.append(i)
+        elif line.strip() == "" and run:
+            continue                      # blank lines don't break a menu
+        else:
+            flush()
+    flush()
+    return drop
 
 
 def clean_inline(text: str) -> str:
@@ -75,9 +120,11 @@ def clean_text(text: str) -> str:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", text)
 
+    lines = text.splitlines()
+    menu = bullet_menu_runs(lines)
     cleaned = []
-    for line in text.splitlines():
-        if is_boilerplate_line(line):
+    for i, line in enumerate(lines):
+        if i in menu or is_boilerplate_line(line):
             continue
         line = clean_inline(line).strip()
         if not line:

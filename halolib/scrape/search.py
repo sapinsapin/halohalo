@@ -89,7 +89,9 @@ class TavilyBackend:
             hits.append(Hit(
                 url=url, title=r.get("title") or "", snippet=r.get("content") or "",
                 raw_text=r.get("raw_content") or None, backend=self.name, query=query,
-                extra={"score": r.get("score")},
+                # raw_content is a whole-page dump (menus included), so the
+                # pipeline re-extracts from the live page when it can
+                extra={"score": r.get("score"), "page_dump": True},
             ))
         return hits
 
