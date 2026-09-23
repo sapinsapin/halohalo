@@ -351,6 +351,23 @@ The round also surfaced the two exclusions above (MT farms by path,
 adult hosts) and cost one lesson in robustness: the process died silently
 during the LID retrain, so the record is now written before that step.
 
+### Round 2: 6 seed + 3 expansion queries, nine Philippine languages, ~135 credits
+
+312 documents / 236k words: ilo 68, hil 53, bcl 42, fil 34, ceb 32, pag 26,
+pam 26, war 22, tsg 9. Expansion inside known-good hosts now out-yields the
+seed pass for several languages (Bikol 25 of 42, Cebuano 23 of 32), which is
+the flywheel working: the hosts found in round 1 are the best places to look
+in round 2.
+
+**The LID retrain was rejected** — macro F1 0.8792 → 0.8754 on the PLD set —
+and r4 was restored. That is the promotion gate doing what it is for. More
+web text does not automatically make a better identifier; the PLD test set
+is read prompts, and each round tilts the training mix further toward web
+prose. Two consequences worth acting on later: retrain less often than every
+round (every ~1,000 new documents, say), and build the human-labelled *web*
+test set the CPT plan already calls for, so the gate measures the domain the
+gate is used in.
+
 ## What "AI-ready" means here, concretely
 
 - FineWeb schema, so every downstream script we have already reads it.
