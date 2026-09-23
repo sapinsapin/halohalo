@@ -57,10 +57,21 @@ FLY = FINETUNE / "flywheel"
 # Hosts that must not drive expansion: bot encyclopedias, scripture mirrors
 # that already dominate the small languages, and generic platforms.
 NO_EXPAND = ("wikipedia.org", "wikisource.org", "wikimedia.org", "wiktionary.org",
-             "jw.org", "jw-cdn.org", "bible.com", "ebible.org", "biblegateway.com",
+             "jw.org", "jw-cdn.org", "bible.com", "bible.is", "ebible.org", "biblegateway.com",
+             "biblica.com", "biblia.chat", "speedbibleverse.com", "breakeveryyoke.com",
+             "desiringgod.org", "gotquestions.org", "lds.org", "mormon.org",
              "churchofjesuschrist.org", "bibliamundi.com", "amazinggracebibleinstitute.com",
-             "scribd.com", "pdfcoffee.com", "blogspot.com", "wordpress.com",
-             "mymemory.translated.net", "translated.net")
+             "scribd.com", "pdfcoffee.com", "blogspot.com", "wordpress.com", "wattpad.com",
+             "mymemory.translated.net", "translated.net",
+             # English expansion is pointless (dictionary.com, goodreads...) and
+             # English is not what the corpus is for
+             "dictionary.com", "dictionary.cambridge.org", "goodreads.com", "rottentomatoes.com")
+
+
+def _no_expand(host: str) -> bool:
+    from halolib.scrape.pipeline import excluded_host
+    return (any(host == h or host.endswith("." + h) for h in NO_EXPAND)
+            or excluded_host(f"https://{host}/"))
 
 
 def tavily_usage() -> dict | None:
@@ -103,7 +114,7 @@ def accepted_hosts(lang: str, top_n: int) -> list[str]:
                 continue
             if host.startswith("www."):
                 host = host[4:]
-            if not any(host == h or host.endswith("." + h) for h in NO_EXPAND):
+            if not _no_expand(host):
                 c[host] += 1
     return [h for h, _ in c.most_common(top_n)]
 

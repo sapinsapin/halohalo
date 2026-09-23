@@ -37,11 +37,22 @@ EXCLUDED_HOSTS = ("genius.com", "azlyrics.com", "lyrics.com", "musixmatch.com",
                   "metrolyrics.com", "smule.com")
 
 
+# Adult sites: not redistributable in a public research corpus. Matched by
+# name fragments because the long tail is unbounded (the flywheel's first
+# Filipino expansion pass selected filipinosexstories.com as a "known-good
+# host" — it had produced accepted Filipino pages).
+ADULT_HOST_FRAGMENTS = ("sexstories", "porn", "xxx", "hentai", "xvideo", "xnxx", "sextape",
+                        "escort", "nsfw", "camgirl", "onlyfans", "adultfriend", "kantutan",
+                        "sex-stories", "sexstory", "erotic")
+
+
 def excluded_host(url: str) -> bool:
     try:
         host = url.split("/")[2].lower()
     except IndexError:
         return False
+    if any(frag in host for frag in ADULT_HOST_FRAGMENTS):
+        return True
     return any(host == h or host.endswith("." + h) for h in EXCLUDED_HOSTS)
 
 

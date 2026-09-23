@@ -135,6 +135,14 @@ def test_mt_farms_by_language_code_path():
     assert not mt_path_excluded("nonsense")
 
 
+def test_adult_hosts_are_excluded():
+    from halolib.scrape.pipeline import excluded_host
+    assert excluded_host("https://filipinosexstories.com/story/123")
+    assert excluded_host("https://www.pinoy-porn-hub.example/x")
+    assert not excluded_host("https://www.essexnews.example/")            # 'sex' inside a word is not enough
+    assert not excluded_host("https://www.pinoyparazzi.com/balita")
+
+
 def test_lyrics_hosts_are_excluded_everywhere():
     from halolib.scrape.pipeline import excluded_host
     assert excluded_host("https://genius.com/Artist-song-lyrics")
