@@ -260,6 +260,51 @@ channel owners (regional radio, church, and LGU channels especially) for
 permission, not to widen the search. The `--all-licenses` switch exists for
 research use under a clear legal basis, not as a default.
 
+## The flywheel — scrape, accumulate, improve LID, iterate
+
+`scripts/flywheel.py` turns the one-shot scrape into a loop in which each
+round is seeded by the rounds before it:
+
+```
+        ┌──────────────────────────────────────────────────────────┐
+        │                                                          │
+  PLD + halohalo + accepted pages ──► seeds ──► scrape ──► expand ─┤
+        (keywords re-mined each round,   (Tavily,   (same sites,   │
+         new query combinations,          advanced)  basic depth)  │
+         spent queries never reused)                               │
+                                                                   ▼
+                          rounds.jsonl ◄── LID retrain, promote only if
+                                            PLD macro-F1 does not regress
+```
+
+- **Seeds from what we found.** `load_seed_texts(scrape_dir=…)` folds in every
+  accepted page whose two LID verdicts agreed at ≥0.9 confidence. Web prose
+  yields better search terms than read prompts, and each round's finds shape
+  the next round's queries. The query sampler takes the round number as its
+  seed, so combinations differ, and `seeds/used_queries.json` guarantees a
+  query is never issued twice.
+- **Expansion inside known-good hosts.** The hosts that produced accepted
+  pages become `include_domains` for a second pass at basic depth (1 credit
+  a query instead of 2). Scripture mirrors, bot encyclopedias and generic
+  platforms are excluded from expansion, so the loop does not amplify the
+  sources that already dominate the small languages.
+- **LID never regresses.** After each round HaloLID is retrained with the
+  accumulated shards and promoted only if macro F1 on the human-labelled PLD
+  set holds (within 0.002); otherwise the previous model is restored. The
+  gate for round *n+1* is at least as good as the gate for round *n*.
+- **Credit-aware.** Each round reads Tavily's usage endpoint and scales its
+  query counts to what the plan has left rather than overrunning it.
+
+```bash
+python scripts/flywheel.py --rounds 1                          # ~240 credits at defaults
+python scripts/flywheel.py --rounds 2 --queries-per-lang 6 --expand-queries 4
+python scripts/flywheel.py --rounds 1 --langs tsg,war --no-lid
+```
+
+Everything accumulates in place: shards, manifests, `used_queries.json`, and
+one JSON line per round in `finetune_runs/flywheel/rounds.jsonl` with credits
+before/after, documents and words gained per language, and the LID decision.
+
 ## What "AI-ready" means here, concretely
 
 - FineWeb schema, so every downstream script we have already reads it.
