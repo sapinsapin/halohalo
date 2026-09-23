@@ -118,6 +118,23 @@ def test_bot_wiki_rule_reaches_search_backends():
     assert "fw2_excluded(hit.url, lang)" in src
 
 
+def test_mt_farms_by_language_code_path():
+    from halolib.scrape.pipeline import mt_path_excluded
+    assert mt_path_excluded("https://www.alltechbuzz.net/ceb/bill-gate-bahin-sa-pagkadato")
+    assert mt_path_excluded("https://www.qc-solar.com/pag/news/cable-free-solar-pv-junction-box")
+    assert mt_path_excluded("https://tecnobits.com/ceb/windows-detecta-el-disco-duro")
+    assert mt_path_excluded("https://www.pilotech.ai/pam/blogs/how-to-resolve")
+    # human-translation publishers keep their language-code paths
+    assert not mt_path_excluded("https://www.jw.org/pag/library/")
+    assert not mt_path_excluded("https://ebible.org/tsg/")
+    assert not mt_path_excluded("https://www.fema.gov/fil/disaster")
+    # ordinary regional sites have no language code in the path
+    assert not mt_path_excluded("https://roxas.bomboradyo.com/soldado-nga-nakatiro")
+    assert not mt_path_excluded("https://www.sunstar.com.ph/cebu/balita")
+    assert not mt_path_excluded("https://ceb.wikipedia.org/wiki/Sugbo")     # subdomain rule's job
+    assert not mt_path_excluded("nonsense")
+
+
 def test_lyrics_hosts_are_excluded_everywhere():
     from halolib.scrape.pipeline import excluded_host
     assert excluded_host("https://genius.com/Artist-song-lyrics")

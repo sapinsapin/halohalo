@@ -153,7 +153,8 @@ FW2_CONFIG = {
 # Same exclusions as scripts/ingest_fineweb2.py: Lsjbot encyclopedias for
 # ceb/war, and machine-translated content farms on language-code subdomains.
 BOT_WIKI_LANGS = {"ceb", "war"}
-BOT_WIKI_HOST = re.compile(r"wikipedia|wikiwand|wiki2\.|wikizero|dbpedia|wikimedia|wikidata", re.I)
+BOT_WIKI_HOST = re.compile(r"wikipedia|wikiwand|wiki2\.|wikizero|dbpedia|wikimedia|wikidata"
+                           r"|wikiplanet|wikiwon|wikipedie|gpedia|wiko\.wiki", re.I)
 MT_FARM_HOST = re.compile(r"^(ceb|war|ilo|pag|pam|tsg|hil|bcl|fil|tl|tgl)\.", re.I)
 WIKIMEDIA = ("wikipedia.org", "wikimedia.org", "wiktionary.org", "wikibooks.org", "wikisource.org")
 

@@ -128,6 +128,18 @@ What the numbers say:
   churchofjesuschrist.org are top hosts for bcl, pag, war, tsg). It is real
   text in the language, and it is a narrow register; the CPT mix has to
   account for it, which is why `top_hosts` is in every summary.
+- **Machine-translation farms hide in the URL path, not just the subdomain.**
+  `alltechbuzz.net/ceb/…`, `qc-solar.com/pag/…`, `pilotech.ai/pam/…`: about
+  450 accepted hosts had a language-code first path segment, and nearly all
+  were manufacturers, casino sites and Spanish tech blogs "in Cebuano".
+  `mt_path_excluded` now applies the subdomain rule one slash later, with a
+  named allowlist for human-translation publishers (jw.org, ebible.org, the
+  LDS sites, Global Digital Library). It purged 601 documents, 467 of them
+  Cebuano. A tempting shortcut — *"a host accepted in ≥3 languages is a
+  farm"* — was tested first and is **wrong here**: the multi-language hosts
+  are the Philippine Information Agency, Bombo Radyo, RMN and SunStar's
+  regional editions, i.e. the best sources we have. Genuine multilingual
+  publishing is common in the Philippines; don't penalise it.
 - **Whole-document giants were the biggest distortion**: a 477k-word Cebuano
   Bible, a 221k-word Waray one, PDFs of the *Pasyon*. 23 + 13 documents over
   20k words (1.4 M + 0.7 M words) sit in `text_overlength/`, not in the
