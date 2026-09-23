@@ -25,7 +25,7 @@ from halolib.lid import LANGS, Ensemble
 
 from .dedup import DedupIndex, content_hash
 from .fetch import Fetcher
-from .search import DEFAULT_BACKEND, get_backend
+from .search import DEFAULT_BACKEND, fw2_excluded, get_backend
 from .seeds import prepare_seeds
 
 # Hosts whose content we must not redistribute regardless of language: song
@@ -210,7 +210,10 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 if hit.url in manifest.seen:
                     stats["skipped_seen"] += 1
                     continue
-                if excluded_host(hit.url):
+                # lyrics sites (copyright) on every backend, and the ceb/war
+                # bot-Wikipedia + MT-farm rule that FineWeb-2 ingestion already
+                # applies — search backends find those same hosts
+                if excluded_host(hit.url) or fw2_excluded(hit.url, lang):
                     stats["host_excluded"] += 1
                     manifest.record(hit.url, "host_excluded", lang=lang)
                     continue

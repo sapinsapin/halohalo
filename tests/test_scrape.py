@@ -109,6 +109,15 @@ def test_vertical_bullet_menu_is_dropped():
     assert "malawig kag detalyado" in out
 
 
+def test_bot_wiki_rule_reaches_search_backends():
+    """The ceb/war Lsjbot exclusion must not depend on which backend found the
+    page: Tavily's first Waray run was 19 % war.wikipedia.org."""
+    import inspect
+    from halolib.scrape import pipeline
+    src = inspect.getsource(pipeline.run_text)
+    assert "fw2_excluded(hit.url, lang)" in src
+
+
 def test_lyrics_hosts_are_excluded_everywhere():
     from halolib.scrape.pipeline import excluded_host
     assert excluded_host("https://genius.com/Artist-song-lyrics")
