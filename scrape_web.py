@@ -45,6 +45,8 @@ def main():
     ap.add_argument("--max-results", type=int, default=10, help="hits per query")
     ap.add_argument("--max-docs", type=int, default=500, help="accepted docs per language")
     ap.add_argument("--min-words", type=int, default=30)
+    ap.add_argument("--max-words", type=int, default=20000,
+                    help="drop documents longer than this (whole Bibles turn up); 0 disables")
     ap.add_argument("--lid-min-score", type=float, default=0.6)
     ap.add_argument("--lid-min-agreement", type=float, default=0.6)
     ap.add_argument("--no-glotlid", action="store_true", help="HaloLID only (faster, no 1.7 GB model)")
@@ -80,7 +82,7 @@ def main():
     cfg = ScrapeConfig(
         out_dir=args.out, langs=langs, backend=args.backend, backend_kwargs=backend_kwargs,
         queries_per_lang=args.queries_per_lang, max_results=args.max_results,
-        max_docs_per_lang=args.max_docs, min_words=args.min_words,
+        max_docs_per_lang=args.max_docs, min_words=args.min_words, max_words=args.max_words,
         lid_min_score=args.lid_min_score, lid_min_agreement=args.lid_min_agreement,
         use_glotlid=not args.no_glotlid, refresh_seeds=args.refresh_seeds,
         max_per_host=args.max_per_host,

@@ -63,6 +63,10 @@ class ScrapeConfig:
     max_results: int = 10
     max_docs_per_lang: int = 500
     min_words: int = 30
+    # A whole Cebuano Bible (477k words, ccel.org) was 84 % of Cebuano's first
+    # Tavily run by words. One page should not be a language's corpus, and
+    # scripture is already over-represented in these languages' web text.
+    max_words: int = 20000
     lid_min_score: float = 0.6
     lid_min_agreement: float = 0.6
     shard_rows: int = 1000
@@ -181,7 +185,7 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
         dedup = DedupIndex()
         seeded = dedup.seed_from_parquet(writer.existing_shards())
         stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetched": 0,
-                 "raw_fallback": 0, "fetch_fail": 0, "too_short": 0,
+                 "raw_fallback": 0, "fetch_fail": 0, "too_short": 0, "too_long": 0,
                  "lid_reject": 0, "dup": 0, "host_excluded": 0, "host_capped": 0,
                  "accepted": 0, "resumed_rows": seeded}
         per_host: dict[str, int] = {}
@@ -241,6 +245,11 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
                 if not is_usable(cleaned, min_words=cfg.min_words):
                     stats["too_short"] += 1
                     manifest.record(hit.url, "too_short", lang=lang)
+                    continue
+                n_words = len(cleaned.split())
+                if cfg.max_words and n_words > cfg.max_words:
+                    stats["too_long"] += 1
+                    manifest.record(hit.url, "too_long", lang=lang, words=n_words)
                     continue
 
                 verdict = lid.identify(cleaned)
