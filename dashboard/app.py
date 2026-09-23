@@ -44,11 +44,40 @@ def _licence(info):
                  if t.startswith("license:")), "—")
 
 
+RECOMMENDED_ASR_LANGS = ("bcl", "ceb", "fil", "hil", "ilo", "pag", "pam", "tsg", "war")
+
+
+def _status(name, kind):
+    """One phrase per model saying whether a visitor should use it. Derived
+    from the name, which this org's publishers keep regular."""
+    if kind != "model":
+        return "—"
+    if name.startswith("whisper-large-v3-pld-") and name.endswith("-norm") \
+            and name.split("-")[-2] in RECOMMENDED_ASR_LANGS:
+        return "★ use this — best ASR for the language"
+    if name.startswith("orpheus-3b-"):
+        return "★ use this — best TTS for the language"
+    if name.startswith("whisper-small-pld-"):
+        return "fast baseline (in-domain score; large-v3-norm is more accurate)"
+    if name.startswith("whisper-large-v3-pld-") or name.startswith("omniASR"):
+        return "research comparison"
+    if name.startswith("speecht5_tts"):
+        return "retired"
+    if name.startswith("speecht5_vc"):
+        return "voice conversion demo"
+    if name.startswith("whisper-small-fsc"):
+        return "Filipino, FSC corpus"
+    if name == "halo-lid":
+        return "language identifier (text)"
+    return "text model"
+
+
 def _public_row(info, kind):
     url_prefix = {"dataset": "datasets/", "model": "", "space": "spaces/"}[kind]
     name = info.id.split("/", 1)[1]
     return {
         "Name": f"[{name}](https://huggingface.co/{url_prefix}{info.id})",
+        "Status": _status(name, kind),
         "Visibility": "public",
         "Task": getattr(info, "pipeline_tag", None) or "—",
         "Licence": _licence(info),
@@ -60,7 +89,7 @@ def _public_row(info, kind):
 
 
 def _private_row():
-    return {"Name": MASKED, "Visibility": "private", "Task": "—",
+    return {"Name": MASKED, "Status": "—", "Visibility": "private", "Task": "—",
             "Licence": "—", "Downloads (30d)": None, "Likes": None,
             "Updated": "—"}
 
@@ -70,10 +99,14 @@ def _table(items, kind, n_private, with_task=False):
                  key=lambda i: -(getattr(i, "downloads", 0) or 0))
     rows = [_public_row(i, kind) for i in pub]
     rows += [_private_row() for _ in range(n_private)]
-    df = pd.DataFrame(rows, columns=["Name", "Visibility", "Task", "Licence",
+    df = pd.DataFrame(rows, columns=["Name", "Status", "Visibility", "Task", "Licence",
                                      "Downloads (30d)", "Likes", "Updated"])
     if not with_task:
-        df = df.drop(columns=["Task"])
+        df = df.drop(columns=["Task", "Status"])
+    else:
+        # recommended first, then everything else by downloads
+        df = df.sort_values(by="Status", key=lambda c: ~c.str.startswith("★"),
+                            kind="stable").reset_index(drop=True)
     return df
 
 
@@ -130,7 +163,7 @@ with gr.Blocks(title="halohalo — org dashboard and speech demo") as demo:
             **DF_KW)
     with gr.Tab("🤖 Models"):
         models_df = gr.Dataframe(
-            datatype=["markdown", "str", "str", "str", "number", "number",
+            datatype=["markdown", "str", "str", "str", "str", "number", "number",
                       "str"], **DF_KW)
         refresh = gr.Button("🔄 Refresh", size="sm")
 
@@ -152,9 +185,15 @@ with gr.Blocks(title="halohalo — org dashboard and speech demo") as demo:
                       if v["scores"].get("orpheus") is not None)
         gr.Markdown(
             f"---\n"
-            f"The speech tabs run the org's own models: **{n_asr} ASR + 10 TTS "
-            f"+ 1 voice conversion** live, plus the Orpheus 3B voices heard "
-            f"pre-rendered in Compare voices ({n_heard} languages), finetuned "
+            f"**Where to start:** the Models table marks the model to use per "
+            f"language with ★ — `whisper-large-v3-pld-<lang>-norm` for speech "
+            f"recognition and `orpheus-3b-…-pld-<lang>` for text-to-speech. "
+            f"The Transcribe tab opens on the recommended model; the Compare "
+            f"voices tab is where the published TTS can be heard. The speech "
+            f"tabs run **{n_asr} ASR models** and a voice converter live, and "
+            f"the retired SpeechT5 baselines in Synthesize (kept only because a "
+            f"CPU can run them); the Orpheus 3B voices are heard pre-rendered in "
+            f"Compare voices ({n_heard} languages). Everything is finetuned "
             f"on the Philippine Language Dataset for Bikol, Cebuano, Filipino, "
             f"Hiligaynon, Ilocano, Kapampangan, Pangasinan, Tausug, Waray and "
             f"Philippine English. Most are baselines trained on prompted read "
