@@ -260,3 +260,65 @@ is. That is independent of Orpheus's or Qwen's own licence.
 - **Voice-cloning consent** for the 980 identifiable PLD speakers, and whether
   cloning ships off by default. Gate G5, also unowned.
 - **Watermarking** for published TTS. Undecided.
+
+## 6. Where it stands (2026-09-25)
+
+| item | state |
+|---|---|
+| P1 frontend ablation | **done** — characters win (§3 P1 result) |
+| P2 Orpheus fleet | **done** — nine adapters published; Pangasinan withheld |
+| P3 Qwen3-TTS finetune | **broken** — trained, scored, unusable; wrapper bug not yet found |
+| P3' Qwen3-TTS base, zero-shot | **scored on ceb and pam** — the surprise result below |
+| P4 multilingual adapter | not started |
+| P5 baselines and judging | **partial** — MMS-TTS and SpeechT5 re-scored with the same judge; independent judge not done |
+| P6 Fish S2 Pro | not started |
+
+**P2, round-trip CER %** (50 frozen sentences per language; judge
+`whisper-large-v3-pld-<lang>` for ceb and pam, `whisper-small-pld-<lang>`
+elsewhere, so a row compares and a column does not):
+
+| | bcl | ceb | eng | fil | hil | ilo | pag | pam | tsg | war |
+|---|---|---|---|---|---|---|---|---|---|---|
+| human | 0.6 | 3.4 | 0.0 | 1.9 | 0.3 | 0.9 | 1.8 | 1.3 | 0.0 | 0.7 |
+| **Orpheus-char** | **4.4** | **6.1** | **0.8** | 5.9 | **5.2** | **7.6** | 36.5 | **4.3** | **12.5** | **7.3** |
+| MMS-TTS | 7.9 | 42.9 | 2.1 | 5.9 | 8.7 | 13.7 | **5.6** | 7.4 | — | 7.7 |
+
+Beats MMS-TTS on seven, ties Filipino, and gives Tausug its first scored TTS.
+**Pangasinan** was retrained at 600 steps (~3 epochs) after the 2000-step run
+scored 36.5; the retrain scored 36.5 again with speaker similarity 0.30. It was
+not overfitting: 1,445 clips is too little for Orpheus to learn the language.
+Not published. Its best candidate is now the Qwen3-TTS base, untested there.
+
+**P3, Qwen3-TTS** (ceb / pam):
+
+| | CER % | WER % | speaker sim | duration ratio |
+|---|---|---|---|---|
+| Orpheus-char | 6.1 / 4.3 | 17.8 / 18.9 | 0.36 / 0.35 | 0.83 / 0.99 |
+| **Qwen3-TTS base, zero-shot** | 8.8 / **3.5** | **15.6 / 12.4** | **0.77 / 0.78** | 0.97 / 0.74 |
+| Qwen3-TTS, our finetune | 219.7 / 662.2 | 240.8 / 779.0 | 0.03 / 0.07 | 4.76 / 2.51 |
+
+Our finetune does not stop and does not keep the voice: it babbles to the
+generation cap. The base model scored identically is fine, so this is our SFT
+wrapper, not the scoring. First suspects, in order: the reference-mel crop and
+tiling we added to upstream's collate; the speaker embedding written into
+position 6 after batching; that upstream's loop was only ever validated with
+one fixed speaker. The bisect runs upstream's single-speaker path unmodified,
+then swaps in our collate, then our save, and sees which step breaks it — on
+the 0.6B model it fits the workstation's 8 GB card (docs/status_2026-09-25.md).
+
+The zero-shot base, never trained on a Philippine language, is the best voice
+match measured on anything here (0.77 against Orpheus's 0.36) and matches or
+beats Orpheus on WER. That changes what finetuning it is for: not "make it
+speak Cebuano" but "lower its CER without losing that voice fidelity".
+
+**Consent, now concrete.** A model that clones a PLD speaker at 0.77 cosine
+from three seconds of audio makes gate G5 (voice-cloning consent for the 980
+identifiable speakers) a practical question, not a hypothetical one. The
+dashboard's Compare voices tab already publishes Qwen zero-shot clips cloned
+from PLD reference recordings. The decision is unowned (§5).
+
+**Published and retired.** The nine Orpheus-char adapters are on the Hub with
+plain-language cards. The ten `speecht5_tts-pld-*` models were made private
+on 2026-09-22 (unintelligible in eight of ten languages by the same
+measurement); they still power the dashboard's Synthesize tab, labelled
+"retired baseline", because they are the only TTS a free CPU runs live.

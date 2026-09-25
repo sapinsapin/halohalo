@@ -173,6 +173,25 @@ this LM alone does not clear it. The next step within D1 is an external-text LM
 remaining headroom is — the current LM has 4,864 distinct pam sentences to
 learn from.
 
+**D1 with external text: negative (2026-09-22).** The LM text became PLD's
+train transcripts plus the org's FineWeb-2 ingest (2M Cebuano sentences, 77k
+Kapampangan), after dropping every web sentence that shared a 5-gram with a
+test prompt — **3,927 Cebuano sentences were dropped**, so the leak check was
+not a formality. Same decoder, alpha/beta re-tuned on the same 200 clips:
+
+| omni-1B WER % | greedy | + train-text LM | + external-text LM |
+|---|---|---|---|
+| ceb | 51.26 | **46.77** | 49.73 |
+| pam | 43.15 | **36.49** | 39.55 |
+
+The external-text LM made it worse on both. Two million web sentences outweigh
+34k transcripts, and the web's register (news, scripture, forums) is not PLD's
+read prompts; the tuner already chose a low LM weight (0.3), so it was not
+over-trusting a good LM but using a worse-matched one. Interpolating the two
+LMs with the transcripts weighted up is the untried variant; expect it to land
+between the two rows. **D1's answer: a 4-gram LM over the corpus's own
+transcripts, free and streaming-safe; web text does not help.**
+
 **D2, first arm: negative.** omni-1B at 15000 steps scored 16.90 CER against
 17.04 at 5000, with dev CER flat and noisy over the last 6000. Training budget
 is not the gap. InterCTC and a small subword vocabulary remain untested.

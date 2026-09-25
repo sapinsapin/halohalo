@@ -40,16 +40,21 @@ incomplete until this is fixed and those four arms are re-run.**
 
 ## Published models
 
-Everything that learned is on the Hub under `sapinsapin/`, tagged
-`cc-by-nc-4.0` — PLD is CC-BY-NC and research-only, so the weights inherit that
-regardless of the base model's licence:
+All under `sapinsapin/`, tagged `cc-by-nc-4.0` — PLD is CC-BY-NC and
+research-only, so the weights inherit that regardless of the base model's
+licence. Every card opens with a plain-language section and says which model
+to use instead where it is not the best one.
 
-- `whisper-large-v3-pld-ceb`, `whisper-large-v3-pld-pam`
-- `omniASR_W2V_1B_SSL-ctc-char-pld_ceb`, `-pld_pam`
-- `omniASR_W2V_1B_SSL-ctc-syllable-pld_ceb`, `-pld_pam`
+- `whisper-large-v3-pld-ceb`, `-pam` — the bake-off winners, scored with
+  accents and punctuation.
+- `omniASR_W2V_1B_SSL-ctc-char-pld_ceb`, `-pld_pam` — the CTC arm.
+- `omniASR_W2V_7B_SSL-ctc-char-pld_ceb` — the 7B, published as a negative
+  result (below).
+- The `-norm` continuations and fleet (below).
 
-The collapsed w2v-bert arms are deliberately not published
-(`scripts/push_bakeoff.py --max-cer`).
+The syllable CTC arms were published and then **deleted on 2026-09-22**: they
+lost the R2 ablation and the numbers stay in this document. The collapsed
+w2v-bert arms were never published.
 
 ## What the run cost, and what it taught about the machine
 
@@ -107,10 +112,35 @@ languages, roughly 2.5 GPU-hours. Until that runs, the dataset card's numbers
 and any re-measured ones are both in-domain in different ways, and neither
 belongs beside the bake-off's.
 
+## Follow-ups, 2026-09-21 to 09-23
+
+**Scale did not help.** omni-7B CTC (fp32 weights, bitsandbytes 8-bit Adam, 74.5
+GiB of 95) under the same recipe: ceb **17.02** CER / 49.46 WER, pam **9.48** /
+38.61 — against the 1B's 17.04 and 10.21. Seven times the encoder moved
+nothing on Cebuano. That pointed at the decoder; see docs/asr_decoder_plan.md.
+
+**Twelve WER points were orthography.** PLD marks stress on about a third of
+words and keeps punctuation. Scoring the same hypotheses with both removed
+moved whisper-large-v3 on ceb from 36.9 to 24.2 WER and omni-1B from 51.5 to
+39.5. `halolib.finetune.normalise_text` and `--normalise` in both trainers
+make it a convention; the four bake-off models were continued 1500 steps on
+normalised labels (`*-norm`, published). Most of the gain was the fairer
+ruler, not the retraining. The gap between the two models survives it.
+
+**whisper-large-v3 on normalised text, all ten languages** (5000 steps from the
+base, same recipe; CER / WER %, frozen split):
+
+| bcl | ceb | eng | fil | hil | ilo | pag | pam | tsg | war |
+|---|---|---|---|---|---|---|---|---|---|
+| 4.6 / 15.2 | 10.8 / 22.5 | **46.7 / 79.1** | 5.0 / 12.2 | 9.3 / 18.7 | 5.7 / 20.6 | 16.0 / 30.7 | 5.1 / 19.8 | 6.6 / 21.0 | 7.8 / 21.0 |
+
+(ceb and pam are the 1500-step continuations.) Nine are published as
+`whisper-large-v3-pld-<lang>-norm` and are the recommended ASR per language.
+**English is a bug, not a result** and is not published: it is the only
+language the trainer sends through `language="english"` rather than `<|tl|>`,
+and that path had never been exercised with `--normalise`. Undiagnosed.
+
 ## Next
 
-- Fix and re-run the four w2v-bert arms (R1 is incomplete without them).
-- Whisper's fixed 30 s mel wastes most of its compute on PLD's short prompts;
-  `group_by_length` on the CTC arms and a shorter Whisper context are untested.
-- The remaining eight languages. With the dataset cache and the tuned settings,
-  a language costs roughly 2 GPU-hours for the Whisper arm.
+Moved to docs/status_2026-09-25.md, which keeps one list of everything open
+across ASR and TTS and says which of it runs on the workstation's 8 GB card.
