@@ -40,6 +40,10 @@ ORG = "sapinsapin"
 WORK = Path(os.environ.get("FINETUNE_DIR", ROOT / "finetune_runs")) / "tts_eval"
 LANGS = ["bcl", "ceb", "eng", "fil", "hil", "ilo", "pag", "pam", "tsg", "war"]
 MMS_CODE = {"fil": "tgl", "tsg": None}          # no MMS-TTS for Tausug; tgl stands in for fil
+# Which results file this run reads and writes. A second judge writes its own
+# (e.g. TTS_RESULTS=results_mms_judge.json) so it never overwrites the table
+# the dashboard and the model cards were built from.
+RESULTS_NAME = os.environ.get("TTS_RESULTS", "results.json")
 WHISPER_LANG = {"eng": "english"}               # everything else trains under <|tl|>
 PUNCT = re.compile(r"[^\w\s]", re.UNICODE)
 
@@ -59,6 +63,14 @@ def manifest() -> list[dict]:
     if not path.exists():
         sys.exit("no manifest — run --stage sentences first")
     return json.loads(path.read_text())
+
+
+def ref_path(r) -> Path:
+    """The human recording for a manifest row. The manifest stores an absolute
+    path from the machine that froze it, so an eval directory copied to another
+    machine resolves it under its own ref/ first."""
+    local = WORK / "ref" / r["lang"] / f"{r['i']:02d}.wav"
+    return local if local.exists() else Path(r["ref"])
 
 
 def read_wav(path: Path) -> np.ndarray:
@@ -137,7 +149,7 @@ def synth_speecht5(rows, device):
             if out.exists():
                 continue
             out.parent.mkdir(parents=True, exist_ok=True)
-            ref = torch.tensor(read_wav(Path(r["ref"]))).unsqueeze(0)
+            ref = torch.tensor(read_wav(ref_path(r))).unsqueeze(0)
             with torch.no_grad():
                 emb = torch.nn.functional.normalize(embedder.encode_batch(ref), dim=2)
                 emb = emb.squeeze(1).to(device)            # (1, 512), the clip's own voice
@@ -309,7 +321,7 @@ def stage_score(models, device):
         source="speechbrain/spkrec-ecapa-voxceleb",
         savedir=str(Path(os.environ.get("HF_HOME", "~/.cache")).expanduser() / "speechbrain-ecapa"),
         run_opts={"device": device})
-    results_path = WORK / "results.json"
+    results_path = WORK / RESULTS_NAME
     results = json.loads(results_path.read_text()) if results_path.exists() else {}
     names = ["reference"] + [m if not m.startswith("orpheus:") else
                              adapter_name(m.split(":", 1)[1]) for m in models]
@@ -318,16 +330,9 @@ def stage_score(models, device):
         lrows = [r for r in rows if r["lang"] == l and len(normalize(r["text"])) >= 3]
         if not lrows:
             continue
-        judge_id = judge_model(l)
-        proc = WhisperProcessor.from_pretrained(judge_id)
-        judge = WhisperForConditionalGeneration.from_pretrained(judge_id).to(device).eval()
-        wl = WHISPER_LANG.get(l, "tagalog")
-
-        def transcribe(wav):
-            feats = proc(wav, sampling_rate=SR, return_tensors="pt").input_features.to(device)
-            with torch.no_grad():
-                ids = judge.generate(feats, language=wl, task="transcribe", max_new_tokens=200)
-            return proc.batch_decode(ids, skip_special_tokens=True)[0]
+        transcribe = make_transcriber(l, device)
+        if transcribe is None:
+            continue
 
         def embed(wav):
             with torch.no_grad():
@@ -337,7 +342,7 @@ def stage_score(models, device):
         for name in names:
             refs, hyps, sims, ratios, n = [], [], [], [], 0
             for r in lrows:
-                path = Path(r["ref"]) if name == "reference" else WORK / "out" / name / l / f"{r['i']:02d}.wav"
+                path = ref_path(r) if name == "reference" else WORK / "out" / name / l / f"{r['i']:02d}.wav"
                 if not path.exists():
                     continue
                 wav = read_wav(path)
@@ -346,7 +351,7 @@ def stage_score(models, device):
                 refs.append(normalize(r["text"]))
                 hyps.append(normalize(transcribe(wav)))
                 if name != "reference":
-                    sims.append(float(torch.dot(embed(wav), embed(read_wav(Path(r["ref"]))))))
+                    sims.append(float(torch.dot(embed(wav), embed(read_wav(ref_path(r))))))
                     ratios.append(len(wav) / SR / r["duration"])
                 n += 1
             if not n:
@@ -381,7 +386,7 @@ def log_wandb(results: dict):
 
 
 def stage_table():
-    results = json.loads((WORK / "results.json").read_text())
+    results = json.loads((WORK / RESULTS_NAME).read_text())
     log_wandb(results)
     names = ["reference"] + sorted(n for n in results if n != "reference")
     for metric, fmt in (("cer", lambda v: f"{v*100:.1f}"), ("spk_sim", lambda v: f"{v:.2f}")):
@@ -428,6 +433,63 @@ def judge_model(lang: str) -> str:
         print(f"  judge: {want} does not exist, using {fallback} for {lang}")
         _JUDGE_CACHE[lang] = fallback
     return _JUDGE_CACHE[lang]
+
+
+
+# ISO 639-3 codes MMS-1b-all knows our languages by; Filipino is `tgl` there.
+MMS_CODES = {"bcl": "bcl", "ceb": "ceb", "eng": "eng", "fil": "tgl", "hil": "hil",
+             "ilo": "ilo", "pag": "pag", "pam": "pam", "tsg": "tsg", "war": "war"}
+_MMS = {}
+
+
+def make_transcriber(lang: str, device: str):
+    """wav -> text with the configured judge, or None if it cannot do `lang`.
+
+    TTS_JUDGE=mms-1b-all uses Meta's MMS-1b-all with the language's adapter:
+    the independent judge the plan requires before a TTS number is cited,
+    since every other judge here is our own model trained on the same corpus
+    as the systems it scores. Otherwise the per-language Whisper judge.
+    """
+    import torch
+
+    if JUDGE.startswith("mms"):
+        from transformers import AutoProcessor, Wav2Vec2ForCTC
+        if "model" not in _MMS:
+            dt = torch.float16 if device == "cuda" else torch.float32
+            _MMS["proc"] = AutoProcessor.from_pretrained("facebook/mms-1b-all")
+            _MMS["model"] = Wav2Vec2ForCTC.from_pretrained(
+                "facebook/mms-1b-all", dtype=dt).to(device).eval()
+            _MMS["dt"] = dt
+        proc, model = _MMS["proc"], _MMS["model"]
+        code = MMS_CODES.get(lang, lang)
+        try:
+            proc.tokenizer.set_target_lang(code)
+            model.load_adapter(code)
+        except Exception as e:                          # noqa: BLE001
+            print(f"  judge: mms-1b-all has no adapter for {lang} ({code}): "
+                  f"{type(e).__name__}; skipped", flush=True)
+            return None
+        print(f"  judge: facebook/mms-1b-all [{code}] for {lang}", flush=True)
+
+        def transcribe(wav):
+            x = proc(wav, sampling_rate=SR, return_tensors="pt").input_values
+            with torch.no_grad():
+                ids = model(x.to(device, _MMS["dt"])).logits.argmax(-1)[0]
+            return proc.decode(ids)
+        return transcribe
+
+    from transformers import WhisperForConditionalGeneration, WhisperProcessor
+    judge_id = judge_model(lang)
+    proc = WhisperProcessor.from_pretrained(judge_id)
+    judge = WhisperForConditionalGeneration.from_pretrained(judge_id).to(device).eval()
+    wl = WHISPER_LANG.get(lang, "tagalog")
+
+    def transcribe(wav):
+        feats = proc(wav, sampling_rate=SR, return_tensors="pt").input_features.to(device)
+        with torch.no_grad():
+            ids = judge.generate(feats, language=wl, task="transcribe", max_new_tokens=200)
+        return proc.batch_decode(ids, skip_special_tokens=True)[0]
+    return transcribe
 
 
 def main():

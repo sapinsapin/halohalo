@@ -34,6 +34,14 @@ BASE = "Qwen/Qwen3-TTS-12Hz-1.7B-Base"
 MAX_TOKENS = int(25 * 12.5)
 
 
+def ref_path(r) -> Path:
+    """The human recording for a manifest row. The manifest stores an absolute
+    path from the machine that froze it, so an eval directory copied to another
+    machine resolves it under its own ref/ first."""
+    local = WORK / "ref" / r["lang"] / f"{r['i']:02d}.wav"
+    return local if local.exists() else Path(r["ref"])
+
+
 def pick_refs(rows):
     by_spk = defaultdict(list)
     for r in rows:
@@ -75,7 +83,7 @@ def synth(model_path, name, rows, device):
             # it is a failure the duration ratio in the score will show.
             wavs, sr = model.generate_voice_clone(
                 text=r["text"], language="Auto",
-                ref_audio=ref["ref"], ref_text=ref["text"],
+                ref_audio=str(ref_path(ref)), ref_text=ref["text"],
                 max_new_tokens=MAX_TOKENS)
             sf.write(str(out), wavs[0], sr)
             done += 1

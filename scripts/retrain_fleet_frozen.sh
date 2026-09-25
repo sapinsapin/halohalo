@@ -23,6 +23,18 @@ LANGS=${LANGS:-bcl ceb eng fil hil ilo pag tsg war pam}
 STEPS=${STEPS:-2000}
 SAMPLES=${SAMPLES:-25000}
 OUT=${FLEET_DIR:-/mnt/data/fleet_frozen}
+
+# PROFILE=local is the workstation's RTX 3070, where the published fleet was
+# trained: its own recipe (batch 8 x accum 2, checkpointing on, 10k clips, 2000
+# steps) fits the ~6 GB free and runs ~1 h a language. One dataset process,
+# because multiprocess map over decoded audio deadlocks on WSL's 9p mounts.
+# The default is the 96 GB cloud card.
+if [ "${PROFILE:-cloud}" = local ]; then
+    HW="--batch-size 8 --grad-accum 2 --num-proc 1 --dataloader-workers 2"
+    SAMPLES=${SAMPLES_LOCAL:-10000}
+else
+    HW="--batch-size 16 --grad-accum 1 --no-grad-checkpoint --num-proc 8 --dataloader-workers 8"
+fi
 SUMMARY="$OUT/summary.txt"
 
 mkdir -p "$OUT"
@@ -37,8 +49,8 @@ for lang in $LANGS; do
     FINETUNE_DIR="$OUT" venv/bin/python3 finetune_asr.py \
         --model openai/whisper-small --dataset pld --language "$lang" \
         --max-samples "$SAMPLES" --max-steps "$STEPS" \
-        --batch-size 16 --grad-accum 1 --no-grad-checkpoint \
-        --num-proc 8 --dataloader-workers 8 --eval-samples 500 --resume \
+        $HW \
+        --eval-samples 500 --resume \
         2>&1 | tr '\r' '\n' | grep -vE 'examples/s|it/s\]$'
 
     if [ -f "$OUT/asr_pld_${lang}/result.json" ]; then
