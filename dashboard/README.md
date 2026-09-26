@@ -123,11 +123,12 @@ cannot load on this Space, so the tab names it without offering it.
 
 Nine languages now have an **Orpheus 3B** voice, a LoRA on a codec language
 model. It is far more intelligible than the SpeechT5 voices the Synthesize tab
-runs. Each system spoke the same 50 held-out recordings' sentences per
+runs. Whether it beats Meta's MMS-TTS depends on the judge — see the second
+table. Each system spoke the same 50 held-out recordings' sentences per
 language, and an ASR judge scored the audio (round-trip CER, lower is better;
 the human recording is the judge's own floor):
 
-| | human | SpeechT5 | MMS-TTS | **Orpheus 3B** |
+| | human | SpeechT5 | MMS-TTS | Orpheus 3B |
 |---|---|---|---|---|
 | Bikol | 0.6 % | 73.8 % | 7.9 % | **4.4 %** |
 | Cebuano | 3.4 % | 47.0 % | 42.9 % | **6.1 %** |
@@ -149,6 +150,29 @@ speaker similarity (0.23–0.46) is mostly *below* SpeechT5's (0.34–0.53).
 Pangasinan has no Orpheus voice: retrained at a quarter of the steps it scored the same 36.5 %, so 1,445 clips is simply too few.
 
 **Qwen3-TTS 1.7B, untrained on any Philippine language**, is in Compare voices for Cebuano and Kapampangan as a zero-shot row: 8.8 % / 3.5 % CER with speaker similarity **0.77 / 0.78**, the closest voice match measured on anything here. Our own finetune of it is broken and not shown.
+
+**A second judge disagrees.** Re-transcribed by Meta's MMS-1b-all instead of
+our PLD-trained Whisper judges, the same audio ranks the other way round in
+most languages (round-trip CER; MMS-1b-all has no Tausug model):
+
+| | human | MMS-TTS | Orpheus 3B | Qwen3-TTS base |
+|---|---|---|---|---|
+| Bikol | 6.1 % | 9.2 % | 10.0 % | |
+| Cebuano | 11.1 % | 18.1 % | 16.0 % | 13.9 % |
+| English (PH) | 4.1 % | 3.9 % | 7.1 % | |
+| Filipino | 6.6 % | 8.9 % | 12.0 % | |
+| Hiligaynon | 3.4 % | 7.4 % | 9.7 % | |
+| Ilocano | 11.6 % | 14.7 % | 17.5 % | |
+| Kapampangan | 8.0 % | 11.2 % | 11.5 % | 9.5 % |
+| Pangasinan | 9.3 % | 8.5 % | 19.5 % | |
+| Waray | 4.8 % | 9.3 % | 14.0 % | |
+
+Each judge plausibly favours audio from its own family: ours was fine-tuned on
+the recordings Orpheus learned from, and MMS-1b-all comes from the project that
+made MMS-TTS. So **Orpheus against MMS-TTS is unresolved**; people listening is
+what settles it. What holds under both judges: Orpheus is intelligible and the
+only Tausug TTS, and the untrained Qwen3-TTS base beats MMS-TTS on Cebuano and
+Kapampangan.
 
 It is not in the Synthesize tab because it cannot be, on free hardware:
 measured on two CPU threads, it generates ~1.5 audio tokens a second — **about

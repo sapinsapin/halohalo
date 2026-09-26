@@ -70,11 +70,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--eval", required=True, type=Path)
     ap.add_argument("--results", required=True, type=Path)
+    ap.add_argument("--results-mms", type=Path, default=None,
+                    help="results.json from TTS_JUDGE=mms-1b-all, the second judge")
     ap.add_argument("--per-lang", type=int, default=2)
     args = ap.parse_args()
 
     rows = json.loads((args.eval / "manifest.json").read_text(encoding="utf-8"))
     results = json.loads(args.results.read_text(encoding="utf-8"))
+    mms_res = (json.loads(args.results_mms.read_text(encoding="utf-8"))
+               if args.results_mms and args.results_mms.exists() else {})
     out_dir = ROOT / "samples" / "compare"
     # this script owns the directory: a smaller --per-lang than last time must
     # not leave the previous run's extra clips behind to be uploaded
@@ -93,6 +97,11 @@ def main():
             "speecht5_spk_sim": score("speecht5", "spk_sim"),
             "orpheus_spk_sim": orph.get("spk_sim"),
             "qwen3tts_base": score("qwen3tts_base"),
+            # the same systems under Meta's MMS-1b-all
+            **{f"{k}_mms": (mms_res.get(src, {}).get(lang) or {}).get("cer")
+               for k, src in (("human", "reference"), ("speecht5", "speecht5"),
+                              ("mms", "mms"), ("orpheus", f"orpheus_char_pld_{lang}"),
+                              ("qwen3tts_base", "qwen3tts_base"))},
             "qwen3tts_base_spk_sim": score("qwen3tts_base", "spk_sim"),
         }
         clips = []

@@ -56,6 +56,23 @@ def plan_orpheus(run_dir: Path) -> dict | None:
         return None
     human = ev.get("reference", {}).get(lang, {}).get("cer")
     mms = ev.get("mms", {}).get(lang, {}).get("cer")
+    evm_path = FINETUNE_DIR / "tts_eval" / "results_mms_judge.json"
+    evm = json.loads(evm_path.read_text()) if evm_path.exists() else {}
+    om, mm, hm = ((evm.get(k, {}).get(lang) or {}).get("cer") for k in
+                  (run_dir.name, "mms", "reference"))
+    if None not in (om, mm, hm):
+        independent = (
+            f" Re-transcribed by Meta's MMS-1b-all instead, as an independent "
+            f"judge: this model {om * 100:.1f}%, MMS-TTS {mm * 100:.1f}%, human "
+            f"recordings {hm * 100:.1f}%. The two judges often disagree about "
+            f"which of the two systems is better — ours was fine-tuned on the "
+            f"recordings this model learned from, Meta's comes from the project "
+            f"that made MMS-TTS — so that comparison is unresolved.")
+    elif evm:
+        independent = (f" Meta's MMS-1b-all has no {lang} model, so there is no "
+                       f"second, independent judge for this language.")
+    else:
+        independent = ""
     versus = (f"MMS-TTS scores {mms * 100:.1f}% on the same sentences and judge"
               if mms is not None else
               "MMS-TTS has no model for this language, so there is no bar to compare with")
@@ -63,7 +80,8 @@ def plan_orpheus(run_dir: Path) -> dict | None:
         final_dir=final, base_model=ORPHEUS_BASE, dataset_name="pld",
         task="tts", token=os.environ.get("HF_TOKEN"),
         metrics={"cer": mine["cer"], "wer": mine["wer"],
-                 "spk_sim": mine["spk_sim"]},
+                 "spk_sim": mine["spk_sim"],
+                 **({"cer_mms_judge": om} if om is not None else {})},
         license="cc-by-nc-4.0", lang_code=lang,
         suffix=f"{units}-pld-{lang}",
         extra_tags=["philippines", "philippine-languages", "orpheus", "lora",
@@ -80,7 +98,7 @@ def plan_orpheus(run_dir: Path) -> dict | None:
             f"transcribed by an ASR judge, scored against the text. The human "
             f"recordings of those sentences score "
             f"{human * 100:.1f}% CER through the same judge, which is the floor; "
-            f"{versus}. Caveats that travel with these numbers: 50 sentences "
+            f"{versus}.{independent} Caveats that travel with these numbers: 50 sentences "
             f"resolves a 3-point gap, not a 1-point one; and the judge is our "
             f"own model trained on the same corpus, so an independent judge is "
             f"still owed before anyone cites this.\n\n"
@@ -167,6 +185,10 @@ def main() -> None:
     ap.add_argument("runs", nargs="*", help="run dir names; default: all")
     args = ap.parse_args()
 
+    if args.cards_only:
+        # a card refresh only stages README.md; the weights need not be here
+        for r in args.runs:
+            (FINETUNE_DIR / r / "final").mkdir(parents=True, exist_ok=True)
     dirs = ([FINETUNE_DIR / r for r in args.runs] if args.runs
             else sorted(p for p in FINETUNE_DIR.iterdir() if p.is_dir()))
     todo = []

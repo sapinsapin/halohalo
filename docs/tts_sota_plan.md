@@ -283,11 +283,41 @@ elsewhere, so a row compares and a column does not):
 | **Orpheus-char** | **4.4** | **6.1** | **0.8** | 5.9 | **5.2** | **7.6** | 36.5 | **4.3** | **12.5** | **7.3** |
 | MMS-TTS | 7.9 | 42.9 | 2.1 | 5.9 | 8.7 | 13.7 | **5.6** | 7.4 | — | 7.7 |
 
-Beats MMS-TTS on seven, ties Filipino, and gives Tausug its first scored TTS.
+Beats MMS-TTS on seven, ties Filipino, and gives Tausug its first scored TTS —
+**under our own judges. An independent judge reverses most of that; see below.**
 **Pangasinan** was retrained at 600 steps (~3 epochs) after the 2000-step run
 scored 36.5; the retrain scored 36.5 again with speaker similarity 0.30. It was
 not overfitting: 1,445 clips is too little for Orpheus to learn the language.
 Not published. Its best candidate is now the Qwen3-TTS base, untested there.
+
+**Independent judge (2026-09-25): the ranking flips.** The same saved audio,
+re-transcribed by Meta's MMS-1b-all instead of our PLD-trained Whisper judges
+(round-trip CER %; MMS-1b-all has no Tausug model):
+
+| | bcl | ceb | eng | fil | hil | ilo | pag | pam | war |
+|---|---|---|---|---|---|---|---|---|---|
+| human | 6.1 | 11.1 | 4.1 | 6.6 | 3.4 | 11.6 | 9.3 | 8.0 | 4.8 |
+| MMS-TTS | **9.2** | 18.1 | **3.9** | **8.9** | **7.4** | **14.7** | **8.5** | 11.2 | **9.3** |
+| Orpheus-char | 10.0 | **16.0** | 7.1 | 12.0 | 9.7 | 17.5 | 19.5 | 11.5 | 14.0 |
+| Qwen3-TTS base | | 13.9 | | | | | | 9.5 | |
+
+Under this judge MMS-TTS wins seven, Orpheus wins Cebuano, and Kapampangan is a
+tie — close to the mirror image of our judges' verdict. The likely reason is
+the same in both directions: a judge favours audio from its own family. Ours
+was fine-tuned on PLD's recordings, which Orpheus was trained on; MMS-1b-all
+comes from the project that made MMS-TTS, trained on overlapping data. Neither
+is the independent judge the plan asked for; the honest reading is that
+**Orpheus against MMS-TTS is unresolved**, and a native-listener panel is the
+arbiter. Three things do hold under both judges: Orpheus is intelligible in
+nine languages and gives Tausug its only TTS; SpeechT5 is far behind
+everything; and the untrained Qwen3-TTS base beats MMS-TTS on both Cebuano and
+Kapampangan under both judges, and Orpheus under Meta's.
+
+The judge question also explains an old puzzle. MMS-TTS Cebuano scored 17.8 %
+on 2026-09-15 and 42.9 % on 2026-09-20. Re-scored on the later sentences with
+the earlier judge it is 16.1 %: the jump was the judge (whisper-large-v3-pld-ceb
+is the better judge of real PLD speech, 3.4 % floor against 7.3 %, and far
+harsher on MMS-TTS's synthetic voice), not the sentences.
 
 **P3, Qwen3-TTS** (ceb / pam):
 

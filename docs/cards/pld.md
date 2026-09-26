@@ -218,7 +218,7 @@ so they are baselines to hear and beat, not state-of-the-art:
 
 These are the **Orpheus 3B** adapters published 2026-09-21. Each card carries a
 round-trip intelligibility score on 50 held-out sentences, judged by our own
-ASR; they beat Meta's MMS-TTS on seven of the nine languages. They need a GPU
+ASR. Whether Orpheus beats Meta's MMS-TTS depends on the judge: our PLD-trained judges say yes in seven of nine languages, Meta's MMS-1b-all says no in seven. Each plausibly favours its own family's audio, so that comparison is unresolved until people listen. They need a GPU
 and the halohalo code to run.
 
 The earlier `speecht5_tts-pld-*` fleet (SpeechT5, 2,000 clips per language) was

@@ -1,5 +1,5 @@
 {
- "as_of": "2026-09-22",
+ "as_of": "2026-09-26",
  "systems": {
   "speecht5": "SpeechT5",
   "mms": "MMS-TTS",
@@ -16,6 +16,11 @@
     "speecht5_spk_sim": 0.41657602693885565,
     "orpheus_spk_sim": 0.4613,
     "qwen3tts_base": null,
+    "human_mms": 0.06101304681504221,
+    "speecht5_mms": 0.420951650038373,
+    "mms_mms": 0.0920951650038373,
+    "orpheus_mms": 0.10015349194167306,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -50,6 +55,11 @@
     "speecht5_spk_sim": 0.3753731496632099,
     "orpheus_spk_sim": 0.3612,
     "qwen3tts_base": 0.08802308802308802,
+    "human_mms": 0.1111111111111111,
+    "speecht5_mms": 0.48148148148148145,
+    "mms_mms": 0.18133718133718132,
+    "orpheus_mms": 0.16017316017316016,
+    "qwen3tts_base_mms": 0.1394901394901395,
     "qwen3tts_base_spk_sim": 0.774799433350563
    },
    "clips": [
@@ -86,6 +96,11 @@
     "speecht5_spk_sim": 0.4169654296711087,
     "orpheus_spk_sim": 0.2261,
     "qwen3tts_base": null,
+    "human_mms": 0.04131054131054131,
+    "speecht5_mms": 0.3043684710351377,
+    "mms_mms": 0.03941120607787275,
+    "orpheus_mms": 0.07122507122507123,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -120,6 +135,11 @@
     "speecht5_spk_sim": 0.533814837038517,
     "orpheus_spk_sim": 0.3625,
     "qwen3tts_base": null,
+    "human_mms": 0.06574239713774598,
+    "speecht5_mms": 0.21198568872987478,
+    "mms_mms": 0.0885509838998211,
+    "orpheus_mms": 0.11985688729874776,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -154,6 +174,11 @@
     "speecht5_spk_sim": 0.42510050697252155,
     "orpheus_spk_sim": 0.2838,
     "qwen3tts_base": null,
+    "human_mms": 0.03444564047362755,
+    "speecht5_mms": 0.4085037674919268,
+    "mms_mms": 0.073735199138859,
+    "orpheus_mms": 0.0968783638320775,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -188,6 +213,11 @@
     "speecht5_spk_sim": 0.37504190960899,
     "orpheus_spk_sim": 0.2959,
     "qwen3tts_base": null,
+    "human_mms": 0.11558669001751314,
+    "speecht5_mms": 0.4448336252189142,
+    "mms_mms": 0.14667250437828372,
+    "orpheus_mms": 0.17469352014010509,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -222,6 +252,11 @@
     "speecht5_spk_sim": 0.28726443991065026,
     "orpheus_spk_sim": null,
     "qwen3tts_base": null,
+    "human_mms": 0.09320606400898372,
+    "speecht5_mms": 0.5861875350926445,
+    "mms_mms": 0.08534531162268388,
+    "orpheus_mms": 0.19539584503088153,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -256,6 +291,11 @@
     "speecht5_spk_sim": 0.33548367222771047,
     "orpheus_spk_sim": 0.3503,
     "qwen3tts_base": 0.03473830477072719,
+    "human_mms": 0.08012968967114405,
+    "speecht5_mms": 0.4983788791106994,
+    "mms_mms": 0.11208893006021306,
+    "orpheus_mms": 0.11486799444187124,
+    "qwen3tts_base_mms": 0.09495136637332098,
     "qwen3tts_base_spk_sim": 0.7774769097566605
    },
    "clips": [
@@ -292,6 +332,11 @@
     "speecht5_spk_sim": 0.4764703375287354,
     "orpheus_spk_sim": 0.233,
     "qwen3tts_base": null,
+    "human_mms": null,
+    "speecht5_mms": null,
+    "mms_mms": null,
+    "orpheus_mms": null,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [
@@ -324,6 +369,11 @@
     "speecht5_spk_sim": 0.40245734293013813,
     "orpheus_spk_sim": 0.3001,
     "qwen3tts_base": null,
+    "human_mms": 0.04755944931163955,
+    "speecht5_mms": 0.344180225281602,
+    "mms_mms": 0.09324155193992491,
+    "orpheus_mms": 0.14017521902377972,
+    "qwen3tts_base_mms": null,
     "qwen3tts_base_spk_sim": null
    },
    "clips": [

@@ -145,18 +145,28 @@ COMPARE_CLIPS = max((len(v["clips"]) for v in COMPARE["languages"].values()),
 
 
 def compare_scores(lang_name):
+    """Every system under two judges. Neither is neutral — ours was fine-tuned
+    on the recordings Orpheus was trained on, Meta's comes from the project
+    that made MMS-TTS — so a ranking only counts where both agree."""
     s = COMPARE["languages"].get(NAME_TO_CODE.get(lang_name), {}).get("scores", {})
-    pct = lambda x: f"{x * 100:.1f} %" if x is not None else "not available"
+    pct = lambda x: f"{x * 100:.1f} %" if x is not None else "—"
     sim = lambda x: f"{x:.2f}" if x is not None else "—"
-    return (
-        "| | round-trip CER ↓ | speaker similarity ↑ |\n|---|---|---|\n"
-        f"| Human recording | {pct(s.get('human'))} | — |\n"
-        f"| SpeechT5 | {pct(s.get('speecht5'))} | {sim(s.get('speecht5_spk_sim'))} |\n"
-        f"| MMS-TTS | {pct(s.get('mms'))} | — |\n"
-        f"| **Orpheus 3B** | **{pct(s.get('orpheus'))}** | "
-        f"{sim(s.get('orpheus_spk_sim'))} |\n"
-        f"| Qwen3-TTS 1.7B, zero-shot (untrained on PLD) | {pct(s.get('qwen3tts_base'))} | "
-        f"{sim(s.get('qwen3tts_base_spk_sim'))} |")
+    rows = [("Human recording", "human", None),
+            ("SpeechT5 (retired)", "speecht5", "speecht5_spk_sim"),
+            ("MMS-TTS (Meta)", "mms", None),
+            ("Orpheus 3B (ours)", "orpheus", "orpheus_spk_sim"),
+            ("Qwen3-TTS 1.7B, zero-shot", "qwen3tts_base", "qwen3tts_base_spk_sim")]
+    out = ("| | CER, our judge ↓ | CER, Meta's judge ↓ | speaker similarity ↑ |\n"
+           "|---|---|---|---|\n")
+    for label, k, sk in rows:
+        out += (f"| {label} | {pct(s.get(k))} | {pct(s.get(k + '_mms'))} | "
+                f"{sim(s.get(sk)) if sk else '—'} |\n")
+    return out + (
+        "\n*Why two judges.* Ours is fine-tuned on PLD's own recordings, which "
+        "Orpheus was trained on too; Meta's MMS-1b-all comes from the same "
+        "project as MMS-TTS. Each plausibly favours its own family's audio. "
+        "Where they disagree — Orpheus against MMS-TTS, mostly — the comparison "
+        "is unresolved. 50 sentences per language.")
 
 
 def compare_clips(lang_name):
@@ -610,9 +620,9 @@ def build_tabs():
             "**This tab runs the org's retired SpeechT5 baselines, not its "
             "published TTS.** They are the only text-to-speech a free CPU can "
             "run live, and by our own measurement they are unintelligible in "
-            "most of the ten languages. **To hear the real models — Orpheus 3B, "
-            "which beats Meta's MMS-TTS on seven of nine languages — open "
-            "🎧 Compare voices**, where its output is pre-rendered. "
+            "most of the ten languages. **To hear the published models — our "
+            "Orpheus 3B beside Meta's MMS-TTS and the Qwen3-TTS base — open "
+            "🎧 Compare voices**, where their output is pre-rendered. "
             "Type text in the chosen language and hear it spoken by one of "
             "that language's speakers. Write numbers as words — the training "
             "text contains no verbalized numerals.")
