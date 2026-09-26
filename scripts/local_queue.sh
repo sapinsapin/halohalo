@@ -10,7 +10,9 @@
 # first and the ~12 h fleet retrain last.
 #
 # Disk: C: is nearly full and WSL's own filesystem lives on it, so every cache,
-# temp dir and venv here is on D:. A full C: took WSL down three times.
+# temp dir and venv here is on D:. (The WSL crashes once blamed on a full C:
+# were CPU machine-check exceptions: see the kernel-panic logs in
+# %LOCALAPPDATA%\Temp\wsl-crashes. Hence resumable steps and a supervisor.)
 set -uo pipefail
 cd "$(dirname "$0")/.."
 

@@ -1,0 +1,10 @@
+{
+  "name": "halohalo-port-web",
+  "private": true,
+  "type": "module",
+  "description": "Node validation of the onnx-web artefacts; the same folders a browser page loads over WebGPU or wasm.",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0",
+    "fasttext.wasm.js": "^1.0.0"
+  }
+}

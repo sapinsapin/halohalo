@@ -15,3 +15,8 @@ ts-nebtok.txt
 
 # frozen PLD split specs hold corpus prompt text (CC-BY-NC, research-only)
 splits/
+
+# porting pipeline: toolchain venvs, cloned runtimes, npm packages
+venv_*/
+third_party/
+node_modules/

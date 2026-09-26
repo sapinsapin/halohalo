@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>halohalo in the browser</title>
+<style>
+  :root { --bg:#fbfaf7; --fg:#1d1c1a; --mut:#6b675f; --line:#e3dfd6; --acc:#2f6f4f; --bad:#a33b2b; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161513; --fg:#ebe7df; --mut:#9a958b; --line:#2e2c28; --acc:#7cc39b; --bad:#e0826f; } }
+  body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; margin:0 auto; max-width:980px; padding:16px; }
+  h1 { font-size:20px; margin:0 0 4px; } .mut { color:var(--mut); }
+  form { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:end; margin:16px 0; }
+  label { display:flex; flex-direction:column; font-size:13px; color:var(--mut); }
+  select, input, button { font:inherit; padding:4px 8px; border:1px solid var(--line); border-radius:6px; background:transparent; color:var(--fg); }
+  button { background:var(--acc); color:var(--bg); border:0; cursor:pointer; }
+  table { border-collapse:collapse; width:100%; font-size:13px; } td, th { border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; vertical-align:top; }
+  .num { text-align:right; font-variant-numeric:tabular-nums; } .bad { color:var(--bad); }
+  #summary { font-size:15px; margin:12px 0; } .wrap { overflow-x:auto; }
+</style>
+</head>
+<body>
+<h1>halohalo speech recognition, in the browser</h1>
+<div class="mut">Runs the ported model on this device with WebGPU (fp16) or WebAssembly (int8), over the held-out evaluation clips, and scores it against the human transcript and the original PyTorch model's transcript.</div>
+<form id="f">
+  <label>model <select name="model">
+    <option value="whisper-small-pld-ceb|whisper">whisper-small-pld-ceb (Whisper)</option>
+    <option value="omniASR_W2V_1B_SSL-ctc-char-pld_ceb-norm|ctc">omniASR 1B CTC ceb-norm</option>
+  </select></label>
+  <label>device <select name="device"><option>webgpu</option><option>wasm</option></select></label>
+  <label>precision <select name="dtype"><option>fp16</option><option>q8</option><option>fp32</option></select></label>
+  <label>clips <input name="n" type="number" value="20" min="1" max="100" style="width:5em"></label>
+  <button>Run</button>
+</form>
+<div id="summary" class="mut">WebGPU: <span id="gpu">checking…</span></div>
+<div class="wrap"><table id="t"><thead><tr><th>#</th><th>reference</th><th>this device</th><th class="num">CER</th><th class="num">ms</th></tr></thead><tbody></tbody></table></div>
+<script type="module">
+import { pipeline, env } from "./node_modules/@huggingface/transformers/dist/transformers.js";
+import * as ctc from "./ctc.mjs";
+
+env.allowRemoteModels = false;
+env.allowLocalModels = true;          // off by default in browsers
+env.localModelPath = "/artefacts/";
+env.backends.onnx.wasm.wasmPaths = "/web/node_modules/onnxruntime-web/dist/";
+
+const $ = (s) => document.querySelector(s);
+$("#gpu").textContent = navigator.gpu ? ((await navigator.gpu.requestAdapter()) ? "available" : "no adapter") : "not supported";
+
+// the same normalisation the Python side scores with (porting/metrics.py)
+const norm = (t) => (t || "").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").normalize("NFC")
+  .replace(/[‘’]/g, "'").replace(/[^\p{L}\p{N}\s'_]/gu, " ").split(/\s+/).filter(Boolean).join(" ");
+function lev(a, b) {
+  const d = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = d[0]; d[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = d[j];
+      d[j] = Math.min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = tmp;
+    }
+  }
+  return d[b.length];
+}
+function readWav(buf) {   // 16 kHz mono PCM16, as porting/frontends.write_wavs writes them
+  const v = new DataView(buf); let off = 12;
+  while (off < v.byteLength) {
+    const id = String.fromCharCode(...new Uint8Array(buf, off, 4)), size = v.getUint32(off + 4, true);
+    if (id === "data") { const n = size / 2, out = new Float32Array(n);
+      for (let i = 0; i < n; i++) out[i] = v.getInt16(off + 8 + 2 * i, true) / 32768; return out; }
+    off += 8 + size;
+  }
+  throw new Error("no data chunk");
+}
+
+$("#f").onsubmit = async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const [name, family] = fd.get("model").split("|");
+  const device = fd.get("device"), dtype = fd.get("dtype"), n = +fd.get("n");
+  const tb = $("#t tbody"); tb.innerHTML = "";
+  const refs = await (await fetch("/evalpack/ceb/refs.json")).json();
+  let torch = null;
+  try { torch = (await (await fetch(`/results/${name}/torch-fp32-ceb.json`)).json()).hyps; } catch {}
+  $("#summary").textContent = `loading ${name} on ${device} (${dtype})…`;
+  const t0 = performance.now();
+  let transcribe;
+  if (family === "whisper") {
+    const asr = await pipeline("automatic-speech-recognition", `${name}/onnx-web`, { device, dtype });
+    // max_new_tokens as in the Python reference: a looping clip otherwise runs
+    // to 448 tokens here and 225 there, which reads as a porting error
+    transcribe = async (a) => (await asr(a, { language: "tagalog", task: "transcribe", max_new_tokens: 225 })).text.trim();
+  } else {
+    const ort = (await import("./node_modules/onnxruntime-web/dist/ort.webgpu.bundle.min.mjs"));
+    ort.env.wasm.wasmPaths = "/web/node_modules/onnxruntime-web/dist/";
+    const sfx = { fp32: "", fp16: "_fp16", q8: "_quantized" }[dtype];
+    const base = `/artefacts/${name}/onnx-web/`;
+    // graphs over 2 GB keep their weights in a side file; ORT-web must be told
+    const graph = `${base}onnx/model${sfx}.onnx`;
+    const externalData = [];
+    for (const side of [`model${sfx}.onnx_data`, `model${sfx}.onnx.data`])
+      if ((await fetch(`${base}onnx/${side}`, { method: "HEAD" })).ok)
+        externalData.push({ path: side, data: `${base}onnx/${side}` });
+    const sess = await ort.InferenceSession.create(graph,
+      { executionProviders: [device === "webgpu" ? "webgpu" : "wasm"], externalData });
+    const units = ctc.id2unit(await (await fetch(base + "vocab.json")).json());
+    const pre = await (await fetch(base + "preprocessor_config.json")).json();
+    const inp = sess.inputNames[0], outName = sess.outputNames[0];
+    const run = async (x) => { const o = await sess.run({ [inp]: new ort.Tensor("float32", x, [1, x.length]) });
+      return { data: o[outName].data, dims: o[outName].dims }; };
+    transcribe = (a) => ctc.transcribe(run, a, units, { doNormalize: pre.do_normalize ?? true });
+  }
+  const load = performance.now() - t0;
+  let errs = 0, chars = 0, perr = 0, pchars = 0, same = 0, ms = 0, secs = 0;
+  const rows = [];
+  for (let i = 0; i < Math.min(n, refs.length); i++) {
+    const a = readWav(await (await fetch(`/evalpack/ceb/${String(i).padStart(3, "0")}.wav`)).arrayBuffer());
+    const t = performance.now(); const hyp = await transcribe(a); const dt = performance.now() - t;
+    const r = norm(refs[i]), h = norm(hyp);
+    const e1 = lev(r, h); errs += e1; chars += r.length; ms += dt; secs += a.length / 16000;
+    if (torch) { const p = norm(torch[i]); perr += lev(p, h); pchars += Math.max(p.length, 1); same += p === h ? 1 : 0; }
+    rows.push({ i, hyp, cer: e1 / Math.max(r.length, 1), ms: dt });
+    tb.insertAdjacentHTML("beforeend", `<tr><td>${i}</td><td>${refs[i]}</td><td>${hyp}</td>
+      <td class="num ${e1 ? "bad" : ""}">${(100 * e1 / Math.max(r.length, 1)).toFixed(1)}</td><td class="num">${dt.toFixed(0)}</td></tr>`);
+  }
+  const res = { model: name, device, dtype, clips: rows.length, load_ms: Math.round(load),
+    cer: errs / chars, parity_cer: torch ? perr / pchars : null, identical: torch ? same / rows.length : null,
+    rtf: ms / 1000 / secs, adapter: navigator.gpu ? "webgpu" : "none", hyps: rows.map((r) => r.hyp) };
+  window.__result = res;
+  if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+    // porting/web/serve.py scores and files it beside the other runtimes' results
+    const adapter = navigator.gpu ? await navigator.gpu.requestAdapter() : null;
+    await fetch("/save", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: name, device, dtype, lang: "ceb", hyps: res.hyps, rtf: res.rtf,
+        load_ms: res.load_ms, adapter: adapter?.info ? `${adapter.info.vendor} ${adapter.info.architecture}` : null }) })
+      .catch(() => {});
+  }
+  $("#summary").textContent = `${name} on ${device}/${dtype}: CER ${(100 * res.cer).toFixed(2)}%` +
+    (torch ? `, ${(100 * res.parity_cer).toFixed(2)}% from PyTorch's transcripts, ${(100 * res.identical).toFixed(0)}% identical` : "") +
+    `, RTF ${res.rtf.toFixed(3)}, load ${(load / 1000).toFixed(1)} s`;
+};
+</script>
+</body>
+</html>
