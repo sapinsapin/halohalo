@@ -33,7 +33,11 @@ done
 [ -x /mnt/d/halohalo/third_party/whisper.cpp/build/bin/whisper-cli ] || bash porting/setup_venvs.sh ggml
 [ -d porting/web/node_modules/@huggingface/transformers ] || bash porting/setup_venvs.sh web
 
-say "--- build";    nice -n 10 $PY -m porting build    --phase 1 --models "$MODELS"
+# Builds on BUILD_CPUS only (default four cores): ONNX Runtime and torch size
+# their thread pools from the affinity mask, so this caps load and heat. The
+# workstation has been throwing CPU machine-check exceptions under sustained
+# all-core load.
+say "--- build";    nice -n 10 taskset -c "${BUILD_CPUS:-0-3}" $PY -m porting build --phase 1 --models "$MODELS"
 say "--- validate"; nice -n 10 $PY -m porting validate --phase 1 --models "$MODELS" --n "$N" --smoke "$SMOKE"
 say "--- report";   $PY -m porting report
 say "=== done"

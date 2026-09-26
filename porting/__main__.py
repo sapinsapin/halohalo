@@ -50,11 +50,21 @@ def lang_of(repo):
     return next((l for l in LANGS if f"_{l}" in name or f"-{l}" in name), None)
 
 
+def onnx_args(repo):
+    """NPU calibration only where the workstation can hold it (registry.NPU_CALIB_MAX_M);
+    larger models get theirs in Phase 2."""
+    from porting.registry import NPU_CALIB_MAX_M
+    m = next((m for m in MODELS if m.repo == repo), None)
+    if m and m.params_m > NPU_CALIB_MAX_M:
+        return ["--skip", "npu"]
+    return ["--calib-lang", lang_of(repo) or "ceb"]
+
+
 # ------------------------------------------------------------------ recipes
 # A build: (toolchain venv, module, marker path relative to the artefact dir).
 # The marker's existence means "built"; args are always [repo] + extra.
 BUILDS = {
-    "onnx": ("onnx", "porting.export_onnx", "build_onnx.json", lambda r: ["--calib-lang", lang_of(r) or "ceb"]),
+    "onnx": ("onnx", "porting.export_onnx", "build_onnx.json", lambda r: onnx_args(r)),
     "openvino": ("openvino", "porting.export_openvino", "openvino/build.json", lambda r: []),
     "ggml": ("onnx", "porting.export_ggml", "ggml/build.json", lambda r: []),
     "mlx": ("mlx", "porting.export_mlx", "mlx/q4/config.json", lambda r: []),
@@ -80,7 +90,7 @@ RECIPES = {   # (family, target) -> (builds, validations, what a device loads)
     ("whisper", "npu-ane"): (["coreml"], [], "coreml/encoder.mlpackage (+ whisper.cpp or WhisperKit decoder)"),
     ("whisper", "npu-openvino"): (["openvino"], [V("openvino", "openvino", "fp16", "int8")], "openvino/int8/"),
     ("whisper", "mac-mlx"): (["mlx"], [V("mlx", "mlx", "fp16", "q8", "q4")], "mlx/q4/ or mlx/fp16/"),
-    ("whisper", "mac-executorch"): (["executorch-coreml"], [], "executorch/coreml/*.pte"),
+    ("whisper", "mac-executorch"): ([], [], "macOS only: python -m porting.export_executorch <repo> --backend coreml, on a Mac"),
     ("whisper", "web-webgpu"): (["onnx"], [V("onnx", "transformersjs", "fp32", "int8"), V("onnx", "ort", "fp16")],
                                 "onnx-web/ (fp16 on WebGPU, q8 on wasm)"),
     ("whisper", "amd-rocm"): (["onnx"], [], "the checkpoint as-is (PyTorch ROCm) or onnx-web/onnx/*.onnx (MIGraphX EP)"),
@@ -92,7 +102,7 @@ RECIPES = {   # (family, target) -> (builds, validations, what a device loads)
     ("wav2vec2-ctc", "npu-ryzenai"): (["onnx"], [V("onnx", "ort", "qdq")], "npu/model_qdq_int8.onnx (10 s window)"),
     ("wav2vec2-ctc", "npu-ane"): (["coreml"], [], "coreml/model.mlpackage (10 s window)"),
     ("wav2vec2-ctc", "npu-openvino"): (["openvino"], [V("openvino", "openvino", "fp16", "int8")], "openvino/int8/"),
-    ("wav2vec2-ctc", "mac-executorch"): (["executorch-coreml"], [], "executorch/coreml/model.pte"),
+    ("wav2vec2-ctc", "mac-executorch"): ([], [], "macOS only: python -m porting.export_executorch <repo> --backend coreml, on a Mac"),
     ("wav2vec2-ctc", "web-webgpu"): (["onnx"], [V("onnx", "transformersjs", "fp32", "int8"), V("onnx", "ort", "fp16")],
                                      "onnx-web/onnx/model_fp16.onnx (WebGPU) or model_quantized.onnx (wasm)"),
     ("wav2vec2-ctc", "amd-rocm"): (["onnx"], [], "the checkpoint as-is or onnx-web/onnx/model.onnx"),

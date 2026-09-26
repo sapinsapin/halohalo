@@ -22,6 +22,10 @@ from dataclasses import dataclass, field
 
 # ------------------------------------------------------------------ hardware
 LOCAL = {"vram_gib": 6.0, "ram_gib": 27.0, "name": "RTX 3070 workstation"}
+# Largest model whose NPU (static QDQ int8) calibration fits the workstation.
+# Measured: whisper-small's encoder (88M) fits; the 963M CTC model peaked at
+# 25 GB with ORT's calibrator and OOM-risked WSL, so it waits for the VM.
+NPU_CALIB_MAX_M = 500
 CLOUD = {"vram_gib": 95.0, "ram_gib": 214.0, "name": "RTX PRO 6000 VM"}
 
 
@@ -208,8 +212,9 @@ def phase_of(model: Model, target: Target) -> tuple[int, str]:
     if model.fp16_gib > LOCAL["vram_gib"] - 1.5 and target.id not in (
             "arm-cpu-onnx", "arm-cpu-ggml", "arm-mobile-executorch", "npu-openvino"):
         return 2, f"validation needs {model.fp16_gib:.1f} GB fp16 + activations on GPU"
-    if model.params_m > 1000 and target.id in ("npu-qnn", "npu-ryzenai"):
-        return 2, "static int8 calibration of >1B params is hours on CPU"
+    if model.params_m > NPU_CALIB_MAX_M and target.id in ("npu-qnn", "npu-ryzenai"):
+        return 2, (f"static int8 calibration above {NPU_CALIB_MAX_M}M params does not fit the "
+                   "workstation (the 963M CTC graph peaked at 25 GB RAM, measured 2026-09-26)")
     return 1, "fits the workstation"
 
 

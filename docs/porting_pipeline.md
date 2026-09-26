@@ -148,7 +148,40 @@ as long as the job; a job detached inside WSL dies when the last client exits:
 Start-Process -WindowStyle Hidden wsl.exe -ArgumentList 'bash -c "cd /mnt/d/halohalo && bash scripts/port_phase1.sh >> finetune_runs/port/phase1.log 2>&1"'
 ```
 
-Phase 2 on the VM: see [`scripts/port_phase2.sh`](../scripts/port_phase2.sh).
+**The browser check** runs the same `onnx-web` folders in a real browser. It
+files its result with the other runtimes' results, so it shows up in the report:
+
+```bash
+python3 porting/web/serve.py        # serves only the porting folders, never the repo root
+```
+
+Open `http://localhost:8765/web/`, choose WebGPU or WebAssembly and the
+precision, and press Run. On the workstation's RTX 3070, Chrome ran
+whisper-small fp16 at RTF 0.43 with transcripts identical to PyTorch on all
+100 clips.
+
+**Supervision.** WSL on the workstation has been crashing on CPU machine-check
+exceptions. Run long jobs under `scripts/wsl_supervise.ps1`, which starts a
+resumable job again after each crash:
+
+```powershell
+Start-Process -WindowStyle Hidden powershell -ArgumentList '-ExecutionPolicy','Bypass','-File','scripts\wsl_supervise.ps1','-Name','port','-Command','cd /mnt/d/halohalo && bash scripts/port_phase1.sh >> finetune_runs/port/phase1.log 2>&1'
+```
+
+**Phase 2** on the VM: [`scripts/port_phase2.sh`](../scripts/port_phase2.sh)
+chains every Orpheus toolchain and then the ASR ports that waited for the big
+card, in one tmux session, so the GPU never waits on a person. A rough budget
+at the preemptible rate of about $1.08 an hour:
+
+| work | estimate |
+|---|---:|
+| Orpheus, per language: merge, GGUF, MLX, ORT GenAI, OpenVINO, ExecuTorch, WebLLM, MediaPipe | ~1.5 h |
+| Orpheus, per language: end-to-end checks on 5 runtimes, 10 sentences each | ~1 h |
+| nine languages | ~22 h, ~$24 |
+| whisper-large-v3 NPU calibration ×9, omniASR 7B exports | ~5 h, ~$5 |
+
+`DRY=1 LANGS=ceb N=3` runs the llama.cpp path on the workstation CPU first, to
+catch mistakes before paying for the card.
 
 ## 7. Adding a model or a target
 

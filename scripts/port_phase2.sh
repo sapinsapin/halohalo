@@ -41,6 +41,9 @@ LLMV=venv_llm
 if [ "$DRY" = 1 ]; then
   LLMV=venv                          # the workstation's training venv has torch, peft and snac already
   export CUDA_VISIBLE_DEVICES=       # the 3070 belongs to the local queue; the dry run is CPU only
+  # four cores for this shell and everything it starts (nproc, torch and ORT
+  # follow the mask): the workstation throws machine checks under all-core load
+  taskset -cp "${BUILD_CPUS:-0-3}" $$ > /dev/null
 fi
 setup() {
   [ -x "$LLMV/bin/python3" ] || { venv venv_llm torch --index-url "$CU"; venv_llm/bin/pip install -q transformers peft snac \
