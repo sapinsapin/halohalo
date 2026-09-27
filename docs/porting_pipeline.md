@@ -200,7 +200,12 @@ catch mistakes before paying for the card.
 ## 7. Running the Apple targets on a Mac
 
 The workstation builds the Apple artefacts but can only check MLX on its CPU
-and cannot run Core ML at all. On an Apple-silicon Mac:
+and cannot run Core ML at all. The full spec for a session on the Mac is
+[prd_mac_porting.md](prd_mac_porting.md). The Mac can build every artefact
+itself from a clone. It then needs only the 12 MB evaluation pack
+(`bash scripts/port_bundle_mac.sh --eval-only`), because the frozen test
+split cannot be rebuilt without `splits/`. Or, to reuse the workstation's
+builds:
 
 ```bash
 # on the workstation: one private file with code, artefacts, clips and references (~4.5 GB)

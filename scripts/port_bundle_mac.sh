@@ -9,10 +9,25 @@
 # the evalpack clips, the PyTorch reference transcripts and the TTS sentence
 # manifest. The evalpack holds PLD test audio and text (CC-BY-NC, research
 # only): keep the bundle private. Then, on the Mac: see scripts/port_mac.sh.
+#
+#   bash scripts/port_bundle_mac.sh --eval-only   # -> finetune_runs/port/mac/halohalo-mac-eval.tar (~12 MB)
+#
+# The eval-only pack is what a fresh clone on the Mac cannot rebuild: the
+# frozen test clips (their split specs are kept out of git), the PyTorch
+# reference transcripts and the TTS sentence manifest. Paths are relative to
+# the repo root, so it untars straight into the clone; the Mac then builds
+# every artefact itself (docs/prd_mac_porting.md).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT=finetune_runs/port/mac
 mkdir -p "$OUT"
+if [ "${1:-}" = --eval-only ]; then
+  tar -cf "$OUT/halohalo-mac-eval.tar" finetune_runs/port/evalpack/ceb.npz finetune_runs/port/evalpack/meta.json \
+      finetune_runs/tts_eval/manifest.json $(find finetune_runs/port/results -type f -name '*.json')
+  ls -la "$OUT/halohalo-mac-eval.tar"
+  echo "on the Mac, in the clone's root: tar xf halohalo-mac-eval.tar"
+  exit 0
+fi
 A=finetune_runs/port/artefacts
 W=$A/whisper-small-pld-ceb
 C=$A/omniASR_W2V_1B_SSL-ctc-char-pld_ceb-norm
