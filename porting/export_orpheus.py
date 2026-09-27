@@ -63,7 +63,32 @@ def merge(repo, root):
     AutoTokenizer.from_pretrained(repo, token=TOK).save_pretrained(out)
     from porting.hfcompat import sanitize_tokenizer_config
     sanitize_tokenizer_config(out / "tokenizer_config.json")
+    trim_tokenizer(out, model.config.vocab_size)
     return out
+
+
+def trim_tokenizer(d: Path, n: int):
+    """Drop tokenizer entries past the embedding matrix. Orpheus's tokenizer
+    lists 156,940 tokens for 156,939 embeddings (an unused `<|audio|>` at id
+    156939); llama.cpp's converter asserts every id fits and stops. Growing the
+    embeddings instead would add an output row the sampler could pick."""
+    tj = json.loads((d / "tokenizer.json").read_text())
+    tj["added_tokens"] = [t for t in tj.get("added_tokens", []) if t["id"] < n]
+    vocab = tj.get("model", {}).get("vocab")
+    if isinstance(vocab, dict):
+        tj["model"]["vocab"] = {k: v for k, v in vocab.items() if v < n}
+    (d / "tokenizer.json").write_text(json.dumps(tj, ensure_ascii=False))
+    tc_path = d / "tokenizer_config.json"
+    tc = json.loads(tc_path.read_text())
+    dropped = set()
+    atd = tc.get("added_tokens_decoder")
+    if isinstance(atd, dict):
+        dropped = {v.get("content") for k, v in atd.items() if int(k) >= n}
+        tc["added_tokens_decoder"] = {k: v for k, v in atd.items() if int(k) < n}
+    for key in ("additional_special_tokens", "extra_special_tokens"):
+        if isinstance(tc.get(key), list):
+            tc[key] = [t for t in tc[key] if t not in dropped]
+    tc_path.write_text(json.dumps(tc, indent=1, ensure_ascii=False))
 
 
 def gguf(merged, root):

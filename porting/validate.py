@@ -107,6 +107,38 @@ def run_torch(repo, root, variant, audio, fam):
 
 
 ORT_FILES = {"fp32": "", "int8": "_quantized", "fp16": "_fp16"}
+NPU_FILES = {"qdq": "_qdq_int8", "qdq16": "_qdq_a16w8"}   # A8W8, A16W8
+
+
+SHM = Path('/dev/shm')
+
+
+def in_ram(files, tag):
+    """Copy what a runtime is about to load into RAM (/dev/shm) and return
+    the folder. Runtimes memory-map weights, and over WSL's 9P bridge to D:
+    every page fault is a round trip: a 1 GB program took 20+ minutes to
+    load, an fp32 ONNX Whisper 220 s. One sequential copy takes seconds.
+    files: [(source, name in the folder)]."""
+    d = SHM / f'port-{tag}'
+    if d.exists():
+        shutil.rmtree(d)
+    d.mkdir(parents=True)
+    for src, name in files:
+        if Path(src).is_dir():
+            shutil.copytree(src, d / name, ignore=shutil.ignore_patterns('model.safetensors', 'README.md'))
+        else:
+            shutil.copy(src, d / name)
+    _T.setdefault('ram_dirs', []).append(d)
+    return d
+
+
+def with_side_files(graph: Path):
+    """An ONNX graph plus its external-data file, if it has one."""
+    out = [(graph, graph.name)]
+    for side in (graph.name + '_data', graph.name + '.data'):
+        if (graph.parent / side).exists():
+            out.append((graph.parent / side, side))
+    return out
 
 
 def _ort_session(path, providers=None):
@@ -118,29 +150,16 @@ def _ort_session(path, providers=None):
 
 
 def _stage_whisper(root, variant) -> Path:
-    """A folder in the layout optimum's ORT Whisper loader expects, made of
-    links to the chosen variant's graphs."""
-    web = root / "onnx-web"
-    stage = root / "_stage" / variant
-    if stage.exists():
-        shutil.rmtree(stage)
-    stage.mkdir(parents=True)
-    for f in web.glob("*.json"):
-        shutil.copy(f, stage / f.name)
-    sfx = ORT_FILES.get(variant, "")
-    enc = (root / "npu" / "encoder_model_qdq_int8.onnx" if variant == "qdq"
-           else web / "onnx" / f"encoder_model{sfx}.onnx")
-    dec = web / "onnx" / f"decoder_model_merged{'' if variant == 'qdq' else sfx}.onnx"
-    for src, name in ((enc, "encoder_model.onnx"), (dec, "decoder_model_merged.onnx")):
-        # symlink first: hard links fail on WSL's drvfs, and copying 600 MB
-        # through it stalls behind any other disk traffic (measured: minutes)
-        for how in (os.symlink, os.link, shutil.copy):
-            try:
-                how(src, stage / name)
-                break
-            except OSError:
-                continue
-    return stage
+    """The layout optimum's ORT Whisper loader expects, in RAM (see in_ram)."""
+    web = root / 'onnx-web'
+    sfx = ORT_FILES.get(variant, '')
+    npu = NPU_FILES.get(variant)
+    enc = (root / 'npu' / f'encoder_model{npu}.onnx' if npu
+           else web / 'onnx' / f'encoder_model{sfx}.onnx')
+    dec = web / 'onnx' / f"decoder_model_merged{'' if npu else sfx}.onnx"
+    files = [(f, f.name) for f in web.glob('*.json')]
+    files += [(enc, 'encoder_model.onnx'), (dec, 'decoder_model_merged.onnx')]
+    return in_ram(files, f'{root.name}-{variant}')
 
 
 def run_ort(repo, root, variant, audio, fam):
@@ -168,10 +187,11 @@ def run_ort(repo, root, variant, audio, fam):
         return hyps
     web = root / "onnx-web"
     cfg = frontends.ctc_config(web)
-    if variant == "qdq":
-        sess, window = _ort_session(root / "npu" / "model_qdq_int8.onnx"), frontends.CTC_WINDOW_S
+    if variant in NPU_FILES:
+        g, window = root / "npu" / f"model{NPU_FILES[variant]}.onnx", frontends.CTC_WINDOW_S
     else:
-        sess, window = _ort_session(web / "onnx" / f"model{ORT_FILES[variant]}.onnx"), None
+        g, window = web / "onnx" / f"model{ORT_FILES[variant]}.onnx", None
+    sess = _ort_session(in_ram(with_side_files(g), f"{root.name}-{variant}") / g.name)
     name = sess.get_inputs()[0].name
     run = lambda x: sess.run(None, {name: x})[0]
     loaded()
@@ -181,7 +201,7 @@ def run_ort(repo, root, variant, audio, fam):
 def run_openvino(repo, root, variant, audio, fam):
     """OpenVINO on the CPU plugin, from the optimum-intel export (stateful
     decoder, NNCF int8 weights). The same IR loads on Intel NPUs and iGPUs."""
-    d = root / "openvino" / variant
+    d = in_ram([(root / "openvino" / variant, "ir")], f"{root.name}-ov-{variant}") / "ir"
     if fam == "whisper":
         from optimum.intel import OVModelForSpeechSeq2Seq
         from transformers import WhisperProcessor
@@ -212,7 +232,18 @@ def run_executorch(repo, root, variant, audio, fam):
     """ExecuTorch's Python runtime on the XNNPACK-lowered program: the kernels
     the Android/iOS runtime uses."""
     from porting.export_executorch import run_program
-    return run_program(root / "executorch" / variant, audio, fam, THREADS, on_loaded=loaded)
+    src = root / "executorch" / variant
+    # ExecuTorch memory-maps the program; over WSL's 9P bridge every page
+    # fault is a round trip, and a 1 GB .pte took 20+ minutes to "load". One
+    # sequential copy into RAM (/dev/shm) first.
+    stage = Path("/dev/shm") / f"port-{root.name}-{variant}"
+    if stage.exists():
+        shutil.rmtree(stage)
+    shutil.copytree(src, stage, ignore=shutil.ignore_patterns("model.safetensors", "README.md"))
+    try:
+        return run_program(stage, audio, fam, THREADS, on_loaded=loaded)
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
 
 
 def run_mlx(repo, root, variant, audio, fam):
@@ -223,7 +254,7 @@ def run_mlx(repo, root, variant, audio, fam):
     import mlx.core as mx
     import mlx_whisper
     from mlx_whisper.transcribe import ModelHolder
-    d = root / "mlx" / variant
+    d = in_ram([(root / "mlx" / variant, "mlx")], f"{root.name}-mlx-{variant}") / "mlx"
     lang = ISO1.get(json.loads((d / "halohalo.json").read_text())["language"], "tl")
     ModelHolder.get_model(str(d), mx.float32)          # load without decoding anything
     loaded()
@@ -301,13 +332,13 @@ def artefact_size_mb(root: Path, runtime: str, variant: str) -> float | None:
     """What a device downloads for this runtime/variant."""
     web = root / "onnx-web" / "onnx"
     if runtime == "ort" or runtime == "transformersjs":
-        if variant == "qdq":
-            files = list((root / "npu").glob("*"))
+        if variant in NPU_FILES:
+            files = list((root / "npu").glob(f"*{NPU_FILES[variant]}.onnx*"))
             files += [p for p in web.glob("decoder_model_merged.onnx*")]
         else:
             sfx = ORT_FILES.get(variant, "")
             files = [p for p in web.glob("*") if p.name.split(".onnx")[0].endswith(sfx)
-                     and (sfx or not p.name.split(".onnx")[0].endswith(("_quantized", "_fp16")))]
+                     and (sfx or not p.name.split(".onnx")[0].endswith(("_quantized", "_fp16", "_q4f16")))]
     elif runtime in ("openvino", "executorch", "mlx"):
         # only what the runtime loads: exporters leave a copy of the HF weights beside it
         keep = {"openvino": (".xml", ".bin"), "executorch": (".pte",), "mlx": (".safetensors",)}[runtime]
@@ -341,7 +372,11 @@ def main():
 
     _T.clear()
     t0 = time.perf_counter()
-    hyps = RUNTIMES[args.runtime](args.repo, root, args.variant, audio, fam)
+    try:
+        hyps = RUNTIMES[args.runtime](args.repo, root, args.variant, audio, fam)
+    finally:
+        for d in _T.pop('ram_dirs', []):
+            shutil.rmtree(d, ignore_errors=True)
     t1 = time.perf_counter()
     if "run_seconds" in _T:
         wall, load_s = _T["run_seconds"], _T.get("load_seconds", 0.0)

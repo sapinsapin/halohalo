@@ -14,6 +14,7 @@ layout (config, tokenizer and preprocessor at the root, graphs under onnx/):
   onnx/<graph>.onnx              fp32 — ORT CPU/CUDA/MIGraphX, the reference
   onnx/<graph>_quantized.onnx    int8 dynamic — Arm CPUs, wasm in browsers
   onnx/<graph>_fp16.onnx         fp16 — WebGPU, GPUs
+  onnx/<graph>_q4f16.onnx        4-bit MatMul weights + fp16 — WebGPU for large models
 
 plus npu/ (static QDQ int8, fixed shapes: QNN and Ryzen AI).
 """
@@ -92,6 +93,26 @@ def quantize_int8(g: Path) -> Path:
                      # is as big as the original.
                      extra_options={"MatMulConstBOnly": True, "EnableSubgraph": True})
     return q
+
+
+def to_q4f16(h: Path) -> Path:
+    """4-bit block-quantised MatMul weights (MatMulNBits, block 32, symmetric)
+    on the fp16 graph: Transformers.js's `q4f16`, the browser format for large
+    models. The 963M CTC model's fp16 graph (1.8 GB, weights in a side file)
+    never finished loading in Chrome — onnxruntime-web stages weights through
+    a 4 GB WebAssembly heap; at 4 bits the whole model is one file under 2 GB."""
+    import onnx
+    from onnxruntime.quantization.matmul_nbits_quantizer import MatMulNBitsQuantizer
+    out = h.with_name(h.name.replace("_fp16.onnx", "_q4f16.onnx"))
+    q = MatMulNBitsQuantizer(onnx.load(str(h)), bits=4, block_size=32, is_symmetric=True,
+                             accuracy_level=4)
+    q.process()
+    fresh(out.with_name(out.name + "_data"))
+    try:
+        q.model.save_model_to_file(str(out), use_external_data_format=False)
+    except ValueError:                         # still over protobuf's 2 GB
+        q.model.save_model_to_file(str(out), use_external_data_format=True)
+    return out
 
 
 def fresh(data_file: Path) -> None:
@@ -198,22 +219,44 @@ def npu_qdq(g: Path, family: str, out: Path, calib) -> Path | None:
         def get_next(self):
             return next(self.it, None)
 
-    q = out / "npu" / (g.stem + "_qdq_int8.onnx")
-    for side in (q.name + ".data", q.name + "_data"):
-        fresh(q.with_name(side))
     # Fold activation ranges in every few clips: the calibrator otherwise holds
     # every clip's outputs until the end (~200 MB a clip for a Whisper encoder
     # at 30 s, measured). ORT 1.30's own CalibMaxIntermediateOutputs drops the
     # batches instead of folding them ("No data is collected"), hence the patch.
     _patch_minmax_fold()
-    quantize_static(str(pre), str(q), Reader(), quant_format=QuantFormat.QDQ,
-                    activation_type=QuantType.QUInt8, weight_type=QuantType.QInt8,
-                    per_channel=True, use_external_data_format=ext,
-                    extra_options={"ActivationSymmetric": False, "CalibMaxIntermediateOutputs": 4})
+    outs = []
+    # A8W8: 8-bit activations and weights, the smallest and fastest NPU form.
+    # Measured on whisper-small's encoder it is unusable (CER 791 %, every
+    # transcript a loop): Whisper's activations have outliers 8 bits per tensor
+    # cannot hold. Kept as the reference point, and for models that survive it.
+    q = out / "npu" / (g.stem + "_qdq_int8.onnx")
+    if not q.exists():
+        for side in (q.name + ".data", q.name + "_data"):
+            fresh(q.with_name(side))
+        quantize_static(str(pre), str(q), Reader(), quant_format=QuantFormat.QDQ,
+                        activation_type=QuantType.QUInt8, weight_type=QuantType.QInt8,
+                        per_channel=True, use_external_data_format=ext,
+                        extra_options={"ActivationSymmetric": False, "CalibMaxIntermediateOutputs": 4})
+    outs.append(q)
+    # A16W8: 16-bit activations, 8-bit weights — Qualcomm's recommendation for
+    # transformers on the Hexagon NPU (AMD's XDNA 2 runs it too), built with
+    # ORT's own QNN configuration helper so the per-op overrides are QNN's.
+    from onnxruntime.quantization import quantize
+    from onnxruntime.quantization.execution_providers.qnn import get_qnn_qdq_config
+    q16 = out / "npu" / (g.stem + "_qdq_a16w8.onnx")
+    if not q16.exists():
+        for side in (q16.name + ".data", q16.name + "_data"):
+            fresh(q16.with_name(side))
+        cfg = get_qnn_qdq_config(str(pre), Reader(), activation_type=QuantType.QUInt16,
+                                 weight_type=QuantType.QUInt8, per_channel=True)
+        cfg.extra_options["CalibMaxIntermediateOutputs"] = 4
+        cfg.use_external_data_format = ext
+        quantize(str(pre), str(q16), cfg)
+    outs.append(q16)
     for tmp in (fixed, pre):
         tmp.unlink(missing_ok=True)
         tmp.with_name(tmp.name + "_data").unlink(missing_ok=True)
-    return q
+    return outs[-1]
 
 
 def _patch_minmax_fold():
@@ -281,7 +324,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("repo")
     ap.add_argument("--calib-lang", default=None, help="evalpack language for QDQ calibration")
-    ap.add_argument("--skip", nargs="*", default=[], choices=["int8", "fp16", "npu"])
+    ap.add_argument("--skip", nargs="*", default=[], choices=["int8", "fp16", "q4f16", "npu"])
     args = ap.parse_args()
 
     name = args.repo.split("/")[-1]
@@ -325,7 +368,12 @@ def main():
             else:
                 to_fp16(g)
             log["steps"].setdefault("fp16", []).append(h.name)
-    print(f"  int8 + fp16 done ({time.perf_counter() - t0:.0f}s)")
+    if "q4f16" not in args.skip and "fp16" not in args.skip:
+        for g in main_graphs:
+            h = g.with_name(g.stem + "_fp16.onnx")
+            if h.exists() and not g.with_name(g.stem + "_q4f16.onnx").exists():
+                log["steps"].setdefault("q4f16", []).append(to_q4f16(h).name)
+    print(f"  int8 + fp16 + q4f16 done ({time.perf_counter() - t0:.0f}s)")
     # the split decoders are redundant beside the merged one and double the download
     for stem in ("decoder_model", "decoder_with_past_model"):
         if stem in graphs and graphs[stem].exists() and (
@@ -333,7 +381,7 @@ def main():
             graphs[stem].unlink()
 
     npu_graph = main_graphs[0]
-    q = root / "npu" / f"{npu_graph.stem}_qdq_int8.onnx"
+    q = root / "npu" / f"{npu_graph.stem}_qdq_a16w8.onnx"
     if "npu" not in args.skip and args.calib_lang and not q.exists():
         from porting.evalpack import load
         audio, _ = load(args.calib_lang, split="calib")

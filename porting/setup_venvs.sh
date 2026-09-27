@@ -47,7 +47,7 @@ one() {
     executorch)
       V=venv_port_et; mk $V; torch_cpu $V
       # --extra-index-url keeps any torch ExecuTorch pins on the CPU build
-      $V/bin/pip install -q optimum-executorch $COMMON --extra-index-url "$CPU"
+      $V/bin/pip install -q optimum-executorch snac $COMMON --extra-index-url "$CPU"
       show $V ;;
     mlx)
       V=venv_port_mlx; mk $V; torch_cpu $V         # torch only to read the checkpoint

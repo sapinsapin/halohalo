@@ -28,11 +28,21 @@ ART = FINETUNE_DIR / "port" / "artefacts"
 FRAMES = 16          # fixed chunk for static-shape runtimes: 16 frames ~ 1.4 s
 
 
-def load(repo):
+def load(repo, dynamic_time=True):
     import types
 
     import torch
+    import snac.layers
     from snac import SNAC
+
+    if not dynamic_time:
+        # Fixed-shape targets (Core ML, ExecuTorch): SNAC's Snake activation
+        # is a TorchScript function whose reshape(shape) traces into
+        # tensor->int casts coremltools cannot convert. On (B, C, T) input
+        # the same formula needs no reshape.
+        def snake(x, alpha):
+            return x + (alpha + 1e-9).reciprocal() * torch.sin(alpha * x).pow(2)
+        snac.layers.snake = snake
     model = SNAC.from_pretrained(repo).eval()
 
     # repeat_interleave(stride) exports as a Reshape to the traced length, so
@@ -48,7 +58,8 @@ def load(repo):
             z_q = z_q + z
         return z_q
 
-    model.quantizer.from_codes = types.MethodType(from_codes, model.quantizer)
+    if dynamic_time:
+        model.quantizer.from_codes = types.MethodType(from_codes, model.quantizer)
 
     class Decoder(torch.nn.Module):
         def __init__(self):
@@ -91,7 +102,7 @@ def to_executorch(repo, out: Path) -> dict:
     import torch
     from executorch.backends.xnnpack.partition.xnnpack_partitioner import XnnpackPartitioner
     from executorch.exir import to_edge_transform_and_lower
-    _, dec = load(repo)
+    _, dec = load(repo, dynamic_time=False)
     out.mkdir(parents=True, exist_ok=True)
     ep = torch.export.export(dec, example())
     prog = to_edge_transform_and_lower(ep, partitioner=[XnnpackPartitioner()]).to_executorch()
@@ -103,7 +114,7 @@ def to_coreml(repo, out: Path) -> dict:
     import coremltools as ct
     import numpy as np
     import torch
-    _, dec = load(repo)
+    _, dec = load(repo, dynamic_time=False)
     traced = torch.jit.trace(dec, example())
     ml = ct.convert(traced, convert_to="mlprogram", compute_precision=ct.precision.FLOAT16,
                     minimum_deployment_target=ct.target.iOS17,

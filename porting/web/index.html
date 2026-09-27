@@ -27,7 +27,7 @@
     <option value="omniASR_W2V_1B_SSL-ctc-char-pld_ceb-norm|ctc">omniASR 1B CTC ceb-norm</option>
   </select></label>
   <label>device <select name="device"><option>webgpu</option><option>wasm</option></select></label>
-  <label>precision <select name="dtype"><option>fp16</option><option>q8</option><option>fp32</option></select></label>
+  <label>precision <select name="dtype"><option>fp16</option><option>q4f16</option><option>q8</option><option>fp32</option></select></label>
   <label>clips <input name="n" type="number" value="20" min="1" max="100" style="width:5em"></label>
   <button>Run</button>
 </form>
@@ -91,7 +91,7 @@ $("#f").onsubmit = async (e) => {
   } else {
     const ort = (await import("./node_modules/onnxruntime-web/dist/ort.webgpu.bundle.min.mjs"));
     ort.env.wasm.wasmPaths = "/web/node_modules/onnxruntime-web/dist/";
-    const sfx = { fp32: "", fp16: "_fp16", q8: "_quantized" }[dtype];
+    const sfx = { fp32: "", fp16: "_fp16", q8: "_quantized", q4f16: "_q4f16" }[dtype];
     const base = `/artefacts/${name}/onnx-web/`;
     // graphs over 2 GB keep their weights in a side file; ORT-web must be told
     const graph = `${base}onnx/model${sfx}.onnx`;

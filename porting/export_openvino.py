@@ -40,7 +40,7 @@ def main():
     log = {}
     for v in args.variants:
         out = root / v
-        if (out / ("openvino_encoder_model.xml" if whisper else "openvino_model.xml")).exists():
+        if (out / ".complete").exists():
             print(f"{name}: openvino/{v} exists")
             continue
         t0 = time.perf_counter()
@@ -57,8 +57,9 @@ def main():
         # tokenizer, processor and generation config beside the IR
         from porting.hfcompat import config_dir
         for f in config_dir(args.repo).iterdir():
-            if f.name != "config.json" and not (out / f.name).exists():
+            if f.suffix in (".json", ".txt") and f.name != "config.json" and not (out / f.name).exists():
                 shutil.copy(f, out / f.name)
+        (out / ".complete").touch()        # a crash mid-copy must not look finished
         mb = sum(p.stat().st_size for p in out.rglob("*.bin")) / 2**20
         log[v] = {"seconds": round(time.perf_counter() - t0), "weights_mb": round(mb, 1)}
         print(f"{name}: openvino/{v} {mb:.0f} MB ({log[v]['seconds']}s)")

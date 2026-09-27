@@ -85,8 +85,8 @@ RECIPES = {   # (family, target) -> (builds, validations, what a device loads)
     ("whisper", "arm-cpu-onnx"): (["onnx"], [V("onnx", "ort", "fp32", "int8")], "onnx-web/onnx/*_quantized.onnx"),
     ("whisper", "arm-cpu-ggml"): (["ggml"], [V("onnx", "whispercpp", "f16", "q8_0", "q5_0")], "ggml/ggml-model-q5_0.bin"),
     ("whisper", "arm-mobile-executorch"): (["executorch"], [V("executorch", "executorch", "xnnpack")], "executorch/xnnpack/*.pte"),
-    ("whisper", "npu-qnn"): (["onnx"], [V("onnx", "ort", "qdq")], "npu/encoder_model_qdq_int8.onnx + decoder on CPU"),
-    ("whisper", "npu-ryzenai"): (["onnx"], [V("onnx", "ort", "qdq")], "npu/encoder_model_qdq_int8.onnx + decoder on CPU"),
+    ("whisper", "npu-qnn"): (["onnx"], [V("onnx", "ort", "qdq", "qdq16")], "npu/encoder_model_qdq_a16w8.onnx + decoder on CPU"),
+    ("whisper", "npu-ryzenai"): (["onnx"], [V("onnx", "ort", "qdq", "qdq16")], "npu/encoder_model_qdq_a16w8.onnx + decoder on CPU"),
     ("whisper", "npu-ane"): (["coreml"], [], "coreml/encoder.mlpackage (+ whisper.cpp or WhisperKit decoder)"),
     ("whisper", "npu-openvino"): (["openvino"], [V("openvino", "openvino", "fp16", "int8")], "openvino/int8/"),
     ("whisper", "mac-mlx"): (["mlx"], [V("mlx", "mlx", "fp16", "q8", "q4")], "mlx/q4/ or mlx/fp16/"),
@@ -98,8 +98,8 @@ RECIPES = {   # (family, target) -> (builds, validations, what a device loads)
     ("wav2vec2-ctc", "arm-cpu-onnx"): (["onnx"], [V("onnx", "ort", "fp32", "int8")], "onnx-web/onnx/model_quantized.onnx"),
     ("wav2vec2-ctc", "arm-mobile-executorch"): (["executorch"], [V("executorch", "executorch", "xnnpack", "xnnpack-int8")],
                                                 "executorch/xnnpack-int8/model.pte"),
-    ("wav2vec2-ctc", "npu-qnn"): (["onnx"], [V("onnx", "ort", "qdq")], "npu/model_qdq_int8.onnx (10 s window)"),
-    ("wav2vec2-ctc", "npu-ryzenai"): (["onnx"], [V("onnx", "ort", "qdq")], "npu/model_qdq_int8.onnx (10 s window)"),
+    ("wav2vec2-ctc", "npu-qnn"): (["onnx"], [V("onnx", "ort", "qdq", "qdq16")], "npu/model_qdq_a16w8.onnx (10 s window)"),
+    ("wav2vec2-ctc", "npu-ryzenai"): (["onnx"], [V("onnx", "ort", "qdq", "qdq16")], "npu/model_qdq_a16w8.onnx (10 s window)"),
     ("wav2vec2-ctc", "npu-ane"): (["coreml"], [], "coreml/model.mlpackage (10 s window)"),
     ("wav2vec2-ctc", "npu-openvino"): (["openvino"], [V("openvino", "openvino", "fp16", "int8")], "openvino/int8/"),
     ("wav2vec2-ctc", "mac-executorch"): ([], [], "macOS only: python -m porting.export_executorch <repo> --backend coreml, on a Mac"),
@@ -204,9 +204,13 @@ def cmd_validate(args):
                     out = RESULTS / name / f"{rt}-{v}.json"
                 else:
                     module = "porting.validate"
-                    # MLX's x86 CPU kernels are a slow stand-in for Metal: a
-                    # 20-clip parity check, not the full evalpack
-                    a = [r["model"], "--runtime", rt, "--variant", v, "--n", str(min(n, 20) if rt == "mlx" else n)]
+                    # MLX's x86 CPU kernels are a slow stand-in for Metal, and
+                    # ExecuTorch's Python runtime runs a 1B model single-threaded
+                    # (~40 min for 100 clips): a 20-clip parity check for those
+                    big = next((m.params_m for m in MODELS if m.repo == r["model"]), 0) > 500
+                    slow = rt == "mlx" or (rt == "executorch" and big)
+                    cap = 5 if rt == "mlx" else 20        # MLX on x86: ~2 min a clip, one core
+                    a = [r["model"], "--runtime", rt, "--variant", v, "--n", str(min(n, cap) if slow else n)]
                     out = RESULTS / name / f"{rt}-{v}-{lang}.json"
                 if out.exists():
                     continue

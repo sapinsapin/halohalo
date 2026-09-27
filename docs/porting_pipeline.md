@@ -62,12 +62,14 @@ The phase is derived from the model's size, not assigned by hand
 
 - **Phase 1, the workstation** (RTX 3070 8 GB, 31 GB RAM). Everything whose
   conversion fits in RAM and whose check runs on CPU or in ~6 GB of VRAM:
-  whisper-small ×10, whisper-large-v3 ×9 (except NPU calibration), the omniASR
-  1B CTC models, SNAC and the language ID. 232 of 367 ports.
-- **Phase 2, the RTX PRO 6000 VM** (96 GB). The nine Orpheus-3B adapters on
-  every LLM runtime (merge, int4 calibration and an end-to-end TTS check need
-  the big card), the omniASR 7B model, and static int8 calibration of
-  whisper-large-v3 encoders for the NPUs. 135 ports.
+  whisper-small ×10, whisper-large-v3 ×9 and the omniASR 1B CTC models ×4
+  (each except NPU calibration above 500M parameters), SNAC and the language
+  ID. 224 of 367 ports.
+- **Phase 2, the RTX PRO 6000 VM** (96 GB GPU, 214 GB RAM). The nine
+  Orpheus-3B adapters on every LLM runtime (merge, int4 calibration and an
+  end-to-end TTS check need the big card), the omniASR 7B model, and static
+  int8 NPU calibration of every model over 500M parameters (whisper-large-v3
+  encoders, the omniASR CTC models). 143 ports.
 
 Phase 1 runs entirely on CPU with CUDA hidden and `nice`, so it runs beside a
 training queue on the local GPU without taking it.
@@ -127,6 +129,18 @@ PyTorch-vs-PyTorch floor. The language ID is scored on identical top labels.
 - **CTC in the browser.** onnxruntime-web plus a 60-line decoder
   (`porting/web/ctc.mjs`): the vocabulary is 32 characters, so no tokenizer
   library is needed.
+- **Large models in the browser: 4-bit.** The 963M CTC model's fp16 graph
+  (1.8 GB of weights in a side file) never finished loading in Chrome:
+  onnxruntime-web stages weights through a 4 GB WebAssembly heap. With 4-bit
+  block-quantised MatMul weights and fp16 elsewhere (`MatMulNBits`, block 32:
+  Transformers.js's `q4f16`) it is one 543 MB file, loads in 15 s and runs at
+  RTF 0.29 on the workstation's RTX 3070.
+- **NPU calibration has a memory ceiling.** Static int8 calibration of the
+  963M CTC graph at its 10 s window peaked at 25 GB of RAM. An out-of-memory
+  kill in WSL fails systemd's `init.scope` and takes every session down, so
+  models over 500M parameters calibrate on the VM (Phase 2). The pipeline also
+  runs graph preparation in a child process, and `scripts/mem_guard.sh` stops
+  the largest export before the kernel's OOM killer would.
 - **Config compatibility.** The fine-tunes were saved by transformers 5; the
   toolchains pin 4.x. `porting/hfcompat.py` renames `extra_special_tokens` to
   `additional_special_tokens` and unfolds the feature extractor from

@@ -44,10 +44,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_error(400)
             return
         refs = json.loads((MOUNTS["evalpack"] / lang / "refs.json").read_text())[:len(body["hyps"])]
-        sfx = {"fp16": "_fp16", "q8": "_quantized", "fp32": ""}.get(dtype, "")
+        sfx = {"fp16": "_fp16", "q8": "_quantized", "q4f16": "_q4f16", "fp32": ""}.get(dtype, "")
         files = [p for p in (MOUNTS["artefacts"] / model / "onnx-web" / "onnx").iterdir()
                  if p.name.split(".onnx")[0].endswith(sfx) and (sfx or not p.name.split(".onnx")[0]
-                                                                 .endswith(("_fp16", "_quantized")))
+                                                                 .endswith(("_fp16", "_quantized", "_q4f16")))
                  and not p.name.startswith(("decoder_model.", "decoder_with_past"))]
         res = {"repo": f"sapinsapin/{model}", "runtime": dev, "variant": dtype, "lang": lang,
                "clips": len(body["hyps"]), "threads": None, "rtf": round(body["rtf"], 3),
@@ -58,6 +58,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if ref.exists():
             res["parity"] = agreement(json.loads(ref.read_text())["hyps"][:len(body["hyps"])], body["hyps"])
         out = MOUNTS["results"] / model / f"{dev}-{dtype}-{lang}.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(res, indent=1, ensure_ascii=False))
         self.send_response(200)
         self.send_header("Content-Type", "application/json")

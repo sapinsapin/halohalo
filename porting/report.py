@@ -21,9 +21,11 @@ STANDS_FOR = {   # what a runtime/variant result tells you about which target
     ("ort", "fp32"): "Arm CPU ONNX fp32; AMD MIGraphX; GPU EPs",
     ("ort", "int8"): "Arm CPU ONNX int8 (dynamic)",
     ("ort", "fp16"): "WebGPU fp16 graph (numerics on CPU)",
-    ("ort", "qdq"): "Qualcomm QNN / AMD Ryzen AI NPU graph (QDQ int8 numerics on CPU)",
+    ("ort", "qdq"): "NPU graph, A8W8 static QDQ (numerics on CPU)",
+    ("ort", "qdq16"): "NPU graph, A16W8 static QDQ, Qualcomm's transformer default (numerics on CPU)",
     ("webgpu", "fp16"): "browser on WebGPU (measured in Chrome on the RTX 3070)",
     ("webgpu", "fp32"): "browser on WebGPU, fp32",
+    ("webgpu", "q4f16"): "browser on WebGPU, 4-bit weights (measured in Chrome on the RTX 3070)",
     ("wasm", "q8"): "browser on WebAssembly (CPU), int8",
     ("transformersjs", "fp32"): "browser/Node, Transformers.js fp32",
     ("transformersjs", "int8"): "browser wasm, Transformers.js q8",
@@ -42,13 +44,14 @@ STANDS_FOR = {   # what a runtime/variant result tells you about which target
 
 TARGET_OF = {   # which target a runtime/variant result speaks for
     ("ort", "fp32"): ["arm-cpu-onnx", "amd-rocm"], ("ort", "int8"): ["arm-cpu-onnx"],
-    ("ort", "qdq"): ["npu-qnn", "npu-ryzenai"],
+    ("ort", "qdq"): ["npu-qnn", "npu-ryzenai"], ("ort", "qdq16"): ["npu-qnn", "npu-ryzenai"],
     ("whispercpp", "f16"): ["arm-cpu-ggml"], ("whispercpp", "q8_0"): ["arm-cpu-ggml"],
     ("whispercpp", "q5_0"): ["arm-cpu-ggml"],
     ("openvino", "fp16"): ["npu-openvino"], ("openvino", "int8"): ["npu-openvino"],
     ("executorch", "xnnpack"): ["arm-mobile-executorch"], ("executorch", "xnnpack-int8"): ["arm-mobile-executorch"],
     ("mlx", "fp16"): ["mac-mlx"], ("mlx", "q8"): ["mac-mlx"], ("mlx", "q4"): ["mac-mlx"],
-    ("webgpu", "fp16"): ["web-webgpu"], ("transformersjs", "int8"): ["web-webgpu (wasm fallback)"],
+    ("webgpu", "fp16"): ["web-webgpu"], ("webgpu", "q4f16"): ["web-webgpu"],
+    ("transformersjs", "int8"): ["web-webgpu (wasm fallback)"],
     ("transformersjs", "fp32"): ["web-webgpu (wasm fallback)"],
 }
 BUDGET_CER = 0.5     # percentage points of CER a port may lose against PyTorch and still be chosen
@@ -88,6 +91,11 @@ def f(x, pct=True, nd=1):
 
 def asr_table(rows):
     ref = next((r for r in rows if r["runtime"] == "torch"), None)
+    if ref:           # results filed before the reference existed (browser runs) get parity now
+        from porting.metrics import agreement
+        for r in rows:
+            if r is not ref and "parity" not in r and r.get("hyps"):
+                r["parity"] = agreement(ref["hyps"][:len(r["hyps"])], r["hyps"])
     lines = ["| runtime / variant | stands for | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch | CER vs PyTorch output % | identical to PyTorch % |",
              "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
     order = list(STANDS_FOR)
@@ -156,7 +164,13 @@ def write() -> Path:
                     lines += [f"## {d.name} [{lang}]", "",
                               f"{n} frozen-test clips ({rs[0]['audio_seconds']} s), CPU, "
                               f"{rs[0]['threads']} threads. RTF = seconds of compute per second of audio "
-                              "on this Ryzen 7 3700X: compare variants with it, not devices.", ""]
+                              "on this Ryzen 7 3700X, loading excluded: compare variants with it, not "
+                              "devices. Load times mostly measure the workstation's hard disk.", "",
+                              "A negative Δ CER means fewer errors than PyTorch. For Whisper that comes "
+                              "from decoding, not from quantisation improving the model: whisper.cpp and "
+                              "the int8 graphs break some repetition loops (a clip that PyTorch runs to the "
+                              "225-token cap) where PyTorch does not. The two parity columns say how far "
+                              "the transcripts actually differ.", ""]
                     lines += asr_table(rs) + [""]
                     rec = recommend(rs)
                     if rec:

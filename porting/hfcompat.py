@@ -40,8 +40,11 @@ def config_dir(repo: str) -> Path:
     if not (out / "config.json").exists():
         src = Path(snapshot_download(repo, token=os.environ.get("HF_TOKEN"), allow_patterns=["*.json", "*.txt"]))
         out.mkdir(parents=True, exist_ok=True)
+        # the snapshot folder is shared with earlier full downloads: take only
+        # the small files, not a stray model.safetensors
         for f in src.iterdir():
-            shutil.copy(f, out / f.name)
+            if f.suffix in (".json", ".txt"):
+                shutil.copy(f, out / f.name)
         sanitize_tokenizer_config(out / "tokenizer_config.json")
         if not (out / "preprocessor_config.json").exists() and (out / "processor_config.json").exists():
             # transformers 5 folds the feature extractor into processor_config.json
