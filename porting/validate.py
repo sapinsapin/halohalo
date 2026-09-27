@@ -27,6 +27,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -118,18 +119,30 @@ def in_ram(files, tag):
     the folder. Runtimes memory-map weights, and over WSL's 9P bridge to D:
     every page fault is a round trip: a 1 GB program took 20+ minutes to
     load, an fp32 ONNX Whisper 220 s. One sequential copy takes seconds.
-    files: [(source, name in the folder)]."""
-    d = SHM / f'port-{tag}'
-    if d.exists():
-        shutil.rmtree(d)
-    d.mkdir(parents=True)
-    for src, name in files:
-        if Path(src).is_dir():
-            shutil.copytree(src, d / name, ignore=shutil.ignore_patterns('model.safetensors', 'README.md'))
-        else:
-            shutil.copy(src, d / name)
+    files: [(source, name in the folder)].
+
+    Without /dev/shm (macOS, or any machine whose disk is local) the folder
+    is a temp dir of symlinks: nothing to gain from copying off an SSD."""
+    if SHM.is_dir():
+        d = SHM / f'port-{tag}'
+        if d.exists():
+            shutil.rmtree(d)
+        d.mkdir(parents=True)
+        for src, name in files:
+            if Path(src).is_dir():
+                shutil.copytree(src, d / name, ignore=shutil.ignore_patterns('model.safetensors', 'README.md'))
+            else:
+                shutil.copy(src, d / name)
+    else:
+        import tempfile
+        d = Path(tempfile.mkdtemp(prefix=f'port-{tag}-'))
+        for src, name in files:
+            (d / name).symlink_to(Path(src).resolve())
     _T.setdefault('ram_dirs', []).append(d)
     return d
+
+
+MAC = sys.platform == "darwin"
 
 
 def with_side_files(graph: Path):
@@ -236,36 +249,72 @@ def run_executorch(repo, root, variant, audio, fam):
     # ExecuTorch memory-maps the program; over WSL's 9P bridge every page
     # fault is a round trip, and a 1 GB .pte took 20+ minutes to "load". One
     # sequential copy into RAM (/dev/shm) first.
-    stage = Path("/dev/shm") / f"port-{root.name}-{variant}"
-    if stage.exists():
-        shutil.rmtree(stage)
-    shutil.copytree(src, stage, ignore=shutil.ignore_patterns("model.safetensors", "README.md"))
-    try:
-        return run_program(stage, audio, fam, THREADS, on_loaded=loaded)
-    finally:
-        shutil.rmtree(stage, ignore_errors=True)
+    stage = in_ram([(src, "pte")], f"{root.name}-et-{variant}") / "pte"
+    return run_program(stage, audio, fam, THREADS, on_loaded=loaded)
 
 
 def run_mlx(repo, root, variant, audio, fam):
-    """mlx-whisper on MLX's Linux CPU backend: a parity check of the weights
-    and graph, not a speed test. Activations run in fp32 here (x86 has no
-    native fp16, and MLX's CPU kernels for it are slow); quantised weights stay
-    quantised. On a Mac the same folder runs on Metal in fp16."""
+    """mlx-whisper. On a Mac: Metal, fp16 activations, the real thing. On
+    Linux: MLX's CPU backend in fp32 activations (x86 has no native fp16 and
+    MLX's CPU kernels for it are slow), a parity check of weights and graph
+    only. Quantised weights stay quantised either way."""
     import mlx.core as mx
     import mlx_whisper
     from mlx_whisper.transcribe import ModelHolder
     d = in_ram([(root / "mlx" / variant, "mlx")], f"{root.name}-mlx-{variant}") / "mlx"
     lang = ISO1.get(json.loads((d / "halohalo.json").read_text())["language"], "tl")
-    ModelHolder.get_model(str(d), mx.float32)          # load without decoding anything
+    ModelHolder.get_model(str(d), mx.float16 if MAC else mx.float32)   # load without decoding
     loaded()
     hyps = []
     for a in audio:
         r = mlx_whisper.transcribe(np.asarray(a, dtype=np.float32), path_or_hf_repo=str(d),
                                    language=lang, task="transcribe", temperature=0.0,
                                    condition_on_previous_text=False, without_timestamps=True,
-                                   fp16=False, verbose=None)
+                                   fp16=MAC, verbose=None)
         hyps.append(r["text"].strip())
     return hyps
+
+
+COREML_UNITS = {"all": "ALL", "ane": "CPU_AND_NE", "gpu": "CPU_AND_GPU", "cpu": "CPU_ONLY"}
+
+
+def run_coreml(repo, root, variant, audio, fam):
+    """Core ML, macOS only. The variant picks the compute units: `all` lets
+    Core ML choose (Neural Engine where it can), `ane` asks for the Neural
+    Engine, `gpu` for the GPU, `cpu` for the CPU alone.
+
+    Whisper: the encoder runs in Core ML — the split WhisperKit and
+    whisper.cpp use — and its output feeds transformers' own decoder, so the
+    decode loop is exactly the reference's. CTC: the whole model, in the
+    fixed 10 s windows it was converted at."""
+    import coremltools as ct
+    cu = getattr(ct.ComputeUnit, COREML_UNITS[variant])
+    if fam == "whisper":
+        import torch
+        from transformers import WhisperForConditionalGeneration, WhisperProcessor
+        from transformers.modeling_outputs import BaseModelOutput
+        from porting.hfcompat import config_dir
+        enc = ct.models.MLModel(str(root / "coreml" / "encoder.mlpackage"), compute_units=cu)
+        proc = WhisperProcessor.from_pretrained(config_dir(repo))
+        model = WhisperForConditionalGeneration.from_pretrained(repo).eval()
+        lang = model.generation_config.language or "tagalog"
+        loaded()
+        hyps = []
+        with torch.inference_mode():
+            for a in audio:
+                f = proc(a, sampling_rate=16000, return_tensors="pt").input_features
+                h = enc.predict({"logmel_data": f.numpy().astype(np.float32)})["output"]
+                out = BaseModelOutput(last_hidden_state=torch.from_numpy(np.asarray(h, dtype=np.float32)))
+                ids = model.generate(input_features=f, encoder_outputs=out, language=lang,
+                                     task="transcribe", num_beams=1, max_new_tokens=225)
+                hyps.append(proc.batch_decode(ids, skip_special_tokens=True)[0])
+        return hyps
+    from porting.hfcompat import config_dir
+    m = ct.models.MLModel(str(root / "coreml" / "model.mlpackage"), compute_units=cu)
+    cfg = frontends.ctc_config(config_dir(repo))
+    run = lambda x: m.predict({"input_values": x})["logits"]
+    loaded()
+    return [frontends.ctc_transcribe(run, a, cfg, frontends.CTC_WINDOW_S) for a in audio]
 
 
 def run_whispercpp(repo, root, variant, audio, fam):
@@ -317,7 +366,7 @@ def run_transformersjs(repo, root, variant, audio, fam):
 
 RUNTIMES = {"torch": run_torch, "ort": run_ort, "openvino": run_openvino,
             "executorch": run_executorch, "mlx": run_mlx, "whispercpp": run_whispercpp,
-            "transformersjs": run_transformersjs}
+            "transformersjs": run_transformersjs, "coreml": run_coreml}
 
 _AUDIO_LANG = {}
 
@@ -343,6 +392,8 @@ def artefact_size_mb(root: Path, runtime: str, variant: str) -> float | None:
         # only what the runtime loads: exporters leave a copy of the HF weights beside it
         keep = {"openvino": (".xml", ".bin"), "executorch": (".pte",), "mlx": (".safetensors",)}[runtime]
         files = [p for p in (root / runtime / variant).rglob("*") if p.is_file() and p.suffix in keep]
+    elif runtime == "coreml":
+        files = [p for p in (root / "coreml").rglob("*") if p.is_file() and ".mlpackage" in str(p)]
     elif runtime == "whispercpp":
         files = [root / "ggml" / f"ggml-model-{variant}.bin"]
     else:
@@ -386,7 +437,9 @@ def main():
 
     out = RESULTS / name
     out.mkdir(parents=True, exist_ok=True)
-    res = {"repo": args.repo, "family": fam, "runtime": args.runtime, "variant": args.variant,
+    host = os.environ.get("PORT_HOST")          # e.g. "mac": results beside, not over, these
+    label = f"{args.runtime}@{host}" if host else args.runtime
+    res = {"repo": args.repo, "family": fam, "runtime": label, "variant": args.variant,
            "lang": lang, "clips": len(audio), "audio_seconds": round(secs, 1),
            "threads": THREADS, "load_seconds": round(load_s, 1), "wall_seconds": round(wall, 1), "rtf": round(wall / secs, 3),
            "size_mb": artefact_size_mb(root, args.runtime, args.variant),
@@ -395,11 +448,11 @@ def main():
     if args.runtime != "torch" and ref_file.exists():
         ref = json.loads(ref_file.read_text())
         res["parity"] = agreement(ref["hyps"][:len(hyps)], hyps)
-    (out / f"{args.runtime}-{args.variant}-{lang}.json").write_text(
+    (out / f"{label}-{args.variant}-{lang}.json").write_text(
         json.dumps(res, indent=1, ensure_ascii=False))
     acc = res["accuracy"]
     par = res.get("parity", {})
-    print(f"{name} {args.runtime}/{args.variant} [{lang}] CER {acc['cer']:.4f} WER {acc['wer']:.4f}"
+    print(f"{name} {label}/{args.variant} [{lang}] CER {acc['cer']:.4f} WER {acc['wer']:.4f}"
           f" | parity CER {par.get('cer_vs_reference', float('nan')):.4f}"
           f" identical {par.get('identical', float('nan'))}"
           f" | RTF {res['rtf']} size {res['size_mb']} MB")

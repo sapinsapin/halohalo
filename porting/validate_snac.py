@@ -74,6 +74,22 @@ def main():
                          codes[2][:, 4 * s:4 * (s + FRAMES)]]
                 outs.append(method.execute(chunk)[0].numpy().flatten())
             return np.concatenate(outs) if outs else np.zeros(1, np.float32)
+    elif args.variant.startswith("coreml"):     # coreml, coreml-ane, coreml-gpu, coreml-cpu (macOS)
+        import coremltools as ct
+        from porting.export_snac import FRAMES
+        from porting.validate import COREML_UNITS
+        unit = args.variant.split("-")[1] if "-" in args.variant else "all"
+        ml = ct.models.MLModel(str(root / "coreml" / "decoder.mlpackage"),
+                               compute_units=getattr(ct.ComputeUnit, COREML_UNITS[unit]))
+
+        def port(codes):
+            outs = []
+            for s in range(0, codes[0].shape[1] - FRAMES + 1, FRAMES):
+                feed = {"c0": codes[0][:, s:s + FRAMES].numpy().astype(np.int32),
+                        "c1": codes[1][:, 2 * s:2 * (s + FRAMES)].numpy().astype(np.int32),
+                        "c2": codes[2][:, 4 * s:4 * (s + FRAMES)].numpy().astype(np.int32)}
+                outs.append(np.asarray(ml.predict(feed)["audio_values"], np.float32).flatten())
+            return np.concatenate(outs) if outs else np.zeros(1, np.float32)
     else:
         import onnxruntime as ort
         f = {"fp32": "decoder.onnx", "fp16": "decoder_fp16.onnx", "int8": "decoder_quantized.onnx"}[args.variant]
@@ -91,7 +107,7 @@ def main():
             x = torch.as_tensor(np.asarray(a, np.float32))[None, None]
             x24 = torch.nn.functional.interpolate(x, scale_factor=1.5, mode="linear")
             codes = model.encode(x24)
-            if args.variant == "executorch":      # whole chunks only, same span for all three
+            if args.variant == "executorch" or args.variant.startswith("coreml"):   # whole chunks only
                 from porting.export_snac import FRAMES
                 k = (codes[0].shape[1] // FRAMES) * FRAMES
                 if k == 0:
@@ -105,14 +121,16 @@ def main():
             secs += len(got) / 24000
             floor.append(dist_db(ref_a, ref_b))
             gap.append(dist_db(ref_a, got))
-    res = {"repo": args.repo, "variant": args.variant, "clips": len(gap),
+    host = os.environ.get("PORT_HOST")
+    tag = f"{args.variant}@{host}" if host else args.variant
+    res = {"repo": args.repo, "variant": tag, "clips": len(gap),
            "logmel_db_port_vs_torch": round(float(np.mean(gap)), 3),
            "logmel_db_torch_vs_torch": round(float(np.mean(floor)), 3),
            "rtf": round(wall / max(secs, 1e-9), 4), "threads": THREADS}
     res["parity"] = "at floor" if res["logmel_db_port_vs_torch"] <= 1.25 * res["logmel_db_torch_vs_torch"] + 0.1 else "above floor"
     out = RESULTS / name
     out.mkdir(parents=True, exist_ok=True)
-    (out / f"snac-{args.variant}.json").write_text(json.dumps(res, indent=1))
+    (out / f"snac-{tag}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res))
 
 

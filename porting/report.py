@@ -36,6 +36,11 @@ STANDS_FOR = {   # what a runtime/variant result tells you about which target
     ("openvino", "int8"): "Intel CPU/NPU, OpenVINO int8 weights",
     ("executorch", "xnnpack"): "Android/iOS CPU, ExecuTorch XNNPACK fp32 (CTC: fixed 10 s windows, zero-padded)",
     ("executorch", "xnnpack-int8"): "Android/iOS CPU, ExecuTorch XNNPACK int8",
+    ("coreml", "all"): "Core ML, compute units ALL (Neural Engine where it fits)",
+    ("coreml", "ane"): "Core ML, CPU + Neural Engine",
+    ("coreml", "gpu"): "Core ML, CPU + GPU",
+    ("coreml", "cpu"): "Core ML, CPU only",
+    ("whispercpp", "f16-coreml"): "whisper.cpp f16 with the Core ML encoder (Neural Engine)",
     ("mlx", "fp16"): "Apple silicon, MLX fp16",
     ("mlx", "q8"): "Apple silicon, MLX 8-bit",
     ("mlx", "q4"): "Apple silicon, MLX 4-bit",
@@ -50,11 +55,22 @@ TARGET_OF = {   # which target a runtime/variant result speaks for
     ("openvino", "fp16"): ["npu-openvino"], ("openvino", "int8"): ["npu-openvino"],
     ("executorch", "xnnpack"): ["arm-mobile-executorch"], ("executorch", "xnnpack-int8"): ["arm-mobile-executorch"],
     ("mlx", "fp16"): ["mac-mlx"], ("mlx", "q8"): ["mac-mlx"], ("mlx", "q4"): ["mac-mlx"],
+    ("coreml", "all"): ["npu-ane"], ("coreml", "ane"): ["npu-ane"],
+    ("whispercpp", "f16-coreml"): ["npu-ane"],
     ("webgpu", "fp16"): ["web-webgpu"], ("webgpu", "q4f16"): ["web-webgpu"],
     ("transformersjs", "int8"): ["web-webgpu (wasm fallback)"],
     ("transformersjs", "fp32"): ["web-webgpu (wasm fallback)"],
 }
 BUDGET_CER = 0.5     # percentage points of CER a port may lose against PyTorch and still be chosen
+
+
+def key(r):
+    """(runtime, variant) without a @host tag, for the label tables."""
+    return r["runtime"].split("@")[0], r["variant"]
+
+
+def where(r):
+    return f" — measured on the {r['runtime'].split('@')[1]}" if "@" in r["runtime"] else ""
 
 
 def ref_cer(ref, r):
@@ -79,7 +95,7 @@ def recommend(rows):
         return []
     by_target = {}
     for r in rows:
-        for t in TARGET_OF.get((r["runtime"], r["variant"]), []):
+        for t in TARGET_OF.get(key(r), []):
             by_target.setdefault(t, []).append(r)
     out = ["| target | choose | size MB | Δ CER vs PyTorch | RTF | rejected (over budget) |",
            "|---|---|---:|---:|---:|---|"]
@@ -112,12 +128,11 @@ def asr_table(rows):
     lines = ["| runtime / variant | stands for | clips | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch (same clips) | CER vs PyTorch output % | identical to PyTorch % |",
              "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     order = list(STANDS_FOR)
-    rows = sorted(rows, key=lambda r: order.index((r["runtime"], r["variant"]))
-                  if (r["runtime"], r["variant"]) in order else 99)
+    rows = sorted(rows, key=lambda r: (order.index(key(r)) if key(r) in order else 99, "@" in r["runtime"]))
     for r in rows:
         acc, par = r["accuracy"], r.get("parity", {})
         d = (acc["cer"] - ref_cer(ref, r)) * 100 if ref and r is not ref else None
-        lines.append(f"| {r['runtime']} / {r['variant']} | {STANDS_FOR.get((r['runtime'], r['variant']), '')} "
+        lines.append(f"| {r['runtime']} / {r['variant']} | {STANDS_FOR.get(key(r), '')}{where(r)} "
                      f"| {r.get('clips', '—')} | {r.get('size_mb') or '—'} | {r.get('load_seconds', '—')} | {r['rtf']:.3f} | {f(acc['cer'])} | {f(acc['wer'])} "
                      f"| {'—' if d is None else f'{d:+.2f}'} | {f(par.get('cer_vs_reference'), nd=2)} "
                      f"| {f(par.get('identical'), nd=0)} |")

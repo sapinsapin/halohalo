@@ -197,7 +197,31 @@ at the preemptible rate of about $1.08 an hour:
 `DRY=1 LANGS=ceb N=3` runs the llama.cpp path on the workstation CPU first, to
 catch mistakes before paying for the card.
 
-## 7. Where it stands (2026-09-27)
+## 7. Running the Apple targets on a Mac
+
+The workstation builds the Apple artefacts but can only check MLX on its CPU
+and cannot run Core ML at all. On an Apple-silicon Mac:
+
+```bash
+# on the workstation: one private file with code, artefacts, clips and references (~4.5 GB)
+bash scripts/port_bundle_mac.sh             # -> finetune_runs/port/mac/halohalo-mac.tar
+
+# on the Mac (Xcode command line tools, brew install python@3.12 cmake)
+tar xf halohalo-mac.tar && cd halohalo-mac
+bash scripts/port_mac.sh all                # setup, validate, report, pack
+bash scripts/port_mac.sh orpheus-mlx        # optional: Orpheus merged and run in MLX 4-bit (16 GB+ RAM)
+```
+
+`validate` runs MLX on Metal over the full evalpack, Core ML with the Neural
+Engine and with the CPU alone, whisper.cpp on Metal with and without its
+Core ML encoder, the SNAC decoder in Core ML, and Orpheus Cebuano through
+llama.cpp on Metal, judged by MMS-1b-all. Results are filed as
+`<runtime>@mac`, next to the workstation's rather than over them, and
+`pack` writes `mac-results.tar`; untar it in the repo root on the
+workstation and run `python3 -m porting report`. The bundle holds PLD test
+audio and text (CC-BY-NC, research only), so keep it private.
+
+## 8. Where it stands (2026-09-27)
 
 Phase 1 ran end to end for one model per family. Full tables are in
 [porting_report.md](porting_report.md).
@@ -233,7 +257,7 @@ throws machine-check exceptions under load, so every job is resumable and
 supervised from Windows; an OOM kill anywhere in WSL takes every session
 down, so large calibrations run in child processes behind a memory guard.
 
-## 8. Adding a model or a target
+## 9. Adding a model or a target
 
 - **A model of a known family:** add a `Model(...)` row to `porting/registry.py`.
   The plan, phase and recipes follow.

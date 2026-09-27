@@ -204,14 +204,16 @@ def main():
     hyps = [transcribe(resample_poly(w, 2, 3).astype(np.float32)) if len(w) else "" for w in wavs]
     refs = [normalise_text(r["text"]) for r, _ in rows]
     hyps_n = [normalise_text(h) for h in hyps]
-    res = {"repo": args.repo, "runtime": args.runtime, "variant": args.variant, "lang": lang,
+    host = os.environ.get("PORT_HOST")
+    label = f"{args.runtime}@{host}" if host else args.runtime
+    res = {"repo": args.repo, "runtime": label, "variant": args.variant, "lang": lang,
            "sentences": len(rows), "judge": "facebook/mms-1b-all",
            "cer": jiwer.cer(refs, [h or " " for h in hyps_n]),
            "audio_seconds": round(secs, 1), "wall_seconds": round(wall, 1),
            "tokens_per_second": round(sum(len(g) for g in gens) / max(wall, 1e-9), 1),
            "empty_outputs": sum(1 for w in wavs if len(w) == 0), "hyps": hyps}
     RESULTS.joinpath(name).mkdir(parents=True, exist_ok=True)
-    (RESULTS / name / f"orpheus-{args.runtime}-{args.variant}.json").write_text(
+    (RESULTS / name / f"orpheus-{label}-{args.variant}.json").write_text(
         json.dumps(res, indent=1, ensure_ascii=False))
     print(f"{name} {args.runtime}/{args.variant}: judge CER {100 * res['cer']:.1f}% over {len(rows)} sentences, "
           f"{res['tokens_per_second']} tok/s, audio {res['audio_seconds']} s")
