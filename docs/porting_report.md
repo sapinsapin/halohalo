@@ -11,10 +11,10 @@ P1 = the workstation (RTX 3070, 8 GB) can convert and check it. P2 = waits for t
 | arm-cpu-onnx | P1×19 | P1×4 P2×1 | P2×9 | P1×1 | — |
 | arm-cpu-ggml | P1×19 | — | P2×9 | — | — |
 | arm-mobile-executorch | P1×19 | P1×4 P2×1 | P2×9 | P1×1 | — |
-| npu-qnn | P1×10 P2×9 | P1×4 P2×1 | P2×9 | — | — |
+| npu-qnn | P1×10 P2×9 | P2×5 | P2×9 | — | — |
 | npu-ane | P1×19 | P1×4 P2×1 | — | P1×1 | — |
 | npu-openvino | P1×19 | P1×4 P2×1 | P2×9 | — | — |
-| npu-ryzenai | P1×10 P2×9 | P1×4 P2×1 | P2×9 | — | — |
+| npu-ryzenai | P1×10 P2×9 | P2×5 | P2×9 | — | — |
 | mac-mlx | P1×19 | — | P2×9 | — | — |
 | mac-executorch | P1×19 | P1×4 P2×1 | P2×9 | — | — |
 | web-webgpu | P1×19 | P1×4 P2×1 | P2×9 | P1×1 | P1×1 |
@@ -22,7 +22,7 @@ P1 = the workstation (RTX 3070, 8 GB) can convert and check it. P2 = waits for t
 | web-webllm | — | — | P2×9 | — | — |
 | amd-rocm | P1×19 | P1×4 P2×1 | P2×9 | — | — |
 
-367 model–target ports: 232 in Phase 1, 135 in Phase 2.
+367 model–target ports: 224 in Phase 1, 143 in Phase 2.
 
 ## halo-lid (fastText language ID)
 
@@ -33,32 +33,103 @@ The same model.ftz in the browser (WebAssembly) and in Python, over 500 held-out
 | Python (C++) | 95.6 | — | — | 8.1 |
 | browser (wasm) | 95.6 | 100.0 | 0 | 8.1 |
 
+## omniASR_W2V_1B_SSL-ctc-char-pld_ceb-norm [ceb]
+
+20 frozen-test clips (72.9 s), CPU, 4 threads. RTF = seconds of compute per second of audio on this Ryzen 7 3700X, loading excluded: compare variants with it, not devices. Load times mostly measure the workstation's hard disk.
+
+A negative Δ CER means fewer errors than PyTorch. For Whisper that comes from decoding, not from quantisation improving the model: whisper.cpp and the int8 graphs break some repetition loops (a clip that PyTorch runs to the 225-token cap) where PyTorch does not. The two parity columns say how far the transcripts actually differ.
+
+| runtime / variant | stands for | clips | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch (same clips) | CER vs PyTorch output % | identical to PyTorch % |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| torch / fp32 | reference (the published checkpoint; also AMD ROCm as-is) | 100 | — | 75.0 | 0.730 | 20.8 | 44.9 | — | — | — |
+| ort / fp32 | Arm CPU ONNX fp32; AMD MIGraphX; GPU EPs | 100 | 3672.7 | 60.8 | 0.356 | 20.8 | 44.9 | +0.00 | 0.00 | 100 |
+| ort / int8 | Arm CPU ONNX int8 (dynamic) | 100 | 971.3 | 23.3 | 0.312 | 20.9 | 45.5 | +0.07 | 0.82 | 84 |
+| ort / fp16 | WebGPU fp16 graph (numerics on CPU) | 100 | 1837.6 | 40.4 | 0.380 | 20.8 | 44.9 | +0.00 | 0.00 | 100 |
+| webgpu / q4f16 | browser on WebGPU, 4-bit weights (measured in Chrome on the RTX 3070) | 100 | 542.9 | 15.3 | 0.290 | 20.7 | 44.3 | -0.13 | 1.31 | 82 |
+| transformersjs / fp32 | browser/Node, Transformers.js fp32 | 100 | 3672.6 | 33.6 | 0.340 | 20.8 | 44.9 | +0.00 | 0.00 | 100 |
+| transformersjs / int8 | browser wasm, Transformers.js q8 | 100 | 971.3 | 12.3 | 0.300 | 20.8 | 44.5 | -0.07 | 0.75 | 86 |
+| openvino / fp16 | Intel NPU/iGPU/CPU, OpenVINO fp16 | 100 | 1837.7 | 28.1 | 0.716 | 20.8 | 44.9 | +0.00 | 0.00 | 100 |
+| openvino / int8 | Intel CPU/NPU, OpenVINO int8 weights | 100 | 924.2 | 16.7 | 0.737 | 20.9 | 44.3 | +0.03 | 0.33 | 92 |
+| executorch / xnnpack | Android/iOS CPU, ExecuTorch XNNPACK fp32 (CTC: fixed 10 s windows, zero-padded) | 20 | 3672.4 | 212.9 | 8.311 | 18.8 | 43.9 | -0.80 | 5.47 | 65 |
+| executorch / xnnpack-int8 | Android/iOS CPU, ExecuTorch XNNPACK int8 | 20 | 972.6 | 145.7 | 8.059 | 18.3 | 42.1 | -1.28 | 5.81 | 65 |
+
+**What to ship, per target** (smallest artefact within 0.5 CER points of PyTorch):
+
+| target | choose | size MB | Δ CER vs PyTorch | RTF | rejected (over budget) |
+|---|---|---:|---:|---:|---|
+| amd-rocm | ort/fp32 | 3672.7 | +0.00 | 0.356 | — |
+| arm-cpu-onnx | ort/int8 | 971.3 | +0.07 | 0.312 | — |
+| arm-mobile-executorch | executorch/xnnpack-int8 | 972.6 | -1.28 | 8.059 | — |
+| npu-openvino | openvino/int8 | 924.2 | +0.03 | 0.737 | — |
+| web-webgpu | webgpu/q4f16 | 542.9 | -0.13 | 0.290 | — |
+| web-webgpu (wasm fallback) | transformersjs/int8 | 971.3 | -0.07 | 0.300 | — |
+
+## orpheus-3b-0.1-pretrained-char-pld-ceb (Orpheus TTS, end to end)
+
+Text → the ported LLM → SNAC → audio, re-transcribed by the independent judge (facebook/mms-1b-all). Sampling is stochastic, so compare CER with the PyTorch row on the same sentences, not token by token.
+
+| runtime / variant | sentences | judge CER % | tokens/s | audio s | empty outputs |
+|---|---:|---:|---:|---:|---:|
+| llamacpp / q4_k_m | 3 | 4.2 | 4.9 | 11.9 | 0 |
+
 ## snac_24khz
 
 Log-mel distance of the port's audio from PyTorch's, next to the distance between two PyTorch runs (SNAC adds noise inside its decoder).
 
 | variant | port vs PyTorch dB | PyTorch vs PyTorch dB | verdict | RTF |
 |---|---:|---:|---|---:|
+| executorch | 0.449 | 0.327 | at floor | 36.7972 |
 | fp16 | 0.36 | 0.358 | at floor | 0.2381 |
 | fp32 | 0.359 | 0.359 | at floor | 0.2309 |
 | int8 | 10.006 | 0.359 | above floor | 1.0844 |
 
 ## whisper-small-pld-ceb [ceb]
 
-100 frozen-test clips (376.4 s), CPU, 4 threads. RTF = seconds of compute per second of audio on this Ryzen 7 3700X: compare variants with it, not devices.
+100 frozen-test clips (376.4 s), CPU, 4 threads. RTF = seconds of compute per second of audio on this Ryzen 7 3700X, loading excluded: compare variants with it, not devices. Load times mostly measure the workstation's hard disk.
 
-| runtime / variant | stands for | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch | CER vs PyTorch output % | identical to PyTorch % |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| torch / fp32 | reference (the published checkpoint; also AMD ROCm as-is) | — | — | 1.633 | 18.7 | 22.8 | — | — | — |
-| ort / fp32 | Arm CPU ONNX fp32; AMD MIGraphX; GPU EPs | 922.9 | 220.7 | 0.830 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
-| ort / int8 | Arm CPU ONNX int8 (dynamic) | 241.6 | 89.0 | 0.790 | 17.6 | 21.3 | -1.13 | 12.12 | 96 |
-| webgpu / fp16 | browser on WebGPU (measured in Chrome on the RTX 3070) | 462.2 | 7.8 | 0.429 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+A negative Δ CER means fewer errors than PyTorch. For Whisper that comes from decoding, not from quantisation improving the model: whisper.cpp and the int8 graphs break some repetition loops (a clip that PyTorch runs to the 225-token cap) where PyTorch does not. The two parity columns say how far the transcripts actually differ.
+
+| runtime / variant | stands for | clips | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch (same clips) | CER vs PyTorch output % | identical to PyTorch % |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| torch / fp32 | reference (the published checkpoint; also AMD ROCm as-is) | 100 | — | — | 1.633 | 18.7 | 22.8 | — | — | — |
+| ort / fp32 | Arm CPU ONNX fp32; AMD MIGraphX; GPU EPs | 100 | 922.9 | 220.7 | 0.830 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| ort / int8 | Arm CPU ONNX int8 (dynamic) | 100 | 241.6 | 89.0 | 0.790 | 17.6 | 21.3 | -1.13 | 12.12 | 96 |
+| ort / fp16 | WebGPU fp16 graph (numerics on CPU) | 100 | 462.1 | 127.5 | 0.965 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| ort / qdq | NPU graph, A8W8 static QDQ (numerics on CPU) | 100 | 671.6 | 146.1 | 2.452 | 791.1 | 721.3 | +772.31 | 734.43 | 0 |
+| ort / qdq16 | NPU graph, A16W8 static QDQ, Qualcomm's transformer default (numerics on CPU) | 100 | 672.4 | 81.0 | 0.969 | 16.2 | 17.3 | -2.58 | 11.97 | 99 |
+| webgpu / fp16 | browser on WebGPU (measured in Chrome on the RTX 3070) | 100 | 462.2 | 7.8 | 0.429 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| transformersjs / fp32 | browser/Node, Transformers.js fp32 | 100 | 922.9 | 27.3 | 0.564 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| transformersjs / int8 | browser wasm, Transformers.js q8 | 100 | 241.6 | 6.4 | 0.555 | 16.2 | 17.1 | -2.58 | 12.62 | 97 |
+| whispercpp / f16 | whisper.cpp f16 (Arm CPU) | 100 | 465.0 | 0.0 | 1.560 | 11.9 | 13.2 | -6.82 | 17.11 | 89 |
+| whispercpp / q8_0 | whisper.cpp q8_0 (Arm CPU) | 100 | 252.2 | 0.0 | 0.931 | 11.9 | 13.2 | -6.82 | 17.11 | 89 |
+| whispercpp / q5_0 | whisper.cpp q5_0 (Arm CPU, phones) | 100 | 167.1 | 0.0 | 1.130 | 8.5 | 12.8 | -10.27 | 15.85 | 88 |
+| openvino / fp16 | Intel NPU/iGPU/CPU, OpenVINO fp16 | 100 | 462.4 | 237.8 | 0.713 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| openvino / int8 | Intel CPU/NPU, OpenVINO int8 weights | 100 | 236.9 | 208.5 | 0.755 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| executorch / xnnpack | Android/iOS CPU, ExecuTorch XNNPACK fp32 (CTC: fixed 10 s windows, zero-padded) | 100 | 1074.6 | 306.5 | 6.770 | 18.7 | 22.8 | +0.00 | 0.00 | 100 |
+| mlx / fp16 | Apple silicon, MLX fp16 | 5 | 458.9 | 12.1 | 50.449 | 0.0 | 0.0 | +0.00 | 0.00 | 100 |
+| mlx / q8 | Apple silicon, MLX 8-bit | 5 | 246.2 | 55.5 | 50.877 | 0.0 | 0.0 | +0.00 | 0.00 | 100 |
+| mlx / q4 | Apple silicon, MLX 4-bit | 5 | 132.7 | 33.8 | 50.862 | 0.9 | 4.3 | +0.87 | 0.87 | 80 |
 
 **What to ship, per target** (smallest artefact within 0.5 CER points of PyTorch):
 
 | target | choose | size MB | Δ CER vs PyTorch | RTF | rejected (over budget) |
 |---|---|---:|---:|---:|---|
 | amd-rocm | ort/fp32 | 922.9 | +0.00 | 0.830 | — |
+| arm-cpu-ggml | whispercpp/q5_0 | 167.1 | -10.27 | 1.130 | — |
 | arm-cpu-onnx | ort/int8 | 241.6 | -1.13 | 0.790 | — |
+| arm-mobile-executorch | executorch/xnnpack | 1074.6 | +0.00 | 6.770 | — |
+| mac-mlx | mlx/q8 | 246.2 | +0.00 | 50.877 | mlx/q4 (+0.9) |
+| npu-openvino | openvino/int8 | 236.9 | +0.00 | 0.755 | — |
+| npu-qnn | ort/qdq16 | 672.4 | -2.58 | 0.969 | ort/qdq (+772.3) |
+| npu-ryzenai | ort/qdq16 | 672.4 | -2.58 | 0.969 | ort/qdq (+772.3) |
 | web-webgpu | webgpu/fp16 | 462.2 | +0.00 | 0.429 | — |
+| web-webgpu (wasm fallback) | transformersjs/int8 | 241.6 | -2.58 | 0.555 | — |
+
+## Built, not checkable on this machine
+
+| model | artefact | MB | why |
+|---|---|---:|---|
+| omniASR_W2V_1B_SSL-ctc-char-pld_ceb-norm | coreml/ | 1836 | Core ML: predicts only on macOS |
+| snac_24khz | coreml/ | 25 | Core ML: predicts only on macOS |
+| whisper-small-pld-ceb | coreml/ | 168 | Core ML: predicts only on macOS |
 

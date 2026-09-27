@@ -34,7 +34,7 @@ STANDS_FOR = {   # what a runtime/variant result tells you about which target
     ("whispercpp", "q5_0"): "whisper.cpp q5_0 (Arm CPU, phones)",
     ("openvino", "fp16"): "Intel NPU/iGPU/CPU, OpenVINO fp16",
     ("openvino", "int8"): "Intel CPU/NPU, OpenVINO int8 weights",
-    ("executorch", "xnnpack"): "Android/iOS CPU, ExecuTorch XNNPACK fp32",
+    ("executorch", "xnnpack"): "Android/iOS CPU, ExecuTorch XNNPACK fp32 (CTC: fixed 10 s windows, zero-padded)",
     ("executorch", "xnnpack-int8"): "Android/iOS CPU, ExecuTorch XNNPACK int8",
     ("mlx", "fp16"): "Apple silicon, MLX fp16",
     ("mlx", "q8"): "Apple silicon, MLX 8-bit",
@@ -57,6 +57,19 @@ TARGET_OF = {   # which target a runtime/variant result speaks for
 BUDGET_CER = 0.5     # percentage points of CER a port may lose against PyTorch and still be chosen
 
 
+def ref_cer(ref, r):
+    """PyTorch's CER on the same clips as r: short parity checks (5 or 20
+    clips on slow CPU stand-ins) must not be compared with a 100-clip score."""
+    n = r.get("clips", ref["clips"])
+    if n >= ref["clips"] or not ref.get("hyps"):
+        return ref["accuracy"]["cer"]
+    refs_file = FINETUNE_DIR / "port" / "evalpack" / "wav" / r.get("lang", "ceb") / "refs.json"
+    if not refs_file.exists():
+        return ref["accuracy"]["cer"]
+    from porting.metrics import score
+    return score(json.loads(refs_file.read_text())[:n], ref["hyps"][:n])["cer"]
+
+
 def recommend(rows):
     """Per target: the smallest artefact within BUDGET_CER of PyTorch, ties to
     the faster. That is the 'optimal' port: as small as the target allows
@@ -71,7 +84,7 @@ def recommend(rows):
     out = ["| target | choose | size MB | Δ CER vs PyTorch | RTF | rejected (over budget) |",
            "|---|---|---:|---:|---:|---|"]
     for t, rs in sorted(by_target.items()):
-        d = lambda r: (r["accuracy"]["cer"] - ref["accuracy"]["cer"]) * 100
+        d = lambda r: (r["accuracy"]["cer"] - ref_cer(ref, r)) * 100
         ok = [r for r in rs if d(r) <= BUDGET_CER]
         bad = [f"{r['runtime']}/{r['variant']} ({d(r):+.1f})" for r in rs if d(r) > BUDGET_CER]
         if not ok:
@@ -96,16 +109,16 @@ def asr_table(rows):
         for r in rows:
             if r is not ref and "parity" not in r and r.get("hyps"):
                 r["parity"] = agreement(ref["hyps"][:len(r["hyps"])], r["hyps"])
-    lines = ["| runtime / variant | stands for | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch | CER vs PyTorch output % | identical to PyTorch % |",
-             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    lines = ["| runtime / variant | stands for | clips | size MB | load s | RTF | CER % | WER % | Δ CER vs PyTorch (same clips) | CER vs PyTorch output % | identical to PyTorch % |",
+             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     order = list(STANDS_FOR)
     rows = sorted(rows, key=lambda r: order.index((r["runtime"], r["variant"]))
                   if (r["runtime"], r["variant"]) in order else 99)
     for r in rows:
         acc, par = r["accuracy"], r.get("parity", {})
-        d = (acc["cer"] - ref["accuracy"]["cer"]) * 100 if ref and r is not ref else None
+        d = (acc["cer"] - ref_cer(ref, r)) * 100 if ref and r is not ref else None
         lines.append(f"| {r['runtime']} / {r['variant']} | {STANDS_FOR.get((r['runtime'], r['variant']), '')} "
-                     f"| {r.get('size_mb') or '—'} | {r.get('load_seconds', '—')} | {r['rtf']:.3f} | {f(acc['cer'])} | {f(acc['wer'])} "
+                     f"| {r.get('clips', '—')} | {r.get('size_mb') or '—'} | {r.get('load_seconds', '—')} | {r['rtf']:.3f} | {f(acc['cer'])} | {f(acc['wer'])} "
                      f"| {'—' if d is None else f'{d:+.2f}'} | {f(par.get('cer_vs_reference'), nd=2)} "
                      f"| {f(par.get('identical'), nd=0)} |")
     return lines

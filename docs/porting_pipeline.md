@@ -197,7 +197,43 @@ at the preemptible rate of about $1.08 an hour:
 `DRY=1 LANGS=ceb N=3` runs the llama.cpp path on the workstation CPU first, to
 catch mistakes before paying for the card.
 
-## 7. Adding a model or a target
+## 7. Where it stands (2026-09-27)
+
+Phase 1 ran end to end for one model per family. Full tables are in
+[porting_report.md](porting_report.md).
+
+- **whisper-small-pld-ceb.** Transcript-identical to PyTorch on 100/100 clips
+  through ONNX Runtime (fp32, fp16), OpenVINO (fp16, int8 weights),
+  Transformers.js in Node (fp32), ExecuTorch XNNPACK, and WebGPU fp16 in
+  Chrome. MLX fp16 and 8-bit match on a 5-clip check; 4-bit misses one
+  character. int8 ONNX (242 MB) and whisper.cpp q5_0 (167 MB) differ on a few
+  clips, with slightly fewer errors. For NPUs, A8W8 is unusable (CER 791%);
+  A16W8 matches on 99/100.
+- **omniASR 1B CTC (ceb-norm).** Identical through ONNX Runtime fp32/fp16,
+  OpenVINO fp16 and Transformers.js fp32. int8 ONNX (971 MB) and OpenVINO int8
+  (924 MB) cost under 0.1 CER points. In the browser only q4f16 (543 MB)
+  loads; on WebGPU it runs at RTF 0.29, within 0.13 points of PyTorch.
+  ExecuTorch (fixed 10 s windows, zero-padded) matches on 65% of clips at
+  equal or lower CER: wav2vec2 takes no attention mask, so padding shifts
+  its outputs. That is the cost of the static shape, and it applies to the
+  NPU graph too. Stream in overlapping windows, or export the mask.
+- **SNAC decoder.** fp32 and fp16 sit at PyTorch's own noise floor, on ONNX
+  Runtime and ExecuTorch alike; dynamic int8 does not (10 dB off), so fp16 is
+  the mobile and web artefact.
+- **Language ID.** The same label in WebAssembly on 500/500 sentences.
+- **Core ML** artefacts are built for all three but need a Mac to check.
+- **Phase 2 dry run.** Orpheus Cebuano was merged, converted to GGUF and run
+  on llama.cpp on the CPU, then decoded by SNAC and transcribed by the MMS
+  judge at 4.2% CER on 3 sentences. The pipeline works end to end; at
+  4.9 tokens/s the CPU is 18× short of real time, which is what the GPU is for.
+
+What the workstation taught the pipeline: its D: is a spinning disk behind
+WSL's 9P bridge, so artefacts are staged in RAM before loading; its CPU
+throws machine-check exceptions under load, so every job is resumable and
+supervised from Windows; an OOM kill anywhere in WSL takes every session
+down, so large calibrations run in child processes behind a memory guard.
+
+## 8. Adding a model or a target
 
 - **A model of a known family:** add a `Model(...)` row to `porting/registry.py`.
   The plan, phase and recipes follow.
