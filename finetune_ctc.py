@@ -288,6 +288,11 @@ def main():
             src = Path(hf_hub_download(args.init_from, "vocab.json",
                                        token=os.environ.get("HF_TOKEN")))
         old_vocab = json.loads(src.read_text(encoding="utf-8"))
+    if args.encoder == "w2v-bert" and args.attn == "sdpa":
+        # transformers has no SDPA path for Wav2Vec2BertForCTC and refuses to
+        # load it (the 2026-09-27 L6 runs died on this before step 0)
+        print("  attn: w2v-bert has no sdpa implementation; using eager")
+        args.attn = "eager"
     model = Model.from_pretrained(
         args.init_from or repo,
         ignore_mismatched_sizes=bool(args.init_from),

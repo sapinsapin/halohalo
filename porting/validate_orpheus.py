@@ -68,23 +68,41 @@ def gen_torch(root, variant, ids_list):
     import finetune_orpheus as fo
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     m = AutoModelForCausalLM.from_pretrained(root / "merged", dtype=torch.bfloat16, device_map={"": dev}).eval()
+    # ORPHEUS_BATCH sentences per generate call, left-padded so every prompt
+    # ends at the same position (as tts_eval.synth_orpheus does): on a card
+    # with memory to spare, one call per sentence leaves most of it idle
+    bs = int(os.environ.get("ORPHEUS_BATCH", "1"))
+    pad = 128263
     outs = []
-    for ids in ids_list:
-        x = torch.tensor([ids], device=dev)
+    for k in range(0, len(ids_list), bs):
+        chunk = ids_list[k:k + bs]
+        width = max(len(q) for q in chunk)
+        x = torch.full((len(chunk), width), pad, dtype=torch.long)
+        att = torch.zeros((len(chunk), width), dtype=torch.long)
+        for i, q in enumerate(chunk):
+            x[i, width - len(q):] = torch.tensor(q)
+            att[i, width - len(q):] = 1
         with torch.inference_mode():
-            g = m.generate(x, max_new_tokens=MAX_NEW, do_sample=True, eos_token_id=fo.EOS_SPEECH,
-                           pad_token_id=128263, **SAMPLING)
-        outs.append(g[0, len(ids):].tolist())
+            g = m.generate(x.to(dev), attention_mask=att.to(dev), max_new_tokens=MAX_NEW, do_sample=True,
+                           eos_token_id=fo.EOS_SPEECH, pad_token_id=pad, **SAMPLING)
+        outs.extend(g[i, width:].tolist() for i in range(len(chunk)))
     return outs
 
 
 def gen_llamacpp(root, variant, ids_list):
     import urllib.request
     exe = TOOLS / "llama.cpp" / "build" / "bin" / "llama-server"
-    port = 8089
+    import socket                       # a free port: several languages may run at once
+    with socket.socket() as sk:
+        sk.bind(("127.0.0.1", 0))
+        port = sk.getsockname()[1]
     ngl = "99" if os.environ.get("CUDA_VISIBLE_DEVICES", "x") != "" else "0"
+    # ORPHEUS_PARALLEL slots decode that many sentences at once (continuous
+    # batching); each slot gets its own 4096-token context
+    par = int(os.environ.get("ORPHEUS_PARALLEL", "1"))
     srv = subprocess.Popen([str(exe), "-m", str(root / "gguf" / f"model-{variant}.gguf"), "--port", str(port),
-                            "-c", "4096", "-ngl", ngl, "-t", os.environ.get("PORT_THREADS", "8")],
+                            "-c", str(4096 * par), "-np", str(par), "-ngl", ngl,
+                            "-t", os.environ.get("PORT_THREADS", "8")],
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try:
         for _ in range(120):
@@ -93,17 +111,18 @@ def gen_llamacpp(root, variant, ids_list):
                 break
             except Exception:
                 time.sleep(2)
-        outs = []
-        for ids in ids_list:
+        def one(ids):
             body = {"prompt": ids, "n_predict": MAX_NEW, "temperature": SAMPLING["temperature"],
                     "top_p": SAMPLING["top_p"], "repeat_penalty": SAMPLING["repetition_penalty"],
                     "top_k": 0, "min_p": 0, "return_tokens": True, "cache_prompt": False,
                     "stop": ["<custom_token_2>"]}
             req = urllib.request.Request(f"http://127.0.0.1:{port}/completion", json.dumps(body).encode(),
                                          {"Content-Type": "application/json"})
-            r = json.loads(urllib.request.urlopen(req, timeout=3600).read())
-            outs.append(r.get("tokens") or [])
-        return outs
+            return json.loads(urllib.request.urlopen(req, timeout=3600).read()).get("tokens") or []
+
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=par) as pool:
+            return list(pool.map(one, ids_list))           # order kept
     finally:
         srv.terminate()
         srv.wait()
@@ -201,16 +220,29 @@ def main():
     del snac
 
     transcribe = tts_eval.make_transcriber(lang, dev)          # takes 16 kHz audio
+    judge = "facebook/mms-1b-all"
+    if transcribe is None:
+        # MMS-1b-all has no adapter for this language (Tausug): our own
+        # whisper-small judge instead, and the result says it is not independent
+        tts_eval.JUDGE, tts_eval.JUDGE_PINNED = "whisper-small", True
+        judge = tts_eval.judge_model(lang)
+        transcribe = tts_eval.make_transcriber(lang, dev)
     hyps = [transcribe(resample_poly(w, 2, 3).astype(np.float32)) if len(w) else "" for w in wavs]
     refs = [normalise_text(r["text"]) for r, _ in rows]
     hyps_n = [normalise_text(h) for h in hyps]
     host = os.environ.get("PORT_HOST")
     label = f"{args.runtime}@{host}" if host else args.runtime
+    # sentences decoded at once: torch batches, llama.cpp slots, the rest one at a time
+    streams = {"torch": int(os.environ.get("ORPHEUS_BATCH", "1")),
+               "llamacpp": int(os.environ.get("ORPHEUS_PARALLEL", "1"))}.get(args.runtime, 1)
+    tps = sum(len(g) for g in gens) / max(wall, 1e-9)
     res = {"repo": args.repo, "runtime": label, "variant": args.variant, "lang": lang,
-           "sentences": len(rows), "judge": "facebook/mms-1b-all",
+           "sentences": len(rows), "judge": judge, "judge_independent": judge == "facebook/mms-1b-all",
            "cer": jiwer.cer(refs, [h or " " for h in hyps_n]),
            "audio_seconds": round(secs, 1), "wall_seconds": round(wall, 1),
-           "tokens_per_second": round(sum(len(g) for g in gens) / max(wall, 1e-9), 1),
+           # aggregate over parallel streams; real time needs ~86 tok/s per stream
+           "tokens_per_second": round(tps, 1), "streams": streams,
+           "tokens_per_second_per_stream": round(tps / streams, 1),
            "empty_outputs": sum(1 for w in wavs if len(w) == 0), "hyps": hyps}
     RESULTS.joinpath(name).mkdir(parents=True, exist_ok=True)
     (RESULTS / name / f"orpheus-{label}-{args.variant}.json").write_text(

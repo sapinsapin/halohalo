@@ -320,7 +320,9 @@ def run_coreml(repo, root, variant, audio, fam):
 def run_whispercpp(repo, root, variant, audio, fam):
     """whisper.cpp's CLI, greedy, no temperature fallback — the decoding the
     reference uses. On Arm it takes the NEON/KleidiAI paths; here, AVX2."""
-    exe = TOOLS / "whisper.cpp" / "build" / "bin" / "whisper-cli"
+    # WHISPERCPP_BUILD picks the build: on the GB10, "build" has Arm's KleidiAI
+    # kernels and "build-generic" does not, so their difference is measured
+    exe = TOOLS / "whisper.cpp" / os.environ.get("WHISPERCPP_BUILD", "build") / "bin" / "whisper-cli"
     model = root / "ggml" / f"ggml-model-{variant}.bin"
     lang = ISO1.get(json.loads((root / "ggml" / "halohalo.json").read_text())["language"], "tl")
     wavs = frontends.write_wavs(audio, PORT / "evalpack" / "wav" / _lang_of_audio(audio))

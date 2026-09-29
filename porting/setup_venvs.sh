@@ -64,10 +64,12 @@ one() {
       [ -d "$TOOLS/whisper" ] || git clone -q --depth 1 https://github.com/openai/whisper "$TOOLS/whisper"
       CM=venv_port_onnx/bin/cmake
       # CPU build, AVX2 on this machine; the same source builds NEON/KleidiAI on Arm
-      $CM -S "$TOOLS/whisper.cpp" -B "$TOOLS/whisper.cpp/build" -DCMAKE_BUILD_TYPE=Release \
-          -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_SERVER=OFF > /dev/null
-      $CM --build "$TOOLS/whisper.cpp/build" -j "$(nproc)" --config Release > /dev/null
-      ls "$TOOLS/whisper.cpp/build/bin" ;;
+      # (scripts/gb10.sh: WHISPERCPP_CMAKE="-DGGML_CPU_KLEIDIAI=ON" into build/, plain into build-generic/)
+      B="$TOOLS/whisper.cpp/${WHISPERCPP_BUILD:-build}"
+      $CM -S "$TOOLS/whisper.cpp" -B "$B" -DCMAKE_BUILD_TYPE=Release \
+          -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_SERVER=OFF ${WHISPERCPP_CMAKE:-} > /dev/null
+      $CM --build "$B" -j "$(nproc)" --config Release > /dev/null
+      ls "$B/bin" ;;
     web)
       (cd porting/web && npm install --no-audit --no-fund --loglevel=error)
       for p in @huggingface/transformers onnxruntime-node onnxruntime-web; do

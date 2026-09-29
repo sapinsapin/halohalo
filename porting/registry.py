@@ -15,7 +15,7 @@ WebLLM are LLM runtimes and have nothing to offer a CTC acoustic model.
 
 Phase is derived, not assigned (see phase_of): Phase 1 is whatever the
 workstation (RTX 3070, ~6 GB free VRAM, 31 GB RAM) can convert *and* validate;
-Phase 2 is the rest, for the RTX PRO 6000 VM.
+Phase 2 is the rest, for the RTX PRO 6000 VM or the GB10 (docs/prd_gb10.md).
 """
 
 from dataclasses import dataclass, field

@@ -69,8 +69,19 @@ def key(r):
     return r["runtime"].split("@")[0], r["variant"]
 
 
+HOSTS = {   # PORT_HOST tags -> what the row was measured on
+    "mac": "Mac",
+    "gb10": "GB10, Arm (4 threads; the demo models pinned to Cortex-X925 cores)",
+    "gb10-generic": "GB10's Cortex-X925 cores, whisper.cpp without KleidiAI",
+    "gb10-cpu": "GB10's Cortex-X925 cores, llama.cpp CPU only",
+}
+
+
 def where(r):
-    return f" — measured on the {r['runtime'].split('@')[1]}" if "@" in r["runtime"] else ""
+    if "@" not in r["runtime"]:
+        return ""
+    h = r["runtime"].split("@")[1]
+    return f" — measured on the {HOSTS.get(h, h)}"
 
 
 def ref_cer(ref, r):

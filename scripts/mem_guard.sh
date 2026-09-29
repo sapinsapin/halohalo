@@ -8,7 +8,7 @@
 #
 #   Start-Process -WindowStyle Hidden wsl.exe -ArgumentList 'bash /mnt/d/halohalo/scripts/mem_guard.sh'
 MIN_KB=${MIN_KB:-3000000}          # act below ~3 GB available
-LOG=/mnt/d/halohalo/finetune_runs/port/mem_guard.log
+LOG=${MEM_GUARD_LOG:-/mnt/d/halohalo/finetune_runs/port/mem_guard.log}
 while :; do
   avail=$(awk '/MemAvailable/{print $2}' /proc/meminfo)
   if [ "$avail" -lt "$MIN_KB" ]; then

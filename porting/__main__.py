@@ -24,6 +24,7 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -52,10 +53,12 @@ def lang_of(repo):
 
 def onnx_args(repo):
     """NPU calibration only where the workstation can hold it (registry.NPU_CALIB_MAX_M);
-    larger models get theirs in Phase 2."""
+    larger models get theirs in Phase 2 (a big-memory host sets NPU_CALIB_MAX_M
+    higher; the registry's phase split stays the workstation's)."""
     from porting.registry import NPU_CALIB_MAX_M
+    limit = float(os.environ.get("NPU_CALIB_MAX_M", NPU_CALIB_MAX_M))
     m = next((m for m in MODELS if m.repo == repo), None)
-    if m and m.params_m > NPU_CALIB_MAX_M:
+    if m and m.params_m > limit:
         return ["--skip", "npu"]
     return ["--calib-lang", lang_of(repo) or "ceb"]
 
@@ -116,8 +119,11 @@ RECIPES = {   # (family, target) -> (builds, validations, what a device loads)
 }
 
 
-def select(models_arg: str, phase: int | None):
+def select(models_arg: str, phase: int | None, targets: str | None = None):
     rows = [r for r in plan() if phase is None or r["phase"] == phase]
+    if targets:
+        keep = {t.strip() for t in targets.split(",")}
+        rows = [r for r in rows if r["target"] in keep]
     if models_arg == "demo":
         rows = [r for r in rows if r["model"] in DEMO or r["family"] == "fasttext"]
     elif models_arg != "phase":
@@ -126,13 +132,54 @@ def select(models_arg: str, phase: int | None):
     return rows
 
 
-def run(venv: str, module: str, args: list[str], log: Path) -> bool:
+def mem_available_gb() -> float:
+    try:
+        for line in open("/proc/meminfo"):
+            if line.startswith("MemAvailable"):
+                return int(line.split()[1]) / 2**20
+    except OSError:
+        pass
+    return float("inf")
+
+
+def est_gb(repo: str, kind: str) -> float:
+    """A job's expected peak RAM, so a start leaves PORT_MIN_FREE_GB free
+    after the job has grown: conversion ~3x the fp32 weights (as
+    registry.phase_of assumes), static int8 calibration ~7x (the 963M CTC
+    graph peaked at 25 GB), a validation ~1.5x."""
+    m = next((m for m in MODELS if m.repo == repo), None)
+    fp32 = (m.params_m if m else 0) * 1e6 * 4 / 2**30
+    return fp32 * {"build": 3, "calib": 7, "validate": 1.5}[kind]
+
+
+def wait_for_memory(need_gb: float = 0.0):
+    """Start a job only while PORT_MIN_FREE_GB (default 16) would remain free
+    once it reaches its expected peak: parallelism fills spare memory, never
+    the headroom an OOM kill needs (in WSL one takes every session down; on
+    the GB10 the GPU shares the same 128 GB)."""
+    need = float(os.environ.get("PORT_MIN_FREE_GB", "16")) + need_gb
+    try:
+        total = int(open("/proc/meminfo").readline().split()[1]) / 2**20
+        need = min(need, total - 4)       # a job bigger than the machine waits for an idle one, not forever
+    except (OSError, ValueError, IndexError):
+        pass
+    while mem_available_gb() < need:
+        time.sleep(20)
+
+
+_START = threading.Lock()
+
+
+def run(venv: str, module: str, args: list[str], log: Path, env_extra: dict | None = None,
+        need_gb: float = 0.0) -> bool:
     py = ROOT / VENV[venv] / "bin" / "python3"
     if not py.exists():
         print(f"    skip: {VENV[venv]} not installed (bash porting/setup_venvs.sh {venv})")
         return False
+    import tempfile
     env = dict(os.environ, CUDA_VISIBLE_DEVICES="", PYTHONPATH=str(ROOT),
-               HF_XET_CHUNK_CACHE_SIZE_BYTES="0", TMPDIR=os.environ.get("TMPDIR", "/mnt/d/tmp"))
+               HF_XET_CHUNK_CACHE_SIZE_BYTES="0", TMPDIR=os.environ.get("TMPDIR") or tempfile.gettempdir())
+    env.update(env_extra or {})
     log.parent.mkdir(parents=True, exist_ok=True)
     t0 = time.perf_counter()
     with open(log, "a") as f:
@@ -142,15 +189,21 @@ def run(venv: str, module: str, args: list[str], log: Path) -> bool:
         # is comparable while builds run on the others
         pin = (["taskset", "-c", os.environ["PORT_CPUS"]]
                if os.environ.get("PORT_CPUS") and "validate" in module else [])
-        rc = subprocess.run([*pin, str(py), "-u", "-m", module, *args], cwd=ROOT, env=env,
-                            stdout=f, stderr=subprocess.STDOUT).returncode
+        # one start at a time, held PORT_STAGGER_S (with --jobs > 1) so the
+        # next gate reads memory after this job has begun to grow
+        with _START:
+            wait_for_memory(need_gb)
+            p = subprocess.Popen([*pin, str(py), "-u", "-m", module, *args], cwd=ROOT, env=env,
+                                 stdout=f, stderr=subprocess.STDOUT)
+            time.sleep(float(os.environ.get("PORT_STAGGER_S", "0")))
+        rc = p.wait()
     print(f"    {'ok ' if rc == 0 else 'FAIL'} {module} {' '.join(args)} ({time.perf_counter() - t0:.0f}s)"
           + ("" if rc == 0 else f"  -> {log}"))
     return rc == 0
 
 
 def cmd_plan(args):
-    rows = select(args.models, args.phase)
+    rows = select(args.models, args.phase, args.targets)
     by = {}
     for r in rows:
         by.setdefault((r["phase"], r["family"]), []).append(r)
@@ -164,9 +217,24 @@ def cmd_plan(args):
             print(f"    why phase {ph}: {why}")
 
 
+def run_groups(groups: dict, jobs: int):
+    """groups: {model: [task thunks]}. A model's tasks run in order (they
+    share files); different models run side by side, up to `jobs` at once
+    and only while memory allows (wait_for_memory, inside run())."""
+    if jobs <= 1:
+        for tasks in groups.values():
+            for t in tasks:
+                t()
+        return
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=jobs) as pool:
+        for f in [pool.submit(lambda ts=ts: [t() for t in ts]) for ts in groups.values()]:
+            f.result()
+
+
 def cmd_build(args):
-    done = set()
-    for r in select(args.models, args.phase):
+    done, groups = set(), {}
+    for r in select(args.models, args.phase, args.targets):
         builds, _, _ = RECIPES.get((r["family"], r["target"]), ([], [], ""))
         for b in builds:
             if (r["model"], b) in done:
@@ -176,13 +244,19 @@ def cmd_build(args):
             name = r["model"].split("/")[-1]
             if (ART / name / marker).exists():
                 continue
-            print(f"  build {name} · {b}")
-            run(venv, module, [r["model"], *extra(r["model"])], LOGS / f"build_{name}_{b}.log")
+            a = [r["model"], *extra(r["model"])]
+            need = est_gb(r["model"], "calib" if "--calib-lang" in a else "build")
+            groups.setdefault(r["model"], []).append(
+                lambda venv=venv, module=module, a=a, name=name, b=b, need=need: (
+                    print(f"  build {name} · {b}"),
+                    run(venv, module, a, LOGS / f"build_{name}_{b}.log", need_gb=need)))
+    run_groups(groups, args.jobs)
 
 
 def cmd_validate(args):
-    done = set()
-    for r in select(args.models, args.phase):
+    done, groups = set(), {}
+    host = os.environ.get("PORT_HOST")        # results from another machine are tagged <runtime>@host
+    for r in select(args.models, args.phase, args.targets):
         _, vals, _ = RECIPES.get((r["family"], r["target"]), ([], [], ""))
         name = r["model"].split("/")[-1]
         n = args.n if r["model"] in DEMO else args.smoke
@@ -191,9 +265,13 @@ def cmd_validate(args):
             ref = RESULTS / name / f"torch-fp32-{lang}.json"
             if (r["model"], "torch") not in done and not ref.exists():
                 done.add((r["model"], "torch"))
-                print(f"  validate {name} · torch/fp32 (reference)")
-                run("onnx", "porting.validate", [r["model"], "--runtime", "torch", "--n", str(n)],
-                    LOGS / f"validate_{name}.log")
+                # the reference is the same on every machine: never host-tagged
+                groups.setdefault(r["model"], []).append(
+                    lambda r=r, n=n, name=name: (
+                        print(f"  validate {name} · torch/fp32 (reference)"),
+                        run("onnx", "porting.validate", [r["model"], "--runtime", "torch", "--n", str(n)],
+                            LOGS / f"validate_{name}.log", {"PORT_HOST": ""},
+                            need_gb=est_gb(r["model"], "validate"))))
         for venv, rt, variants in vals:
             for v in variants:
                 if (r["model"], rt, v) in done:
@@ -201,7 +279,7 @@ def cmd_validate(args):
                 done.add((r["model"], rt, v))
                 if rt in ("snac", "lid"):
                     module, a = f"porting.validate_{rt}", [r["model"], "--variant", v]
-                    out = RESULTS / name / f"{rt}-{v}.json"
+                    out = RESULTS / name / (f"{rt}-{v}@{host}.json" if host else f"{rt}-{v}.json")
                 else:
                     module = "porting.validate"
                     # MLX's x86 CPU kernels are a slow stand-in for Metal, and
@@ -211,11 +289,16 @@ def cmd_validate(args):
                     slow = rt == "mlx" or (rt == "executorch" and big)
                     cap = 5 if rt == "mlx" else 20        # MLX on x86: ~2 min a clip, one core
                     a = [r["model"], "--runtime", rt, "--variant", v, "--n", str(min(n, cap) if slow else n)]
-                    out = RESULTS / name / f"{rt}-{v}-{lang}.json"
+                    lab = f"{rt}@{host}" if host else rt
+                    out = RESULTS / name / f"{lab}-{v}-{lang}.json"
                 if out.exists():
                     continue
-                print(f"  validate {name} · {rt}/{v}")
-                run(venv, module, a, LOGS / f"validate_{name}.log")
+                groups.setdefault(r["model"], []).append(
+                    lambda venv=venv, module=module, a=a, name=name, rt=rt, v=v, r=r: (
+                        print(f"  validate {name} · {rt}/{v}"),
+                        run(venv, module, a, LOGS / f"validate_{name}.log",
+                            need_gb=est_gb(r["model"], "validate"))))
+    run_groups(groups, args.jobs)
 
 
 def cmd_report(args):
@@ -233,6 +316,9 @@ def main():
         p.add_argument("--n", type=int, default=100, help="clips for demo models")
         p.add_argument("--smoke", type=int, default=20, help="clips for sibling models")
         p.add_argument("-v", "--verbose", action="store_true")
+        p.add_argument("--targets", default=None, help="comma list of target ids, e.g. arm-cpu-onnx,arm-cpu-ggml")
+        p.add_argument("--jobs", type=int, default=int(os.environ.get("PORT_JOBS", "1")),
+                       help="models to build/validate side by side (memory permitting)")
     args = ap.parse_args()
     if args.cmd == "plan":
         cmd_plan(args)

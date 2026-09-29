@@ -43,6 +43,18 @@ MMS_CODES = {"bcl": "bcl", "ceb": "ceb", "eng": "eng", "fil": "tgl", "hil": "hil
              "ilo": "ilo", "pag": "pag", "pam": "pam", "tsg": "tsg", "war": "war"}
 
 
+def save(path: Path, lang: str, entry: dict) -> None:
+    """Merge one language into the results file under a lock, so several
+    processes (one per language, on a machine with memory to spare) can share
+    it without overwriting each other."""
+    import fcntl
+    with open(str(path) + ".lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        cur = json.loads(path.read_text()) if path.exists() else {}
+        cur[lang] = entry
+        path.write_text(json.dumps(cur, indent=1, ensure_ascii=False))
+
+
 def score(refs, hyps):
     import jiwer
     pairs = [(r, h) for r, h in zip(refs, hyps) if r.strip()]
@@ -80,7 +92,7 @@ def main():
         except Exception as e:                            # noqa: BLE001
             print(f"  {lang}: no MMS adapter for {code} ({type(e).__name__}); skipped")
             results[lang] = {"skipped": f"no adapter for {code}"}
-            path.write_text(json.dumps(results, indent=1))
+            save(path, lang, results[lang])
             continue
 
         t0 = time.perf_counter()
@@ -107,7 +119,7 @@ def main():
         results[lang] = {"mms_code": code, "as_scored": raw, "normalised": norm,
                          "seconds": round(time.perf_counter() - t1, 1),
                          "refs": refs, "hyps": hyps}
-        path.write_text(json.dumps(results, indent=1, ensure_ascii=False))
+        save(path, lang, results[lang])
         print(f"  {lang}: as scored CER {raw['cer'] * 100:.2f} WER {raw['wer'] * 100:.2f} | "
               f"normalised CER {norm['cer'] * 100:.2f} WER {norm['wer'] * 100:.2f}", flush=True)
 

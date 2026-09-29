@@ -19,6 +19,11 @@ QVENV=${QVENV:-venv_qwen}
 
 [ -d "$QVENV" ] || "$PY" -m venv "$QVENV"
 "$QVENV/bin/pip" install -q --upgrade pip wheel
+# TORCH_INDEX puts a matching CUDA torch in first (the GB10 is aarch64 +
+# CUDA 13: PyPI's default aarch64 torch is CPU only, and qwen-tts would pull it)
+if [ -n "${TORCH_INDEX:-}" ]; then
+  "$QVENV/bin/pip" install -q torch torchaudio --index-url "$TORCH_INDEX"
+fi
 # No flash-attn: it wants a long compile and sdpa is enough for codec encoding,
 # which is what this venv is for. The SFT can ask for it later if it pays off.
 "$QVENV/bin/pip" install -q --upgrade qwen-tts

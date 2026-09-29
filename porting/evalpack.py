@@ -74,8 +74,13 @@ def main():
     from halolib.finetune import load_speech_dataset
 
     OUT.mkdir(parents=True, exist_ok=True)
-    meta = {}
+    # merged, and existing packs kept: another machine's results are only
+    # comparable on the very same clips
+    meta = json.loads((OUT / "meta.json").read_text()) if (OUT / "meta.json").exists() else {}
     for lang in args.languages:
+        if (OUT / f"{lang}.npz").exists() and (OUT / f"{lang}_calib.npz").exists() and lang in meta:
+            print(f"  {lang}: kept")
+            continue
         ds = load_speech_dataset("pld", task="asr", language=lang, max_samples=None,
                                  token=os.environ.get("HF_TOKEN"))
         test = [ds["test"][i] for i in range(min(args.n, len(ds["test"])))]
