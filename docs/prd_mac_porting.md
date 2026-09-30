@@ -213,6 +213,22 @@ result through the server. For Safari rows, rename them afterwards to
 <!-- One line per check that failed, missed its threshold, or surprised you:
      what happened, why, and what was changed. Numbers belong in the report. -->
 
+Run on an Apple M4, 32 GB, macOS 15.7.7, Command Line Tools only (no Xcode).
+
+- **setup**: no `xcrun coremlc` without full Xcode, so `build`'s whisper.cpp
+  Core ML encoder step would fail. `port_mac.sh` now compiles the
+  `.mlmodelc` through coremltools (`ct.models.utils.compile_model`, the Core ML
+  framework's own compiler) when `coremlc` is absent. cmake was not
+  installed; `brew install cmake` fixed it.
+- **setup**: coremltools 9.0 warns that torch 2.14 is untested (2.7 is).
+  Every conversion still succeeded with 2.14; no torch 2.7 venv was needed.
+- **build**: every R5 artefact was produced. The CTC model's Core ML
+  conversion reported 198,782 s: the Mac idle-slept 363 times while it ran,
+  so that figure is sleep, not conversion. `port_mac.sh` now runs each step
+  under `caffeinate -i`.
+- **build**: the evaluation pack was not on the Mac at the start; `setup` and
+  `build` need only the public checkpoints, so they ran first.
+
 ## 9. Done means
 
 1. The steps in section 6 have run: `validate`, and `executorch` at least
