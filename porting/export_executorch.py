@@ -87,8 +87,11 @@ def whisper_export(repo, out: Path, backend: str) -> dict:
     import shutil
     from optimum.exporters.executorch import main_export
     from porting.hfcompat import config_dir
+    # optimum-executorch registers Core ML as coreml_<dtype>[_<unit>]; a bare
+    # "coreml" is no recipe, and its registry hands back None instead of raising
+    recipe = {"coreml": "coreml_fp16"}.get(backend, backend)
     main_export(model_name_or_path=repo, task="automatic-speech-recognition",
-                recipe=backend, output_dir=str(out), token=os.environ.get("HF_TOKEN"))
+                recipe=recipe, output_dir=str(out), token=os.environ.get("HF_TOKEN"))
     for f in config_dir(repo).iterdir():
         if not (out / f.name).exists():
             shutil.copy(f, out / f.name)

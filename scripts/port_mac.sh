@@ -133,7 +133,8 @@ executorch() {
   $VE/bin/pip install -q optimum-executorch coremltools snac soundfile jiwer huggingface_hub numpy
   for m in $W $C; do
     n=$(basename $m)
-    [ -d $A/$n/executorch/coreml ] || run $VE/bin/python3 -m porting.export_executorch $m --backend coreml
+    # a failed export leaves the directory behind, so look for the program itself
+    ls $A/$n/executorch/coreml/*.pte > /dev/null 2>&1 || run $VE/bin/python3 -m porting.export_executorch $m --backend coreml
     run $VE/bin/python3 -m porting.validate $m --runtime executorch --variant coreml --n 20
   done
 }

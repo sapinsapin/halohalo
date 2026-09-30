@@ -228,6 +228,24 @@ Run on an Apple M4, 32 GB, macOS 15.7.7, Command Line Tools only (no Xcode).
   under `caffeinate -i`.
 - **build**: the evaluation pack was not on the Mac at the start; `setup` and
   `build` need only the public checkpoints, so they ran first.
+- **orpheus-mlx**: the MLX export (q4 1.8 GB, q8 3.3 GB) built in 15 s from
+  the merged model.
+- **executorch, CTC model**: exported first time, `model.pte` 1.8 GB at a
+  10 s window (executorch 1.5.1, torch 2.14.1, coremltools 9.0).
+- **executorch, whisper-small**: first failure was ours. `export_executorch`
+  passed `recipe="coreml"`, but optimum-executorch 1.1.0 registers Core ML
+  only as `coreml_{fp16,fp32}[_{cpu,gpu,ne}]`, and its registry returns None
+  for an unknown name (`'NoneType' object is not callable`). Now maps to
+  `coreml_fp16`. `port_mac.sh` also skipped the retry because the failed run
+  left an empty `executorch/coreml/`; it now checks for a `.pte`.
+- **executorch, whisper-small**: with the right recipe it still fails, in
+  coremltools' torch frontend while lowering the static-KV-cache decoder
+  method: `_try_whole_slice` → `concat` → `ValueError: Input squeeze_2 has
+  rank 1 != other inputs rank 0` (a slice at a dynamic cache position).
+  Upstream, coremltools 9.0 against torch 2.14.1; the torch 2.7 fallback in
+  section 7 does not apply because executorch 1.5.1 pins torch 2.14. Not
+  fixed: whisper-small has no ExecuTorch Core ML artefact. Its encoder
+  already runs in Core ML directly (`npu-ane`).
 
 ## 9. Done means
 
