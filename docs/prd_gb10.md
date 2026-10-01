@@ -242,6 +242,12 @@ compromises.
   `finetune_orpheus.py` (no quantisation, no checkpointing, fused optimiser)
   at the per-language adapters' effective batch.
 - **C7** Fish S2 Pro. No code exists yet; a smoke test at most.
+- **G4** Serve Gemma 4 for NYO: `scripts/custom-models/gemma4-gb10.sh` in
+  the `aineolab/llm-gateway-hub` repo (`setup`, `serve`, `smoke`, `tunnel`,
+  `nyo`). llama.cpp with a 4-bit GGUF (26B-A4B, ~16 GB), on :8081, reusing
+  this PRD's llama.cpp build; it refuses to start unless the 16 GB reserve
+  (M2) survives. Record tokens/s and peak memory in section 9. The tunnel
+  URL goes to the NYO owner, never into a file here.
 
 ## 7. How to run it
 
