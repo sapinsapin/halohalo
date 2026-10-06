@@ -1,0 +1,315 @@
+{
+  "languages": {
+    "bcl": {
+      "name": "Bikol",
+      "clips": [
+        {
+          "file": "samples/bcl_0.wav",
+          "transcript": "Luway-luway sana an pag-brush.",
+          "speaker": "BIK_0895",
+          "seconds": 3.88
+        },
+        {
+          "file": "samples/bcl_1.wav",
+          "transcript": "Siya ang nagbakal dati, dati sing naguupod pa sa bangakang Norway.",
+          "speaker": "BIK_0979",
+          "seconds": 7.38
+        }
+      ],
+      "voices": [
+        {
+          "id": "BIK_0895",
+          "file": "xvectors/bcl_BIK_0895.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "BIK_0979",
+          "file": "xvectors/bcl_BIK_0979.npy",
+          "gender": "female",
+          "clips": 12
+        }
+      ]
+    },
+    "ceb": {
+      "name": "Cebuano",
+      "clips": [
+        {
+          "file": "samples/ceb_0.wav",
+          "transcript": "Paúnsa niyá nakít-an ang butáng ni James?",
+          "speaker": "CEB_0200",
+          "seconds": 3.48
+        },
+        {
+          "file": "samples/ceb_1.wav",
+          "transcript": "Waláy mogubâ sa púthaw kun dílì ang kaugalíngong tayâ.",
+          "speaker": "CEB_0288",
+          "seconds": 5.98
+        }
+      ],
+      "voices": [
+        {
+          "id": "CEB_0200",
+          "file": "xvectors/ceb_CEB_0200.npy",
+          "gender": "male",
+          "clips": 12
+        },
+        {
+          "id": "CEB_0288",
+          "file": "xvectors/ceb_CEB_0288.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    },
+    "eng": {
+      "name": "English (PH)",
+      "clips": [
+        {
+          "file": "samples/eng_0.wav",
+          "transcript": "Lessen the amount of food you consume.",
+          "speaker": "ENG_1905",
+          "seconds": 2.88
+        },
+        {
+          "file": "samples/eng_1.wav",
+          "transcript": "The Artemis Vulgaris, more commonly known as damong maria.",
+          "speaker": "ENG_1904",
+          "seconds": 5.58
+        }
+      ],
+      "voices": [
+        {
+          "id": "ENG_1905",
+          "file": "xvectors/eng_ENG_1905.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "ENG_1904",
+          "file": "xvectors/eng_ENG_1904.npy",
+          "gender": "female",
+          "clips": 12
+        }
+      ]
+    },
+    "fil": {
+      "name": "Filipino",
+      "clips": [
+        {
+          "file": "samples/fil_0.wav",
+          "transcript": "Bakit minsan may plema ang ubo ko?",
+          "speaker": "FIL_0003",
+          "seconds": 3.48
+        },
+        {
+          "file": "samples/fil_1.wav",
+          "transcript": "Hindi na kayo magkakaanak",
+          "speaker": "FIL_0000",
+          "seconds": 2.17
+        }
+      ],
+      "voices": [
+        {
+          "id": "FIL_0003",
+          "file": "xvectors/fil_FIL_0003.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "FIL_0000",
+          "file": "xvectors/fil_FIL_0000.npy",
+          "gender": "female",
+          "clips": 12
+        }
+      ]
+    },
+    "hil": {
+      "name": "Hiligaynon",
+      "clips": [
+        {
+          "file": "samples/hil_0.wav",
+          "transcript": "Matukar balá si Francisco, o makanta?",
+          "speaker": "HIL_0624",
+          "seconds": 3.48
+        },
+        {
+          "file": "samples/hil_1.wav",
+          "transcript": "Ibutang ang notebook sa table kag markahan ko",
+          "speaker": "HIL_0619",
+          "seconds": 4.28
+        }
+      ],
+      "voices": [
+        {
+          "id": "HIL_0624",
+          "file": "xvectors/hil_HIL_0624.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "HIL_0619",
+          "file": "xvectors/hil_HIL_0619.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    },
+    "ilo": {
+      "name": "Ilocano",
+      "clips": [
+        {
+          "file": "samples/ilo_0.wav",
+          "transcript": "Madik mabirukan adyay pagserkan.",
+          "speaker": "ILO_1711",
+          "seconds": 3.48
+        },
+        {
+          "file": "samples/ilo_1.wav",
+          "transcript": "Nanggeg ko nga agkaiwara iti tuberculosis idiay",
+          "speaker": "ILO_1755",
+          "seconds": 5.28
+        }
+      ],
+      "voices": [
+        {
+          "id": "ILO_1711",
+          "file": "xvectors/ilo_ILO_1711.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "ILO_1755",
+          "file": "xvectors/ilo_ILO_1755.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    },
+    "pag": {
+      "name": "Pangasinan",
+      "clips": [
+        {
+          "file": "samples/pag_0.wav",
+          "transcript": "Pasal yoy manbasa tan manbilang",
+          "speaker": "PAG_1219",
+          "seconds": 2.88
+        },
+        {
+          "file": "samples/pag_1.wav",
+          "transcript": "Isulat yoy ngaran yo.",
+          "speaker": "PAG_1213",
+          "seconds": 2.88
+        }
+      ],
+      "voices": [
+        {
+          "id": "PAG_1219",
+          "file": "xvectors/pag_PAG_1219.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "PAG_1213",
+          "file": "xvectors/pag_PAG_1213.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    },
+    "pam": {
+      "name": "Kapampangan",
+      "clips": [
+        {
+          "file": "samples/pam_0.wav",
+          "transcript": "Mga labingadwang libung pesus.",
+          "speaker": "PAM_0592",
+          "seconds": 3.77
+        },
+        {
+          "file": "samples/pam_1.wav",
+          "transcript": "Cuanan taya ing kecong timbang",
+          "speaker": "PAM_0402",
+          "seconds": 5.78
+        }
+      ],
+      "voices": [
+        {
+          "id": "PAM_0592",
+          "file": "xvectors/pam_PAM_0592.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "PAM_0402",
+          "file": "xvectors/pam_PAM_0402.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    },
+    "tsg": {
+      "name": "Tausug",
+      "clips": [
+        {
+          "file": "samples/tsg_0.wav",
+          "transcript": "nakakaun da kaw marayaw",
+          "speaker": "TSG_1450",
+          "seconds": 3.88
+        },
+        {
+          "file": "samples/tsg_1.wav",
+          "transcript": "Awn tiyu-tiyu hinglaw mu",
+          "speaker": "TSG_1447",
+          "seconds": 4.08
+        }
+      ],
+      "voices": [
+        {
+          "id": "TSG_1450",
+          "file": "xvectors/tsg_TSG_1450.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "TSG_1447",
+          "file": "xvectors/tsg_TSG_1447.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    },
+    "war": {
+      "name": "Waray",
+      "clips": [
+        {
+          "file": "samples/war_0.wav",
+          "transcript": "Kay ano \"pag-ukoy\" an tawag han mga Waraynon ha pag-ukoy dinhi ha kalibutan?",
+          "speaker": "WAR_1047",
+          "seconds": 7.38
+        },
+        {
+          "file": "samples/war_1.wav",
+          "transcript": "Daw duduha nga tukod nga waray bandera",
+          "speaker": "WAR_1054",
+          "seconds": 4.17
+        }
+      ],
+      "voices": [
+        {
+          "id": "WAR_1047",
+          "file": "xvectors/war_WAR_1047.npy",
+          "gender": "female",
+          "clips": 12
+        },
+        {
+          "id": "WAR_1054",
+          "file": "xvectors/war_WAR_1054.npy",
+          "gender": "male",
+          "clips": 12
+        }
+      ]
+    }
+  },
+  "source": "UP Diliman DSP Laboratory (PLD)"
+}

@@ -342,6 +342,34 @@ binding one** — time to first audio is 3.2 s on 2 cores, 6.7 s on 1, and 268 s
 on 0.1, so fractional-CPU tiers are unusable — while **memory is not**, since
 the weights are mmapped and one language fits in a hard 512 MB cap.
 
+## Serving — speech on the GB10 (TTS + ASR, streamed)
+
+[`serving/speech-ws/`](serving/speech-ws/) is the production counterpart of
+`tts-ws`: the same `/tts` wire contract, served by the **best published
+models** instead of the baselines, plus streaming **speech recognition** on
+`/asr` and OpenAI-shaped HTTP for NYO's gateway. Built for the GB10 and for
+being reached through NYO, where it appears as the model `sapin-speech` and
+powers the playground's Speak and Transcribe tabs.
+
+| | Model |
+|---|---|
+| TTS | Orpheus 3B + `sapinsapin/orpheus-3b-0.1-pretrained-char-pld-<lang>` (SNAC codec), streamed four frames at a time, resampled to the wire's 16 kHz without seams |
+| ASR | `sapinsapin/whisper-large-v3-pld-<lang>-norm`, endpointed into phrases with partials every 1.5 s |
+
+```bash
+cd serving/speech-ws
+python -m pytest tests                                   # the protocol, without any model
+docker build -t sapin/speech-ws . && docker run --rm --gpus all -p 8000:8000 -v /var/lib/nyo/models:/models -e HF_TOKEN=... sapin/speech-ws
+python tools/ws_client.py ws://localhost:8000/tts "Maayong buntag." --lang ceb --expect-streaming
+python tools/asr_client.py ws://localhost:8000/asr clip.wav --lang ceb
+```
+
+[`docs/GB10.md`](serving/speech-ws/docs/GB10.md) is the operator's path:
+`nyo-deploy sapin-speech` on a GB10 enrolled in NYO, or a hand-run container
+behind Tailscale or a Cloudflare tunnel; and what to measure the first time it
+runs there. [`docs/ASR_INTEGRATION.md`](serving/speech-ws/docs/ASR_INTEGRATION.md)
+is the partner-facing recognition contract.
+
 ---
 
 ## halolib
