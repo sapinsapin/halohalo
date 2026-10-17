@@ -19,3 +19,6 @@ ts-nebtok.txt
 
 # frozen PLD split specs hold corpus prompt text (CC-BY-NC, research-only)
 splits/
+
+# halo-collector web app run registry (collector/web/app.py)
+collector_state/
