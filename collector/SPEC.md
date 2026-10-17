@@ -13,12 +13,13 @@ vaults/halo-collector.yaml            # ant apply: vault container (display_name
 deployments/halo-collector-nightly.md # ant apply: nightly flywheel deployment (frontmatter = create body)
 collector/
   __init__.py
-  config.py        # resolves AGENT_ID / ENVIRONMENT_ID / VAULT_ID (env vars, else claude-lock.json)
+  config.py        # resolves HALO_AGENT_ID / HALO_ENVIRONMENT_ID / HALO_VAULT_ID (env vars, else claude-lock.json)
   jobs.py          # JobSpec, LANGUAGES, build_kickoff() -> user.define_outcome event
   runtime.py       # Collector: start / events / confirm / interrupt / outputs / download / status
   live_smoke.py    # first live run: preflight, one small job (push off), stream, report.md download
   setup_sdk.py     # ONE-TIME SETUP fallback when `ant` is unavailable (creates env, agent, vault, credentials)
   web/app.py       # FastAPI app; static/ is the single-page UI
+  web/demo.py      # DemoCollector for DEMO=1 (pacing: DEMO_DELAY seconds, default 0.4)
   web/static/{index.html,app.js,style.css}
   tests/           # pytest, no network: fake anthropic client
 docs/collector.md  # how to set up and run
@@ -121,18 +122,28 @@ Endpoints:
 - `GET  /`                                   → static index
 - `GET  /api/languages`                       → LANGUAGES
 - `GET  /api/jobs`                            → list of started jobs (in-memory registry, persisted to `jobs.json` under `COLLECTOR_STATE_DIR`)
-- `POST /api/jobs` `{kind, languages, max_docs?, max_sentences?, push?, notes?}` → `{session_id, title, console_url}`
+- `POST /api/jobs` `{kind, languages, max_docs?, max_sentences?, push?, notes?, max_iterations?}` → `{session_id, title, console_url}`
 - `GET  /api/jobs/{sid}/events`               → SSE of normalized Events (one `data:` JSON per event; `event: end` at terminal)
 - `POST /api/jobs/{sid}/confirm` `{tool_event_id, allow, message?}`
 - `POST /api/jobs/{sid}/interrupt`
-- `GET  /api/jobs/{sid}/status`
+- `GET  /api/jobs/{sid}/status`             → `{..., pending_asks: [...]}`
 - `GET  /api/jobs/{sid}/outputs`              → files list
 - `GET  /api/jobs/{sid}/outputs/{file_id}`     → file download
 
 The app constructs one `Collector` from `collector.config.load_ids()` and env
-(`GITHUB_TOKEN`). Tests inject a fake Collector via `app.state.collector`.
-`DEMO=1` env → a built-in fake Collector that replays a canned event script so
-the UI can be demoed without credentials.
+(`GITHUB_TOKEN`, `HALO_REPO_URL`, `HALO_REPO_BRANCH`). Tests inject a fake Collector
+via `app.state.collector`. `DEMO=1` env → a built-in fake Collector that replays a
+canned event script so the UI can be demoed without credentials.
+
+Other env vars: `COLLECTOR_STATE_DIR` (registry dir, default `./collector_state`),
+`COLLECTOR_ALLOWED_HOSTS` (comma-separated extra `Host` values besides loopback;
+other hosts and cross-origin writes get 403), `COLLECTOR_ASK_TIMEOUT_S` (auto-deny an
+unanswered tool ask, default 900, `0` disables), `WEB_CONCURRENCY` (>1 is refused:
+single process only). CLI flags: `runtime.py` `--kind --langs --max-docs --max-sentences
+--push --notes --deny-asks --no-history`; `live_smoke.py` `--kind --langs --max-docs
+--max-sentences --notes --setup --deny-asks --timeout-min --state-dir` (exit 0 satisfied,
+1 unsatisfied, 2 preflight, 3 timeout); `setup_sdk.py` `--dry-run --deployment
+--write-deployment --lock`.
 
 ## Testing rule
 

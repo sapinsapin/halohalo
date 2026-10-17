@@ -117,12 +117,14 @@ python -m collector.runtime --kind voice_discover --langs hil
 
 `--push` is accepted only for `collect` and lets the agent append finished shards to
 `sapinsapin/halo-{lang}`; without it everything stays staged under `/mnt/session/outputs/`.
-Every run prints its Console URL (`https://platform.claude.com/workspaces/<ws>/sessions/<id>`).
+Every run prints its Console URL (`https://platform.claude.com/workspaces/default/sessions/<id>`).
+`--notes` appends free text to the task, `--deny-asks` denies paused tool calls without
+prompting, `--no-history` skips the history replay before tailing.
 
 **From the web app**
 
 ```sh
-pip install fastapi uvicorn sse-starlette   # see collector/web/app.py for the exact list
+pip install fastapi uvicorn                 # both are in requirements.txt; SSE needs no extra package
 uvicorn collector.web.app:app --reload      # http://127.0.0.1:8000
 ```
 
@@ -145,13 +147,19 @@ the `user.tool_confirmation` echo arrives, and reloading a page whose session is
 
 ```sh
 DEMO=1 uvicorn collector.web.app:app        # canned event script, no credentials needed
+DEMO=1 DEMO_DELAY=0 uvicorn collector.web.app:app   # DEMO_DELAY = seconds between canned events (default 0.4)
 ```
+
+The app builds its `Collector` from `collector.config.load_ids()` plus `GITHUB_TOKEN`,
+`HALO_REPO_URL` (default `https://github.com/sapinsapin/halohalo`) and `HALO_REPO_BRANCH`
+(default `main`); the CLI uses the same IDs but always mounts the default repo and branch.
 
 Flow: pick a job kind → languages and options → start → watch the event stream → answer any
 paused tool call (bash runs under the `auto` policy; a call the server cannot decide on
 pauses the session until someone clicks allow/deny — unattended runs deny) → download the
 outputs. Started jobs are listed in `jobs.json` under `COLLECTOR_STATE_DIR`
-(default `collector_state/`, git-ignored).
+(default `collector_state/`, git-ignored; `live_smoke --state-dir` overrides it for `report.md`).
+`POST /api/jobs` also accepts `max_iterations` (default 4, API cap 20).
 
 **What a job produces** (all under `/mnt/session/outputs/`, downloadable via the Files API):
 
