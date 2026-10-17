@@ -8,6 +8,9 @@ the same shape, so collector/config.py reads either:
   python -m collector.setup_sdk                  # environment, agent, vault, credentials
   python -m collector.setup_sdk --deployment     # ... plus the nightly deployment
 
+`apply()` is the same thing as a function (returns the ids dict); `python -m
+collector.live_smoke --setup` calls it before the first live run.
+
 Resource definitions come from the files `ant apply` uses (agents/halo-collector.md,
 environments/halo-collector.yaml, vaults/halo-collector.yaml,
 deployments/halo-collector-nightly.md) so there is one source of truth.
@@ -238,12 +241,24 @@ def main(argv: list[str] | None = None) -> int:
         print(f"wrote {path}")
         return 0
 
+    if args.dry_run:
+        _dry_run(args.lock, deployment=args.deployment)
+        return 0
+
+    apply(lock_path=args.lock, deployment=args.deployment)
+    print(f"\nwrote {args.lock}")
+    return 0
+
+
+def _load_payloads() -> tuple[dict, dict, dict]:
     env_payload = load_yaml(ROOT / ENV_FILE)
     agent_payload = load_agent()
     vault_payload = load_yaml(ROOT / VAULT_FILE)
     vault_payload.pop("type", None)          # `type: vault` is a file marker, not an API field
-    lock = read_lock(args.lock)
+    return env_payload, agent_payload, vault_payload
 
+
+def _credentials_from_env() -> list[dict]:
     creds = []
     for name, hosts in CREDENTIALS.items():
         value = os.environ.get(name)
@@ -262,23 +277,41 @@ def main(argv: list[str] | None = None) -> int:
                 "injection_location": {"header": True, "body": True},
             },
         })
+    return creds
 
-    if args.dry_run:
-        _print_payload(f"environments.create  ({ENV_FILE})", env_payload)
-        _print_payload(f"agents.create  ({AGENT_FILE})", agent_payload)
-        _print_payload(f"vaults.create  ({VAULT_FILE})", vault_payload)
-        for c in creds:
-            _print_payload(f"vaults.credentials.create  ({c['display_name']})", c)
-        if args.deployment:
-            fake = {AGENT_FILE: "agent_...", ENV_FILE: "env_...", VAULT_FILE: "vlt_..."}
-            fake.update({k: v["id"] for k, v in lock.get("resources", {}).items()})
-            _print_payload(f"deployments.create  ({DEPLOYMENT_FILE})",
-                           _resolve_refs(load_deployment(), fake))
-        print("\n(dry run: nothing created; claude-lock.json untouched)")
-        return 0
 
-    import anthropic  # lazy: --dry-run must work without a key
-    client = anthropic.Anthropic()
+def _dry_run(lock_path: Path, *, deployment: bool) -> None:
+    env_payload, agent_payload, vault_payload = _load_payloads()
+    lock = read_lock(lock_path)
+    _print_payload(f"environments.create  ({ENV_FILE})", env_payload)
+    _print_payload(f"agents.create  ({AGENT_FILE})", agent_payload)
+    _print_payload(f"vaults.create  ({VAULT_FILE})", vault_payload)
+    for c in _credentials_from_env():
+        _print_payload(f"vaults.credentials.create  ({c['display_name']})", c)
+    if deployment:
+        fake = {AGENT_FILE: "agent_...", ENV_FILE: "env_...", VAULT_FILE: "vlt_..."}
+        fake.update({k: v["id"] for k, v in lock.get("resources", {}).items()})
+        _print_payload(f"deployments.create  ({DEPLOYMENT_FILE})",
+                       _resolve_refs(load_deployment(), fake))
+    print("\n(dry run: nothing created; claude-lock.json untouched)")
+
+
+def apply(lock_path: Path = LOCK, *, deployment: bool = False, client=None) -> dict:
+    """Create or update environment, agent, vault and credentials; write the lock file.
+
+    The programmatic form of `python -m collector.setup_sdk`: idempotent via the
+    lock file (an ID already there is updated, not recreated). Returns
+    ``{"agent_id", "environment_id", "vault_id", "deployment_id"}`` in the shape
+    `collector.config.load_ids()` produces (``deployment_id`` is None unless
+    `deployment=True`). `client` defaults to `anthropic.Anthropic()`.
+    """
+    env_payload, agent_payload, vault_payload = _load_payloads()
+    lock = read_lock(lock_path)
+    creds = _credentials_from_env()
+
+    if client is None:
+        import anthropic  # lazy: --dry-run must work without a key
+        client = anthropic.Anthropic()
 
     # environment
     env_id = lock_id(lock, ENV_FILE)
@@ -289,7 +322,7 @@ def main(argv: list[str] | None = None) -> int:
         env = client.beta.environments.create(**env_payload)
         print(f"created environment {env.id}")
     set_lock(lock, ENV_FILE, "environment", env.id)
-    write_lock(lock, args.lock)
+    write_lock(lock, lock_path)
 
     # agent
     agent_id = lock_id(lock, AGENT_FILE)
@@ -300,7 +333,7 @@ def main(argv: list[str] | None = None) -> int:
         agent = client.beta.agents.create(**agent_payload)
         print(f"created agent {agent.id} version {agent.version}")
     set_lock(lock, AGENT_FILE, "agent", agent.id, version=agent.version)
-    write_lock(lock, args.lock)
+    write_lock(lock, lock_path)
 
     # vault
     vault_id = lock_id(lock, VAULT_FILE)
@@ -311,7 +344,7 @@ def main(argv: list[str] | None = None) -> int:
         vault = client.beta.vaults.create(**vault_payload)
         print(f"created vault {vault.id}")
     set_lock(lock, VAULT_FILE, "vault", vault.id)
-    write_lock(lock, args.lock)
+    write_lock(lock, lock_path)
 
     # credentials: secret_name is unique per vault, so update in place when present
     existing = {}
@@ -333,7 +366,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"created credential {name}")
 
     # deployment (optional)
-    if args.deployment:
+    dep_id_out = None
+    if deployment:
         ids = {AGENT_FILE: agent.id, ENV_FILE: env.id, VAULT_FILE: vault.id}
         dep_payload = _resolve_refs(load_deployment(), ids)
         if not os.environ.get("GITHUB_TOKEN"):
@@ -348,11 +382,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"created deployment {dep.id}; pausing it until a manual run looks right")
             client.beta.deployments.pause(dep.id)
         set_lock(lock, DEPLOYMENT_FILE, "deployment", dep.id)
-        write_lock(lock, args.lock)
+        write_lock(lock, lock_path)
         print(f"next runs: {getattr(dep.schedule, 'upcoming_runs_at', None)}")
+        dep_id_out = dep.id
 
-    print(f"\nwrote {args.lock}")
-    return 0
+    return {"agent_id": agent.id, "environment_id": env.id, "vault_id": vault.id,
+            "deployment_id": dep_id_out}
 
 
 if __name__ == "__main__":
