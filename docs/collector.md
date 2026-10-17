@@ -201,6 +201,75 @@ ant beta:deployments unpause --deployment-id "$DEP"        # once a run looks ri
 fires, so a paused tool call waits indefinitely; keep `bash` on `auto`, and check runs with
 `ant beta:deployment-runs list --has-error true`.
 
+## Operating a run
+
+**Reading the feed.** `collector/runtime.py` normalises SDK events into a fixed shape
+(`id, type, ts, text, tool, input, permission, stop_reason, result, explanation, iteration,
+raw_type, answered`). The types you will act on:
+
+| `type` | source | what it tells you |
+|---|---|---|
+| `message` | `agent.message` | agent text |
+| `tool_use` / `tool_ask` | `agent.tool_use`, `agent.mcp_tool_use` | a tool call; `permission` is the server's verdict, `tool_ask` means it paused |
+| `custom_tool_use` | `agent.custom_tool_use` | not governed by a permission policy |
+| `idle` | `session.status_idle` | the session stopped; read `stop_reason` |
+| `terminated` | `session.status_terminated` | the session is gone; nothing more will arrive |
+| `outcome` | `span.outcome_evaluation_end` | one grader round: `result`, `explanation`, `iteration` (0-based) |
+| `usage` | `span.model_request_end` | token counts in `input` |
+| `user_event` | `user.*` (and the app's `web.auto_deny`) | your own kickoff, confirmations, interrupts |
+| `other` | anything else | ignore |
+
+A replayed `tool_ask` that a `user.tool_confirmation` already answered comes back as
+`tool_use` with `answered: true`; it never needs a decision again.
+
+**Paused tool calls.** `bash` runs under the `auto` permission policy: the server either runs
+the call, denies it as high-risk (the agent gets an error tool result, the session keeps
+running, you cannot override), or pauses it when it cannot decide. A pause is a `tool_ask`
+event plus `idle` with `stop_reason: requires_action`; the web app shows it as a
+**Needs your decision** card (tool name, input) and marks the job `needs_decision`. Click
+**Allow** or **Deny**; the optional message is sent only on Deny, as `deny_message`. The CLI
+asks `allow <tool>? [y/N]` (default deny); `--deny-asks` denies everything without asking.
+Rule of thumb for this agent: allow pipeline commands under `/mnt/repo` and writes under
+`/mnt/session/outputs/`; deny anything that pushes to git, installs GPU packages, reads
+secrets, or reaches hosts outside the network policy. The environment blocks those anyway,
+but a deny is cheaper than letting the call fail and the agent retry.
+
+Answers from the Console also count: the `user.tool_confirmation` echo removes the card.
+Reloading the page while a session is `idle` with a pending ask reconnects to the stream
+rather than treating the run as finished. A card nobody answers within
+`COLLECTOR_ASK_TIMEOUT_S` seconds (default 900, `0` disables) is **auto-denied**: the app
+sends a deny with "No operator answered within the timeout", drops the card, and writes a
+`web.auto_deny` line to the feed; the agent sees the denial and continues the job without
+that call. Nightly deployment runs have no app attached, so a pause there waits forever.
+
+**Interrupt** sends `user.interrupt`: the agent halts mid-task, the active outcome ends with
+`result: interrupted`, and the session goes `idle` with `stop_reason: end_turn`, the same
+value a finished turn carries. Partial outputs stay fetchable.
+
+**Reading `idle`.** `requires_action` means a tool call is waiting on you; answer it, the
+run is not over. `end_turn` means the agent stopped on its own (outcome terminal, or
+interrupted). `budget_reached` means a session budget capped spend: nothing you send
+resumes it, raise or remove the budget in the Console. The app treats a job as finished only
+when it is `terminated`/`ended`, or `idle` with no pending ask and an outcome result.
+
+**Grader results.** Each `outcome` event is one round of the rubric from `collector/jobs.py`:
+`needs_revision` means another iteration starts (keep watching); `satisfied` means every
+criterion passed; `max_iterations_reached` (default 4, API cap 20, `max_iterations` on
+`POST /api/jobs`) means the grader gave up, the agent may do one last revision, and the
+outputs are whatever it had; `failed` means the rubric and task contradict, fix `jobs.py`
+rather than rerunning; `interrupted` means you stopped it. Read `explanation` for the
+per-criterion gaps, then `report.md`'s **Not done** section before trusting any count.
+`GET /api/jobs/{sid}/status` and `Collector.status()` return the last result as `outcome`.
+
+**Outputs.** Everything lands under `/mnt/session/outputs/` (table in section 3) and is
+listed once the run ends: in the web app's Outputs panel (`GET /api/jobs/{sid}/outputs`,
+download via `/outputs/{file_id}`, saved under `collector_state/downloads/{sid}/`); from the
+CLI, which prints `output <id> <filename> <bytes>` after the stream closes; or directly with
+`client.beta.files.list(scope_id=session_id, betas=["managed-agents-2026-04-01"])` and
+`files.download(file_id)`. Listing retries twice for indexing lag. Nothing reaches
+`sapinsapin/halo-{lang}` unless the job was started with push allowed (`--push`, or the
+checkbox; `collect` only), and even then only languages whose manifest shows a finished run.
+
 ## 5. Limits
 
 - **No GPU.** No ASR, no alignment, no fine-tuning in the sandbox; `requirements.txt`'s GPU
