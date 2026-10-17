@@ -15,3 +15,8 @@ config:
       - huggingface.co
       - "*.huggingface.co"
       - api.tavily.com
+      # voice_discover: yt-dlp search and licence probes (no audio download)
+      - youtube.com
+      - www.youtube.com
+      - "*.googlevideo.com"
+      - "*.ytimg.com"

@@ -37,7 +37,7 @@ docs/collector.md  # how to set up and run
   `bash` stays on `auto`; the run is unattended most of the time, so the
   runtime denies paused calls unless a person answers from the web app.
 - Environment: `cloud`, `limited`, `allow_package_managers: true`,
-  `allowed_hosts: [huggingface.co, "*.huggingface.co", api.tavily.com]`.
+  `allowed_hosts: [huggingface.co, "*.huggingface.co", api.tavily.com, youtube.com, www.youtube.com, "*.googlevideo.com", "*.ytimg.com"]` (the YouTube hosts exist only for `voice_discover`).
 - Repo mount: `https://github.com/sapinsapin/halohalo` at `/mnt/repo`,
   branch `main`, token from `GITHUB_TOKEN` (never stored in files).
 - Vault credentials (`environment_variable`): `HF_TOKEN` (hosts

@@ -170,10 +170,12 @@ fires, so a paused tool call waits indefinitely; keep `bash` on `auto`, and chec
   stages are not installed. GlotLID (1.7 GB) is skipped by default (`--no-glotlid`), so rows
   carry the HaloLID verdict only unless a job asks otherwise.
 - **Voice = discovery only.** `voice_discover` lists CC-licensed YouTube videos; nothing is
-  downloaded. YouTube is not in the environment's `allowed_hosts`, so expect this job to
-  report "Not done" until that host is added deliberately.
+  downloaded. The environment allows `youtube.com`, `www.youtube.com`, `*.googlevideo.com`
+  and `*.ytimg.com` for yt-dlp's search and licence probes only. The pipeline
+  licence-probes the first 40 candidates per language, so later rows carry
+  `license: unknown` and are counted separately in `report.md`.
 - **Networking is deny-by-default.** Only `huggingface.co`, `*.huggingface.co`,
-  `api.tavily.com` and package indexes are reachable. Tavily returns page text with its
+  `api.tavily.com`, the YouTube hosts above and package indexes are reachable. Tavily returns page text with its
   results, so the scrape works, but the live-fetch step fails and the pipeline falls back
   to the search dump; `report.md` records the fetch failures.
 - **Pushes are gated twice**: the job must be started with push allowed, and the agent pushes
