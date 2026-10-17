@@ -113,10 +113,12 @@ def _description(spec: JobSpec) -> str:
         "voice_discover": (
             f"Job kind: voice_discover. Languages: {langs}. Hub push allowed: {push}.\n\n"
             f"Run `scrape_web.py --voice` (no --download-audio) for these languages and write "
-            f"voice/{{lang}}.jsonl under {OUTPUTS}/ listing only Creative-Commons-licensed "
-            f"YouTube videos whose spoken language matched: video_id, url, title, license, "
-            f"duration_s, channel. Then write report.md. No audio is downloaded and no ASR "
-            f"runs in this job."
+            f"voice/{{lang}}.jsonl under {OUTPUTS}/ listing YouTube videos whose spoken language "
+            f"matched and that are Creative-Commons-licensed or not yet licence-probed (the "
+            f"pipeline probes the first 40 candidates per language; write unprobed rows with "
+            f"license \"unknown\"): video_id, url, title, license, duration_s, channel. Drop "
+            f"videos probed as Standard-YouTube-licensed. Then write report.md. No audio is "
+            f"downloaded and no ASR runs in this job."
         ),
     }[spec.kind]
     if spec.notes.strip():
@@ -212,12 +214,13 @@ def _rubric(spec: JobSpec) -> str:
             f"(possibly empty) and is valid JSON lines.",
             "Every row has exactly the keys video_id, url, title, license, duration_s, channel; "
             "`url` is `https://www.youtube.com/watch?v=` + video_id.",
-            "Every row's `license` names a Creative Commons licence; no row with an unknown, "
-            "empty or Standard YouTube licence is included.",
+            "Every row's `license` is either the name of a Creative Commons licence or the "
+            "string \"unknown\" (not yet probed); no row with an empty or Standard YouTube "
+            "licence is included.",
             "Every `duration_s` is a positive number and every `channel` is a non-empty string.",
             "No audio file (.wav, .m4a, .mp3, .webm) exists under `/mnt/session/outputs/`.",
-            "report.md gives per-language counts of candidates found, LID-matched, CC-licensed, "
-            "and total CC hours.",
+            "report.md gives per-language counts of candidates found, LID-matched, CC-confirmed, "
+            "licence-unknown, and total CC-confirmed hours.",
         ]
     lines = [f"# Rubric for job kind `{spec.kind}`", ""]
     lines += [f"{i}. {c}" for i, c in enumerate(items + _common_tail(spec), 1)]

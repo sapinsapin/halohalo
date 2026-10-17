@@ -85,13 +85,15 @@ Output contract the rubric enforces (all under `/mnt/session/outputs/`):
 Event = dict   # normalized, JSON-serialisable:
 # {"id": str, "type": str, "ts": str|None, "text": str|None, "tool": str|None,
 #  "input": dict|None, "permission": str|None, "stop_reason": str|None,
-#  "result": str|None, "explanation": str|None, "iteration": int|None, "raw_type": str}
+#  "result": str|None, "explanation": str|None, "iteration": int|None, "raw_type": str,
+#  "answered": bool}   # a historical tool_ask already answered replays as tool_use with answered=True
 
 class Collector:
     def __init__(self, client=None, *, agent_id=None, environment_id=None,
                  vault_ids=None, repo_url=None, repo_branch="main", repo_token=None): ...
     def start(self, spec: JobSpec, title: str | None = None) -> str   # session id
-    def events(self, session_id: str, *, include_history=True) -> Iterator[Event]
+    def events(self, session_id: str, *, include_history=True, on_open=None) -> Iterator[Event]
+        # on_open(stream) gets the SDK stream so the caller can close() it on client disconnect
         # stream-first; history via events.list deduped by id; yields until terminal gate
         # (session.status_terminated, or status_idle with stop_reason != requires_action)
         # paused tool calls (evaluated_permission == "ask") are yielded with type "tool_ask"
