@@ -1,0 +1,49 @@
+name: collector-tests
+
+on:
+  push:
+    paths:
+      - "collector/**"
+      - "agents/**"
+      - "environments/**"
+      - "vaults/**"
+      - "deployments/**"
+      - "requirements.txt"
+      - ".github/workflows/collector-tests.yml"
+  pull_request:
+    paths:
+      - "collector/**"
+      - "agents/**"
+      - "environments/**"
+      - "vaults/**"
+      - "deployments/**"
+      - "requirements.txt"
+      - ".github/workflows/collector-tests.yml"
+
+jobs:
+  test:
+    name: halo-collector test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: .github/workflows/collector-tests.yml
+
+      # Only what collector/tests needs. Deliberately NOT requirements.txt,
+      # which pulls torch / faster-whisper / onnxruntime etc. for the
+      # audio pipelines and is far too heavy for CI.
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install anthropic fastapi uvicorn httpx pytest pytest-timeout pyyaml ruff
+
+      - name: Lint collector
+        run: ruff check collector --select E,F,W,B --ignore E501,E741
+
+      - name: Run collector tests
+        run: python -m pytest collector/tests -q --timeout 120

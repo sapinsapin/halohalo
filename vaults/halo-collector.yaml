@@ -1,0 +1,19 @@
+# vaults/halo-collector.yaml - the vault CONTAINER only, never a credential.
+# `ant apply vaults/halo-collector.yaml` creates it and records vlt_... in
+# claude-lock.json. Credentials are added separately and are never read or
+# diffed by ant apply:
+#
+#   python -m collector.setup_sdk            # reads HF_TOKEN / TAVILY_API_KEY from env
+#
+# or by hand (type each secret at the prompt, one block at a time):
+#
+#   VAULT_ID=$(jq -r '.resources["./vaults/halo-collector.yaml"].id' claude-lock.json)
+#   read -rs HF_TOKEN && ant beta:vaults:credentials create --vault-id "$VAULT_ID" <<YAML
+#   display_name: HF_TOKEN
+#   auth: {type: environment_variable, secret_name: HF_TOKEN, secret_value: "$HF_TOKEN",
+#          networking: {type: limited, allowed_hosts: [huggingface.co, "*.huggingface.co"]},
+#          injection_location: {header: true, body: true}}
+#   YAML
+#
+# (same for TAVILY_API_KEY with allowed_hosts: [api.tavily.com]). See docs/collector.md.
+display_name: halo-collector

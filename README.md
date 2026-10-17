@@ -281,6 +281,25 @@ See [`docs/web_scrape_pipeline.md`](docs/web_scrape_pipeline.md).
 
 ---
 
+## Data collection agent — halo-collector (Claude Managed Agents)
+
+`agents/halo-collector.md` defines a hosted agent that runs the seeded scrape,
+validates sentences, writes instruction-tuning pairs and discovers CC-licensed
+speech for the ten PLD languages, one job per session, graded against a
+rubric. `collector/` holds the runtime, a CLI and a web app with the same
+flow (pick a job → languages → watch the run → answer paused tool calls →
+download outputs).
+
+```bash
+ant apply agents/halo-collector.md environments/halo-collector.yaml vaults/halo-collector.yaml
+python -m collector.runtime --kind collect --langs ceb,war     # one run from the terminal
+uvicorn collector.web.app:app                                  # web app on :8000 (DEMO=1 needs no credentials)
+```
+
+See [`docs/collector.md`](docs/collector.md).
+
+---
+
 ## Finetuning workflows
 
 Two dataset-swappable finetuning scripts consume the published corpora. Both

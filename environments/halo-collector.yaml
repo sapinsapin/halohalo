@@ -1,0 +1,22 @@
+# environments/halo-collector.yaml - environment create body for `ant apply`.
+# Cloud sandbox, deny-by-default networking. Package indexes are open so the
+# agent can `pip install -r requirements.txt`; the only other hosts are the
+# Hugging Face Hub (HaloLID model, halo-{lang} datasets, pushes) and Tavily
+# (the pipeline's search backend). Page hosts are NOT reachable: Tavily
+# returns page text with its results, and the agent reports fetch failures.
+name: halo-collector
+description: Sandbox for the halo-collector agent (halohalo scrape pipeline, no GPU).
+config:
+  type: cloud
+  networking:
+    type: limited
+    allow_package_managers: true
+    allowed_hosts:
+      - huggingface.co
+      - "*.huggingface.co"
+      - api.tavily.com
+      # voice_discover: yt-dlp search and licence probes (no audio download)
+      - youtube.com
+      - www.youtube.com
+      - "*.googlevideo.com"
+      - "*.ytimg.com"

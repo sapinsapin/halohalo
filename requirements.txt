@@ -29,3 +29,9 @@ trafilatura
 fasttext-wheel
 datasketch
 yt-dlp
+
+# halo-collector — Claude Managed Agent + web app (collector/, docs/collector.md)
+anthropic>=1.15
+fastapi
+uvicorn
+pyyaml

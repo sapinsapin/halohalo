@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>halo-collector</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <h1>halo-collector</h1>
+  <span class="muted">collect · validate · instruct · voice for the ten PLD languages</span>
+</header>
+
+<main class="layout">
+  <aside class="runs">
+    <h2>Runs</h2>
+    <ul id="runs"></ul>
+    <button id="new-run" class="ghost">+ New job</button>
+  </aside>
+
+  <section id="compose" class="panel">
+    <h2>1. Pick a job</h2>
+    <div class="cards" id="kinds">
+      <label class="card"><input type="radio" name="kind" value="collect" checked>
+        <b>Collect text</b><span>Scrape, dedupe and shard web text into parquet per language.</span></label>
+      <label class="card"><input type="radio" name="kind" value="validate">
+        <b>Validate sentences</b><span>Grade sampled rows ok/reject with a reason and confidence.</span></label>
+      <label class="card"><input type="radio" name="kind" value="instruct">
+        <b>Instruction pairs</b><span>Turn validated rows into instruction / input / output triples.</span></label>
+      <label class="card"><input type="radio" name="kind" value="voice_discover">
+        <b>Voice discovery</b><span>Find CC-licensed YouTube videos per language (no download).</span></label>
+    </div>
+
+    <h2>2. Languages &amp; options</h2>
+    <div class="chips" id="langs"></div>
+    <div class="options">
+      <label id="opt-docs">Max docs / language <input type="number" id="max_docs" value="300" min="1"></label>
+      <label id="opt-sent">Max sentences / language <input type="number" id="max_sentences" value="500" min="1"></label>
+      <label class="toggle"><input type="checkbox" id="push"> Push to Hugging Face Hub
+        <small class="warn" id="push-warn" hidden>Writes to sapinsapin/halo-{lang}. Only turn this on for a run you intend to publish.</small></label>
+      <label>Notes <textarea id="notes" rows="2" placeholder="Anything the agent should know (optional)"></textarea></label>
+    </div>
+
+    <h2>3. Start</h2>
+    <div class="row"><button id="start" class="primary">Start job</button><span id="start-msg" class="muted"></span></div>
+  </section>
+
+  <section id="run" class="panel" hidden>
+    <div class="run-head">
+      <div><h2 id="run-title"></h2><span id="run-status" class="pill"></span></div>
+      <div class="row">
+        <a id="console-link" target="_blank" rel="noopener" class="ghost">Console ↗</a>
+        <button id="interrupt" class="danger">Interrupt</button>
+      </div>
+    </div>
+
+    <div id="asks"></div>
+
+    <h3>Live feed</h3>
+    <div id="feed" class="feed"></div>
+    <div id="usage" class="muted"></div>
+
+    <h3>Outputs</h3>
+    <ul id="outputs" class="outputs"><li class="muted">Available once the run ends.</li></ul>
+  </section>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>
