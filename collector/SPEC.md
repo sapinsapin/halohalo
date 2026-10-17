@@ -16,6 +16,7 @@ collector/
   config.py        # resolves AGENT_ID / ENVIRONMENT_ID / VAULT_ID (env vars, else claude-lock.json)
   jobs.py          # JobSpec, LANGUAGES, build_kickoff() -> user.define_outcome event
   runtime.py       # Collector: start / events / confirm / interrupt / outputs / download / status
+  live_smoke.py    # first live run: preflight, one small job (push off), stream, report.md download
   setup_sdk.py     # ONE-TIME SETUP fallback when `ant` is unavailable (creates env, agent, vault, credentials)
   web/app.py       # FastAPI app; static/ is the single-page UI
   web/static/{index.html,app.js,style.css}

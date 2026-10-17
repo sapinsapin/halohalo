@@ -13,9 +13,30 @@ deployments/halo-collector-nightly.md # optional nightly collect, 02:00 Asia/Man
 collector/jobs.py                     # JobSpec -> user.define_outcome (description + rubric)
 collector/setup_sdk.py                # SDK fallback for ant apply; writes claude-lock.json
 collector/runtime.py                  # Collector: start / events / confirm / outputs
+collector/live_smoke.py               # first live run: preflight + one small job + report.md
 collector/web/app.py                  # FastAPI single-page UI
 claude-lock.json                      # resource IDs (written by ant apply or setup_sdk)
 ```
+
+## First live run
+
+Once `ANTHROPIC_API_KEY` is set and the vault credentials exist, one command does the
+whole first run end to end (no Hub push, ever):
+
+```sh
+python -m collector.live_smoke                       # validate · ceb · 20 sentences, 30 min budget
+python -m collector.live_smoke --setup --deny-asks   # also create env/agent/vault first (idempotent)
+python -m collector.live_smoke --kind collect --langs war --max-docs 10 --timeout-min 15
+```
+
+It checks the environment first without calling the API (`ANTHROPIC_API_KEY` or
+`ANTHROPIC_AUTH_TOKEN` required; `GITHUB_TOKEN`, `HF_TOKEN`, `TAVILY_API_KEY` only warned
+about — at run time the vault credentials are what count), exits 2 with the two setup
+commands if `claude-lock.json`/`HALO_*_ID` are missing, starts the job, streams it to the
+terminal, denies paused tool calls unless you answer `y` on a tty (`--deny-asks` never asks),
+interrupts the session when the budget runs out (exit 3), then prints the status, lists the
+outputs and saves `report.md` to `collector_state/smoke/<session id>/`. Exit 0 means the
+outcome grader said `satisfied`; 1 is anything else.
 
 ## 1. Create the resources
 
