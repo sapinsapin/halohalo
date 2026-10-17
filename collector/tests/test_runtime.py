@@ -4,15 +4,13 @@ from __future__ import annotations
 import sys
 import types
 from dataclasses import dataclass, field
-from pathlib import Path
 
 import pytest
 
 from collector import config, runtime
 from collector.runtime import Collector
 from collector.tests.fake_client import (
-    FakeClient, demo_script, ev_define_outcome, ev_idle, ev_message, ev_model_request_end,
-    ev_other, ev_outcome_end, ev_terminated, ev_tool_use, fake_file,
+    FakeClient, demo_script, ev_idle, ev_message, ev_other, ev_terminated, ev_tool_use, fake_file,
 )
 from types import SimpleNamespace as NS
 

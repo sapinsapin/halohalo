@@ -172,7 +172,6 @@ class DemoCollector:
         spec = sess.spec
         langs = getattr(spec, "languages", None) or ["ceb"]
         kind = getattr(spec, "kind", "collect")
-        lang = langs[0]
 
         def step(ev: Event) -> bool:
             if sess.interrupted.is_set():

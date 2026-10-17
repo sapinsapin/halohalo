@@ -463,7 +463,7 @@ def _main(argv: list[str] | None = None) -> int:
         if ev["type"] == "tool_ask":
             allow = False
             if args.deny_asks:
-                print(f"  -> denied (--deny-asks)")
+                print("  -> denied (--deny-asks)")
             else:
                 answer = input(f"  allow {ev['tool']}? [y/N] ").strip().lower()
                 allow = answer in ("y", "yes")

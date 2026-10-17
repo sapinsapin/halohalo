@@ -30,7 +30,7 @@ from typing import Any, Literal, Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 
 STATIC_DIR = Path(__file__).parent / "static"
 KINDS = ("collect", "validate", "instruct", "voice_discover")
@@ -339,7 +339,8 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None,
         except HTTPException:
             raise
         except Exception as e:
-            log.exception("could not start job"); raise HTTPException(502, "could not start job") from e
+            log.exception("could not start job")
+            raise HTTPException(502, "could not start job") from e
         job = {
             "session_id": sid, "title": title, "kind": body.kind, "languages": body.languages,
             "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -472,7 +473,8 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None,
         try:
             return await asyncio.to_thread(col.outputs, sid)
         except Exception as e:
-            log.exception("outputs failed"); raise HTTPException(502, "outputs failed") from e
+            log.exception("outputs failed")
+            raise HTTPException(502, "outputs failed") from e
 
     @app.get("/api/jobs/{sid}/outputs/{file_id}")
     async def download(request: Request, sid: str, file_id: str):
@@ -494,7 +496,8 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None,
         try:
             path = await asyncio.to_thread(col.download, sid, file_id, dest)
         except Exception as e:
-            log.exception("download failed"); raise HTTPException(404, "download failed") from e
+            log.exception("download failed")
+            raise HTTPException(404, "download failed") from e
         return FileResponse(Path(path), filename=Path(safe).name, media_type=_media_type(safe))
 
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
