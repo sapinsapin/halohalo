@@ -32,6 +32,7 @@ h1 { font-size: 20px; margin: 0; } h2 { font-size: 16px; margin: 18px 0 8px; } h
 .chip code { opacity: .7; margin-left: 4px; }
 .options { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .options label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.options label[hidden] { display: none; }
 .options label.toggle { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px; }
 .options .warn { flex-basis: 100%; color: var(--warn); }
 input[type=number], textarea { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }

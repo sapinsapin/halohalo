@@ -307,3 +307,50 @@ def test_demo_mode(tmp_path, monkeypatch):
         assert [f["filename"] for f in files] == ["report.md", "text/war/shard-00000.parquet"]
         d = client.get(f"/api/jobs/{sid}/outputs/{files[0]['id']}")
         assert d.status_code == 200 and b"demo" in d.content
+
+
+# -- hardening (security review) --------------------------------------------
+
+def test_download_refuses_unlisted_file_id(client, fake):
+    sid = _start(client).json()["session_id"]
+    r = client.get(f"/api/jobs/{sid}/outputs/file_from_another_session")
+    assert r.status_code == 404
+    assert fake.downloads == []          # never fetched from the Files API
+
+
+def test_download_confines_crafted_filenames(client, fake, tmp_path):
+    fake.outputs = lambda sid: [{"id": "evil", "filename": "../../escape.txt", "size_bytes": 1},
+                                {"id": "win", "filename": "text\\..\\escape2.txt", "size_bytes": 1}]
+    sid = _start(client).json()["session_id"]
+    for fid in ("evil", "win"):
+        r = client.get(f"/api/jobs/{sid}/outputs/{fid}")
+        assert r.status_code in (200, 400)
+    escaped = [p for p in tmp_path.rglob("escape*.txt")]
+    base = tmp_path / "downloads" / sid
+    assert all(base in p.parents for p in escaped), escaped
+
+
+def test_cross_origin_write_refused(client, fake):
+    r = client.post("/api/jobs", content='{"kind":"collect","languages":["ceb"],"push":true}',
+                    headers={"Origin": "https://evil.example", "Content-Type": "text/plain"})
+    assert r.status_code in (403, 422)
+    assert fake.started == []
+    r = client.post("/api/jobs", json={"kind": "collect", "languages": ["ceb"]},
+                    headers={"Origin": "https://evil.example"})
+    assert r.status_code == 403
+    assert fake.started == []
+    r = client.post("/api/jobs", json={"kind": "collect", "languages": ["ceb"]},
+                    headers={"Origin": "http://testserver"})
+    assert r.status_code == 200
+
+
+def test_foreign_host_refused(client):
+    r = client.get("/api/languages", headers={"Host": "attacker.example"})
+    assert r.status_code == 403
+
+
+def test_error_bodies_are_generic(client, fake):
+    fake.start = lambda spec, title=None: (_ for _ in ()).throw(RuntimeError("/secret/path token=abc"))
+    r = _start(client)
+    assert r.status_code == 502
+    assert "abc" not in r.text and "/secret" not in r.text

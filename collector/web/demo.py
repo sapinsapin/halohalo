@@ -107,15 +107,16 @@ class DemoCollector:
                 "usage": dict(sess.usage)}
 
     def outputs(self, session_id: str) -> list[dict]:
-        self._get(session_id)
-        lang = "ceb"
-        langs = getattr(self._sessions[session_id].spec, "languages", None) or []
-        if langs:
-            lang = langs[0]
-        return [
-            {"id": "file_demo_report", "filename": "report.md", "size_bytes": 412},
-            {"id": "file_demo_shard", "filename": f"text/{lang}/shard-00000.parquet", "size_bytes": 2048},
-        ]
+        sess = self._get(session_id)
+        langs = getattr(sess.spec, "languages", None) or ["ceb"]
+        kind = getattr(sess.spec, "kind", "collect")
+        per_lang = {"collect": "text/{lang}/shard-00000.parquet", "validate": "validated/{lang}.jsonl",
+                    "instruct": "instruct/{lang}.jsonl", "voice_discover": "voice/{lang}.jsonl"}
+        files = [{"id": "file_demo_report", "filename": "report.md", "size_bytes": 412}]
+        for i, lang in enumerate(langs):
+            files.append({"id": f"file_demo_shard_{i}", "filename": per_lang.get(kind, per_lang["collect"]).format(lang=lang),
+                          "size_bytes": 2048})
+        return files
 
     def download(self, session_id: str, file_id: str, dest: Path) -> Path:
         self._get(session_id)
@@ -167,17 +168,46 @@ class DemoCollector:
             time.sleep(d)
             return not sess.interrupted.is_set()
 
+        # One narrative per job kind, covering every requested language.
+        cap = getattr(spec, "max_sentences", 500) if kind != "collect" else getattr(spec, "max_docs", 300)
+        lang_list = ",".join(langs)
+        if kind == "collect":
+            cmd = (f"python /mnt/repo/scrape_web.py --langs {lang_list} --max-docs {cap} "
+                   f"--no-glotlid --out /mnt/session/outputs")
+            plan = "run the seeded scrape, then gate the pages by language ID"
+            done = " ".join(f"{l}: accepted={212 - 17 * i} rejected={38 + 5 * i} shards=1" for i, l in enumerate(langs))
+            wrote = "text/{lang}/shard-00000.parquet, manifest.jsonl and report.md"
+            verdict = "Shards, manifest and report are present; sample rows pass the language check."
+        elif kind == "validate":
+            cmd = (f"python -c 'import datasets' && python /mnt/repo/collector_demo_validate.py "
+                   f"--langs {lang_list} --max {cap}")
+            plan = f"load up to {cap} sentences per language and judge each one"
+            done = " ".join(f"{l}: ok={int(cap * 0.8)} reject={cap - int(cap * 0.8)}" for l in langs)
+            wrote = "validated/{lang}.jsonl and report.md"
+            verdict = "Every row has verdict, reason, confidence in [0,1] and validator=model."
+        elif kind == "instruct":
+            cmd = f"python /mnt/repo/collector_demo_instruct.py --langs {lang_list} --max {cap}"
+            plan = f"write up to {cap} instruction pairs per language from validated rows"
+            done = " ".join(f"{l}: pairs={cap} task_types=6" for l in langs)
+            wrote = "instruct/{lang}.jsonl and report.md"
+            verdict = "Pairs carry instruction, output, task_type, source_row and license."
+        else:
+            cmd = f"python /mnt/repo/scrape_web.py --voice --langs {lang_list} --no-text"
+            plan = "search YouTube with the language seeds and keep CC-licensed videos only"
+            done = " ".join(f"{l}: cc_videos={14 + i}" for i, l in enumerate(langs))
+            wrote = "voice/{lang}.jsonl and report.md"
+            verdict = "Every row has video_id, url, license (CC) and duration_s."
+
         script = [
             _event(type="status", text="Session started (demo mode, no network)", raw_type="session.status_running"),
-            _event(type="text", text=f"Starting a {kind} job for {', '.join(langs)}. "
-                                    "I will read the pipeline docs first, then run the scraper.",
+            _event(type="text", text=f"Starting a {kind} job for {lang_list}. "
+                                    f"I will read the pipeline docs first, then {plan}.",
                    raw_type="agent.message"),
-            _event(type="tool_call", tool="bash", input={"command": "cat /mnt/repo/docs/pipeline.md | head -40"},
+            _event(type="tool_call", tool="bash", input={"command": "cat /mnt/repo/docs/web_scrape_pipeline.md | head -40"},
                    permission="allow", raw_type="agent.tool_use"),
-            _event(type="tool_result", tool="bash", result="# Pipeline\n...(40 lines)...",
+            _event(type="tool_result", tool="bash", result="# Seeded web scrape\n...(40 lines)...",
                    raw_type="agent.tool_result"),
-            _event(type="text", text=f"Running the scraper for `{lang}` with a cap of "
-                                    f"{getattr(spec, 'max_docs', 300)} documents.",
+            _event(type="text", text=f"Working on {lang_list} with a cap of {cap} per language.",
                    raw_type="agent.message"),
         ]
         for ev in script:
@@ -187,10 +217,8 @@ class DemoCollector:
         # A paused tool call that waits for /confirm.
         ask_id = f"{sess.sid}-ask-1"
         ask = _event(id=ask_id, type="tool_ask", tool="bash", permission="ask",
-                     input={"command": f"python /mnt/repo/scripts/scrape_web.py --lang {lang} "
-                                       f"--max-docs {getattr(spec, 'max_docs', 300)} "
-                                       f"--out /mnt/session/outputs/text/{lang}"},
-                     text="The agent wants to run the scraper. Allow?",
+                     input={"command": cmd},
+                     text="The agent wants to run the pipeline step. Allow?",
                      raw_type="agent.tool_use")
         self._emit(sess, ask)
         while not sess.answered.wait(timeout=0.5):
@@ -202,28 +230,24 @@ class DemoCollector:
 
         if allow:
             tail = [
-                _event(type="tool_result", tool="bash",
-                       result=f"accepted=212 rejected=38 shards=1 -> text/{lang}/shard-00000.parquet",
-                       raw_type="agent.tool_result"),
-                _event(type="text", text="Scrape finished. Writing manifest.jsonl and report.md.",
-                       raw_type="agent.message"),
+                _event(type="tool_result", tool="bash", result=done, raw_type="agent.tool_result"),
+                _event(type="text", text=f"Step finished. Writing {wrote}.", raw_type="agent.message"),
                 _event(type="tool_call", tool="bash",
                        input={"command": "ls -la /mnt/session/outputs"}, permission="allow",
                        raw_type="agent.tool_use"),
                 _event(type="outcome", result="satisfied", iteration=1,
-                       explanation="Shards, manifest and report are present; sample rows pass the "
-                                   "language check. Push skipped (push=False).",
+                       explanation=verdict + " Push skipped (push=False).",
                        raw_type="outcome.graded"),
             ]
             final = "idle"
             sess.outcome = "satisfied"
         else:
             tail = [
-                _event(type="text", text="The scraper call was denied"
+                _event(type="text", text="The pipeline step was denied"
                        + (f" (\"{message}\")" if message else "") + ". Stopping without outputs.",
                        raw_type="agent.message"),
                 _event(type="outcome", result="unsatisfied", iteration=1,
-                       explanation="No shards were produced because the scraper was not allowed to run.",
+                       explanation="No outputs were produced because the pipeline step was not allowed to run.",
                        raw_type="outcome.graded"),
             ]
             final = "idle"

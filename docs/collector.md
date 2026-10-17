@@ -103,6 +103,18 @@ Every run prints its Console URL (`https://platform.claude.com/workspaces/<ws>/s
 ```sh
 pip install fastapi uvicorn sse-starlette   # see collector/web/app.py for the exact list
 uvicorn collector.web.app:app --reload      # http://127.0.0.1:8000
+```
+
+The app has **no authentication**. Keep it on `127.0.0.1` (uvicorn's default):
+never run it with `--host 0.0.0.0` or behind a reverse proxy without adding
+auth, because it can start jobs with Hub push, approve `bash` calls inside the
+sandbox, interrupt runs and serve output files. Requests whose `Host` is not
+loopback, or whose `Origin` differs from the host on a write, are refused with
+403 (set `COLLECTOR_ALLOWED_HOSTS=myhost` to allow another name). Don't run it
+with `ANTHROPIC_LOG=debug` on a shared machine: the SDK's debug log prints
+request bodies, which include the repo token sent on session creation.
+
+```sh
 DEMO=1 uvicorn collector.web.app:app        # canned event script, no credentials needed
 ```
 

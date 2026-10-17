@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import threading
 import time
@@ -33,7 +34,9 @@ from pydantic import BaseModel, Field, ValidationError
 STATIC_DIR = Path(__file__).parent / "static"
 KINDS = ("collect", "validate", "instruct", "voice_discover")
 FALLBACK_LANGUAGES = ["bcl", "ceb", "eng", "fil", "hil", "ilo", "pag", "pam", "tsg", "war"]
+log = logging.getLogger(__name__)
 HEARTBEAT_SECONDS = 15.0
+MAX_STREAMS_PER_JOB = 4   # open SSE connections per job; each one is a thread and an SDK stream
 
 
 def _languages() -> list[str]:
@@ -204,6 +207,7 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
     app = FastAPI(title="halo-collector")
     app.state.collector = collector
     app.state.collector_lock = threading.Lock()
+    app.state.open_streams = {}
     app.state.registry = JobRegistry(Path(state_dir or os.environ.get("COLLECTOR_STATE_DIR", "./collector_state")))
 
     @app.get("/")
@@ -214,16 +218,31 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
     def languages():
         return _languages()
 
+    @app.middleware("http")
+    async def same_origin_guard(request: Request, call_next):
+        """Local tool, no auth: refuse requests that don't come from this host.
+
+        Blocks cross-site POSTs from a visited web page and DNS-rebinding reads.
+        Host must be loopback (or COLLECTOR_ALLOWED_HOSTS); a non-GET request
+        carrying an Origin header must match the Host."""
+        host = (request.headers.get("host") or "").split(":")[0].lower()
+        allowed = {"127.0.0.1", "localhost", "::1", "testserver", "testclient"}
+        allowed |= {h.strip().lower() for h in os.environ.get("COLLECTOR_ALLOWED_HOSTS", "").split(",") if h.strip()}
+        if host not in allowed:
+            return JSONResponse(status_code=403, content={"detail": "host not allowed"})
+        origin = request.headers.get("origin")
+        if origin and request.method not in ("GET", "HEAD", "OPTIONS"):
+            from urllib.parse import urlsplit
+            if (urlsplit(origin).hostname or "").lower() != host:
+                return JSONResponse(status_code=403, content={"detail": "cross-origin request refused"})
+        return await call_next(request)
+
     @app.get("/api/jobs")
     def list_jobs(request: Request):
         return _registry(request).list()
 
     @app.post("/api/jobs")
-    async def start_job(request: Request):
-        try:
-            body = JobIn.model_validate(await request.json())
-        except (ValidationError, ValueError) as e:
-            return JSONResponse(status_code=422, content={"detail": json.loads(e.json()) if isinstance(e, ValidationError) else str(e)})
+    async def start_job(request: Request, body: JobIn):
         allowed = set(_languages())
         bad = [l for l in body.languages if l not in allowed]
         if bad:
@@ -238,7 +257,7 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(502, f"could not start job: {e}") from e
+            log.exception("could not start job"); raise HTTPException(502, "could not start job") from e
         job = {
             "session_id": sid, "title": title, "kind": body.kind, "languages": body.languages,
             "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -254,13 +273,25 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
         col = get_collector(request)
         reg = _registry(request)
         loop = asyncio.get_running_loop()
-        queue: asyncio.Queue = asyncio.Queue()
+        queue: asyncio.Queue = asyncio.Queue(maxsize=1000)
         END = object()
+        stop = threading.Event()
+        streams = request.app.state.open_streams
+        with request.app.state.collector_lock:
+            if streams.get(sid, 0) >= MAX_STREAMS_PER_JOB:
+                raise HTTPException(429, "too many open event streams for this job")
+            streams[sid] = streams.get(sid, 0) + 1
+
+        def put(item):
+            fut = asyncio.run_coroutine_threadsafe(queue.put(item), loop)
+            fut.result(timeout=60)
 
         def pump():
             try:
                 for ev in col.events(sid, include_history=True):
-                    loop.call_soon_threadsafe(queue.put_nowait, ev)
+                    if stop.is_set():
+                        return
+                    put(ev)
             except Exception as e:  # surface the error to the client, then end
                 try:
                     loop.call_soon_threadsafe(queue.put_nowait, {"type": "error", "text": str(e), "raw_type": "web.error"})
@@ -274,20 +305,25 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
         threading.Thread(target=pump, daemon=True, name=f"sse-{sid}").start()
 
         async def gen():
-            while True:
-                try:
-                    item = await asyncio.wait_for(queue.get(), timeout=HEARTBEAT_SECONDS)
-                except asyncio.TimeoutError:
-                    yield ": ping\n\n"
-                    continue
-                if item is END:
-                    final = _final_status(col, sid)
-                    reg.pending_asks.pop(sid, None)
-                    reg.set_status(sid, final)
-                    yield "event: end\ndata: {}\n\n"
-                    return
-                reg.note_event(sid, item)
-                yield "data: " + json.dumps(item, default=str) + "\n\n"
+            try:
+                while True:
+                    try:
+                        item = await asyncio.wait_for(queue.get(), timeout=HEARTBEAT_SECONDS)
+                    except asyncio.TimeoutError:
+                        yield ": ping\n\n"
+                        continue
+                    if item is END:
+                        final = _final_status(col, sid)
+                        reg.pending_asks.pop(sid, None)
+                        reg.set_status(sid, final)
+                        yield "event: end\ndata: {}\n\n"
+                        return
+                    reg.note_event(sid, item)
+                    yield "data: " + json.dumps(item, default=str) + "\n\n"
+            finally:
+                stop.set()   # client went away: let the pump thread exit at its next event
+                with request.app.state.collector_lock:
+                    streams[sid] = max(0, streams.get(sid, 1) - 1)
 
         return StreamingResponse(gen(), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -335,7 +371,7 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
         try:
             return await asyncio.to_thread(col.outputs, sid)
         except Exception as e:
-            raise HTTPException(502, f"outputs failed: {e}") from e
+            log.exception("outputs failed"); raise HTTPException(502, "outputs failed") from e
 
     @app.get("/api/jobs/{sid}/outputs/{file_id}")
     async def download(request: Request, sid: str, file_id: str):
@@ -346,13 +382,18 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
         except Exception:
             files = []
         meta = next((f for f in files if f.get("id") == file_id), None)
-        filename = (meta or {}).get("filename") or file_id
-        safe = filename.replace("..", "_").lstrip("/")
-        dest = _registry(request).state_dir / "downloads" / sid / safe
+        if meta is None:
+            raise HTTPException(404, "unknown file")   # never fetch a file id the session didn't list
+        filename = meta.get("filename") or file_id
+        safe = filename.replace("\\", "/").replace("..", "_").lstrip("/")
+        base = (_registry(request).state_dir / "downloads" / sid).resolve()
+        dest = (base / safe).resolve()
+        if base != dest and base not in dest.parents:
+            raise HTTPException(400, "bad filename")
         try:
             path = await asyncio.to_thread(col.download, sid, file_id, dest)
         except Exception as e:
-            raise HTTPException(404, f"download failed: {e}") from e
+            log.exception("download failed"); raise HTTPException(404, "download failed") from e
         return FileResponse(Path(path), filename=Path(safe).name, media_type="application/octet-stream")
 
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
