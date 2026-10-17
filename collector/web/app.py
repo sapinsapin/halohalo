@@ -37,6 +37,8 @@ FALLBACK_LANGUAGES = ["bcl", "ceb", "eng", "fil", "hil", "ilo", "pag", "pam", "t
 log = logging.getLogger(__name__)
 HEARTBEAT_SECONDS = 15.0
 MAX_STREAMS_PER_JOB = 4   # open SSE connections per job; each one is a thread and an SDK stream
+DEFAULT_ASK_TIMEOUT_S = 900.0   # COLLECTOR_ASK_TIMEOUT_S; a tool ask nobody answers in time is denied. 0 disables.
+ANSWER_RAW_TYPES = ("user.tool_confirmation", "web.auto_deny")   # echo events that settle a tool ask
 
 
 def _languages() -> list[str]:
@@ -75,6 +77,7 @@ class JobRegistry:
         self.path = self.state_dir / "jobs.json"
         self.jobs: dict[str, dict] = {}
         self.pending_asks: dict[str, dict[str, dict]] = {}
+        self.ask_timers: dict[tuple[str, str], threading.Timer] = {}
         self.lock = threading.Lock()
         self._load()
 
@@ -114,17 +117,31 @@ class JobRegistry:
                 self._save()
 
     def note_event(self, sid: str, ev: dict) -> None:
-        """Track pending tool asks and coarse status from a streamed event."""
+        """Track pending tool asks and coarse status from a streamed event.
+
+        A `tool_ask` already flagged `answered` (replayed history) is not pending.
+        A `user.tool_confirmation` echo (or our own `web.auto_deny`) carrying
+        `tool=<tool_use id>` settles that ask, e.g. one answered from the Console."""
         if ev.get("type") == "tool_ask" and ev.get("id"):
+            if ev.get("answered"):
+                return
             self.pending_asks.setdefault(sid, {})[ev["id"]] = ev
             self.set_status(sid, "needs_decision")
+        elif ev.get("raw_type") in ANSWER_RAW_TYPES and ev.get("tool"):
+            self.resolve_ask(sid, ev["tool"])
 
     def resolve_ask(self, sid: str, tool_event_id: str) -> None:
+        timer = self.ask_timers.pop((sid, tool_event_id), None)
+        if timer is not None:
+            timer.cancel()
         asks = self.pending_asks.get(sid)
         if asks:
             asks.pop(tool_event_id, None)
             if not asks:
                 self.set_status(sid, "running")
+
+    def is_pending(self, sid: str, tool_event_id: str) -> bool:
+        return tool_event_id in self.pending_asks.get(sid, {})
 
     def asks(self, sid: str) -> list[dict]:
         return list(self.pending_asks.get(sid, {}).values())
@@ -203,11 +220,64 @@ def _build_spec(body: JobIn):
     return spec, title
 
 
-def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> FastAPI:
+def _ask_timeout_from_env() -> float:
+    try:
+        return max(0.0, float(os.environ.get("COLLECTOR_ASK_TIMEOUT_S", DEFAULT_ASK_TIMEOUT_S)))
+    except ValueError:
+        return DEFAULT_ASK_TIMEOUT_S
+
+
+def _auto_deny(reg: JobRegistry, col, sid: str, ask_id: str, push_live) -> None:
+    """Timer body: deny a tool ask nobody answered, and tell any open stream."""
+    reg.ask_timers.pop((sid, ask_id), None)
+    if not reg.is_pending(sid, ask_id):
+        return
+    text = "No operator answered within the timeout"
+    try:
+        col.confirm(sid, ask_id, False, text)
+    except Exception:
+        log.exception("auto-deny of %s/%s failed", sid, ask_id)
+        return
+    reg.resolve_ask(sid, ask_id)
+    push_live({"id": f"web-auto-deny-{ask_id}", "type": "user_event", "raw_type": "web.auto_deny",
+               "tool": ask_id, "result": "deny", "text": text + "; the tool call was denied",
+               "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+
+
+def _schedule_auto_deny(reg: JobRegistry, col, sid: str, ask_id: str, timeout: float, push_live) -> None:
+    if timeout <= 0:
+        return
+    with reg.lock:
+        if (sid, ask_id) in reg.ask_timers:
+            return   # another stream of the same job already armed it
+        t = threading.Timer(timeout, _auto_deny, args=(reg, col, sid, ask_id, push_live))
+        t.daemon = True
+        reg.ask_timers[(sid, ask_id)] = t
+    t.start()
+
+
+def _open_events(col, sid: str, on_open):
+    """col.events(sid, include_history=True, on_open=...); fall back for collectors without on_open."""
+    try:
+        return col.events(sid, include_history=True, on_open=on_open)
+    except TypeError as e:
+        if "on_open" not in str(e):
+            raise
+        return col.events(sid, include_history=True)
+
+
+def create_app(collector=None, state_dir: str | os.PathLike | None = None,
+               ask_timeout_s: float | None = None) -> FastAPI:
+    workers = os.environ.get("WEB_CONCURRENCY", "1")
+    if workers.strip().isdigit() and int(workers) > 1:
+        raise RuntimeError(
+            f"WEB_CONCURRENCY={workers}: halo-collector keeps its job registry, pending tool asks and "
+            "open SDK streams in process memory, so it must run as a single worker (uvicorn --workers 1).")
     app = FastAPI(title="halo-collector")
     app.state.collector = collector
     app.state.collector_lock = threading.Lock()
     app.state.open_streams = {}
+    app.state.ask_timeout_s = _ask_timeout_from_env() if ask_timeout_s is None else float(ask_timeout_s)
     app.state.registry = JobRegistry(Path(state_dir or os.environ.get("COLLECTOR_STATE_DIR", "./collector_state")))
 
     @app.get("/")
@@ -286,9 +356,20 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
             fut = asyncio.run_coroutine_threadsafe(queue.put(item), loop)
             fut.result(timeout=60)
 
+        holder: dict[str, Any] = {}
+
+        def push_live(item):
+            """Deliver a synthetic event to this stream if it is still open (called from any thread)."""
+            if stop.is_set():
+                return
+            try:
+                loop.call_soon_threadsafe(queue.put_nowait, item)
+            except RuntimeError:
+                pass
+
         def pump():
             try:
-                for ev in col.events(sid, include_history=True):
+                for ev in _open_events(col, sid, lambda s: holder.update(stream=s)):
                     if stop.is_set():
                         return
                     put(ev)
@@ -319,9 +400,17 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None) -> Fa
                         yield "event: end\ndata: {}\n\n"
                         return
                     reg.note_event(sid, item)
+                    if item.get("type") == "tool_ask" and item.get("id") and reg.is_pending(sid, item["id"]):
+                        _schedule_auto_deny(reg, col, sid, item["id"], request.app.state.ask_timeout_s, push_live)
                     yield "data: " + json.dumps(item, default=str) + "\n\n"
             finally:
                 stop.set()   # client went away: let the pump thread exit at its next event
+                s = holder.get("stream")
+                if s is not None:   # ...or right now, by closing the SDK stream it is blocked on
+                    try:
+                        s.close()
+                    except Exception:
+                        pass
                 with request.app.state.collector_lock:
                     streams[sid] = max(0, streams.get(sid, 1) - 1)
 

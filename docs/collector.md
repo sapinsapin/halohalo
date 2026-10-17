@@ -114,6 +114,14 @@ loopback, or whose `Origin` differs from the host on a write, are refused with
 with `ANTHROPIC_LOG=debug` on a shared machine: the SDK's debug log prints
 request bodies, which include the repo token sent on session creation.
 
+Run it as a **single process**: the job registry, pending tool asks and open SDK
+streams live in memory, so `--workers` must stay 1 (`create_app` refuses
+`WEB_CONCURRENCY>1`). A tool ask nobody answers is denied after
+`COLLECTOR_ASK_TIMEOUT_S` seconds (default 900; `0` disables) and the feed shows a
+`web.auto_deny` line. Asks answered from the Console disappear from the UI when
+the `user.tool_confirmation` echo arrives, and reloading a page whose session is
+`idle` with a pending ask reconnects to the stream instead of treating it as done.
+
 ```sh
 DEMO=1 uvicorn collector.web.app:app        # canned event script, no credentials needed
 ```

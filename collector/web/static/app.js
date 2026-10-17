@@ -93,12 +93,20 @@ function openRun(sid) {
   setStatus(job.last_status || "running");
   history.replaceState(null, "", "#" + sid);
   refreshRuns();
-  loadStatus().then(() => { if (!["idle", "terminated", "ended", "error"].includes((state.status || {}).status)) connect(sid); else loadOutputs(); });
+  loadStatus().then(() => { if (isFinished(state.status)) loadOutputs(); else connect(sid); });
+}
+
+// A Managed Agents session is "idle" while it waits on a tool confirmation, so idle alone
+// does not mean done: only idle with nothing pending and an outcome, or terminated/ended.
+function isFinished(st) {
+  if (!st) return false;
+  if (["terminated", "ended"].includes(st.status)) return true;
+  return st.status === "idle" && !(st.pending_asks || []).length && !!st.outcome;
 }
 
 function setStatus(s) {
   const p = $("#run-status"); p.textContent = s || ""; p.className = "pill " + (s || "");
-  $("#interrupt").disabled = ["idle", "terminated", "ended"].includes(s);
+  $("#interrupt").disabled = ["terminated", "ended"].includes(s);
 }
 
 async function loadStatus() {
@@ -127,13 +135,18 @@ function handleEvent(ev) {
   const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 40;
   const node = renderEvent(ev);
   if (node) feed.append(node);
-  if (ev.type === "tool_ask") { renderAsk(ev); setStatus("needs_decision"); }
+  if (ev.type === "tool_ask" && !ev.answered) { renderAsk(ev); setStatus("needs_decision"); }
+  if (isAnswer(ev)) removeAsk(ev.tool);
   if (ev.type === "usage" && ev.text) $("#usage").textContent = "Usage: " + ev.text;
   if (atBottom) feed.scrollTop = feed.scrollHeight;
 }
 
+// Echo of a tool confirmation (answered in the Console / another tab, or auto-denied by the server).
+const isAnswer = (ev) => !!ev.tool && ["user.tool_confirmation", "web.auto_deny"].includes(ev.raw_type);
+
 function renderEvent(ev) {
-  const t = ev.type || ev.raw_type || "event";
+  let t = ev.type || ev.raw_type || "event";
+  if (t === "tool_ask" && ev.answered) t = "tool_call";   // already settled: a plain tool line, no card
   const node = el("div", { class: "ev " + t + (ev.result ? " " + ev.result : "") });
   const label = el("span", { class: "k" }, t.replace("_", " "));
   switch (t) {
@@ -157,6 +170,8 @@ function renderEvent(ev) {
       node.append(label, ev.text || ev.raw_type || "", ev.stop_reason ? ` (${ev.stop_reason})` : ""); break;
     case "error":
       node.append(label, ev.text || "error"); break;
+    case "user_event":
+      node.append(label, isAnswer(ev) ? `${ev.result === "deny" ? "denied" : "allowed"} tool call ${ev.tool}` : "", ev.text ? ` — ${ev.text}` : ""); break;
     default:
       node.append(label, ev.text || ev.raw_type || JSON.stringify(ev));
   }
@@ -186,12 +201,19 @@ function renderAsk(ev) {
   $("#asks").append(card);
 }
 
+function removeAsk(id) {
+  const card = state.asks.get(id);
+  if (!card) return;
+  card.remove(); state.asks.delete(id);
+  if (!state.asks.size) setStatus("running");
+}
+
 async function answer(id, allow, message) {
   const card = state.asks.get(id);
   card.querySelectorAll("button").forEach((b) => (b.disabled = true));
   try {
     await api(`/api/jobs/${state.current}/confirm`, { method: "POST", body: JSON.stringify({ tool_event_id: id, allow, message: message || null }) });
-    card.remove(); state.asks.delete(id); setStatus("running");
+    removeAsk(id);
   } catch (e) {
     card.querySelectorAll("button").forEach((b) => (b.disabled = false));
     card.append(el("div", { class: "muted" }, "Failed: " + e.message));

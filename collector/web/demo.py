@@ -56,6 +56,16 @@ class _Session:
         self.thread: threading.Thread | None = None
 
 
+class _DemoStream:
+    """Stand-in for the SDK stream object handed to `on_open`; only close() matters."""
+
+    def __init__(self):
+        self.closed = False
+
+    def close(self) -> None:
+        self.closed = True
+
+
 class DemoCollector:
     """A fake Collector that replays a scripted run with pauses between events."""
 
@@ -75,13 +85,18 @@ class DemoCollector:
         sess.thread.start()
         return sid
 
-    def events(self, session_id: str, *, include_history: bool = True) -> Iterator[Event]:
+    def events(self, session_id: str, *, include_history: bool = True, on_open=None) -> Iterator[Event]:
         sess = self._get(session_id)
+        handle = _DemoStream()
+        if on_open is not None:
+            on_open(handle)   # like the SDK stream: close() makes this iterator end
         i = 0 if include_history else len(sess.history)
-        while True:
+        while not handle.closed:
             with sess.cond:
-                while i >= len(sess.history) and not sess.done:
-                    sess.cond.wait(timeout=1.0)
+                while i >= len(sess.history) and not sess.done and not handle.closed:
+                    sess.cond.wait(timeout=0.5)
+                if handle.closed:
+                    return
                 if i < len(sess.history):
                     ev = sess.history[i]
                     i += 1

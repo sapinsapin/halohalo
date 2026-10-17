@@ -354,3 +354,159 @@ def test_error_bodies_are_generic(client, fake):
     r = _start(client)
     assert r.status_code == 502
     assert "abc" not in r.text and "/secret" not in r.text
+
+
+# -- tool-ask lifecycle (review findings) -------------------------------------
+
+ECHO = ev(id="e5", type="user_event", raw_type="user.tool_confirmation", tool="e3", result="allow")
+
+
+def test_registry_note_event_handles_answers(tmp_path):
+    from collector.web.app import JobRegistry
+    reg = JobRegistry(tmp_path)
+    reg.add({"session_id": "s", "last_status": "running"})
+    reg.note_event("s", SCRIPT[2])
+    assert [a["id"] for a in reg.asks("s")] == ["e3"] and reg.get("s")["last_status"] == "needs_decision"
+    reg.note_event("s", ECHO)                     # echo of an answer given elsewhere (Console)
+    assert reg.asks("s") == [] and reg.get("s")["last_status"] == "running"
+    reg.note_event("s", dict(SCRIPT[2], answered=True))   # replayed history of a settled ask
+    assert reg.asks("s") == []
+    reg.note_event("s", dict(SCRIPT[2], id="e9"))
+    reg.note_event("s", ev(type="user_event", raw_type="web.auto_deny", tool="e9", result="deny"))
+    assert reg.asks("s") == []
+
+
+def _read_until(lines, pred, limit=50):
+    got = []
+    for line in lines:
+        if line.startswith("data:"):
+            got.append(json.loads(line.split(":", 1)[1]))
+            if pred(got[-1]) or len(got) >= limit:
+                break
+    return got
+
+
+def test_tool_confirmation_echo_clears_pending_ask(tmp_path):
+    gate = threading.Event()
+
+    class Blocking(FakeCollector):
+        def events(self, session_id, *, include_history=True):
+            yield SCRIPT[2]
+            gate.wait(timeout=5)
+            yield ECHO
+            yield SCRIPT[3]
+
+    col = Blocking()
+    app = create_app(collector=col, state_dir=tmp_path)
+    with live_server(app) as client:
+        sid = _start(client).json()["session_id"]
+        with client.stream("GET", f"/api/jobs/{sid}/events") as r:
+            lines = r.iter_lines()
+            _read_until(lines, lambda e: e["type"] == "tool_ask")
+            assert [a["id"] for a in client.get(f"/api/jobs/{sid}/status").json()["pending_asks"]] == ["e3"]
+            gate.set()
+            got = _read_until(lines, lambda e: e.get("raw_type") == "user.tool_confirmation")
+            assert got[-1]["tool"] == "e3"
+            assert client.get(f"/api/jobs/{sid}/status").json()["pending_asks"] == []
+            assert col.confirms == []          # answered elsewhere; the web app did not confirm it
+            list(lines)
+
+
+def test_unattended_ask_is_auto_denied(tmp_path):
+    gate = threading.Event()
+
+    class Blocking(FakeCollector):
+        def events(self, session_id, *, include_history=True):
+            yield SCRIPT[2]
+            gate.wait(timeout=5)
+
+    col = Blocking()
+    app = create_app(collector=col, state_dir=tmp_path, ask_timeout_s=0.2)
+    with live_server(app) as client:
+        sid = _start(client).json()["session_id"]
+        with client.stream("GET", f"/api/jobs/{sid}/events") as r:
+            lines = r.iter_lines()
+            got = _read_until(lines, lambda e: e.get("raw_type") == "web.auto_deny")
+            gate.set()
+            list(lines)
+        assert got[0]["type"] == "tool_ask"
+        auto = got[-1]
+        assert auto["raw_type"] == "web.auto_deny" and auto["tool"] == "e3" and auto["result"] == "deny"
+        assert len(col.confirms) == 1
+        s, tid, allow, msg = col.confirms[0]
+        assert (s, tid, allow) == (sid, "e3", False) and "timeout" in msg
+        assert client.get(f"/api/jobs/{sid}/status").json()["pending_asks"] == []
+
+
+def test_ask_timeout_disabled_and_answered_asks_not_denied(tmp_path):
+    gate = threading.Event()
+
+    class Blocking(FakeCollector):
+        def events(self, session_id, *, include_history=True):
+            yield SCRIPT[2]
+            gate.wait(timeout=2)
+
+    col = Blocking()
+    app = create_app(collector=col, state_dir=tmp_path, ask_timeout_s=0.1)
+    with live_server(app) as client:
+        sid = _start(client).json()["session_id"]
+        with client.stream("GET", f"/api/jobs/{sid}/events") as r:
+            lines = r.iter_lines()
+            _read_until(lines, lambda e: e["type"] == "tool_ask")
+            client.post(f"/api/jobs/{sid}/confirm", json={"tool_event_id": "e3", "allow": True})
+            time.sleep(0.3)
+            gate.set()
+            list(lines)
+        assert col.confirms == [(sid, "e3", True, None)]   # the operator's answer cancelled the timer
+    assert app.state.registry.ask_timers == {}
+    monkey = {"COLLECTOR_ASK_TIMEOUT_S": "0"}
+    import os
+    old = os.environ.get("COLLECTOR_ASK_TIMEOUT_S")
+    os.environ.update(monkey)
+    try:
+        assert create_app(collector=col, state_dir=tmp_path).state.ask_timeout_s == 0
+    finally:
+        if old is None:
+            del os.environ["COLLECTOR_ASK_TIMEOUT_S"]
+        else:
+            os.environ["COLLECTOR_ASK_TIMEOUT_S"] = old
+
+
+def test_stream_closed_when_client_disconnects(tmp_path):
+    class Stream:
+        def __init__(self):
+            self.closed = threading.Event()
+
+        def close(self):
+            self.closed.set()
+
+    stream = Stream()
+
+    class WithOpen(FakeCollector):
+        def events(self, session_id, *, include_history=True, on_open=None):
+            on_open(stream)
+            yield SCRIPT[0]
+            yield SCRIPT[1]
+            stream.closed.wait(timeout=5)   # the SDK iterator would block here until close()
+
+    col = WithOpen()
+    app = create_app(collector=col, state_dir=tmp_path)
+    with live_server(app) as client:
+        sid = _start(client).json()["session_id"]
+        with client.stream("GET", f"/api/jobs/{sid}/events") as r:
+            got = _read_until(r.iter_lines(), lambda e: e["id"] == "e2")
+            assert [e["id"] for e in got] == ["e1", "e2"]
+        # client went away: the generator's cleanup must close the SDK stream so the pump thread ends
+        assert stream.closed.wait(timeout=5)
+        deadline = time.time() + 5
+        while app.state.open_streams.get(sid) and time.time() < deadline:
+            time.sleep(0.02)
+        assert app.state.open_streams.get(sid, 0) == 0
+
+
+def test_refuses_multiple_workers(tmp_path, monkeypatch):
+    monkeypatch.setenv("WEB_CONCURRENCY", "2")
+    with pytest.raises(RuntimeError, match="single worker"):
+        create_app(collector=FakeCollector(), state_dir=tmp_path)
+    monkeypatch.setenv("WEB_CONCURRENCY", "1")
+    create_app(collector=FakeCollector(), state_dir=tmp_path)
