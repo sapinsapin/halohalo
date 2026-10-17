@@ -28,6 +28,7 @@ h1 { font-size: 20px; margin: 0; } h2 { font-size: 16px; margin: 18px 0 8px; } h
 .card:has(input:checked) { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .chip { border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 13px; user-select: none; }
+button.chip { font: inherit; background: var(--panel); color: var(--fg); }
 .chip.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .chip code { opacity: .7; margin-left: 4px; }
 .options { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }

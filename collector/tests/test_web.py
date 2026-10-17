@@ -263,10 +263,12 @@ def test_outputs_and_download(client, fake):
     assert r.status_code == 200
     assert r.content == b"report-bytes"
     assert "report.md" in r.headers["content-disposition"]
+    assert r.headers["content-type"].startswith("text/markdown")
     assert fake.downloads == [(sid, "f1")]
     r = client.get(f"/api/jobs/{sid}/outputs/f2")
     assert r.content == b"PAR1"
     assert "shard-00000.parquet" in r.headers["content-disposition"]
+    assert r.headers["content-type"].startswith("application/octet-stream")
 
 
 def test_demo_mode(tmp_path, monkeypatch):

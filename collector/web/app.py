@@ -20,6 +20,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import mimetypes
 import os
 import threading
 import time
@@ -266,6 +267,17 @@ def _open_events(col, sid: str, on_open):
         return col.events(sid, include_history=True)
 
 
+_MEDIA_TYPES = {".md": "text/markdown", ".jsonl": "application/json", ".json": "application/json",
+                ".parquet": "application/octet-stream"}
+
+
+def _media_type(filename: str) -> str:
+    ext = Path(filename).suffix.lower()
+    if ext in _MEDIA_TYPES:
+        return _MEDIA_TYPES[ext]
+    return mimetypes.guess_type(filename)[0] or "application/octet-stream"
+
+
 def create_app(collector=None, state_dir: str | os.PathLike | None = None,
                ask_timeout_s: float | None = None) -> FastAPI:
     workers = os.environ.get("WEB_CONCURRENCY", "1")
@@ -483,7 +495,7 @@ def create_app(collector=None, state_dir: str | os.PathLike | None = None,
             path = await asyncio.to_thread(col.download, sid, file_id, dest)
         except Exception as e:
             log.exception("download failed"); raise HTTPException(404, "download failed") from e
-        return FileResponse(Path(path), filename=Path(safe).name, media_type="application/octet-stream")
+        return FileResponse(Path(path), filename=Path(safe).name, media_type=_media_type(safe))
 
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
     return app

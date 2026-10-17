@@ -28,7 +28,9 @@ async function initCompose() {
   const codes = await api("/api/languages");
   const box = $("#langs");
   for (const c of codes) {
-    const chip = el("span", { class: "chip", "data-code": c, onclick: () => chip.classList.toggle("on") }, LANG_NAMES[c] || c, el("code", {}, c));
+    const chip = el("button", { type: "button", class: "chip", "data-code": c, "aria-pressed": "false",
+      onclick: () => { const on = chip.classList.toggle("on"); chip.setAttribute("aria-pressed", on ? "true" : "false"); } },
+      LANG_NAMES[c] || c, el("code", {}, c));
     box.append(chip);
   }
   const syncKind = () => {
@@ -68,7 +70,7 @@ async function refreshRuns() {
   const ul = $("#runs"); ul.innerHTML = "";
   if (!state.jobs.length) ul.append(el("li", { class: "muted" }, "No runs yet."));
   for (const j of state.jobs) {
-    ul.append(el("li", { class: j.session_id === state.current ? "active" : "", onclick: () => openRun(j.session_id) },
+    ul.append(el("li", { class: j.session_id === state.current ? "active" : "", "data-sid": j.session_id, onclick: () => openRun(j.session_id) },
       el("span", {}, j.title), el("span", { class: "pill " + (j.last_status || "") }, j.last_status || "")));
   }
 }
@@ -107,6 +109,17 @@ function isFinished(st) {
 function setStatus(s) {
   const p = $("#run-status"); p.textContent = s || ""; p.className = "pill " + (s || "");
   $("#interrupt").disabled = ["terminated", "ended"].includes(s);
+  setRunListStatus(state.current, s);
+}
+
+// Keep the sidebar's pill for a job in step with the header pill (e.g. needs_decision -> running).
+function setRunListStatus(sid, s) {
+  if (!sid) return;
+  const job = state.jobs.find((j) => j.session_id === sid);
+  if (job) job.last_status = s;
+  const li = document.querySelector(`#runs li[data-sid="${sid}"]`);
+  const pill = li && li.querySelector(".pill");
+  if (pill) { pill.textContent = s || ""; pill.className = "pill " + (s || ""); }
 }
 
 async function loadStatus() {
