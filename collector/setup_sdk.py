@@ -105,9 +105,13 @@ def _resolve_refs(payload: dict, ids: dict) -> dict:
     vault_ids = []
     for v in out.get("vault_ids", []) or []:
         if isinstance(v, str) and v.endswith((".yaml", ".yml")):
-            vault_ids.append(ids[VAULT_FILE])
-        else:
+            v = ids.get(VAULT_FILE)
+        if v:
             vault_ids.append(v)
+    if not vault_ids and ids.get(VAULT_FILE):
+        # the file names no vault (or one we could not resolve): the run needs the
+        # credentials, so fall back to the vault this setup created
+        vault_ids = [ids[VAULT_FILE]]
     if vault_ids:
         out["vault_ids"] = vault_ids
     # the repo token must never sit in a file; inject it from the environment
@@ -129,8 +133,10 @@ DEPLOYMENT_HEADER = """\
 # and collector/tests/test_jobs.py fails if the two drift. Do not hand-edit the event.
 #
 # Before applying, wire two things that cannot live in this file:
-#   1. vault_ids: apply vaults/halo-collector.yaml first, then paste its vlt_... ID
-#      here (ant apply sends vault_ids as written, so it must be the ID, not a path).
+#   1. vault_ids: `python -m collector.setup_sdk --deployment` resolves the
+#      ../vaults/halo-collector.yaml reference below to the vlt_... ID in
+#      claude-lock.json (and falls back to that ID when the list is empty). For
+#      `ant apply`, which sends vault_ids as written, paste the vlt_... ID instead.
 #      Without the vault the run has no TAVILY_API_KEY/HF_TOKEN and collects nothing.
 #   2. The repo token: `authorization_token` is omitted on the github_repository
 #      resource. That is fine while sapinsapin/halohalo is public. If it is private,
@@ -165,7 +171,7 @@ def render_deployment() -> str:
                         "/mnt/session/outputs, never pushes."),
         "agent": "../agents/halo-collector.md",
         "environment_id": "../environments/halo-collector.yaml",
-        "vault_ids": [],
+        "vault_ids": ["../vaults/halo-collector.yaml"],
         "resources": [{
             "type": "github_repository",
             "url": REPO_URL,

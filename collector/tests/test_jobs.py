@@ -71,6 +71,12 @@ def test_rubric_enforces_output_contract():
     assert "content_hash" in collect and "lid_detail" in collect
     assert "25%" in collect and "42 accepted" in collect
     assert "Nothing was pushed" in collect
+    # manifest lines carry `status`, not "outcome"; the names are the pipeline's
+    assert "with its `status` (accepted / lid_reject / fetch_fail / too_short / " \
+           "host_excluded / host_capped / dup_url / dup_hash)" in collect
+    assert "outcome (" not in collect
+    assert "(queries, hits, fetched/raw_fallback, accepted, rejected)" in collect
+    assert "searched/read" not in collect
 
     validate = build_kickoff(JobSpec("validate", ["pag"], max_sentences=7))["rubric"]["content"]
     assert "validated/{lang}.jsonl" in validate
@@ -153,7 +159,9 @@ def test_environment_file_matches_spec():
     net = env["config"]["networking"]
     assert env["config"]["type"] == "cloud"
     assert net["type"] == "limited" and net["allow_package_managers"] is True
-    assert net["allowed_hosts"] == ["huggingface.co", "*.huggingface.co", "api.tavily.com"]
+    assert net["allowed_hosts"] == ["huggingface.co", "*.huggingface.co", "api.tavily.com",
+                                    "youtube.com", "www.youtube.com", "*.googlevideo.com",
+                                    "*.ytimg.com"]
 
 
 def test_vault_file_is_container_only():
@@ -168,6 +176,7 @@ def test_deployment_file_is_in_sync_with_jobs():
     dep = setup_sdk.load_deployment(path)
     assert dep["agent"] == "../agents/halo-collector.md"
     assert dep["environment_id"] == "../environments/halo-collector.yaml"
+    assert dep["vault_ids"] == ["../vaults/halo-collector.yaml"]
     assert dep["schedule"] == {"type": "cron", "expression": "0 2 * * *", "timezone": "Asia/Manila"}
     (event,) = dep["initial_events"]
     assert event == build_kickoff(JobSpec("collect", LANGUAGES, max_docs=300, push=False, max_iterations=4))
@@ -181,11 +190,32 @@ def test_resolve_refs_fills_ids_and_token(monkeypatch):
     monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
     ids = {setup_sdk.AGENT_FILE: "agent_1", setup_sdk.ENV_FILE: "env_1", setup_sdk.VAULT_FILE: "vlt_1"}
     dep = setup_sdk.load_deployment()
-    dep["vault_ids"] = ["../vaults/halo-collector.yaml"]
+    assert dep["vault_ids"] == ["../vaults/halo-collector.yaml"]
     out = setup_sdk._resolve_refs(dep, ids)
     assert out["agent"] == "agent_1" and out["environment_id"] == "env_1"
     assert out["vault_ids"] == ["vlt_1"]
     assert out["resources"][0]["authorization_token"] == "ghp_test"
+
+
+def test_resolve_refs_falls_back_to_lock_vault_when_empty():
+    ids = {setup_sdk.AGENT_FILE: "agent_1", setup_sdk.ENV_FILE: "env_1", setup_sdk.VAULT_FILE: "vlt_1"}
+    dep = setup_sdk.load_deployment()
+    dep["vault_ids"] = []
+    assert setup_sdk._resolve_refs(dep, ids)["vault_ids"] == ["vlt_1"]
+    dep["vault_ids"] = ["vlt_explicit"]
+    assert setup_sdk._resolve_refs(dep, ids)["vault_ids"] == ["vlt_explicit"]
+    # no vault known at all: leave the list alone rather than invent one
+    dep["vault_ids"] = []
+    out = setup_sdk._resolve_refs(dep, {setup_sdk.AGENT_FILE: "agent_1", setup_sdk.ENV_FILE: "env_1"})
+    assert out["vault_ids"] == []
+
+
+def test_agent_prompt_covers_voice_probe_and_youtube_hosts():
+    system = setup_sdk.load_agent(ROOT / "agents" / "halo-collector.md")["system"]
+    assert "probe_top=40" in system and 'license: "unknown"' in system
+    assert "www.youtube.com" in system and "*.googlevideo.com" in system
+    assert "YouTube is unreachable" not in system
+    assert "queries, hits, fetched/raw_fallback" in system and "searched/read" not in system
 
 
 def test_dry_run_needs_no_api_key(monkeypatch, capsys, tmp_path):

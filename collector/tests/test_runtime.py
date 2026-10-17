@@ -14,6 +14,7 @@ from collector.tests.fake_client import (
     FakeClient, demo_script, ev_define_outcome, ev_idle, ev_message, ev_model_request_end,
     ev_other, ev_outcome_end, ev_terminated, ev_tool_use, fake_file,
 )
+from types import SimpleNamespace as NS
 
 
 # ---------------------------------------------------------------------------
@@ -102,17 +103,24 @@ def test_repo_settings(monkeypatch):
 # ---------------------------------------------------------------------------
 
 
-def test_start_without_token_skips_mount(fake_jobs):
+def test_start_without_token_mounts_public_repo(fake_jobs, caplog):
     client = FakeClient()
     c = make(client, vault_ids=["vlt_1"])
-    sid = c.start(SPEC)
+    with caplog.at_level("WARNING", logger="collector.runtime"):
+        sid = c.start(SPEC)
     assert sid == client.session_ids[0]
     kw = client.created_sessions[0]
     assert kw["agent"] == "agent_test"
     assert kw["environment_id"] == "env_test"
     assert kw["title"] == "collect · ceb,war · 2026-10-17"
     assert kw["vault_ids"] == ["vlt_1"]
-    assert "resources" not in kw
+    assert kw["resources"] == [{
+        "type": "github_repository",
+        "url": "https://github.com/sapinsapin/halohalo",
+        "mount_path": "/mnt/repo",
+        "checkout": {"type": "branch", "name": "main"},
+    }]
+    assert "without a token (public repo only)" in caplog.text
     assert len(kw["initial_events"]) == 1
     kickoff = kw["initial_events"][0]
     assert kickoff["type"] == "user.define_outcome"
@@ -192,6 +200,125 @@ def test_events_surfaces_tool_ask_without_answering():
     assert client.sent_events == []  # not auto-answered
     # requires_action idle does not terminate the loop
     assert [e["type"] for e in events] == ["tool_ask", "idle", "idle"]
+
+
+def _ev_tool_confirmation(tool_use_id: str, result: str = "deny") -> NS:
+    return NS(type="user.tool_confirmation", id=f"sevt_conf_{tool_use_id}", processed_at=None,
+              tool_use_id=tool_use_id, result=result, deny_message=None)
+
+
+def test_tool_confirmation_echo_carries_result_and_tool():
+    ev = runtime.normalize_event(_ev_tool_confirmation("sevt_ask1", "allow"))
+    assert ev["type"] == "user_event" and ev["raw_type"] == "user.tool_confirmation"
+    assert ev["result"] == "allow" and ev["tool"] == "sevt_ask1"
+    assert ev["answered"] is False
+
+
+def test_answered_history_asks_replay_as_tool_use():
+    answered_ask = ev_tool_use("bash", {"command": "git push"}, permission="ask")
+    open_ask = ev_tool_use("bash", {"command": "rm -rf x"}, permission="ask")
+    history = [
+        ev_message("start"),
+        answered_ask,
+        ev_idle("requires_action", [answered_ask.id]),
+        _ev_tool_confirmation(answered_ask.id, "deny"),
+        open_ask,
+        ev_idle("requires_action", [open_ask.id]),
+    ]
+    client = FakeClient(history=history, script=[ev_idle("end_turn")])
+    events = list(make(client).events("sesn_x"))
+    by_id = {e["id"]: e for e in events}
+    assert by_id[answered_ask.id]["type"] == "tool_use"
+    assert by_id[answered_ask.id]["permission"] == "ask"
+    assert by_id[answered_ask.id]["answered"] is True
+    assert by_id[open_ask.id]["type"] == "tool_ask"
+    assert by_id[open_ask.id]["answered"] is False
+    assert [e["type"] for e in events] == [
+        "message", "tool_use", "idle", "user_event", "tool_ask", "idle", "idle"]
+    assert all("answered" in e for e in events)
+
+
+class _ClosableStream:
+    """Stream whose iterator blocks-then-raises once close() ran, like httpx."""
+
+    def __init__(self, script):
+        self._script = list(script)
+        self.closed = False
+        self.response = NS(is_closed=False)
+
+    def close(self):
+        self.closed = True
+        self.response.is_closed = True
+
+    def __iter__(self):
+        for ev in self._script:
+            if self.closed:
+                raise RuntimeError("stream closed")
+            yield ev
+        if self.closed:
+            raise RuntimeError("stream closed")
+
+
+def _install_stream(client, stream):
+    import contextlib
+
+    @contextlib.contextmanager
+    def fake_stream(*, session_id, **_):
+        client.calls.append(("events.stream", session_id))
+        client.stream_opened += 1
+        try:
+            yield stream
+        finally:
+            stream.close()
+
+    client.beta.sessions.events.stream = fake_stream
+
+
+def test_on_open_gets_stream_and_close_ends_cleanly():
+    client = FakeClient()
+    stream = _ClosableStream([ev_message("one"), ev_message("two"), ev_idle("end_turn")])
+    _install_stream(client, stream)
+    opened = []
+    out = []
+    for ev in make(client).events("sesn_x", include_history=False, on_open=opened.append):
+        out.append(ev["type"])
+        if len(out) == 1:
+            opened[0].close()  # the web app's disconnect handler
+    assert opened == [stream]
+    assert out == ["message"]  # ended cleanly: no error, no raise, no further events
+    assert stream.closed
+
+
+def test_closed_stream_detected_via_sdk_response_flag():
+    # The SDK Stream has no `closed` attribute: close() closes `stream.response`
+    # (httpx), and the blocked iterator then raises. That must end the generator.
+    class _SdkLike(_ClosableStream):
+        def __iter__(self):
+            yield ev_message("a")
+            raise RuntimeError("stream closed")
+
+    client = FakeClient()
+    stream = _SdkLike([])
+    _install_stream(client, stream)
+    gen = make(client).events("sesn_x", include_history=False)
+    assert next(gen)["type"] == "message"
+    stream.response.is_closed = True     # only the response reports closed
+    assert list(gen) == []               # raised inside the loop -> swallowed, no error
+
+
+def test_unexpected_stream_error_still_raises():
+    client = FakeClient()
+
+    class _Boom(_ClosableStream):
+        def __iter__(self):
+            yield ev_message("x")
+            raise RuntimeError("network broke")
+
+    _install_stream(client, _Boom([]))
+    gen = make(client).events("sesn_x", include_history=False)
+    assert next(gen)["type"] == "message"
+    with pytest.raises(RuntimeError, match="network broke"):
+        next(gen)
 
 
 def test_events_stops_at_terminal_gate_and_ignores_rest():

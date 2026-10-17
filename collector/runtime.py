@@ -8,7 +8,11 @@ Every event yielded by `events()` is a plain JSON-serialisable dict (`Event`)
 with the keys fixed in collector/SPEC.md:
 
     {"id", "type", "ts", "text", "tool", "input", "permission", "stop_reason",
-     "result", "explanation", "iteration", "raw_type"}
+     "result", "explanation", "iteration", "raw_type", "answered"}
+
+`answered` (bool, default False) is True only on a historical `tool_use` whose
+permission was "ask" but which a later `user.tool_confirmation` already
+answered; such events are replayed as `tool_use`, never as `tool_ask`.
 """
 from __future__ import annotations
 
@@ -48,7 +52,7 @@ def _jobs():
 
 _EVENT_KEYS = (
     "id", "type", "ts", "text", "tool", "input", "permission", "stop_reason",
-    "result", "explanation", "iteration", "raw_type",
+    "result", "explanation", "iteration", "raw_type", "answered",
 )
 
 
@@ -57,6 +61,7 @@ def _blank(raw_type: str, event_id: str | None, ts: str | None) -> Event:
     ev["id"] = event_id
     ev["raw_type"] = raw_type
     ev["ts"] = ts
+    ev["answered"] = False
     return ev
 
 
@@ -149,11 +154,20 @@ def normalize_event(event: Any) -> Event:
             ev["text"] = "".join(parts) or None
         elif raw_type == "user.tool_confirmation":
             ev["result"] = getattr(event, "result", None)
+            ev["tool"] = getattr(event, "tool_use_id", None)
 
     else:
         ev["type"] = "other"
 
     return ev
+
+
+def _stream_closed(stream: Any) -> bool:
+    """True once `stream.close()` ran (SDK Stream closes its httpx response)."""
+    if getattr(stream, "closed", False):
+        return True
+    response = getattr(stream, "response", None)
+    return bool(getattr(response, "is_closed", False))
 
 
 def is_terminal(event: Any) -> bool:
@@ -211,21 +225,17 @@ class Collector:
     # -- lifecycle ----------------------------------------------------------
 
     def _resources(self) -> list[dict]:
-        if not self.repo_token:
-            log.warning(
-                "GITHUB_TOKEN not set; starting session without the %s mount at %s",
-                self.repo_url, REPO_MOUNT_PATH,
-            )
-            return []
-        return [
-            {
-                "type": "github_repository",
-                "url": self.repo_url,
-                "mount_path": REPO_MOUNT_PATH,
-                "authorization_token": self.repo_token,
-                "checkout": {"type": "branch", "name": self.repo_branch},
-            }
-        ]
+        resource: dict[str, Any] = {
+            "type": "github_repository",
+            "url": self.repo_url,
+            "mount_path": REPO_MOUNT_PATH,
+            "checkout": {"type": "branch", "name": self.repo_branch},
+        }
+        if self.repo_token:
+            resource["authorization_token"] = self.repo_token
+        else:
+            log.warning("mounting %s without a token (public repo only)", self.repo_url)
+        return [resource]
 
     def start(self, spec, title: str | None = None) -> str:
         """Create a session seeded with the job's `user.define_outcome`; return its id."""
@@ -255,42 +265,67 @@ class Collector:
         log.info("started session %s (%s): %s", session.id, title, self.console_url(session.id))
         return session.id
 
-    def events(self, session_id: str, *, include_history: bool = True) -> Iterator[Event]:
+    def events(
+        self, session_id: str, *, include_history: bool = True, on_open=None
+    ) -> Iterator[Event]:
         """Yield normalized events until the terminal gate (pattern 1 + pattern 5).
 
         Opens the live stream first, then (optionally) replays history via
         `events.list`, deduping by id, then tails the stream. Paused tool calls
         (`evaluated_permission == "ask"`) are yielded as `tool_ask` and NOT
-        answered here; the caller decides via `confirm()`.
+        answered here; the caller decides via `confirm()`. Historical asks that
+        a later `user.tool_confirmation` already answered are replayed as
+        `tool_use` with `answered=True`.
+
+        `on_open(stream)` is called as soon as the live stream is open so the
+        caller can `stream.close()` from another thread (client went away); the
+        generator then ends cleanly instead of raising.
         """
         seen: set[str] = set()
         api = self.client.beta.sessions.events
 
         with api.stream(session_id=session_id) as stream:
-            if include_history:
-                for raw in api.list(session_id=session_id):
+            if on_open:
+                on_open(stream)
+            try:
+                if include_history:
+                    history = list(api.list(session_id=session_id))
+                    answered = {
+                        getattr(raw, "tool_use_id", None) for raw in history
+                        if getattr(raw, "type", None) == "user.tool_confirmation"
+                    }
+                    for raw in history:
+                        event_id = getattr(raw, "id", None)
+                        if event_id:
+                            if event_id in seen:
+                                continue
+                            seen.add(event_id)
+                        ev = normalize_event(raw)
+                        if ev["type"] == "tool_ask" and event_id in answered:
+                            ev["type"] = "tool_use"
+                            ev["answered"] = True
+                        yield ev
+                        if is_terminal(raw):
+                            return
+
+                for raw in stream:
+                    raw_type = getattr(raw, "type", None)
+                    if raw_type in ("event_start", "event_delta"):
+                        continue  # live previews carry no id; not requested here
                     event_id = getattr(raw, "id", None)
+                    fresh = not event_id or event_id not in seen
                     if event_id:
-                        if event_id in seen:
-                            continue
                         seen.add(event_id)
-                    yield normalize_event(raw)
+                    if fresh:
+                        yield normalize_event(raw)
+                    # Gate runs on every event, deduped ones included (pattern 1).
                     if is_terminal(raw):
                         return
-
-            for raw in stream:
-                raw_type = getattr(raw, "type", None)
-                if raw_type in ("event_start", "event_delta"):
-                    continue  # live previews carry no id; not requested here
-                event_id = getattr(raw, "id", None)
-                fresh = not event_id or event_id not in seen
-                if event_id:
-                    seen.add(event_id)
-                if fresh:
-                    yield normalize_event(raw)
-                # Gate runs on every event, deduped ones included (pattern 1).
-                if is_terminal(raw):
-                    return
+            except Exception:
+                if _stream_closed(stream):
+                    log.info("event stream for %s closed by the caller", session_id)
+                    return  # closed from outside: a normal end, not an error
+                raise
 
     def confirm(
         self, session_id: str, tool_event_id: str, allow: bool, message: str | None = None

@@ -34,7 +34,8 @@ contract says, and finish with an honest report.md. Never fabricate data.
 - `TAVILY_API_KEY`, `HF_TOKEN` (and nothing else) are present as environment variables. They
   are vault placeholders substituted outside the sandbox. Use them only through the pipeline
   and `huggingface_hub`; never print, echo, log or copy them into any file.
-- Allowed network: huggingface.co, *.huggingface.co, api.tavily.com, package indexes. Tavily
+- Allowed network: huggingface.co, *.huggingface.co, api.tavily.com, package indexes, and
+  for voice_discover only youtube.com, www.youtube.com, *.googlevideo.com, *.ytimg.com. Tavily
   returns page text with its results, so most scrapes need no other host; a live fetch to a
   page host will fail. That is expected: let the pipeline fall back to the search dump and
   record the fetch failures in report.md. Do not try to work around the network policy.
@@ -89,16 +90,22 @@ natural, and grounded in the source text; no invented facts.
 python scrape_web.py --voice --no-text --langs ilo --out /mnt/session/outputs --no-glotlid
 ```
 Never pass `--download-audio` or `--all-licenses`. The pipeline writes
-`voice/{lang}/candidates.jsonl` and `voice/summary.json`. From the candidates keep only rows
-with `is_cc` true and `lid_lang == lang`, and write `voice/{lang}.jsonl` with exactly
-`video_id, url, title, license, duration_s, channel`. If YouTube is unreachable from the
-sandbox, write empty files and say so in report.md; do not invent videos.
+`voice/{lang}/candidates.jsonl` and `voice/summary.json`. The licence probe only runs on the
+first 40 candidates per language (`probe_top=40` in halolib/scrape/voice.py): unprobed rows
+have `license` null and `is_cc` false, which means unknown, not "not CC". From the candidates
+keep rows with `lid_lang == lang` and either `is_cc` true or `license` null; write
+`voice/{lang}.jsonl` with exactly `video_id, url, title, license, duration_s, channel`, using
+`license: "unknown"` for the unprobed rows. Drop probed rows whose licence is not CC. In
+report.md count CC-confirmed and licence-unknown rows separately. YouTube is reachable (search
+and licence probes, no audio); if a call still fails, write empty files and say so in
+report.md; do not invent videos.
 
 ## report.md (every job)
 
 Write `/mnt/session/outputs/report.md` with: the job kind, languages, flags used and which LID
-models ran; a per-language table of per-stage counts (searched/read, fetched, accepted,
-rejected); rejects by reason; host concentration (top hosts per language with counts and
+models ran; a per-language table of per-stage counts (queries, hits, fetched/raw_fallback,
+accepted, rejected); rejects by reason (the manifest `status`: lid_reject, fetch_fail, too_short,
+host_excluded, host_capped, dup_url, dup_hash); host concentration (top hosts per language with counts and
 shares); what was pushed, if anything, with row counts; a section titled **Not done** listing
 anything the job asked for that you could not do and the concrete reason (no network to a
 host, missing or rejected key, empty source, time), or "nothing". Numbers come from

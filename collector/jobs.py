@@ -131,8 +131,9 @@ def _description(spec: JobSpec) -> str:
 def _common_tail(spec: JobSpec) -> list[str]:
     return [
         f"`{OUTPUTS}/report.md` exists with (a) a per-language table of per-stage counts "
-        f"(searched/read, accepted, rejected), (b) rejects broken down by reason, (c) the top "
-        f"hosts per language with counts, and (d) a section titled \"Not done\" that lists "
+        f"(queries, hits, fetched/raw_fallback, accepted, rejected), (b) rejects broken down by "
+        f"reason, (c) the top hosts per language with counts, and (d) a section titled "
+        f"\"Not done\" that lists "
         f"anything the task asked for that was not completed with the concrete reason "
         f"(missing credential, blocked host, empty source, time), or states \"nothing\".",
         "No file under `/mnt/session/outputs/` contains an API key, token or other secret, "
@@ -162,7 +163,8 @@ def _rubric(spec: JobSpec) -> str:
             "Every row's `lid_detail` carries the HaloLID verdict and, unless report.md says "
             "GlotLID was skipped (`--no-glotlid`), the GlotLID verdict as well.",
             f"`{OUTPUTS}/manifest.jsonl` exists, is valid JSON lines, and has one line per URL "
-            f"examined with its outcome (accepted / lid_reject / fetch_fail / dup / ...).",
+            f"examined with its `status` (accepted / lid_reject / fetch_fail / too_short / "
+            f"host_excluded / host_capped / dup_url / dup_hash).",
             f"No accepted document is shorter than 30 words, and no language has more than "
             f"{spec.max_docs} accepted documents in this run.",
             f"No single host supplies more than {pct}% of a language's newly accepted rows, "
