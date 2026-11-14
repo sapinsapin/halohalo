@@ -19,7 +19,7 @@ import urllib.request
 
 from .schema import load_manifest, validate as validate_row
 
-PROMPT_VERSION = 'chika-text-review-v3'
+PROMPT_VERSION = 'chika-text-review-v4'
 PROMPT = '''You conservatively review Filipino/Taglish, Hiligaynon/Ilonggo, Cebuano, Bikolano and Ilocano ASR text.
 You have NO AUDIO. Judge linguistic plausibility only, never acoustic accuracy.
 The source language hint is provisional; accept English and other valid code switches.
@@ -53,6 +53,7 @@ percentages. Return only JSON, no Markdown, in this exact structure:
 {"id":"input id","triage":"no_obvious_text_issue|needs_audio_review|unintelligible_text",
 "language_assessment":"brief cautious description","issues":[{"quote":"exact substring",
 "kind":"suspected_asr_error|unclear_text|repetition","suggestion":null,"reason":"brief explanation"}]}
+Copy the supplied id exactly; it identifies this one request.
 Return at most 3 high-priority issues. If understandable despite code switching, prefer
 no_obvious_text_issue. This means only that the text makes sense, not that it matches audio.'''
 TRIAGE = {'no_obvious_text_issue', 'needs_audio_review', 'unintelligible_text'}
@@ -96,7 +97,8 @@ class Config:
     def identity(self):
         return dict(endpoint=self.endpoint, model=self.model, max_tokens=self.max_tokens,
                     reasoning_effort='low', response_format='json_object',
-                    prompt_version=self.prompt_version, prompt_sha256=sha(PROMPT))
+                    prompt_version=self.prompt_version, prompt_sha256=sha(PROMPT),
+                    request_id_encoding='short-hash-if-long-v1')
 
     def check(self):
         url = urllib.parse.urlsplit(self.base_url)
@@ -122,12 +124,20 @@ def input_identity(row):
                 start=row.get('start'), end=row.get('end'))
 
 
+def request_id(row, encoding=None):
+    if encoding is None:
+        return row['id']
+    if encoding != 'short-hash-if-long-v1':
+        raise ValueError('unsupported request ID encoding')
+    return 'r'+sha({'id':row['id']})[:12] if len(row['id']) > 32 else row['id']
+
+
 def request_body(row, config):
     # No question, speaker information, paths or audio leave this machine.
     return dict(model=config.model, reasoning_effort='low', max_tokens=config.max_tokens,
                 response_format={'type': 'json_object'}, messages=[
                     {'role': 'system', 'content': PROMPT},
-                    {'role': 'user', 'content': json.dumps({'id': row['id'], 'transcript': row['sentence'], 'source_language_hint': row['language']}, ensure_ascii=False)}])
+                    {'role': 'user', 'content': json.dumps({'id': request_id(row, config.identity().get('request_id_encoding')), 'transcript': row['sentence'], 'source_language_hint': row['language']}, ensure_ascii=False)}])
 
 
 def validate_review(parsed, row):
@@ -159,7 +169,7 @@ def validate_review(parsed, row):
     return parsed
 
 
-def parse_response(raw, row):
+def parse_response(raw, row, encoding=None):
     if not isinstance(raw, dict) or not isinstance(raw.get('choices'), list) or len(raw['choices']) != 1:
         raise ValueError('invalid completion envelope')
     choice = raw['choices'][0]
@@ -168,7 +178,11 @@ def parse_response(raw, row):
     content = choice.get('message', {}).get('content')
     if not isinstance(content, str):
         raise ValueError('completion has no text content')
-    return validate_review(json.loads(content), row)
+    parsed = json.loads(content)
+    if not isinstance(parsed, dict) or parsed.get('id') != request_id(row, encoding):
+        raise ValueError('invalid response request identity')
+    parsed['id'] = row['id']
+    return validate_review(parsed, row)
 
 
 def error_record(directory, cache_key, row_id, attempt, kind, status=None):
@@ -220,7 +234,7 @@ def _review_locked(row, config, key, output):
         validate_review(old.get('review'), row)
         if not raw_path.exists() or sha(json.loads(raw_path.read_text())) != old.get('response_sha256'):
             raise ValueError('cached raw response missing or changed')
-        if parse_response(json.loads(raw_path.read_text()), row) != old['review']:
+        if parse_response(json.loads(raw_path.read_text()), row, config.identity().get('request_id_encoding')) != old['review']:
             raise ValueError('cached review differs from original response')
         (output / (fingerprint + '.error.json')).unlink(missing_ok=True)
         return old
@@ -264,7 +278,7 @@ def _review_locked(row, config, key, output):
                 raise
             time.sleep(min(config.retry_delay * 2 ** (attempt - 1), 30))
     try:
-        review = parse_response(raw, row)
+        review = parse_response(raw, row, config.identity().get('request_id_encoding'))
     except (ValueError, KeyError, TypeError, AttributeError):
         error_record(output, fingerprint, row['id'], 0, 'invalid_review')
         raise ValueError('LLM output failed strict review validation; saved for inspection') from None

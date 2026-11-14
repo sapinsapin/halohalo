@@ -22,6 +22,10 @@ tags:
 - code-switching
 - work-in-progress
 configs:
+- config_name: hil_collected_vad_200_v1
+  data_files:
+  - split: unassigned
+    path: curation/collected-hil-vad-200-v1/curation-unassigned-*.parquet
 - config_name: hil_collected_pilot_v1
   data_files:
   - split: unassigned
@@ -51,6 +55,8 @@ A work-in-progress collection of Filipino/Taglish, Hiligaynon, Cebuano, Bikolano
 Tracking and workflow: [sapinsapin/halohalo issue #8](https://github.com/sapinsapin/halohalo/issues/8). The repository is private while source rights and curation are unresolved.
 
 ## Available configuration
+
+`hil_collected_vad_200_v1` contains 200 Hiligaynon-source VAD candidate segments, 489.686 seconds (about 8.2 minutes), with ASR drafts. Five have validated text-only LLM reviews; 195 remain draft-only. All are unassigned with unknown source permissions and zero audio verification. Padded VAD candidates are not certified clean speech. This snapshot overlaps the earlier collected pilot sources; do not sum configuration durations or concatenate them for training without source-interval/acoustic deduplication.
 
 Cebuano, Bikolano and Ilocano acquisition is being added; no completed transcribed configurations for those languages are claimed. Bikolano is a collection label: specific varieties and unresolved variety labels remain explicit in source metadata.
 

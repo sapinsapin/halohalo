@@ -9,7 +9,7 @@ import tempfile
 import threading
 import unittest
 
-from curation.review import Config, PROMPT, input_identity, review_one, sha, validate_review
+from curation.review import Config, PROMPT, input_identity, review_one, sha, validate_review, request_id, parse_response
 from curation.schema import VERSION
 
 
@@ -66,6 +66,22 @@ class ReviewTests(unittest.TestCase):
         self.r=row()
         self.r['num_words']=len(self.r['sentence'].split())
     def tearDown(self): self.tmp.cleanup()
+
+    def test_long_id_uses_bound_short_wire_identity_and_legacy_still_parses(self):
+        self.r['id']='a'*64
+        short=request_id(self.r,'short-hash-if-long-v1')
+        self.assertEqual(len(short),13)
+        parsed=valid_review(self.r);parsed['id']=short
+        with server([(200,envelope(parsed))]) as (cfg,requests):
+            result=review_one(self.r,cfg,'test-key',self.out)
+            sent=json.loads(requests[0]['body']['messages'][1]['content'])
+            self.assertEqual(sent['id'],short)
+            self.assertEqual(result['review']['id'],self.r['id'])
+            self.assertEqual(result['input_sha256'],sha(input_identity(self.r)))
+        self.assertEqual(parse_response(envelope(valid_review(self.r)),self.r)['id'],self.r['id'])
+        parsed['id']='r000000000000'
+        with self.assertRaisesRegex(ValueError,'identity'):
+            parse_response(envelope(parsed),self.r,'short-hash-if-long-v1')
 
     def test_lexical_replacement_is_not_an_approved_suggestion(self):
         review=valid_review(self.r)

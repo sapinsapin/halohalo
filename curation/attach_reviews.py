@@ -37,7 +37,7 @@ def attach(rows, directory):
                 or review.get('human_approved') is not False):
             raise ValueError('invalid text-only review status')
         raw = json.loads((directory / (fingerprint + '.response.json')).read_text())
-        if sha(raw) != review.get('response_sha256') or parse_response(raw, row) != review.get('review'):
+        if sha(raw) != review.get('response_sha256') or parse_response(raw, row, config.get('request_id_encoding')) != review.get('review'):
             raise ValueError('saved response differs from review')
         validate_review(review['review'], row)
         if digest(row['audio_path']) != row['audio_sha256']:

@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T22:23:07.774378+00:00",
-  "unit_tests": 137,
+  "updated_at": "2026-11-14T22:39:14.655466+00:00",
+  "unit_tests": 147,
   "pld_rows_locally_decoded": 229,
   "hf_v2_remote_shards_hash_verified": 3,
   "hf_v2_streaming_rows_checked": 1,
@@ -134,6 +134,33 @@
     "fil_windows": 2,
     "failures": 0,
     "bulk_reliability_proven": false,
-    "bounded_followup_pid": 33933
+    "bounded_followup_pid": 33933,
+    "subsequent_failures_note": "Four finalize timeouts observed on0.588\u20132.508-second candidates; long utterance cuts are not the only possible cause."
+  },
+  "persistent_asr": {
+    "live_items_per_language": {
+      "hil": 2,
+      "fil": 2
+    },
+    "live_sessions_per_language": 1,
+    "sample_clock_contiguous": true,
+    "cache_network_disabled": true,
+    "sustained_throughput_proven": false
+  },
+  "llm_v4": {
+    "live_rows_checked": 7,
+    "valid_reviews": 7,
+    "request_id_shortening": true,
+    "transcripts_changed": 0,
+    "audio_verifications_granted": 0
+  },
+  "collected_hil_vad_200_v1": {
+    "rows": 200,
+    "padded_seconds": 489.686,
+    "text_reviewed": 5,
+    "audio_verified": 0,
+    "all_rows_pcm_compared": true,
+    "all_rows_hf_streamed": true,
+    "export_revision": "ae2abab424fcf6535672d3fdcf8a1f11117a07b9"
   }
 }

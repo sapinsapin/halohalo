@@ -1,5 +1,5 @@
 {
-  "status": "small pilots passed; original bulk stopped after finalize_timeout; four short VAD segment checks passed and bounded two-hour segmented retry running",
+  "status": "bounded segmented batch making progress with isolated finalize_timeout errors; persistent-session4-item live smoke passed",
   "observed_at": "2026-11-14",
   "public_app": "https://boses.sapinsapin.ai/",
   "documentation": "https://boses.sapinsapin.ai/quickstart",
@@ -30,7 +30,8 @@
     "Two 30-second live pilots returned complete final coverage, including automatic utterance cuts. This is not an accuracy benchmark.",
     "No new ASR service deployed on GB10. Acquisition remains the priority.",
     "Bounded bulk run encountered repeated finalize_timeout service errors. Failed windows are excluded and acquisition retains priority.",
-    "VAD v3 caps segments at27s below observed28s automatic cut. Four short checks succeeded; this does not yet prove bulk reliability."
+    "VAD v3 caps segments at27s below observed28s automatic cut. Four short checks succeeded; this does not yet prove bulk reliability.",
+    "Subsequent finalize timeouts also occurred on0.588\u20132.508s segments. The27s cap does not resolve all server failures; failed rows remain excluded."
   ],
   "upstream": "wss://d1ve4x2dfkyese.cloudfront.net/v1/asr",
   "upstream_authentication": "Existing authorized speech credential via bearer subprotocol; supplied from external key file",

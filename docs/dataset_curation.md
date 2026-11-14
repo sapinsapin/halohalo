@@ -265,4 +265,31 @@ The bounded segmented ASR retry uses only the previously prepared Hil/Fil record
 
 Read-only inspection of `/Users/timsan/nyo-serve` found sequential multi-finalize socket reuse in `bench/ten_e2e.py:148`. In `modules/asr_fw/server.py:198`, finalization clears finalized PCM but preserves the cumulative sample clock; emitted times remain session-relative. The gateway can synthesize `finalize_end` after an error, so a matching ID must never replace error and coverage checks. No wire reset command was found. Local support is not verification of the deployed revision.
 
-A future reuse client must preserve raw wire events, a verified session handshake and exact session-start samples for each item. It must subtract the session offset before applying original-source offsets, exclude cached items from the sent sample clock, wait for each item's valid completion before sending the next, and discard an uncertain session. Receipt/config versions must distinguish this transport. The running batch deliberately retains the tested one-connection-per-item client; connection reuse and throughput gains remain untested.
+A future reuse client must preserve raw wire events, a verified session handshake and exact session-start samples for each item. It must subtract the session offset before applying original-source offsets, exclude cached items from the sent sample clock, wait for each item's valid completion before sending the next, and discard an uncertain session. Receipt/config versions must distinguish this transport. The running batch deliberately retains the tested one-connection-per-item client. The later bounded persistent-client checks below establish protocol compatibility; sustained throughput gains remain unmeasured.
+
+### Persistent ASR client
+
+`curation.asr_session` implements a separate, versioned persistent transport. It defaults to two items, uses one fixed model/language session, and stops on the first uncertain or failed item without retrying. Both per-batch and per-item OS locks protect output. Raw wire events and the checked session handshake remain intact; exact session sample offsets distinguish successive clips from original-source offsets. Cached items send no audio and do not advance the session clock. A completed attempt can recover after an interrupted cache commit; uncertain attempts require reconciliation instead of automatic paid replay.
+
+```sh
+curation/.venv/bin/python -m curation.asr_session \
+  --manifest /path/to/prepared-candidates.jsonl --output /path/to/new-results \
+  --key-file /path/to/speech-key --language hil \
+  --model fw/whisper-large-v3-pld-hil-norm --max-items 2
+```
+
+Two live Hil and two live Fil items passed on one connection per language, including cumulative-clock checks. Both caches then passed with network connections disabled. This establishes bounded deployed protocol compatibility, not sustained throughput or linguistic accuracy. The existing larger batch remains on the original client. Word timestamps stay in raw session coordinates and are not represented as source-aligned annotations by this client.
+
+### LLM request identity
+
+Prompt/contract v4 uses a deterministic short request identifier for long row IDs. A live v3 rejection was caused by the model mistyping the original 64-character ID. The response must match the short identifier exactly before it is mapped back to the full local ID; no approximate matching or repair is allowed. Full input/audio/text/configuration hashes remain the cache and attachment identity. Historic responses without the encoding field retain their original full-ID contract. Two repeated live checks and five new draft checks passed this contract; that is not an accuracy benchmark or audio verification.
+
+### Additional-language ASR candidates
+
+`curation/asr_candidates.json` records available SapinSapin Cebuano, Central Bikol and Ilocano checkpoints and pinned revisions from the Hub API. The current local serving registry only configures Fil/Hil routes. Candidate model cards declare `cc-by-nc-4.0`; the metadata is not commercial-use clearance. No candidate weights were downloaded or deployed, and no new-language ASR route is claimed. Central Bikol must not be silently used as a label/model for all Bikol varieties.
+
+### First segmented curation snapshot
+
+`hil_collected_vad_200_v1` on private Chika contains 200 ASR draft candidates totaling 489.686 padded seconds. Five validated text-only reviews are attached; no audio approvals were granted. All 200 embedded audio arrays matched their source derivative PCM exactly. The export's five files passed immutable-revision verification at `ae2abab424fcf6535672d3fdcf8a1f11117a07b9`. This snapshot overlaps earlier pilot sources and is not additive unique speech coverage.
+
+Subsequent bounded-batch failures included four `finalize_timeout` responses on candidates lasting 0.588–2.508 seconds. Avoiding the 28-second boundary does not eliminate every server failure. Failed items remain outside completed manifests; no claim of a production server fix is made.
