@@ -306,3 +306,19 @@ New YouTube archive/inventory workers monitor media-byte growth and free disk sp
 LLM review stops after two consecutive failures by default (`--max-consecutive-failures`). Successful cached or new reviews reset that counter. Failed reviews stay excluded, and no transcript is rewritten. Publish newly attached reviews under a new immutable export prefix rather than replacing a previously published snapshot.
 
 Operational checkpoint (2026-11-14 UTC): the bounded Hiligaynon batch stopped early with 667 successful drafts (0.44349 padded hours) and nine failures; no automatic restart was made. A separate persistent Filipino session completed 13 drafts (0.00997 padded hours) before its first error and stopped. The 200-row Hiligaynon review run finished with 194 valid text reviews and six failures. A new local manifest at `curation/outputs/collected-hil-vad-200-reviewed-v2/manifest.jsonl` attaches those 194 reviews with zero transcript changes or audio approvals. It overlaps the already published 200-row snapshot and must not be added as new unique audio. The reviewed version is now published as `hil_collected_vad_200_reviewed_v2` in private `sapinsapin/chika`: data revision `040d715a16820092e20c1e5a4bb40fccecee0213`, dataset-card revision `c868cbd6adc8d6bf0394f44b90aeac899c9964ac`. All five remote artifact hashes and all 200 embedded PCM arrays were checked; audio and sentences are unchanged. Loading the pinned configuration through Hugging Face streaming returned exactly 200 rows: 194 `text_reviewed` and six `draft`. Acquisition remains the priority.
+
+### Hiligaynon archive backup checkpoint
+
+The immutable archive import `75c7187cddc5553c419da5b094bf1021f72f7489d126a0958c50ec4582389f53` contains 49 completed recordings from eight sources: 40.72797 measured media hours and 3,342,182,733 bytes. Two incomplete acquisition records were excluded. This is raw media, with no speech/language verification or training permission implied.
+
+A detached backup job was launched under `curation/outputs/archive-backup-hil-49-v1/` with a 100-recording / 4 GiB bound. Inspect its `worker.json`, actual process, log and `state/receipts/` before any recovery; a running marker alone is insufficient. `curation.status` now reports this job's actual process observation and local receipt-file count. Do not equate receipt-file count with newly verified unique recordings. Local originals are retained, and no archive eviction is enabled.
+
+To reproduce the bounded plan against that imported manifest, then upload after inspecting the plan:
+
+```sh
+curation/.venv/bin/python -m curation.archive_backup   curation/outputs/imported-media-latest/snapshots/75c7187cddc5553c419da5b094bf1021f72f7489d126a0958c50ec4582389f53/manifest.jsonl   --state-dir curation/outputs/archive-backup-hil-49-v1/state   --max-files 100 --max-bytes 4294967296
+# The same command with --upload writes to the existing private Chika repository.
+# Do not run it concurrently with the active worker.
+```
+
+Re-running after confirmed termination revalidates remote content-addressed objects and resumes missing work. New recordings require a fresh import snapshot; this frozen job does not include later downloads. Status source-interval accounting also includes the persistent Filipino drafts and the published 194-review Hiligaynon manifest, without adding overlapping segments twice.

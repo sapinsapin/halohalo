@@ -48,7 +48,7 @@ def snapshot():
         radio.append({k:r.get(k) for k in ['station','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
     from .account import account
     inputs=[]
-    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl'])]:
+    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl'])]:
         for relative in directories:
             path=ROOT/'outputs'/relative
             if path.exists(): inputs.append((language,path))
@@ -60,10 +60,22 @@ def snapshot():
         process=subprocess.run(['ps','-p',str(batch['pid']),'-o','pid=,etime=,command='],capture_output=True,text=True)
         batch['process_present']=process.returncode==0
         batch['process_observation']=process.stdout.strip()
+    archive_backups=[]
+    for path in sorted((ROOT/'outputs').glob('archive-backup-*/worker.json')):
+        worker=json.loads(path.read_text())
+        report={k:worker[k] for k in ('pid','status','started_at','finished_at','expected_recordings','max_bytes','error_type') if k in worker}
+        report['root']=str(path.parent.relative_to(ROOT.parent))
+        report['local_receipt_files']=len(list((path.parent/'state/receipts').glob('*.json')))
+        report['receipt_count_note']='Local receipt files; not an independent remote revalidation or unique-recording count.'
+        if isinstance(worker.get('pid'),int):
+            process=subprocess.run(['ps','-p',str(worker['pid']),'-o','pid=,etime=,command='],capture_output=True,text=True)
+            report['process_present']=process.returncode==0
+            report['process_observation']=process.stdout.strip()
+        archive_backups.append(report)
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; segmented ASR retry is bounded and circuit-limited',rss=reports,archives=archives,archives_by_language=archives_by_language,radio=radio,
-                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,
+                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',
