@@ -19,6 +19,12 @@ tags:
 - code-switching
 - work-in-progress
 configs:
+- config_name: hil_pld_curation_v2
+  data_files:
+  - split: unassigned
+    path: curation/pld-hil-v2/curation-unassigned-*.parquet
+  - split: reserved_test
+    path: curation/pld-hil-v2/curation-reserved_test-*.parquet
 - config_name: hil_pld_curation_v1
   data_files:
   - split: unassigned
@@ -35,11 +41,11 @@ Tracking and workflow: [sapinsapin/halohalo issue #8](https://github.com/sapinsa
 
 ## Available configuration
 
-`hil_pld_curation_v1` contains **229 PLD spontaneous recordings, 2.9522 hours**, with machine-generated transcript drafts and text-only review. There are **190 unassigned and 39 reserved-test recordings**. These recordings are an initial schema migration/curation set; they do not establish completion of the new 250-hour Hiligaynon collection. No audio-verified training labels are claimed. PLD source restrictions remain applicable.
+`hil_pld_curation_v2` contains **229 PLD spontaneous recordings, 2.9522 hours**, with machine-generated transcript drafts and text-only review. There are **190 unassigned and 39 reserved-test recordings**. These recordings are an initial schema migration/curation set; they do not establish completion of the new 250-hour Hiligaynon collection. No audio-verified training labels are claimed. PLD source restrictions remain applicable.
 
 ```python
 from datasets import load_dataset
-rows = load_dataset("sapinsapin/chika", "hil_pld_curation_v1", split="unassigned", streaming=True)
+rows = load_dataset("sapinsapin/chika", "hil_pld_curation_v2", split="unassigned", streaming=True)
 row = next(iter(rows))
 print(row["sentence"], row["review_status"])
 ```
@@ -48,9 +54,11 @@ print(row["sentence"], row["review_status"])
 
 ## Format
 
-Following PLD, each Parquet row embeds `audio` as `{bytes, path}` with 16 kHz mono FLAC, plus `sentence`, `duration`, `speaker_id`, `speech_type`, `language` and `num_words`. Added fields are `id`, `split`, `schema_version`, `review_status` and `provenance_json`. A complete manifest sidecar preserves source questions, source hashes, original timestamps, review evidence, rights and original sample rate.
+Following PLD, each Parquet row embeds `audio` as `{bytes, path}` with 16 kHz mono FLAC, plus `sentence`, `duration`, `speaker_id`, `speech_type`, `language` and `num_words`. The prompt distinction is directly available as `text_is_prompt` and `prompt`, with `source_id` and `recording_id` for grouping. Other added fields are `id`, `split`, `schema_version`, `review_status` and `provenance_json`. A complete manifest sidecar preserves source questions, source hashes, original timestamps, review evidence, rights and original sample rate.
 
 For spontaneous PLD speech, `sentence` is the draft transcription, **never the question**. The elicitation question remains separate in provenance and is excluded from ASR and text-review inputs. Frozen test reservations must not be used for training. Source recording and known speaker grouping governs future splits; unknown speakers do not imply speaker-disjointness.
+
+The older `hil_pld_curation_v1` configuration remains reproducible but keeps the prompt flag inside `provenance_json`; use v2 for direct compatibility with PLD’s `not row["text_is_prompt"]` filter.
 
 ## Language and review
 

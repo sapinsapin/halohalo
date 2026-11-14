@@ -65,6 +65,8 @@ def export(args):
     check_splits(rows)
     if args.profile != 'curation':
         for row in rows:
+            if not row['sentence'].strip():
+                raise ValueError(f'{row["id"]}: training export needs a nonempty verified transcript')
             if row['review_status'] != 'audio_verified' or row['rights']['training'] != 'allowed':
                 raise ValueError(f'{row["id"]}: training export needs audio verification and training permission')
             if row['split'] == 'unassigned':
@@ -85,12 +87,15 @@ def export(args):
         ('speech_type', pa.string()), ('language', pa.string()), ('num_words', pa.int64()),
         ('id', pa.string()), ('split', pa.string()), ('review_status', pa.string()),
         ('schema_version', pa.string()), ('provenance_json', pa.string()),
+        ('text_is_prompt', pa.bool_()), ('prompt', pa.string()),
+        ('source_id', pa.string()), ('recording_id', pa.string()),
     ])
     hf = {'info': {'features': {k: {'dtype': str(t), '_type': 'Value'} for k, t in [
         ('sentence', 'string'), ('duration', 'float64'), ('speaker_id', 'string'),
         ('speech_type', 'string'), ('language', 'string'), ('num_words', 'int64'),
         ('id', 'string'), ('split', 'string'), ('review_status', 'string'),
-        ('schema_version', 'string'), ('provenance_json', 'string')]}}}
+        ('schema_version', 'string'), ('provenance_json', 'string'),
+        ('text_is_prompt', 'bool'), ('prompt', 'string'), ('source_id', 'string'), ('recording_id', 'string')]}}}
     hf['info']['features']['audio'] = {'sampling_rate': rate, '_type': 'Audio'}
     schema = schema.with_metadata({b'huggingface': json.dumps(hf).encode()})
     artifacts = []

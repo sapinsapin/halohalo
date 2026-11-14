@@ -161,7 +161,12 @@ def acquire_youtube(item, source_id):
     try:
         free_check()
         if item.get('live_status') in ('is_live', 'is_upcoming'):
-            raise ValueError('ongoing or upcoming live video excluded from finite archive acquisition')
+            record.update(status='excluded', exclusion_reason='ongoing_or_upcoming_live',
+                retry_policy='rediscover after broadcast ends; no missing live interval can be recovered automatically',
+                updated_at=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))
+            atomic(manifest, record)
+            print(json.dumps({k:record.get(k) for k in ('source_id','id','status','exclusion_reason')}), flush=True)
+            return record
         log = folder / (video_id + '.download.log')
         with log.open('w') as out:
             result = subprocess.run([YTDLP, '--no-playlist', '-f', 'bestaudio', '--no-progress', '--socket-timeout', '25',
@@ -219,7 +224,7 @@ def queue_all():
                 source_status[source_id] = {'status':data.get('status', 'empty_inventory'), 'items':0}
                 continue
             error_path = ROOT / (Path(name).stem + '.error.json')
-            source_status[source_id] = {'status':'queued', 'items':len(entries), 'processed':0, 'failed':0}
+            source_status[source_id] = {'status':'queued', 'items':len(entries), 'processed':0, 'failed':0, 'excluded':0}
             if error_path.exists():
                 source_status[source_id]['discovery_warning'] = json.loads(error_path.read_text())
             queues.append((source_id, iter(entries)))
@@ -239,7 +244,8 @@ def queue_all():
             record = acquire_youtube(item, source_id)
             count += 1
             source_status[source_id]['processed'] += 1
-            source_status[source_id]['failed'] += int(record['status'] != 'downloaded')
+            source_status[source_id]['failed'] += int(record['status'] not in {'downloaded', 'excluded'})
+            source_status[source_id]['excluded'] += int(record['status'] == 'excluded')
             atomic(checkpoint, {'processed_this_run':count,
                 'last_source':source_id, 'last_id':item['id'], 'status':'running', 'sources':source_status,
                 'resume':'python -m curation.acquire_archives --source all-youtube; completed content hashes are rechecked and skipped'})

@@ -139,7 +139,7 @@ def download(args):
     db.execute("UPDATE items SET status='pending' WHERE status='downloading'")
     db.commit()
     for _ in range(args.max_items):
-        measured = db.execute("SELECT coalesce(sum(duration),0) FROM items WHERE status='downloaded'").fetchone()[0]
+        measured = db.execute("SELECT coalesce(sum(duration),0) FROM items WHERE status IN ('downloaded','remote')").fetchone()[0]
         if args.max_hours and measured >= args.max_hours * 3600:
             break
         if shutil.disk_usage(root).free < args.min_free_gib * 1024**3:
@@ -147,8 +147,8 @@ def download(args):
             print('Storage floor reached; checkpoint preserved.', flush=True)
             break
         row = db.execute("""SELECT i.* FROM items i WHERE status IN ('pending','failed') AND attempts < ?
-                            AND (? = 0 OR (SELECT coalesce(sum(duration),0) FROM items d WHERE d.source_id=i.source_id AND d.status='downloaded') < ?)
-                            ORDER BY attempts,(SELECT coalesce(sum(duration),0) FROM items d WHERE d.source_id=i.source_id AND d.status='downloaded'),source_id,published,id LIMIT 1""", (args.max_attempts, args.max_source_hours, args.max_source_hours * 3600)).fetchone()
+                            AND (? = 0 OR (SELECT coalesce(sum(duration),0) FROM items d WHERE d.source_id=i.source_id AND d.status IN ('downloaded','remote')) < ?)
+                            ORDER BY attempts,(SELECT coalesce(sum(duration),0) FROM items d WHERE d.source_id=i.source_id AND d.status IN ('downloaded','remote')),source_id,published,id LIMIT 1""", (args.max_attempts, args.max_source_hours, args.max_source_hours * 3600)).fetchone()
         if row is None:
             break
         folder = root / 'audio' / row['source_id']

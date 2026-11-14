@@ -176,6 +176,23 @@ class CollectorTests(unittest.TestCase):
         self.run_download()
         self.assertEqual(sum(r['status'] == 'downloaded' for r in self.rows()), 1)
 
+    def test_remote_backup_hours_still_limit_resumed_acquisition(self):
+        self.discovery({'a':['/a1','/a2']})
+        self.args.max_items = 1
+        self.run_download()
+        db = collect.connect(self.root)
+        db.execute("UPDATE items SET status='remote',path=NULL WHERE status='downloaded'")
+        db.commit(); db.close()
+        count = len(self.requests)
+        self.args.max_items = 100
+        self.args.max_hours = 1/3600
+        self.run_download()
+        self.assertEqual(len(self.requests), count)
+        self.args.max_hours = 0
+        self.args.max_source_hours = 1/3600
+        self.run_download()
+        self.assertEqual(len(self.requests), count)
+
     def test_status_deduplicates_exact_file_bytes(self):
         self.discovery({'a':['/a1'], 'b':['/b1']})
         self.run_download()

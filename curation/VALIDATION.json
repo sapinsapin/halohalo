@@ -1,0 +1,34 @@
+{
+  "updated_at": "2026-11-14T21:29:50.210982+00:00",
+  "unit_tests": 52,
+  "pld_rows_locally_decoded": 229,
+  "hf_v2_remote_shards_hash_verified": 3,
+  "hf_v2_streaming_rows_checked": 1,
+  "rss_restore_drill": {
+    "local_restored_files": 1,
+    "remote_rows": 1,
+    "pending_rows": 424,
+    "original_root_unchanged": true
+  },
+  "archive_metadata_checkpoint": {
+    "files": 55,
+    "bytes": 8139017,
+    "revision": "5f146ae8b11c0ffe1021eaa483931d23bf6dc8e5"
+  },
+  "prepared_transport_windows": {
+    "hil": 169,
+    "fil": 74,
+    "new_transcribed_hours": 0
+  },
+  "llm_integration": {
+    "model": "glm-5.3-flash-nebius",
+    "returned_model": "zai-org/GLM-5.3-Flash",
+    "real_drafts_checked": 2,
+    "text_only_probes": 4,
+    "probes_with_no_obvious_issue": 4,
+    "known_probe_included_as_prompt_example": true,
+    "new_probes": 3,
+    "audio_verified": false,
+    "limitations": "Small instruction regression check, not a linguistic accuracy benchmark. Prompt v1 overflagged phonetic English; v2 fixed known example, but actual draft triage still needs listening."
+  }
+}
