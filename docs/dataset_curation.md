@@ -150,4 +150,26 @@ curation/.venv/bin/python -m curation.evict --root curation/outputs/rss --max-fi
 
 The default is dry-run. An active downloader's OS lock prevents any eviction; this tool never stops a worker. Every selected item must be present in a checksum-verified immutable checkpoint, whose backup coordinates agree with both the local ledger and current private Hub object. Local SHA256/size/inode checks precede deletion. A durable `remote` transition and journal precede unlink so interruption cannot produce a false claim that a deleted file is local. Interrupted journal entries can be reconciled safely. Recovery archives imported deletion intents as provenance instead of acting on old filesystem paths.
 
-Only completed `.media` originals within the selected RSS root are eligible. Other source directories and derived FLAC windows are untouched. No original audio was evicted during the initial recovery/dry-run checks. Automatic threshold monitoring and archive-source reclamation are not yet implemented; until then, inspect status and run the documented steps when storage requires it. Resume the collector only after confirming the previous process ended; remote hours continue to count against its acquisition caps.
+Only completed `.media` originals within the selected RSS root are eligible. Other source directories and derived FLAC windows are untouched. No original audio was evicted during the initial recovery/dry-run checks. Automatic RSS threshold monitoring is available through `curation.supervise`; archive-source reclamation is not yet implemented. Resume the collector only after confirming the previous process ended; remote hours continue to count against its acquisition caps.
+
+
+## Storage supervisor
+
+Run `curation/.venv/bin/python -m curation.supervise --once` to observe, or `curation/.venv/bin/python -u -m curation.supervise --apply` for the persistent worker. Check `curation/outputs/supervisor/heartbeat.json` before launching another instance. It backs up bounded RSS batches below 40 GiB free and reclaims only verified, idle-root originals toward 45 GiB free. Downloader locks prevent eviction during acquisition. Durable launch guards, cooldowns and retry limits protect restarts. Hiligaynon RSS is uncapped; Taglish retains its 300-hour overall / 50-hour-per-show acquisition caps. These are raw runtime caps, not verified speech totals.
+
+## Authenticated Boses ASR
+
+The deployment source is `aineolab/sapinsapin-voice` at commit `9f341a84a22e3af04f45adc5d8c9fee8cf457af1`. Its current upstream is `wss://d1ve4x2dfkyese.cloudfront.net/v1/asr`. Supply the existing authorized speech credential using `--key-file`; never commit it. The public browser trial relay is separate and is not used for bulk transcription.
+
+```sh
+curation/.venv/bin/python -m curation.asr \
+  --manifest curation/outputs/prepared-hil/manifest.jsonl \
+  --output curation/outputs/asr-client-hil --key-file /path/to/speech-key \
+  --language hil --model fw/whisper-large-v3-pld-hil-norm --limit 2 --pace 0
+```
+
+For Filipino use language `fil` and model `fw/whisper-large-v3-pld-fil-norm`. The client checks prepared audio hashes, model handshake, complete temporal coverage and matching finalization before publishing draft transcripts. Raw responses and cache identities permit resumable work. Source questions are never sent. Unpaced delivery passed small live pilots; this does not establish sustained service capacity. Automatic server utterance cuts can split a 30-second transport window, so merged text remains a draft requiring segmentation, language checks and listening. Empty responses are recorded separately. ASR success grants neither audio verification nor training rights.
+
+The first larger batch encountered repeated server `finalize_timeout` errors despite successful small pilots. It was stopped; successful draft caches remain reusable and failed windows do not count as transcribed. Resolve service finalization before resuming bulk ASR. The initial new-audio LLM check accepted one text review and rejected one invalid identity/triage response under the strict contract; original transcripts remain unchanged.
+
+Finalized radio captures can be backed up with `curation/.venv/bin/python -m curation.media_backup --root curation/outputs/radio`. This bounded adapter validates local audio against capture receipts, uploads only audio and selected provenance to the existing private dataset, and verifies downloaded bytes at an immutable revision before publishing `hub-media-receipt.json`. It never deletes local audio. A running upload is not a verified backup.

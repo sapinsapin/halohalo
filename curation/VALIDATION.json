@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T21:37:18.192010+00:00",
-  "unit_tests": 68,
+  "updated_at": "2026-11-14T21:59:02.830326+00:00",
+  "unit_tests": 94,
   "pld_rows_locally_decoded": 229,
   "hf_v2_remote_shards_hash_verified": 3,
   "hf_v2_streaming_rows_checked": 1,
@@ -38,5 +38,29 @@
     "real_files_deleted": 0,
     "crash_and_restore_journal_tests_passed": true
   },
-  "radio_completed_captures_verified": 4
+  "radio_completed_captures_verified": 4,
+  "asr_live": {
+    "hil_draft_windows": 3,
+    "hil_draft_seconds": 90,
+    "fil_draft_windows": 2,
+    "fil_draft_seconds": 60,
+    "cache_reuse_network_disabled": true,
+    "bulk_status": "stopped after server finalize_timeout",
+    "audio_verified": false
+  },
+  "new_audio_llm": {
+    "selected": 2,
+    "valid_text_reviews": 1,
+    "rejected_invalid_identity_or_triage": 1,
+    "audio_verified": false
+  },
+  "storage_supervisor": {
+    "running": true,
+    "rss_only": true,
+    "real_files_deleted": 0
+  },
+  "radio_backup": {
+    "focused_tests": 7,
+    "upload_status": "in_progress; no verified receipt yet"
+  }
 }

@@ -1,0 +1,40 @@
+{
+  "status": "authenticated small pilots passed; bulk paused after repeated server finalize_timeout",
+  "observed_at": "2026-11-14",
+  "public_app": "https://boses.sapinsapin.ai/",
+  "documentation": "https://boses.sapinsapin.ai/quickstart",
+  "transport": "NRSP v1 WebSocket",
+  "relay": "wss://boses.sapinsapin.ai/api/public/voice/v1/asr",
+  "session_endpoint": "https://boses.sapinsapin.ai/api/public/voice/session",
+  "authentication": "signed sapin_trial HttpOnly same-origin session cookie; upstream key stays server-side",
+  "default_trial_asr_ms": 30000,
+  "bulk_authorization": "Existing speech credential successfully authenticated against current upstream",
+  "models": {
+    "fil_fast": "fw/flipvox-whisper-base-fil",
+    "fil_large": "fw/whisper-large-v3-pld-fil-norm",
+    "hil": "fw/whisper-large-v3-pld-hil-norm"
+  },
+  "sample_rate": 16000,
+  "channels": 1,
+  "format": "raw PCM16 little-endian, no WAV header",
+  "maximum_frame_bytes": 32768,
+  "subprotocol": "nrsp.v1",
+  "finalization": "send finalize with ID, wait for finalize_end before closing",
+  "quota_events": [
+    "trial_usage",
+    "trial_exhausted"
+  ],
+  "notes": [
+    "Public browser relay remains trial-limited; bulk client uses authorized direct upstream without trial recycling.",
+    "Previous 401 responses were from the older voice.nyolab.ai route.",
+    "Two 30-second live pilots returned complete final coverage, including automatic utterance cuts. This is not an accuracy benchmark.",
+    "No new ASR service deployed on GB10. Acquisition remains the priority.",
+    "Bounded bulk run encountered repeated finalize_timeout service errors. Failed windows are excluded and acquisition retains priority."
+  ],
+  "upstream": "wss://d1ve4x2dfkyese.cloudfront.net/v1/asr",
+  "upstream_authentication": "Existing authorized speech credential via bearer subprotocol; supplied from external key file",
+  "deployment_source": {
+    "repository": "https://github.com/aineolab/sapinsapin-voice",
+    "commit": "9f341a84a22e3af04f45adc5d8c9fee8cf457af1"
+  }
+}

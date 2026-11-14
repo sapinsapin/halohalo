@@ -40,15 +40,19 @@ def snapshot():
     for path in (ROOT/'outputs/radio').glob('*/*/status.json'):
         r=json.loads(path.read_text())
         radio.append({k:r.get(k) for k in ['station','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
+    asr_hours = {}
+    for language, directory in [('hil', 'asr-client-hil'), ('fil_taglish', 'asr-client-fil')]:
+        path = ROOT/'outputs'/directory/'summary.json'
+        asr_hours[language] = json.loads(path.read_text()).get('transcribed_hours', 0) if path.exists() else 0
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={'fil_taglish':250,'hil':250},
-                priority='acquisition first; ASR authentication deferred',rss=reports,archives=archives,radio=radio,
-                new_audio_transcribed_hours={'fil_taglish':0,'hil':0},
+                priority='acquisition first; ASR bulk deferred after server finalize_timeout',rss=reports,archives=archives,radio=radio,
+                new_audio_transcribed_hours=asr_hours,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',
                              'Original PLD pilot is separate from newly collected Chika audio.',
-                             'Production ASR, segmentation, LLM review of new audio and final training exports remain incomplete.'])
+                             'ASR figures are draft transport-window runtime, not verified unique speech. Segmentation, new-audio review and final training exports remain incomplete.'])
 
 
 if __name__=='__main__':
