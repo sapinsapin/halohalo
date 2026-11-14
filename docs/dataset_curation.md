@@ -221,3 +221,42 @@ The first collected pilot configurations were uploaded at revision `db224906b9ca
 Use the same discover/download/prepare/review/export commands with `cebuano_sources.json`, `bikolano_sources.json`, or `ilocano_sources.json` and isolated `outputs/<language>/rss` roots. `curation.status` and the storage supervisor read all five registered roots. Bikolano is a collection label, not a claim of one uniform variety: retain source variety evidence and uncertainty. RSS preparation carries full source metadata into provenance. New-language Boses ASR routes have **not** been validated, so do not send those languages to the Hiligaynon or Filipino model merely because it accepts a connection.
 
 Text-review prompt v3 adds Cebuano, Bikolano and Ilocano, preserves code-switching and prohibits imposing another language's grammar. Its changed prompt hash separates it from v2 caches. Existing v2 review attachments remain reproducible using their saved configuration and raw responses. This prompt update is not evidence of model accuracy in the added languages; linguistic/audio evaluation remains required.
+
+## Speech-activity candidates
+
+```sh
+curation/.venv/bin/python -m curation.vad \
+  --manifest curation/outputs/prepared-hil/manifest.jsonl \
+  --output curation/outputs/vad-hil-batch-v1 --max-minutes 2 --max-rows 4
+```
+
+This stage runs CPU Silero ONNX inference, checks the pinned model SHA256, and creates padded nonoverlapping speech candidates with exact absolute source-sample offsets. It uses the MIT-licensed [upstream model at pinned revision 066409f](https://github.com/snakers4/silero-vad/tree/066409f3d9db45a30d21dfcbf9147826ffdd7052), with our own hysteresis and gap-aware cuts. The maximum is 27 seconds, leaving headroom below the observed Boses automatic cut near 28 seconds. Continuous speech can still require hard cuts; final word alignment remains separate.
+
+Source audio is unchanged. Every derivative starts with empty pending transcription and no inherited text/audio approval. Parent metadata, source questions, rights and frozen splits remain in provenance/the appropriate fields. Output snapshots bind configuration, model/runtime, input manifest and parent hashes; changing any input requires a new output directory. Counts report padded candidate duration, which includes retained silence. VAD does not verify language, music overlap, speaker identity or transcription quality and is not benchmarked on these language groups.
+
+Small real checks covered Hiligaynon, Filipino, Bikolano and Ilocano. Four short Hil/Fil candidates subsequently passed ASR finalization. This is bounded integration evidence, not proof that the earlier bulk server failure is resolved. No new-language ASR route is implied.
+
+## Count source coverage without duplicate windows
+
+```sh
+curation/.venv/bin/python -m curation.account \
+  --manifest hil=curation/outputs/review-new-hil/joined-manifest.jsonl \
+  --manifest fil_taglish=curation/outputs/asr-client-fil/manifest.jsonl \
+  --output curation/outputs/coverage-audit.json
+```
+
+The audit rechecks audio hashes and unions exact source intervals by original audio hash and language group. Repeated manifests and overlapping windows count once, and cross-group source hashes are flagged. Draft transcripts, recorded review status and audio-verified coverage are separate. Coverage still includes padding and cannot establish unique retained speech: re-encodings, excerpts and simulcasts require acoustic deduplication. Evaluation reservations are never converted to training rows. Target completion is deliberately not inferred from these partial metrics.
+
+## Back up imported archives
+
+```sh
+curation/.venv/bin/python -m curation.archive_backup /path/to/imported/manifest.jsonl \
+  --state-dir curation/outputs/archive-backup --max-files 4 --max-bytes 536870912
+# Add --upload to run the bounded private-Hub backup.
+```
+
+The default is a local verification/plan. Upload rechecks full-recording audio hashes, sizes, duration and acquisition metadata, then writes content-addressed originals and sanitized source metadata. Pinned remote LFS hashes or downloaded bytes must verify before a receipt is issued. Local plans, metadata, per-object progress and immutable receipts permit restart after transport failures; already verified objects are reused without another upload. Concurrent repository changes fail the parent-commit condition safely. This adapter never deletes local originals; archive eviction remains a separate unfinished step.
+
+A real 30.021-second Bikol archive backup passed remote verification at commit `9b41b04eca96af05c7d524e327f0af0580117d11`; a second run succeeded with commit creation disabled. Four radio recordings (63,062,567 bytes including metadata) also finished verification, with receipt revision `6bf32ac31fde5c3cb20c9d40012d1169f80a5392`. Local originals remain intact.
+
+The bounded segmented ASR retry uses only the previously prepared Hil/Fil recordings (about two hours total), serial concurrency one, zero transport retries, a 60-second per-window timeout and a two-consecutive-failure stop. Its private state is `outputs/vad-asr-batch-v1/worker.json`; this is an experiment, not an unattended full-corpus ASR rollout. `curation.status` reports its actual process observation and unions its successful source intervals with earlier drafts, so retries do not inflate covered hours.

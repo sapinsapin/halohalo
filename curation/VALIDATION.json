@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T22:13:17.948876+00:00",
-  "unit_tests": 119,
+  "updated_at": "2026-11-14T22:23:07.774378+00:00",
+  "unit_tests": 137,
   "pld_rows_locally_decoded": 229,
   "hf_v2_remote_shards_hash_verified": 3,
   "hf_v2_streaming_rows_checked": 1,
@@ -60,8 +60,11 @@
     "real_files_deleted": 0
   },
   "radio_backup": {
-    "focused_tests": 7,
-    "upload_status": "in_progress; no verified receipt yet"
+    "recordings": 4,
+    "verified_bytes_including_metadata": 63062567,
+    "revision": "efee21af400cf66d7a7b85d7761eab70d99fe811",
+    "receipt_revision": "6bf32ac31fde5c3cb20c9d40012d1169f80a5392",
+    "local_files_deleted": 0
   },
   "imported_archive_radio": {
     "recordings": 29,
@@ -102,5 +105,33 @@
       "hil"
     ],
     "new_language_asr_validated": false
+  },
+  "archive_backup": {
+    "real_recordings_verified": 1,
+    "audio_bytes": 361031,
+    "revision": "9b41b04eca96af05c7d524e327f0af0580117d11",
+    "resume_with_commit_creation_disabled": true,
+    "local_files_deleted": 0
+  },
+  "vad": {
+    "version": 3,
+    "model_revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+    "model_sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+    "maximum_segment_seconds": 27,
+    "smoke_languages": [
+      "hil",
+      "fil",
+      "bik",
+      "ilo"
+    ],
+    "quality_benchmarked": false,
+    "audio_verified_hours": 0
+  },
+  "short_segment_asr": {
+    "hil_windows": 2,
+    "fil_windows": 2,
+    "failures": 0,
+    "bulk_reliability_proven": false,
+    "bounded_followup_pid": 33933
   }
 }
