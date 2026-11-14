@@ -422,3 +422,11 @@ curation/.venv/bin/python -m curation.import_media   --archive-root curation/out
 ```
 
 The archive importer expects source subdirectories, so use the parent of `audio/`, not `audio/` itself. The 30 URLs discovered on one publisher index page are candidate episodes/clips, not 30 measured full episodes. Expansion is delegated with a 30-recording / 20-hour ceiling and 45 GiB floor; keep full-episode/excerpt distinctions and overlap uncertainty. No additional hours are claimed until completed downloads are measured. No Cebuano ASR calls have been made.
+
+### Combined Hiligaynon release and completed Cebuano expansion
+
+The [release index](dataset_releases.md) records the new `hil_collected_vad_667_v1` configuration: 667 transcripts, 531 validated text reviews, 136 draft-only rows, 1,596.56 padded seconds. Both prior review directories were independently validated during attachment; sentences and audio stayed unchanged. All 667 embedded PCM arrays, ten remote artifacts and the pinned streamed row/status counts passed verification. This supersets the earlier 200-row Hiligaynon releases; it is not additive unique coverage.
+
+The two review responses that triggered the earlier stop failed consistency checks (a no-issue verdict with flagged issues, and a quoted span absent from the transcript). Neither was repaired or retried. After confirming other review requests were succeeding, a separate bounded worker under `curation/outputs/collected-hil-remaining-125-v1/` started only the previously unattempted 125 rows. Keep its future attachments in a new immutable snapshot.
+
+Cebuano expansion completed all 13 selected clips. Combined with the two full-episode pilots, 15 recordings total 1.463365 raw hours / 70,738,694 bytes. All hashes were rechecked; canonical import snapshot `339c11f38a1f671a472b19c9d905767d89362d63eea3d61066ceaaecd0fa87ce` has zero exclusions or exact-byte duplicates. Acoustic/episode overlap and actual language remain unverified. The [frozen public inventory](../curation/cebuano_archive_inventory.json) preserves all fifteen video IDs, publisher episode URLs, channel identities and full-episode/clip selection scope so reacquisition does not depend on private working files. Upcoming content and conservative same-date candidates remain excluded.

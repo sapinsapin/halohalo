@@ -21,6 +21,18 @@
     },
     "pilot_inventory": "curation/outputs/cebuano/archive-expansion/inventory.json",
     "evidence_snapshots": "curation/outputs/cebuano/archive-expansion/evidence",
-    "inventory_scope": "Two finite dated full episodes embedded on publisher site; wider archive not enumerated or counted."
+    "inventory_scope": "Two dated full-episode pilot recordings plus 13 completed short-clip candidates resolved from 30 official publisher-page embeds. Upcoming full episode and same-date clips excluded conservatively. Wider archive not enumerated; no unique-audio claim.",
+    "expanded_inventory": "curation/outputs/cebuano/archive-expansion/expanded-inventory.json",
+    "expanded_selection": {
+      "completed_clips": 13,
+      "excluded_candidates": 17,
+      "metadata_hours": 0.4563888888888889,
+      "download_status": "13 clips completed and hash-verified; pilot plus clips total 15 recordings",
+      "max_new_recordings": 30,
+      "max_inventory_raw_hours": 20,
+      "min_free_gib": 45,
+      "measured_clip_hours": 0.4564758333333333
+    },
+    "frozen_inventory": "curation/cebuano_archive_inventory.json"
   }
 ]
