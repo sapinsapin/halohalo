@@ -19,6 +19,14 @@ Do not automatically change failed attempt statuses. Server errors, missing resu
 
 ## Bounded continuation
 
-`curation/outputs/fil-persistent-batch-v2/` was seeded with the fourteen validated response/result caches. Its worker selects the first 100 original Filipino VAD rows, so it can make at most 86 new requests; cached rows make none. It uses zero retries, a 60-second client bound, and stops on the first uncertainty/error. Check actual process state, `worker.json`, and `asr/summary.json` before recovery. It was still running at this checkpoint, with 27 completed rows and no failures observed. All outputs remain drafts.
+`curation/outputs/fil-persistent-batch-v2/` was seeded with the fourteen validated response/result caches. Its worker selects the first 100 original Filipino VAD rows, so it can make at most 86 new requests; cached rows make none. It uses zero retries, a 60-second client bound, and stops on the first uncertainty/error. Check actual process state, `worker.json`, and `asr/summary.json` before recovery. It finished successfully with 100 completed rows, no failures and 0.0812433 padded transcribed hours. All outputs remain drafts.
 
 Acquisition, archive backup, the Vigan capture and Hiligaynon text review continue independently. No Hiligaynon server-timeout batch was restarted, and no new Cebuano/Bikolano/Ilocano route is claimed.
+
+## Full pilot continuation and review
+
+After confirmed completion of v2, `curation/outputs/fil-persistent-batch-v3/` was seeded with its 100 response/result caches and launched with a 482-item ceiling, matching the entire original Filipino VAD pilot. It can send at most 382 new items, still with zero retries and stop-on-first-error behavior. It was live at this checkpoint; completion is not claimed. The source-interval accounting includes v3 and unions its overlaps with earlier snapshots.
+
+`curation/outputs/fil-review-100-v1/` holds a frozen copy of the first 100 drafts and an independent text-review worker. It preserves code-switching and transcripts, uses one attempt per row, and stops after two consecutive failures. Hiligaynon's remaining-467 review continues separately. Neither worker provides audio verification.
+
+`curation.status` now reports these persistent-ASR and text-review job states, selected/completed/failed counts, and actual process observations. `process_matches_job` also checks that the observed command mentions the expected job directory; a stored running marker or a recycled PID alone does not establish that the intended worker is running. Inspect logs and response evidence before any restart. Private commands, keys, transcripts and per-row review lists are not copied from worker/summary files into the status report.

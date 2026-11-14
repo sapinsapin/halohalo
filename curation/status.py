@@ -9,6 +9,23 @@ from datetime import datetime, timezone
 ROOT=Path(__file__).resolve().parent
 
 
+def job_observation(path, summary_path=None):
+    """Report allowlisted state plus an actual process observation, not a PID claim."""
+    worker=json.loads(path.read_text())
+    report={k:worker[k] for k in ('pid','status','started_at','finished_at','returncode','rows','cached_items','max_new_items') if k in worker}
+    report['root']=str(path.parent.relative_to(ROOT.parent))
+    if isinstance(worker.get('pid'),int):
+        process=subprocess.run(['ps','-p',str(worker['pid']),'-o','pid=,etime=,command='],capture_output=True,text=True)
+        report['process_present']=process.returncode==0
+        report['process_matches_job']=process.returncode==0 and str(path.parent.name) in process.stdout
+        report['process_observation']=process.stdout.strip()
+    if summary_path and summary_path.exists():
+        summary=json.loads(summary_path.read_text())
+        report['summary']={k:(len(summary[k]) if isinstance(summary[k],list) else summary[k])
+                           for k in ('selected','completed','failed','stopped_early','transcribed_hours','empty') if k in summary}
+    return report
+
+
 def snapshot():
     targets=json.loads((ROOT/'targets.json').read_text())['targets']
     reports=[]
@@ -48,7 +65,7 @@ def snapshot():
         radio.append({k:r.get(k) for k in ['station','candidate_language','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
     from .account import account
     inputs=[]
-    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl'])]:
+    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl'])]:
         for relative in directories:
             path=ROOT/'outputs'/relative
             if path.exists(): inputs.append((language,path))
@@ -87,10 +104,15 @@ def snapshot():
             report['process_present']=process.returncode==0
             report['process_observation']=process.stdout.strip()
         archive_backups.append(report)
+    persistent_batches=[job_observation(path,path.parent/'asr/summary.json')
+                        for path in sorted((ROOT/'outputs').glob('fil-persistent-batch-v*/worker.json'))]
+    review_batches=[job_observation(path,path.parent/'reviews/summary.json')
+                    for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json')
+                    for path in sorted((ROOT/'outputs').glob(pattern))]
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; segmented ASR retry is bounded and circuit-limited',rss=reports,archives=archives,archives_by_language=archives_by_language,radio=radio,
-                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,
+                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',
