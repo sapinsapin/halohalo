@@ -7,11 +7,19 @@ import struct
 import tempfile
 import unittest
 import wave
-from .prepare import config,connect,prepare_one,export_manifest,parser
+from .prepare import config,connect,prepare_one,export_manifest,parser,round_robin_sources
 from .schema import VERSION,digest,load_manifest,validate
 
 
 class PrepareTests(unittest.TestCase):
+    def test_round_robin_preserves_within_source_order_without_dropping(self):
+        records=[{'source_id':s,'id':i} for s,i in [('b',1),('b',2),('a',3),('c',4),('a',5),('b',6)]]
+        result=list(round_robin_sources(iter(records)))
+        self.assertEqual([r['id'] for r in result],[3,1,4,5,2,6])
+        self.assertEqual(sorted(r['id'] for r in result),sorted(r['id'] for r in records))
+        self.assertEqual(list(round_robin_sources([])),[])
+        self.assertTrue(parser().parse_args(['--rss-root','r','--output','o','--round-robin-sources']).round_robin_sources)
+
     def test_input_selection(self):
         p=parser()
         for args in (['--output','out'], ['--output','out','--manifest','m','--rss-root','r']):

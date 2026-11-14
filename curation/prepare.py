@@ -6,6 +6,7 @@ repeats; acoustic near-duplicates, embedded clips, simulcasts and speech QC rema
 """
 import argparse
 import copy
+from collections import deque
 import fcntl
 import hashlib
 import json
@@ -177,6 +178,23 @@ def export_manifest(db,root):
     return summary
 
 
+def round_robin_sources(records):
+    """Cycle sorted source IDs, preserving each source's input order.
+
+    This balances recording selection, not duration, speakers, or audio language.
+    Materializes only acquisition metadata; audio remains on disk.
+    """
+    groups = {}
+    for record in records:
+        groups.setdefault(record['source_id'], deque()).append(record)
+    active = deque(groups[key] for key in sorted(groups))
+    while active:
+        group = active.popleft()
+        yield group.popleft()
+        if group:
+            active.append(group)
+
+
 def parser():
     p=argparse.ArgumentParser(__doc__)
     source=p.add_mutually_exclusive_group(required=True)
@@ -184,6 +202,7 @@ def parser():
     source.add_argument('--manifest',help='canonical full-recording JSONL manifest')
     p.add_argument('--output',required=True)
     p.add_argument('--max-recordings',type=int,default=2)
+    p.add_argument('--round-robin-sources',action='store_true',help='Cycle source IDs instead of exhausting early sources; balances recordings, not hours')
     p.add_argument('--window-seconds',type=float,default=30)
     p.add_argument('--min-free-gib',type=float,default=25)
     return p
@@ -207,6 +226,8 @@ def main():
         else:
             source=sqlite3.connect(f'file:{Path(a.rss_root)/"state.sqlite"}?mode=ro',uri=True);source.row_factory=sqlite3.Row
             records=source.execute("SELECT i.*,s.language,s.metadata AS source_metadata FROM items i JOIN sources s ON s.id=i.source_id WHERE i.status='downloaded' ORDER BY i.updated_at,i.id")
+        if a.round_robin_sources:
+            records=round_robin_sources(records)
         processed=0
         for record in records:
             record=dict(record)

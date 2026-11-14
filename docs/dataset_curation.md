@@ -349,3 +349,18 @@ curation/.venv/bin/python -m curation.acquire_archives --source youtube   --inve
 Do not launch a second transfer for the same ID. Retain the prior record and inspect the current error before retrying; live/upcoming exclusions require fresh discovery, not blind download retries. The default all-source queue does not automatically retry a failed item during the same pass.
 
 The 49-recording archive backup has produced its first verified recording receipt: revision `b53ba777174932bceb4c3883b126460746ca43d1`, two objects totaling 159,443,623 bytes. A separate read-only audit revalidated both objects at that pinned revision. This proves one recording checkpoint, not completion of the full backup; remaining work stays with the existing live worker.
+
+### Source-balanced preparation batch
+
+`curation.prepare --round-robin-sources` cycles sorted source IDs while preserving the original within-source order. It balances recording selection, not hours, speakers or languages. Sources with fewer available recordings can be exhausted first. Without the flag, the previous input order is preserved. `--max-recordings` still limits newly prepared recordings in a run; cached records do not consume that budget, so rerunning a completed preparation command can add further recordings.
+
+A bounded five-language worker was launched at `curation/outputs/five-language-preparation-v1/`, preparing up to ten new RSS recordings per language group, then VAD candidates. The selection audit found approximately 27.1 raw hours across 9 Filipino/Taglish, 8 Hiligaynon, 10 Cebuano, 3 Bikolano and 4 Ilocano sources. Counts and durations are provisional until stage summaries finish. This batch uses low process priority and a 45 GiB disk floor before stages and during preparation. VAD is capped at 600 input minutes per group and 100,000 input windows; it does not certify speech, language, speaker identity or rights. ASR is not invoked.
+
+```sh
+curation/.venv/bin/python -m curation.prepare   --rss-root curation/outputs/cebuano/rss   --output curation/outputs/five-language-preparation-v1/ceb/prepared   --max-recordings 10 --round-robin-sources --min-free-gib 45
+curation/.venv/bin/python -m curation.vad   --manifest curation/outputs/five-language-preparation-v1/ceb/prepared/manifest.jsonl   --output curation/outputs/five-language-preparation-v1/ceb/vad   --max-minutes 600 --max-rows 100000
+```
+
+Do not run these commands concurrently with the active batch. For recovery, inspect actual process state and each stage's return code first; skip completed stages. If preparation is extended after VAD was created, use a new VAD output root because its input/configuration binding is immutable. `curation.status` reports actual worker observation and completed stage summaries. These candidates overlap earlier pilots; use source-interval accounting instead of summing configurations.
+
+The targeted Aksyon retry `1JsYMPNU2z8` completed successfully, measuring 3,400.901 seconds (56.7 minutes). Its acquisition record now contains the completed media hash; the prior fixed-hour timeout record remains preserved in the recovery directory.

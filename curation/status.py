@@ -60,6 +60,21 @@ def snapshot():
         process=subprocess.run(['ps','-p',str(batch['pid']),'-o','pid=,etime=,command='],capture_output=True,text=True)
         batch['process_present']=process.returncode==0
         batch['process_observation']=process.stdout.strip()
+    preparation_root=ROOT/'outputs/five-language-preparation-v1'
+    preparation_path=preparation_root/'worker.json'
+    preparation=json.loads(preparation_path.read_text()) if preparation_path.exists() else None
+    if preparation:
+        if isinstance(preparation.get('pid'),int):
+            process=subprocess.run(['ps','-p',str(preparation['pid']),'-o','pid=,etime=,command='],capture_output=True,text=True)
+            preparation['process_present']=process.returncode==0
+            preparation['process_observation']=process.stdout.strip()
+        preparation['summaries']={}
+        for target in targets:
+            group=target['group']
+            for stage in ('prepared','vad'):
+                summary=preparation_root/group/stage/'summary.json'
+                if summary.exists():
+                    preparation['summaries'].setdefault(group,{})[stage]=json.loads(summary.read_text())
     archive_backups=[]
     for path in sorted((ROOT/'outputs').glob('archive-backup-*/worker.json')):
         worker=json.loads(path.read_text())
@@ -75,7 +90,7 @@ def snapshot():
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; segmented ASR retry is bounded and circuit-limited',rss=reports,archives=archives,archives_by_language=archives_by_language,radio=radio,
-                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,
+                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',
