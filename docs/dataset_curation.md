@@ -1,13 +1,18 @@
 # Chika: repeatable speech curation
 
-Tracking: https://github.com/sapinsapin/halohalo/issues/8
-Target: approximately **250 unique retained hours each** of Filipino/Taglish and Hiligaynon, transcribed with our ASR service and reviewed by an LLM. Download every previously identified Hiligaynon archive where public access is available. Continuous radio uses bounded captures. Acquisition is currently prioritized over ASR by user instruction.
+[Architecture overview](workflow_architecture.md) · [Infographic PNG](diagrams/chika-workflow.png) · [Tracking issue](https://github.com/sapinsapin/halohalo/issues/8)
+
+![Chika's six-stage bulk workflow, separate contributor route, recovery layer and quality gates.](diagrams/chika-workflow.svg)
+
+Target: approximately **250 unique retained, transcribed hours each** for Filipino/Taglish, Hiligaynon, Cebuano, Bikolano and Ilocano: **1,250 hours overall, not achieved volume**. Download every previously identified Hiligaynon archive where public access is available. Continuous radio uses bounded captures. Acquisition takes priority when ASR has problems.
 
 ## Current implementation and limits
 
-Implemented: RSS discovery, feed snapshots, resumable media acquisition, SQLite checkpoint/event ledger, independent media-duration checks, disk floor, per-show and total acquisition caps, PLD draft migration with content-bound text reviews, local embedded-FLAC Parquet export, private Hub backup with remote hash verification.
+Implemented: source inventories and resumable acquisition; canonical PLD-compatible manifests; exact-sample preparation and pinned-model VAD; authenticated Filipino/Hiligaynon ASR with bounded live checks; text-only LLM review and content-bound attachment; embedded-FLAC Parquet export; verified private Hub publication and backup; RSS storage supervision; source-interval coverage accounting. The architecture overview maps these responsibilities to modules.
 
-Still required: end-to-end ingestion of new audio into segmentation/ASR/LLM stages, speech/music/overlap filtering, PCM and near-duplicate checks, language verification, source-balanced frozen splits, and both 250-hour completed-transcription targets. Do not mistake discovery estimates or downloaded file runtimes for those targets. ASR authentication remains unresolved and is deliberately deprioritized. Do not deploy or restart ASR on GB10.
+Still required at scale: language, music and overlap checks; acoustic near-duplicate handling; source-balanced frozen splits; broader audio verification; reliable large-scale transcription and review; and all five completed-hour targets. Cebuano, Bikolano and Ilocano ASR routes remain unverified. Filipino/Hiligaynon authentication works, but isolated server finalization timeouts persist. Do not mistake discovery estimates, raw runtime, padded VAD candidates or small integration checks for completed targets. Do not deploy or restart ASR on GB10.
+
+The website/MCP contributor route is a separate workstream in development. It is intended to use contributors' own assistant transcription capabilities, with scoped submissions into the same schema and private staging; it is not an alternative ASR backend already deployed by this bulk workflow.
 
 ## Setup
 
