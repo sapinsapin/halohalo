@@ -1,0 +1,267 @@
+{
+  "updated_at": "2026-11-14T21:08:31.780722+00:00",
+  "tracking_issue": "https://github.com/sapinsapin/halohalo/issues/8",
+  "target_retained_transcribed_hours": {
+    "fil_taglish": 250,
+    "hil": 250
+  },
+  "priority": "acquisition first; ASR authentication deferred",
+  "rss": [
+    {
+      "name": "hiligaynon-rss",
+      "root": "curation/outputs/rss",
+      "groups": [
+        {
+          "source_id": "awr-hiligaynon",
+          "status": "downloading",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 0.48305555555555557
+        },
+        {
+          "source_id": "chill-men-say",
+          "status": "downloaded",
+          "files": 1,
+          "measured_file_hours": 0.6285024944444444,
+          "feed_estimated_hours": 0.6283333333333333
+        },
+        {
+          "source_id": "chill-men-say",
+          "status": "pending",
+          "files": 7,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 4.604444444444445
+        },
+        {
+          "source_id": "esturya-practikal",
+          "status": "pending",
+          "files": 2,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 0.058055555555555555
+        },
+        {
+          "source_id": "ikk-podcast",
+          "status": "pending",
+          "files": 46,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 14.755555555555556
+        },
+        {
+          "source_id": "ikk-podcast-2",
+          "status": "pending",
+          "files": 117,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 67.88361111111111
+        },
+        {
+          "source_id": "ilonggo-preacher",
+          "status": "downloaded",
+          "files": 1,
+          "measured_file_hours": 0.7710666666666667,
+          "feed_estimated_hours": 0.7708333333333334
+        },
+        {
+          "source_id": "ilonggo-preacher",
+          "status": "pending",
+          "files": 219,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 224.40055555555554
+        },
+        {
+          "source_id": "pause-pod",
+          "status": "pending",
+          "files": 9,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 2.5016666666666665
+        },
+        {
+          "source_id": "wala-ko-kabalo",
+          "status": "pending",
+          "files": 23,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 14.584166666666667
+        }
+      ],
+      "measured_downloaded_hours": 1.3995691611111112,
+      "worker": {
+        "pid": 13731,
+        "observation": "13731 05:26 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -u -m curation.collect download --root curation/outputs/rss",
+        "process_present": true
+      }
+    },
+    {
+      "name": "taglish-rss",
+      "root": "curation/outputs/taglish/shared",
+      "groups": [
+        {
+          "source_id": "adulting-with-joyce-pring",
+          "status": "downloaded",
+          "files": 1,
+          "measured_file_hours": 0.13746064805555555,
+          "feed_estimated_hours": 0.13722222222222222
+        },
+        {
+          "source_id": "adulting-with-joyce-pring",
+          "status": "pending",
+          "files": 566,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 181.56805555555556
+        },
+        {
+          "source_id": "boiling-waters-ph",
+          "status": "downloaded",
+          "files": 1,
+          "measured_file_hours": 0.47133604166666665,
+          "feed_estimated_hours": 0.4711111111111111
+        },
+        {
+          "source_id": "boiling-waters-ph",
+          "status": "pending",
+          "files": 384,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 211.74972222222223
+        },
+        {
+          "source_id": "creepsilog",
+          "status": "downloaded",
+          "files": 1,
+          "measured_file_hours": 0.45656237972222224,
+          "feed_estimated_hours": 0.4563888888888889
+        },
+        {
+          "source_id": "creepsilog",
+          "status": "pending",
+          "files": 176,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 194.22694444444446
+        },
+        {
+          "source_id": "kudazzers",
+          "status": "downloading",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 1.2527777777777778
+        },
+        {
+          "source_id": "kudazzers",
+          "status": "pending",
+          "files": 362,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 261.405
+        },
+        {
+          "source_id": "tamang-usapan",
+          "status": "pending",
+          "files": 148,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 201.43027777777777
+        },
+        {
+          "source_id": "the-koolpals",
+          "status": "pending",
+          "files": 164,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 209.87972222222223
+        },
+        {
+          "source_id": "the-linya-linya-show",
+          "status": "pending",
+          "files": 430,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 476.1661111111111
+        },
+        {
+          "source_id": "underpaid-with-stanley-chi",
+          "status": "pending",
+          "files": 738,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 399.3822222222222
+        },
+        {
+          "source_id": "wake-up-with-jim-and-saab",
+          "status": "pending",
+          "files": 432,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 250.78416666666666
+        }
+      ],
+      "measured_downloaded_hours": 1.0653590694444444,
+      "worker": {
+        "pid": 13792,
+        "observation": "13792 05:03 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -u -m curation.collect download --root curation/outputs/taglish/shared --max-items 10000 --max-hours 300 --max-source-hours 50 --min-free-gib 25 --delay 1",
+        "process_present": true
+      }
+    }
+  ],
+  "archives": {
+    "ilonggatalks": {
+      "downloaded": 1,
+      "failed": 0,
+      "measured_file_hours": 0.42652249999999997
+    },
+    "deditos-hiligaynon": {
+      "downloaded": 8,
+      "failed": 0,
+      "measured_file_hours": 3.193825092777778
+    }
+  },
+  "radio": [
+    {
+      "station": "bombo-bacolod",
+      "state": "recording",
+      "runner_pid": 13532,
+      "ffmpeg_pid": 13535,
+      "started_at": "2026-11-14T21:02:03.617887+00:00",
+      "bytes": 2883584
+    },
+    {
+      "station": "rmn-bacolod",
+      "state": "recording",
+      "runner_pid": 13753,
+      "ffmpeg_pid": 13754,
+      "started_at": "2026-11-14T21:03:17.285943+00:00",
+      "bytes": 786432
+    },
+    {
+      "station": "bombo-iloilo",
+      "state": "recording",
+      "runner_pid": 13531,
+      "ffmpeg_pid": 13534,
+      "started_at": "2026-11-14T21:02:03.617673+00:00",
+      "bytes": 2883584
+    },
+    {
+      "station": "rmn-iloilo",
+      "state": "failed",
+      "runner_pid": 13752,
+      "ffmpeg_pid": 13755,
+      "started_at": "2026-11-14T21:03:17.285931+00:00",
+      "ended_at": "2026-11-14T21:03:22.294296+00:00",
+      "bytes": 0
+    },
+    {
+      "station": "bombo-roxas",
+      "state": "recording",
+      "runner_pid": 13533,
+      "ffmpeg_pid": 13537,
+      "started_at": "2026-11-14T21:02:03.619570+00:00",
+      "bytes": 6029312
+    }
+  ],
+  "new_audio_transcribed_hours": {
+    "fil_taglish": 0,
+    "hil": 0
+  },
+  "pld_pilot": {
+    "recordings": 229,
+    "hours": 2.9521978298611113,
+    "reserved_test_recordings": 39,
+    "audio_verified": 0
+  },
+  "limitations": [
+    "Raw runtime includes ads/music/silence. Source language labels unverified.",
+    "Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.",
+    "Original PLD pilot is separate from newly collected Chika audio.",
+    "Production ASR, segmentation, LLM review of new audio and final training exports remain incomplete."
+  ]
+}

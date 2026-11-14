@@ -1,0 +1,133 @@
+{
+  "snapshot_at": "2026-11-14T21:08:47.292514+00:00",
+  "sources": [
+    {
+      "source_id": "deditos-hiligaynon",
+      "source_url": "https://deditos.org/datw-hiligaynon-ilonggo",
+      "scope": "All 11 published episode downloads, one encoding per episode. Excludes duplicate high-resolution encodings and instrumental-only music.",
+      "discovered_items": 11,
+      "status_at_snapshot": "direct_downloads_running",
+      "inventory_path": "curation/outputs/archive_sources/deditos_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "source_url": "https://www.gmanetwork.com/regionaltv/tv/ratsadabalita/",
+      "scope": "All distinct YouTube IDs in official public grid/videos/3.gz; 1,893 date-titled episodes prioritized, then clips. Full episodes and clips overlap.",
+      "discovered_items": 29174,
+      "status_at_snapshot": "queued",
+      "inventory_path": "curation/outputs/archive_sources/gma_ratsada_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "source_url": "https://www.youtube.com/@aksyonradyoiloilo720/streams",
+      "scope": "All entries from official archived-streams tab; current/future live streams excluded by downloader.",
+      "discovered_items": 6390,
+      "status_at_snapshot": "queued",
+      "inventory_path": "curation/outputs/archive_sources/aksyon_streams_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "aksyon-videos",
+      "source_url": "https://www.youtube.com/@aksyonradyoiloilo720/videos",
+      "scope": "All official channel videos; includes festivals/music requiring later speech filtering.",
+      "discovered_items": 57,
+      "status_at_snapshot": "queued",
+      "inventory_path": "curation/outputs/archive_sources/aksyon_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "bombo-ilonggo-drama",
+      "source_url": "https://www.bomboradyo.com/radio-drama",
+      "scope": "Only official page ILONGGO DRAMA section, extracted by radio worker.",
+      "discovered_items": 36,
+      "status_at_snapshot": "queued",
+      "inventory_path": "curation/outputs/archive_sources/bombo_ilonggo_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "ilonggatalks",
+      "source_url": "https://www.youtube.com/channel/UCswUdogwy9fkqy9vJo4uGHA/videos",
+      "scope": "All titles matching IlonggaTalks on saify TeeVee videos tab (one episode presently).",
+      "discovered_items": 1,
+      "status_at_snapshot": "one_download_verified",
+      "inventory_path": "curation/outputs/archive_sources/ilonggatalks_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "rmn-iloilo",
+      "source_url": "https://rmn.ph/dyri774iloilo/",
+      "scope": "Station links official channel UC9JdDk1MSIm6ZtUX4guZ08g; neither videos nor streams tab currently available. Live recording handled separately.",
+      "discovered_items": 0,
+      "status_at_snapshot": "no_public_archive_tab",
+      "inventory_path": "curation/outputs/archive_sources/rmn_iloilo_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "rmn-bacolod",
+      "source_url": "https://rmn.ph/dyhb747bacolod/",
+      "scope": "Official linked channel UC01WDmrOkiJkAb1E_1BBqJg archived streams.",
+      "discovered_items": 8,
+      "status_at_snapshot": "queued",
+      "inventory_path": "curation/outputs/archive_sources/rmn_bacolod_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    },
+    {
+      "source_id": "kuan-joj-jai",
+      "source_url": "https://www.abs-cbn.com/videos/joj-at-jai-may-inamin-tungkol-sa-kanilang-love-life-367588",
+      "scope": "ABS web page returned 403. Official ABS-CBN YouTube full Joj/Jai episode qXRJ3iVFNlE plus highlight hjK61omcuAQ found via ordinary search. Do not count overlap twice.",
+      "discovered_items": 2,
+      "status_at_snapshot": "official_youtube_queued",
+      "inventory_path": "curation/outputs/archive_sources/kuan_joj_jai_inventory.json",
+      "language": "hil",
+      "language_status": "publisher/source candidate; audio not language-verified",
+      "training_rights": "unknown",
+      "commercial_rights": "unknown",
+      "redistribution_rights": "unknown"
+    }
+  ],
+  "notes": [
+    "Counts are discovered items, not successful downloads or unique speech hours.",
+    "Detailed public metadata and private audio acquisition ledger are under ignored outputs.",
+    "Per-item JSON hashes and ffprobe duration prove completed downloads; PID/status files alone do not prove liveness.",
+    "All code-switching remains valid; no pure-language filtering implied."
+  ],
+  "commands": {
+    "discover": "python3 -m curation.acquire_archives --source discover",
+    "deditos": "python3 -m curation.acquire_archives --source deditos",
+    "archives": "python3 -m curation.acquire_archives --source all-youtube"
+  }
+}

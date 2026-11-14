@@ -1,0 +1,165 @@
+[
+  {
+    "id": "the-koolpals",
+    "url": "https://anchor.fm/s/b400cf8/podcast/rss",
+    "language": "fil",
+    "description": "Filipino stand-up comedians discussing everyday topics; public feed labels language fil.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/the-koolpals/id1464406768?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "comedy",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "wake-up-with-jim-and-saab",
+    "url": "https://anchor.fm/s/14e2ce6c/podcast/rss",
+    "language": "fil",
+    "description": "Marriage, parenting and culture conversations; feed labels en, so Taglish proportion requires audio verification.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/wake-up-with-jim-and-saab/id1403299829?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "relationships",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "the-linya-linya-show",
+    "url": "https://anchor.fm/s/1ae5a9b0/podcast/rss",
+    "language": "fil",
+    "description": "Ali Sangalang interviews guests about Filipino arts, life and culture; feed labels tl.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/the-linya-linya-show/id1439897716?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "interviews",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "kudazzers",
+    "url": "https://www.omnycontent.com/d/playlist/d78b8638-2127-4603-a5c1-b4cf00a8e156/9dec7800-3ca5-4005-9729-b4d4002e32f3/56f4a2e9-a3a4-4120-906b-b4d4002e32fa/podcast.rss",
+    "language": "fil",
+    "description": "Filipino millennials discuss growing up, dating, family and social issues; feed labels tl.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/kudazzers/id1472253940?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "conversation",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "tamang-usapan",
+    "url": "https://anchor.fm/s/dab92e4c/podcast/rss",
+    "language": "fil",
+    "description": "Lennon and Russel discuss society and everyday life; official website explicitly describes the show as Taglish.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/tamang-usapan-usapang-may-tama/id1671855254?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "society",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ],
+    "language_evidence_url": "https://tamangusapanpodcast.wixsite.com/tuumt"
+  },
+  {
+    "id": "underpaid-with-stanley-chi",
+    "url": "https://anchor.fm/s/102d1768c/podcast/rss",
+    "language": "fil",
+    "description": "Stanley Chi discusses Filipino workplace life with humor; feed labels en, verify audio language.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/underpaid-with-stanley-chi/id1497331282?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "workplace",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "creepsilog",
+    "url": "https://anchor.fm/s/c6bea98/podcast/rss",
+    "language": "fil",
+    "description": "Two hosts discuss paranormal events, strange phenomena and true crime with Filipino humor; feed labels fil.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/creepsilog/id1470898919?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "stories",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "boiling-waters-ph",
+    "url": "https://feeds.acast.com/public/shows/67061686ed8ff5205e17a01b",
+    "language": "fil",
+    "description": "Relationship and personal-life conversations; feed labels en, verify Taglish audio before inclusion.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/boiling-waters-ph/id1459227062?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "relationships",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  },
+  {
+    "id": "adulting-with-joyce-pring",
+    "url": "https://anchor.fm/s/12643590/podcast/rss",
+    "language": "fil",
+    "description": "Personal development and adult-life discussions; feed labels en, English-only segments may need exclusion from Taglish totals.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/adulting-with-joyce-pring/id1439313975?uo=4",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "genre": "personal-development",
+    "language_status": "candidate; not audio-verified",
+    "languages_expected": [
+      "fil",
+      "eng"
+    ]
+  }
+]
