@@ -123,11 +123,14 @@
     "Counts are discovered items, not successful downloads or unique speech hours.",
     "Detailed public metadata and private audio acquisition ledger are under ignored outputs.",
     "Per-item JSON hashes and ffprobe duration prove completed downloads; PID/status files alone do not prove liveness.",
-    "All code-switching remains valid; no pure-language filtering implied."
+    "All code-switching remains valid; no pure-language filtering implied.",
+    "Kuan seeds are fixed officially verified full-episode/highlight IDs, not an exhaustive ongoing show search; only the known Joj/Jai Hiligaynon source is in scope."
   ],
   "commands": {
     "discover": "python3 -m curation.acquire_archives --source discover",
     "deditos": "python3 -m curation.acquire_archives --source deditos",
     "archives": "python3 -m curation.acquire_archives --source all-youtube"
-  }
+  },
+  "discovery_behavior": "The discover command recreates Deditos, Bombo, Kuan, GMA, Aksyon, IlonggaTalks and RMN inventories from public sources or verified Kuan seed IDs. Source failures are recorded independently; stale inventories carry discovery warnings.",
+  "queue_behavior": "Missing, empty, failed or stale discovery never produces a complete queue report. Available sources continue; checkpoint lists every configured source and failures."
 }

@@ -14,7 +14,7 @@ from .collect import connect, file_hash, now
 
 
 def backup(root, namespace, repo='sapinsapin/chika', max_files=20):
-    from huggingface_hub import HfApi
+    from huggingface_hub import HfApi, hf_hub_download
     if not namespace or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in namespace):
         raise ValueError('namespace must use lowercase letters, digits, hyphen or underscore')
     root = Path(root)
@@ -54,6 +54,9 @@ def backup(root, namespace, repo='sapinsapin/chika', max_files=20):
     sha = file_hash(snapshot)
     result = api.upload_file(path_or_fileobj=snapshot,path_in_repo=f'checkpoints/{namespace}/{sha}.sqlite',
                             repo_id=repo,repo_type='dataset',commit_message=f'Checkpoint {namespace} acquisition ledger')
+    fetched = hf_hub_download(repo_id=repo, repo_type='dataset', filename=f'checkpoints/{namespace}/{sha}.sqlite', revision=result.oid)
+    if file_hash(fetched) != sha:
+        raise ValueError('remote checkpoint hash mismatch')
     receipt = dict(repo=repo,checkpoint=f'checkpoints/{namespace}/{sha}.sqlite',revision=result.oid,
                    checkpoint_sha256=sha,uploaded_at=now())
     (root/'hub-checkpoint.json').write_text(json.dumps(receipt,indent=2)+'\n')

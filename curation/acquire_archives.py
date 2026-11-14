@@ -18,9 +18,31 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parent / 'outputs' / 'archive_sources'
 PAGE = 'https://deditos.org/datw-hiligaynon-ilonggo'
-YTDLP = str(Path.home() / '.local/bin/yt-dlp')
-FFPROBE = '/opt/homebrew/bin/ffprobe'
-FFMPEG = '/opt/homebrew/bin/ffmpeg'
+def executable(name):
+    found = shutil.which(name)
+    if found:
+        return found
+    for directory in (Path.home() / '.local/bin', Path('/opt/homebrew/bin'), Path('/usr/local/bin')):
+        candidate = directory / name
+        if candidate.is_file():
+            return str(candidate)
+    # subprocess raises an actionable FileNotFoundError when that feature is used.
+    return name
+
+
+YTDLP = executable('yt-dlp')
+FFPROBE = executable('ffprobe')
+FFMPEG = executable('ffmpeg')
+BOMBO_PAGE = 'https://www.bomboradyo.com/radio-drama'
+YOUTUBE_SOURCES = [('ilonggatalks', 'ilonggatalks_inventory.json'),
+    ('bombo-ilonggo-drama', 'bombo_ilonggo_inventory.json'),
+    ('gma-ratsada', 'gma_ratsada_inventory.json'),
+    ('aksyon-streams', 'aksyon_streams_inventory.json'),
+    ('aksyon-videos', 'aksyon_inventory.json'),
+    ('rmn-iloilo', 'rmn_iloilo_inventory.json'),
+    ('rmn-bacolod', 'rmn_bacolod_inventory.json'),
+    ('kuan-joj-jai', 'kuan_joj_jai_inventory.json')]
+
 
 
 def digest(p):
@@ -94,7 +116,7 @@ def acquire_direct(item):
     return item
 
 
-def deditos():
+def discover_deditos():
     ROOT.mkdir(parents=True, exist_ok=True)
     with urllib.request.urlopen(PAGE, timeout=60) as r: html = r.read()
     (ROOT / 'deditos.html').write_bytes(html)
@@ -109,6 +131,13 @@ def deditos():
             qc_notes='Some episode filenames use other regional-language-looking forms; verify spoken language before counting.',
             asr_status='pending', review_status='pending'))
     atomic(ROOT / 'deditos_inventory.json', {'page_url':PAGE, 'scope':'all published 360p episode download links; not duplicate 1080p encodings or music-only tracks', 'items':items})
+    if not items:
+        raise ValueError('no Deditos download links found; page structure may have changed')
+    return items
+
+
+def deditos():
+    items = discover_deditos()
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(acquire_direct, items))
     atomic(ROOT / 'deditos_summary.json', dict(items=len(results), downloaded=sum(r['status']=='downloaded' for r in results),
@@ -175,41 +204,133 @@ def youtube(inventory, source_id):
 
 
 def queue_all():
-    sources = [('ilonggatalks', 'ilonggatalks_inventory.json'),
-        ('bombo-ilonggo-drama', 'bombo_ilonggo_inventory.json'),
-        ('gma-ratsada', 'gma_ratsada_inventory.json'),
-        ('aksyon-streams', 'aksyon_streams_inventory.json'),
-        ('aksyon-videos', 'aksyon_inventory.json'),
-        ('rmn-iloilo', 'rmn_iloilo_inventory.json'),
-        ('rmn-bacolod', 'rmn_bacolod_inventory.json'),
-        ('kuan-joj-jai', 'kuan_joj_jai_inventory.json')]
-    queues = []
-    for source_id, name in sources:
+    ROOT.mkdir(parents=True, exist_ok=True)
+    queues, source_status = [], {}
+    for source_id, name in YOUTUBE_SOURCES:
         path = ROOT / name
-        if path.exists():
+        try:
+            if not path.exists():
+                raise FileNotFoundError('inventory missing; run --source discover')
             data = json.loads(path.read_text())
-            entries = [e for e in data.get('entries', []) if e]
+            if not isinstance(data.get('entries'), list):
+                raise ValueError('inventory must contain an entries list')
+            entries = [e for e in data['entries'] if e]
+            if not entries:
+                source_status[source_id] = {'status':data.get('status', 'empty_inventory'), 'items':0}
+                continue
+            error_path = ROOT / (Path(name).stem + '.error.json')
+            source_status[source_id] = {'status':'queued', 'items':len(entries), 'processed':0, 'failed':0}
+            if error_path.exists():
+                source_status[source_id]['discovery_warning'] = json.loads(error_path.read_text())
             queues.append((source_id, iter(entries)))
+        except Exception as exc:
+            source_status[source_id] = {'status':'inventory_failed', 'error_type':type(exc).__name__, 'error':str(exc)}
     count = 0
+    checkpoint = ROOT / 'archive_queue_checkpoint.json'
+    atomic(checkpoint, {'status':'running', 'processed_this_run':count, 'sources':source_status})
     while queues:
         remaining = []
         for source_id, iterator in queues:
             item = next(iterator, None)
-            if item is None: continue
+            if item is None:
+                source_status[source_id]['status'] = 'finished_attempts'
+                continue
             free_check()
-            acquire_youtube(item, source_id)
+            record = acquire_youtube(item, source_id)
             count += 1
-            atomic(ROOT / 'archive_queue_checkpoint.json', {'processed_this_run':count,
-                'last_source':source_id, 'last_id':item['id'], 'status':'running',
+            source_status[source_id]['processed'] += 1
+            source_status[source_id]['failed'] += int(record['status'] != 'downloaded')
+            atomic(checkpoint, {'processed_this_run':count,
+                'last_source':source_id, 'last_id':item['id'], 'status':'running', 'sources':source_status,
                 'resume':'python -m curation.acquire_archives --source all-youtube; completed content hashes are rechecked and skipped'})
             remaining.append((source_id, iterator))
         queues = remaining
-    atomic(ROOT / 'archive_queue_checkpoint.json', {'status':'finished_attempts', 'processed_this_run':count,
-        'note':'Per-item failures remain retryable; finished attempts does not mean all downloaded.'})
+    incomplete = [name for name, status in source_status.items() if
+        status['status'] != 'finished_attempts' or status.get('failed') or status.get('discovery_warning')]
+    report = {'status':'incomplete' if incomplete else 'finished_attempts', 'processed_this_run':count,
+        'sources':source_status, 'incomplete_sources':incomplete,
+        'note':'All configured sources are accounted for. Missing/empty/failed discovery and download failures remain incomplete.'}
+    atomic(checkpoint, report)
+    print(json.dumps(report), flush=True)
+    return report
+
+
+class BomboIlonggoParser(HTMLParser):
+    """Restrict extraction to the official ILONGGO DRAMA heading section."""
+    def __init__(self):
+        super().__init__()
+        self.in_heading = False
+        self.heading = ''
+        self.active = False
+        self.found_section = False
+        self.current = None
+        self.title_depth = 0
+        self.entries = []
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if re.fullmatch('h[1-6]', tag):
+            self.in_heading = True
+            self.heading = ''
+        if self.active and tag == 'a' and attrs.get('data-video-id'):
+            self.current = {'id':attrs['data-video-id'], 'title':''}
+        if self.current and tag == 'div':
+            if self.title_depth:
+                self.title_depth += 1
+            elif 'td_video_title' in attrs.get('class','').split():
+                self.title_depth = 1
+    def handle_data(self, data):
+        if self.in_heading:
+            self.heading += data
+        if self.current and self.title_depth:
+            self.current['title'] += data
+    def handle_endtag(self, tag):
+        if re.fullmatch('h[1-6]', tag) and self.in_heading:
+            self.in_heading = False
+            self.active = self.heading.strip().upper() == 'ILONGGO DRAMA'
+            self.found_section = self.found_section or self.active
+        if self.current and tag == 'div' and self.title_depth:
+            self.title_depth -= 1
+        if self.current and tag == 'a':
+            self.entries.append(self.current)
+            self.current = None
+            self.title_depth = 0
+
+
+def discover_bombo():
+    with urllib.request.urlopen(BOMBO_PAGE, timeout=60) as response:
+        page = response.read()
+    (ROOT / 'bombo-drama.html').write_bytes(page)
+    parser = BomboIlonggoParser()
+    parser.feed(page.decode())
+    if not parser.found_section or not parser.entries:
+        raise ValueError('ILONGGO DRAMA section or entries missing; check publisher page structure')
+    entries, seen = [], set()
+    for row in parser.entries:
+        if row['id'] in seen:
+            continue
+        seen.add(row['id'])
+        entries.append(dict(row, url='https://www.youtube.com/watch?v=' + row['id'],
+            source_page=BOMBO_PAGE, source_section='ILONGGO DRAMA', candidate_language='hil',
+            language_verified=False, rights='unknown'))
+    atomic(ROOT / 'bombo_ilonggo_inventory.json', {'source':BOMBO_PAGE,
+        'scope':'all IDs in official ILONGGO DRAMA section only', 'entries':entries})
+
+
+def discover_kuan():
+    # IDs verified against the official ABS-CBN Entertainment uploader. Other guests
+    # and subscription-only extended scenes are outside the Hiligaynon source scope.
+    entries = [
+        {'id':'qXRJ3iVFNlE', 'title':'JOJ AND JAI AGPANGAN: Basta Ilongga, gwapa! | KUAN ON ONE Full Episode 11'},
+        {'id':'hjK61omcuAQ', 'title':'Joj and Jai open up about their love life | Kuan On One Episode 11 Highlights'}]
+    for row in entries:
+        row.update(url='https://www.youtube.com/watch?v=' + row['id'],
+            channel_id='UCstEtN0pgOmCf02EdXsGChw', overlap_risk='highlight overlaps full episode',
+            source_page='https://www.abs-cbn.com/videos/joj-at-jai-may-inamin-tungkol-sa-kanilang-love-life-367588')
+    atomic(ROOT / 'kuan_joj_jai_inventory.json', {'scope':'verified official Joj/Jai full episode and highlight seeds; access rechecked on download', 'entries':entries})
 
 
 
-def discover():
+def discover_gma():
     ROOT.mkdir(parents=True, exist_ok=True)
     # Same public archive endpoint used by the official show's page JavaScript.
     endpoint = 'https://data.igma.tv/regionaltv2023/data/grid/videos/3.gz'
@@ -228,6 +349,9 @@ def discover():
     entries.sort(key=lambda e: 0 if re.search(date_title, e['title'], re.I) else 1)
     atomic(ROOT / 'gma_ratsada_inventory.json', dict(source=endpoint,
         scope='all distinct video IDs in official show archive; date-titled full episodes prioritized', entries=entries))
+
+
+def discover_channels():
     channels = [('aksyon_inventory', 'https://www.youtube.com/@aksyonradyoiloilo720/videos'),
         ('aksyon_streams_inventory', 'https://www.youtube.com/@aksyonradyoiloilo720/streams'),
         ('saify_inventory', 'https://www.youtube.com/channel/UCswUdogwy9fkqy9vJo4uGHA/videos'),
@@ -239,13 +363,36 @@ def discover():
             result = subprocess.run([YTDLP, '--flat-playlist', '--dump-single-json', '--skip-download',
                 '--socket-timeout', '20', '--retries', '1', url], stdout=out, stderr=log)
         if result.returncode:
-            atomic(ROOT / (name + '.error.json'), {'source_url':url, 'status':'discovery_failed', 'returncode':result.returncode})
+            error = {'source_url':url, 'status':'discovery_failed', 'returncode':result.returncode}
+            atomic(ROOT / (name + '.error.json'), error)
+            if name == 'saify_inventory':
+                atomic(ROOT / 'ilonggatalks_inventory.error.json', error)
             continue
         data = json.loads(tmp.read_text())
         atomic(ROOT / (name + '.json'), data)
+        (ROOT / (name + '.error.json')).unlink(missing_ok=True)
         if name == 'saify_inventory':
             scoped = [e for e in data['entries'] if e and re.search('ilongga.?talk', e.get('title',''), re.I)]
             atomic(ROOT / 'ilonggatalks_inventory.json', dict(scope='only IlonggaTalks title matches on saify TeeVee videos tab', entries=scoped))
+            (ROOT / 'ilonggatalks_inventory.error.json').unlink(missing_ok=True)
+
+
+def discover():
+    ROOT.mkdir(parents=True, exist_ok=True)
+    tasks = [('deditos_inventory', discover_deditos), ('bombo_ilonggo_inventory', discover_bombo),
+        ('kuan_joj_jai_inventory', discover_kuan), ('gma_ratsada_inventory', discover_gma),
+        ('channel_inventories', discover_channels)]
+    reports = {}
+    for name, job in tasks:
+        try:
+            job()
+            (ROOT / (name + '.error.json')).unlink(missing_ok=True)
+            reports[name] = {'status':'attempted'}
+        except Exception as exc:
+            reports[name] = {'status':'discovery_failed', 'error_type':type(exc).__name__, 'error':str(exc)}
+            atomic(ROOT / (name + '.error.json'), reports[name])
+        atomic(ROOT / 'discovery_status.json', reports)
+    return reports
 
 
 def main():
