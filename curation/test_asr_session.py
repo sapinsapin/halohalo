@@ -37,6 +37,8 @@ class PersistentTest(ASRTest):
                 if msg['type'] != 'finalize':
                     continue
                 self.finals += 1
+                if self.mode == 'usage':
+                    await ws.send(json.dumps(dict(type='usage',audio_ms=(self.clock+count)//16,credits=0)))
                 if self.mode == 'disconnect':
                     return
                 if self.mode in {'fatal', 'nonfatal', 'quota'}:
@@ -44,6 +46,8 @@ class PersistentTest(ASRTest):
                 async def result(fid, start, n, text):
                     await ws.send(json.dumps(dict(type='result', final=True, text=text, start_ms=start//16,
                         duration_ms=n//16, metadata=dict(model='canonical-model', finalize_id=fid))))
+                    if self.mode == 'usage':
+                        await ws.send(json.dumps(dict(type='usage',audio_ms=(self.clock+count)//16,credits=0)))
                     await ws.send(json.dumps(dict(type='finalize_end', id=fid)))
                 if self.mode == 'auto':
                     half = count//2
@@ -79,6 +83,19 @@ class PersistentTest(ASRTest):
         self.assertEqual(raw['events'][0]['event']['start_ms'], 100)
         self.assertEqual(transcript(raw, self.cfg)[1][0]['start_ms'], -.4375)
         self.assertNotIn('SECRET QUESTION', str(self.requests))
+
+    async def test_usage_is_retained_without_becoming_coverage(self):
+        self.mode = 'usage'
+        result = await self.session.transcribe_one(self.row)
+        raw = json.loads((self.session.root/(result['cache_key']+'.response.json')).read_text())
+        self.assertEqual(raw['events'][0]['event']['type'], 'usage')
+        self.assertEqual(transcript(raw, self.cfg)[0], 'Maayong aga')
+        raw['events'][1]['event']['duration_ms'] = 1
+        with self.assertRaisesRegex(ValueError, 'truncated coverage'):
+            transcript(raw, self.cfg)
+        raw['events'][0]['event']['truncated'] = True
+        with self.assertRaisesRegex(ValueError, 'server truncation'):
+            transcript(raw, self.cfg)
 
     async def test_handshake_binding_and_word_clock_separation(self):
         result=await self.session.transcribe_one(self.row)

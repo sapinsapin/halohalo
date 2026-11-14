@@ -56,6 +56,10 @@ def transcript(raw, cfg):
         event = entry['event']
         check_event(event)
         kind = event.get('type')
+        if kind == 'usage':
+            # Gateway accounting can arrive between any result/finalize events.
+            # Preserve it in raw evidence; it never establishes audio coverage.
+            continue
         if kind == 'result':
             if event.get('final') is not True or pending is not None:
                 raise ValueError('unexpected result')
