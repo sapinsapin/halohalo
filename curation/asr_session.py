@@ -220,23 +220,39 @@ async def _run_locked(args):
     cfg = Config(endpoint=args.endpoint, model=args.model, language=args.language, timeout=args.timeout, pace=args.pace)
     if not 1 <= args.max_items <= 10000:
         raise ValueError('max-items must be 1..10000')
+    checkpoint_every = getattr(args, 'checkpoint_every', 25)
+    if type(checkpoint_every) is not int or checkpoint_every < 1:
+        raise ValueError('checkpoint-every must be a positive integer')
     rows = load_manifest(args.manifest)[:args.max_items]
     session = Session(cfg, Path(args.key_file).read_text(), args.output)
     completed, failed = [], []
+    manifest_path = session.root/'manifest.jsonl'
+    manifest_rows = len(load_manifest(manifest_path)) if manifest_path.exists() else 0
+    last_checkpoint_rows = -1
+    def checkpoint(flush=False, terminal=False):
+        nonlocal manifest_rows, last_checkpoint_rows
+        if flush and last_checkpoint_rows != len(completed):
+            write_jsonl(session.root/'manifest.jsonl', completed)
+            manifest_rows = last_checkpoint_rows = len(completed)
+        atomic(session.root/'summary.json', dict(selected=len(rows), completed=len(completed), failed=failed,
+               manifest_rows=max(0,manifest_rows), checkpoint_every=checkpoint_every,
+               stopped_early=bool(failed) or (terminal and len(completed)<len(rows)),
+               review_status='draft', transcribed_hours=sum(r['duration'] for r in completed if r['asr_status']=='transcribed')/3600,
+               empty=sum(r['asr_status']=='empty' for r in completed)))
     try:
         for row in rows:
             try:
                 completed.append(apply_result(row, await session.transcribe_one(row)))
             except Exception as exc:
                 failed.append(dict(id=row['id'], error_kind=type(exc).__name__))
-            write_jsonl(session.root/'manifest.jsonl', completed)
-            atomic(session.root/'summary.json', dict(selected=len(rows), completed=len(completed), failed=failed,
-                   stopped_early=bool(failed), review_status='draft', transcribed_hours=sum(r['duration'] for r in completed if r['asr_status']=='transcribed')/3600,
-                   empty=sum(r['asr_status']=='empty' for r in completed)))
+            checkpoint(flush=bool(failed) or len(completed)%checkpoint_every==0)
             if failed:
                 break
     finally:
-        await session.close()
+        try:
+            checkpoint(flush=True, terminal=True)
+        finally:
+            await session.close()
     if failed:
         raise SystemExit(1)
 
@@ -256,6 +272,7 @@ def main():
     p.add_argument('--endpoint', default=Config.endpoint); p.add_argument('--model', default=Config.model)
     p.add_argument('--language', choices=['hil', 'fil'], default='hil')
     p.add_argument('--max-items', type=int, default=2)
+    p.add_argument('--checkpoint-every', type=int, default=25, help='Write combined manifest every N completed rows; per-item responses remain durable')
     p.add_argument('--timeout', type=float, default=60); p.add_argument('--pace', type=float, default=0)
     asyncio.run(run(p.parse_args()))
 

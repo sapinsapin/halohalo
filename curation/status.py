@@ -22,7 +22,7 @@ def job_observation(path, summary_path=None):
     if summary_path and summary_path.exists():
         summary=json.loads(summary_path.read_text())
         report['summary']={k:(len(summary[k]) if isinstance(summary[k],list) else summary[k])
-                           for k in ('selected','completed','failed','stopped_early','transcribed_hours','empty') if k in summary}
+                           for k in ('selected','completed','failed','stopped_early','transcribed_hours','empty','manifest_rows','checkpoint_every') if k in summary}
     return report
 
 
@@ -65,7 +65,7 @@ def snapshot():
         radio.append({k:r.get(k) for k in ['station','candidate_language','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
     from .account import account
     inputs=[]
-    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl'])]:
+    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl','fil-persistent-batch-v4/asr/manifest.jsonl'])]:
         for relative in directories:
             path=ROOT/'outputs'/relative
             if path.exists(): inputs.append((language,path))

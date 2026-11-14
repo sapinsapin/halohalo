@@ -30,3 +30,15 @@ After confirmed completion of v2, `curation/outputs/fil-persistent-batch-v3/` wa
 `curation/outputs/fil-review-100-v1/` holds a frozen copy of the first 100 drafts and an independent text-review worker. It preserves code-switching and transcripts, uses one attempt per row, and stops after two consecutive failures. Hiligaynon's remaining-467 review continues separately. Neither worker provides audio verification.
 
 `curation.status` now reports these persistent-ASR and text-review job states, selected/completed/failed counts, and actual process observations. `process_matches_job` also checks that the observed command mentions the expected job directory; a stored running marker or a recycled PID alone does not establish that the intended worker is running. Inspect logs and response evidence before any restart. Private commands, keys, transcripts and per-row review lists are not copied from worker/summary files into the status report.
+
+## Larger audited Filipino set
+
+`curation/outputs/fil-persistent-batch-v4/` now processes the audited 5,189-row Filipino/Taglish candidate manifest (6.43737 padded hours). All 482 pilot responses matched by audio hash and configuration and were copied as reusable caches; the ceiling is therefore 4,707 new requests. Input hash: `d1c0b1079e7ca889c973b137c941c29276d83571caf00ba3e40e0fc293e88b06`. The worker still stops on the first error and never retries uncertain attempts. This is a running job, not completed coverage.
+
+`curation/outputs/fil-review-382-v1/` reviews the completed pilot rows outside the published first 100. Its frozen input hash is `853c67fa5818b9465999b5e4bca77be9c661e94ebb3a00bf0f70c637695901b5`. One attempt per item, two-consecutive-failure stop, no transcript edits or audio approvals. Existing published configurations stay immutable.
+
+## Manifest checkpoint cadence
+
+Future persistent-client launches default to `--checkpoint-every 25`. Every individual response/result still reaches its atomic cache before an item is counted complete; only the combined manifest is batched. It flushes at the cadence, on the first failure, and on normal or interrupted exit. Abrupt process termination can leave the aggregate manifest behind the response caches, which are revalidated and reused on recovery. `summary.json` distinguishes completed responses from `manifest_rows`; source-interval accounting reads the last available manifest, not an estimated future result.
+
+This avoids rewriting an increasingly large manifest after every row. Tests cover final partial batches, failure flushes and replay with networking forbidden. The already running v4 process retains its earlier per-row behavior; do not restart it merely to load this optimization. No cache fingerprint or model configuration changed.

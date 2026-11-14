@@ -1,6 +1,7 @@
 import json
 import unittest
 from dataclasses import replace
+from types import SimpleNamespace
 from unittest.mock import patch
 import numpy as np
 import soundfile as sf
@@ -96,6 +97,33 @@ class PersistentTest(ASRTest):
         raw['events'][0]['event']['truncated'] = True
         with self.assertRaisesRegex(ValueError, 'server truncation'):
             transcript(raw, self.cfg)
+
+    async def test_periodic_manifest_flush_and_cache_only_replay(self):
+        from .asr_session import run
+        from .cli import write_jsonl
+        manifest=self.root/'batch.jsonl'
+        rows=[self.row,self.row2(),{**self.row,'id':'three'}]
+        write_jsonl(manifest,rows)
+        key=self.root/'key';key.write_text('secret-key')
+        args=SimpleNamespace(endpoint=self.cfg.endpoint,model=self.cfg.model,language=self.cfg.language,
+            timeout=self.cfg.timeout,pace=0,max_items=3,manifest=str(manifest),output=str(self.root/'batch'),
+            key_file=str(key),checkpoint_every=2)
+        writes=[]
+        def tracked(path,values):
+            writes.append(len(values));write_jsonl(path,values)
+        with patch('curation.asr_session.write_jsonl',side_effect=tracked):
+            await run(args)
+        self.assertEqual(writes,[2,3])
+        summary=json.loads((self.root/'batch/summary.json').read_text())
+        self.assertEqual(summary['manifest_rows'],3)
+        with patch('curation.asr_session.websockets.connect',side_effect=AssertionError('network forbidden')):
+            await run(args)
+        self.mode='fatal';args.output=str(self.root/'failed-batch')
+        with self.assertRaises(SystemExit):await run(args)
+        summary=json.loads((self.root/'failed-batch/summary.json').read_text())
+        self.assertEqual(summary['manifest_rows'],0)
+        self.assertTrue(summary['stopped_early'])
+        self.assertEqual((self.root/'failed-batch/manifest.jsonl').read_text(),'')
 
     async def test_handshake_binding_and_word_clock_separation(self):
         result=await self.session.transcribe_one(self.row)
