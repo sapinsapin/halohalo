@@ -25,7 +25,7 @@ Acquisition, archive backup, the Vigan capture and Hiligaynon text review contin
 
 ## Full pilot continuation and review
 
-After confirmed completion of v2, `curation/outputs/fil-persistent-batch-v3/` was seeded with its 100 response/result caches and launched with a 482-item ceiling, matching the entire original Filipino VAD pilot. It can send at most 382 new items, still with zero retries and stop-on-first-error behavior. It was live at this checkpoint; completion is not claimed. The source-interval accounting includes v3 and unions its overlaps with earlier snapshots.
+After confirmed completion of v2, `curation/outputs/fil-persistent-batch-v3/` was seeded with its 100 response/result caches and launched with a 482-item ceiling, matching the entire original Filipino VAD pilot. It can send at most 382 new items, still with zero retries and stop-on-first-error behavior. It completed all 482 items with zero failures, no empty results and 0.5346333 padded transcribed hours. The source-interval accounting includes v3 and unions its overlaps with earlier snapshots.
 
 `curation/outputs/fil-review-100-v1/` holds a frozen copy of the first 100 drafts and an independent text-review worker. It preserves code-switching and transcripts, uses one attempt per row, and stops after two consecutive failures. Hiligaynon's remaining-467 review continues separately. Neither worker provides audio verification.
 

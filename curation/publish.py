@@ -4,6 +4,7 @@ Only explicit export artifacts are staged. A parent-commit check prevents races;
 remote bytes are verified at the resulting immutable commit before receipt creation.
 """
 import argparse
+import io
 import json
 from pathlib import Path
 import re
@@ -26,6 +27,7 @@ def safe_prefix(prefix):
 
 def stage_export(root, staging, max_files=100, max_bytes=2*1024**3):
     import pyarrow.parquet as pq
+    import soundfile as sf
     root, staging = Path(root), Path(staging)
     if root.is_symlink() or not root.is_dir():
         raise ValueError('export root must be a real directory')
@@ -65,8 +67,16 @@ def stage_export(root, staging, max_files=100, max_bytes=2*1024**3):
     summary = json.loads((staging/'summary.json').read_text())
     if summary.get('schema_version') != VERSION or summary.get('profile') not in {'curation','asr','tts'}:
         raise ValueError('invalid export summary schema/profile')
+    rate = 24000 if summary['profile'] == 'tts' else 16000
+    if summary.get('sample_rate') != rate:
+        raise ValueError('export sample rate differs from profile')
     rows = load_manifest(staging/'manifest.jsonl')
     check_splits(rows)
+    if summary['profile'] != 'curation':
+        for row in rows:
+            if (not row['sentence'].strip() or row['review_status'] != 'audio_verified'
+                    or row['rights']['training'] != 'allowed' or row['split'] == 'unassigned'):
+                raise ValueError('training publication requires verified text, permission and frozen splits')
     if type(summary.get('rows')) is not int or summary['rows'] != len(rows):
         raise ValueError('summary manifest row count mismatch')
     artifacts = summary.get('artifacts')
@@ -87,13 +97,32 @@ def stage_export(root, staging, max_files=100, max_bytes=2*1024**3):
         parquet = pq.ParquetFile(staging/name)
         if type(artifact.get('rows')) is not int or parquet.metadata.num_rows != artifact['rows']:
             raise ValueError('artifact row count mismatch')
-        if not set(core).issubset(parquet.schema_arrow.names):
+        if not set(core + ['audio', 'provenance_json']).issubset(parquet.schema_arrow.names):
             raise ValueError('artifact missing core scalar fields')
-        for batch in parquet.iter_batches(columns=core, batch_size=1024):
+        for batch in parquet.iter_batches(columns=core + ['audio', 'provenance_json'], batch_size=16):
             for actual in batch.to_pylist():
                 expected = by_id.get(actual['id'])
                 if expected is None or any(actual[key] != expected[key] for key in core):
                     raise ValueError('artifact core scalar fields differ from manifest')
+                provenance = json.loads(actual['provenance_json'])
+                if not isinstance(provenance, dict):
+                    raise ValueError('artifact provenance must be an object')
+                original_rate = provenance.pop('original_sample_rate', None)
+                if (provenance.pop('export_sample_rate', None) != rate
+                        or type(original_rate) is not int or original_rate <= 0 or provenance != expected):
+                    raise ValueError('artifact provenance differs from manifest')
+                audio = actual['audio']
+                if not isinstance(audio, dict) or not isinstance(audio.get('bytes'), bytes) or not audio['bytes']:
+                    raise ValueError('artifact requires embedded audio bytes')
+                try:
+                    with sf.SoundFile(io.BytesIO(audio['bytes'])) as decoded:
+                        if (decoded.format, decoded.subtype, decoded.samplerate, decoded.channels) != ('FLAC', 'PCM_16', rate, 1):
+                            raise ValueError('artifact audio format differs from profile')
+                        frames = sum(len(block) for block in decoded.blocks(blocksize=65536, dtype='int16'))
+                        if frames != decoded.frames or abs(frames/rate - expected['duration']) > .1:
+                            raise ValueError('artifact decoded audio duration differs from manifest')
+                except RuntimeError as exc:
+                    raise ValueError('artifact audio cannot be decoded') from exc
                 ids.append(actual['id'])
     if len(ids) != len(rows) or sorted(ids) != sorted(row['id'] for row in rows):
         raise ValueError('artifact manifest IDs mismatch')

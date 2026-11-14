@@ -1,4 +1,7 @@
 import json
+import io
+import numpy as np
+import soundfile as sf
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -27,9 +30,12 @@ class PublishTests(unittest.TestCase):
         (self.export/'manifest.jsonl').write_text(json.dumps(row)+'\n')
         (self.export/'README.md').write_text('Export')
         self.row = {k:v for k,v in row.items() if k != 'provenance'}
+        buffer=io.BytesIO();sf.write(buffer,np.zeros(16000,dtype=np.int16),16000,format='FLAC',subtype='PCM_16')
+        self.row['audio']={'bytes':buffer.getvalue(),'path':None}
+        self.row['provenance_json']=json.dumps({**row,'export_sample_rate':16000,'original_sample_rate':16000})
         pq.write_table(pa.Table.from_pylist([self.row]), self.export/'curation-unassigned-00000-of-00001.parquet')
         self.artifact = self.export/'curation-unassigned-00000-of-00001.parquet'
-        self.summary = dict(schema_version=VERSION,profile='curation',rows=1,
+        self.summary = dict(schema_version=VERSION,profile='curation',rows=1,sample_rate=16000,
                             artifacts=[dict(path=self.artifact.name,sha256=digest(self.artifact),rows=1)])
         self.write_summary()
         (self.export/'secret.env').write_text('not uploaded')
@@ -113,6 +119,36 @@ class PublishTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'nonempty'):
             self.call()
         self.api.create_commit.assert_not_called()
+
+    def test_embedded_audio_and_provenance_rejected_before_network(self):
+        original=dict(self.row)
+        for mode in ('empty','rate','duration','provenance'):
+            with self.subTest(mode=mode):
+                self.row=dict(original)
+                if mode=='empty':
+                    self.row['audio']={'bytes':b'', 'path':None}
+                elif mode in ('rate','duration'):
+                    buffer=io.BytesIO()
+                    sf.write(buffer,np.zeros(16000 if mode=='rate' else 8000,dtype=np.int16),
+                             8000 if mode=='rate' else 16000,format='FLAC',subtype='PCM_16')
+                    self.row['audio']={'bytes':buffer.getvalue(),'path':None}
+                else:
+                    provenance=json.loads(self.row['provenance_json'])
+                    provenance['rights']['commercial']='allowed'
+                    self.row['provenance_json']=json.dumps(provenance)
+                pq.write_table(pa.Table.from_pylist([self.row]),self.artifact)
+                self.summary['artifacts'][0]['sha256']=digest(self.artifact)
+                self.write_summary()
+                with self.assertRaises(ValueError):self.call()
+                self.api.dataset_info.assert_not_called()
+                self.api.create_commit.assert_not_called()
+
+    def test_training_profile_cannot_promote_drafts(self):
+        self.summary['profile']='asr'
+        self.write_summary()
+        with self.assertRaisesRegex(ValueError,'training publication'):
+            self.call()
+        self.api.dataset_info.assert_not_called()
 
     def test_race_not_retried(self):
         self.api.create_commit.side_effect = RuntimeError('parent conflict')
