@@ -16,6 +16,8 @@ import subprocess
 import time
 import urllib.request
 
+from .transfer_guard import run_transfer
+
 ROOT = Path(__file__).resolve().parent / 'outputs' / 'archive_sources'
 PAGE = 'https://deditos.org/datw-hiligaynon-ilonggo'
 def executable(name):
@@ -169,10 +171,10 @@ def acquire_youtube(item, source_id):
             return record
         log = folder / (video_id + '.download.log')
         with log.open('w') as out:
-            result = subprocess.run([YTDLP, '--no-playlist', '-f', 'bestaudio', '--no-progress', '--socket-timeout', '25',
+            result = run_transfer([YTDLP, '--no-playlist', '-f', 'bestaudio', '--no-progress', '--socket-timeout', '25',
                 '--retries', '2', '--fragment-retries', '2', '--write-info-json', '--match-filter', '!is_live',
-                '-o', str(folder / '%(id)s.%(ext)s'), record['page_url']], stdout=out, stderr=subprocess.STDOUT, timeout=3600)
-        if result.returncode:
+                '-o', str(folder / '%(id)s.%(ext)s'), record['page_url']], folder, video_id, out, min_free_gib=25)
+        if result:
             raise RuntimeError('yt-dlp failed; see ' + str(log))
         info_path = folder / (video_id + '.info.json')
         info = json.loads(info_path.read_text())

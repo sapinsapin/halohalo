@@ -3,7 +3,6 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
-from types import SimpleNamespace
 from .acquire_inventory import acquire
 
 
@@ -14,8 +13,8 @@ class InventoryTests(unittest.TestCase):
             def download(*args,**kwargs):
                 (root/(ident+'.m4a')).write_bytes(b'actual audio fixture')
                 (root/(ident+'.info.json')).write_text('{}')
-                return SimpleNamespace(returncode=0)
-            with patch('curation.acquire_inventory.subprocess.run',side_effect=download) as run, patch('curation.acquire_inventory.probe',return_value={'format':{'duration':'3'},'streams':[{'codec_type':'audio','sample_rate':'16000'}]}):
+                return 0
+            with patch('curation.acquire_inventory.run_transfer',side_effect=download) as run, patch('curation.acquire_inventory.probe',return_value={'format':{'duration':'3'},'streams':[{'codec_type':'audio','sample_rate':'16000'}]}):
                 r=acquire(item,root,'bik','dzgb',{'variety_claim':'unverified'},0)
                 self.assertEqual(r['language'],'bik');self.assertEqual(r['duration'],3)
                 self.assertEqual(r['rights']['training'],'unknown')
@@ -32,7 +31,7 @@ class InventoryTests(unittest.TestCase):
 
     def test_live_and_bounds(self):
         with tempfile.TemporaryDirectory() as tmp:
-            with patch('curation.acquire_inventory.subprocess.run') as run:
+            with patch('curation.acquire_inventory.run_transfer') as run:
                 r=acquire({'id':'abcdefghijk','live_status':'is_live'},Path(tmp),'bik','dzgb',{},0)
                 self.assertEqual(r['status'],'excluded');run.assert_not_called()
                 with self.assertRaises(ValueError):acquire({'id':'../escape'},Path(tmp),'bik','dzgb',{},0)

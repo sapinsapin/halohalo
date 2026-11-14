@@ -304,9 +304,12 @@ def main():
     p.add_argument('--max-attempts', type=int, default=3)
     p.add_argument('--max-tokens', type=int, default=2500)
     p.add_argument('--timeout', type=float, default=180)
+    p.add_argument('--max-consecutive-failures', type=int, default=2)
     a = p.parse_args()
     if a.limit < 0:
         p.error('--limit must be nonnegative')
+    if a.max_consecutive_failures < 1:
+        p.error('--max-consecutive-failures must be positive')
     rows = load_manifest(a.manifest)
     config = Config(base_url=a.base_url, model=a.model, max_tokens=a.max_tokens,
                     max_attempts=a.max_attempts, timeout=a.timeout)
@@ -316,6 +319,8 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     atomic(out / 'config.json', config.identity())
     completed, failed, skipped, selected = [], [], [], 0
+    consecutive = 0
+    stopped_early = False
     for row in rows:
         if not eligible(row):
             skipped.append(row['id'])
@@ -326,14 +331,19 @@ def main():
         try:
             result = review_one(row, config, key, out)
             completed.append({'id': row['id'], 'cache_key': result['cache_key'], 'triage': result['review']['triage']})
+            consecutive = 0
         except Exception as exc:
             # Print only error class; detailed safe diagnostics are in the ledger.
             failed.append({'id': row['id'], 'error_kind': type(exc).__name__})
+            consecutive += 1
+        stopped_early = consecutive >= a.max_consecutive_failures
         atomic(out / 'summary.json', dict(selected=selected, completed=completed, failed=failed,
-               skipped=skipped, audio_verified=False, human_approved=False))
+               skipped=skipped, audio_verified=False, human_approved=False, stopped_early=stopped_early))
         print(json.dumps({'selected': selected, 'completed': len(completed), 'failed': len(failed)}), flush=True)
+        if stopped_early:
+            break
     atomic(out / 'summary.json', dict(selected=selected, completed=completed, failed=failed,
-           skipped=skipped, audio_verified=False, human_approved=False))
+           skipped=skipped, audio_verified=False, human_approved=False, stopped_early=stopped_early))
     if failed:
         raise SystemExit(1)
 

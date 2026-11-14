@@ -6,6 +6,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import threading
 import unittest
 
@@ -199,6 +201,22 @@ class ReviewTests(unittest.TestCase):
                 results=list(pool.map(lambda _:review_one(self.r,cfg,'key',self.out),range(2)))
             self.assertEqual(results[0],results[1])
             self.assertEqual(len(requests),1)
+
+    def test_cli_stops_after_consecutive_failures(self):
+        manifest=self.out/'inputs.jsonl'
+        rows=[dict(self.r,id=f'item-{i}') for i in range(3)]
+        manifest.write_text(''.join(json.dumps(r)+'\n' for r in rows))
+        key=self.out/'key';key.write_text('fake-test-key')
+        with server([(503,{}),(503,{}),(503,{})]) as (cfg,requests):
+            result=subprocess.run([sys.executable,'-m','curation.review','--manifest',str(manifest),
+                '--output',str(self.out/'results'),'--key-file',str(key),'--base-url',cfg.base_url,
+                '--max-attempts','1','--max-consecutive-failures','2'],capture_output=True,timeout=10)
+            self.assertEqual(result.returncode,1)
+            self.assertEqual(len(requests),2)
+        summary=json.loads((self.out/'results/summary.json').read_text())
+        self.assertTrue(summary['stopped_early'])
+        self.assertEqual(summary['selected'],2)
+        self.assertEqual(len(summary['failed']),2)
 
     def test_insecure_remote_url_and_embedded_credential_rejected(self):
         for url in ['http://example.org/v1','https://key@example.org/v1','https://example.org/v1?key=secret']:

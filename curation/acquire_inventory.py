@@ -6,10 +6,10 @@ import math
 from pathlib import Path
 import re
 import shutil
-import subprocess
 import time
 
 from .acquire_archives import YTDLP, atomic, digest, probe
+from .transfer_guard import run_transfer
 
 
 def checked(record):
@@ -48,12 +48,12 @@ def acquire(item, root, language, source_id, provenance, min_free_gib=25, max_at
     try:
         log=root/(ident+'.download.log')
         with log.open('a') as output:
-            result=subprocess.run([YTDLP,'--no-playlist','-f','bestaudio','--no-progress',
+            result=run_transfer([YTDLP,'--no-playlist','-f','bestaudio','--no-progress',
                 '--socket-timeout','25','--retries','2','--fragment-retries','2',
                 '--concurrent-fragments','1','--write-info-json','--match-filter',
                 '!is_live & !is_upcoming','-o',str(root/'%(id)s.%(ext)s'),record['page_url']],
-                stdout=output,stderr=subprocess.STDOUT,timeout=3600)
-        if result.returncode:raise RuntimeError('yt-dlp failed; inspect '+str(log))
+                root,ident,output,min_free_gib=min_free_gib)
+        if result:raise RuntimeError('yt-dlp failed; inspect '+str(log))
         info_path=root/(ident+'.info.json');info=json.loads(info_path.read_text())
         if info.get('live_status') in ('is_live','is_upcoming'):
             raise ValueError('live item rejected')
