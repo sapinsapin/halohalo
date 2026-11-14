@@ -402,3 +402,23 @@ Both existing 200-row Hiligaynon exports passed the stronger checks. Tests rejec
 The first 100-row Filipino review completed with 99 valid reviews and one unattached failure. All 100 exported PCM arrays match their local derivatives and all transcripts are unchanged. The private export is at `curation/collected-fil-vad-100-v1`, data revision `1250b65d6fe38f3face5f42576d9bff123a414c8`; it contains 292.476 padded seconds. This overlaps earlier Filipino pilot intervals and is not additional unique audio. Publication receipts and audio checks are under `curation/outputs/fil-review-100-v1/`.
 
 The dataset card exposes `fil_collected_vad_100_v1` at revision `0a1441d12d549f03c63d625ad4a1a698d73cb81a`. Pinned Hugging Face streaming returned exactly 100 rows: 99 text-reviewed and one draft. The separate full Filipino pilot v3 subsequently finished all 482 segments with zero failures, 0.5346333 padded transcribed hours and no empty results; this larger set is not yet the published 100-row configuration.
+
+### Backup recovery after a concurrent Hub commit
+
+The 49-recording Hiligaynon backup stopped with an explicit HTTP 412 precondition failure after another dataset commit landed during an upload. Three recordings had already received verified receipts. The failed worker was confirmed absent before resuming the same immutable plan/state directory; its previous terminal state is retained in `curation/outputs/archive-backup-hil-49-v1/worker-attempt-1.json`.
+
+`curation.archive_backup` now retries only explicit HTTP 412 commit conflicts, at most three commit attempts per object. Each retry fetches the current repository privacy/head, verifies whether the same content-addressed object already exists, and rechecks local bytes before committing. Conflicting remote bytes still fail; authentication, rate-limit and generic network errors are not automatically retried. Conflict evidence is recorded under `state/conflicts/`. The existing fixed plan remains 49 recordings / 4 GiB; no local deletion is authorized.
+
+Resumption revalidated three existing audio objects totaling 304,916,101 bytes. It generated additional pinned receipts for those same objects, so six receipt files represented only three distinct recordings at that checkpoint. Deduplicate receipt audio hashes before counting protected recordings or bytes. Full backup completion remains pending with the resumed worker. Fourteen archive-backup tests passed, including rebasing a one-time 412 and stopping after three repeated conflicts.
+
+### Cebuano news archive pilot
+
+The delegated acquisition pilot downloaded two official **Balitang Bisdak** episodes: `TVve_CROifU` (1,891.521 seconds) and `xzryb6E-vK4` (1,733.281 seconds), totaling 1.006889 raw hours / 48,568,079 bytes. Both passed ffprobe and independent SHA256 revalidation. [GMA identifies the show as its Cebuano newscast](https://www.gmanetwork.com/regionaltv/specials/13621/gma-regional-tv-newscasts-balitang-bisdak-and-balitang-amianan-no-1-in-ratings/story/); each video was matched through its official episode page, rather than assigning Cebuano to the entire channel. Exact spoken language remains provisional, including possible English/Filipino/Waray segments. Rights remain unknown.
+
+The [source registry](../curation/cebuano_archive_sources.json) points to preserved page evidence, inventory and download root. The verified receipt is `curation/outputs/cebuano/archive-expansion/pilot-receipt.json`. Canonical import snapshot `f5f8630fd1a176e181f66e5b661f71296df2b35e9a544a0de17a84ef02458a98` contains both recordings, with no exclusions or exact-byte duplicates:
+
+```sh
+curation/.venv/bin/python -m curation.import_media   --archive-root curation/outputs/cebuano/archive-expansion --language ceb   --output curation/outputs/imported-cebuano-archive
+```
+
+The archive importer expects source subdirectories, so use the parent of `audio/`, not `audio/` itself. The 30 URLs discovered on one publisher index page are candidate episodes/clips, not 30 measured full episodes. Expansion is delegated with a 30-recording / 20-hour ceiling and 45 GiB floor; keep full-episode/excerpt distinctions and overlap uncertainty. No additional hours are claimed until completed downloads are measured. No Cebuano ASR calls have been made.

@@ -47,7 +47,7 @@ def snapshot():
         if receipt.exists():report['hub_checkpoint']=json.loads(receipt.read_text())
         reports.append(report);db.close()
     archives_by_language={}
-    for language,root,pattern in [('hil',ROOT/'outputs/archive_sources','*/*.json'),('bik',ROOT/'outputs/bikolano/dzgb','*.json')]:
+    for language,root,pattern in [('hil',ROOT/'outputs/archive_sources','*/*.json'),('bik',ROOT/'outputs/bikolano/dzgb','*.json'),('ceb',ROOT/'outputs/cebuano/archive-expansion/audio','*.json')]:
         archives={}
         for path in root.glob(pattern):
             try:r=json.loads(path.read_text())

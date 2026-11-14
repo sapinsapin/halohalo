@@ -54,6 +54,33 @@ class ArchiveBackupTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'parent commit'):
             self.run_backup()
         self.assertEqual(self.objects, {})
+    def test_explicit_precondition_conflict_rechecks_head_and_is_bounded(self):
+        original=self.api.create_commit
+        calls=[]
+        def conflict_once(**kwargs):
+            calls.append(kwargs['parent_commit'])
+            if len(calls)==1:
+                self.version+=1
+                exc=RuntimeError('precondition');exc.response=NS(status_code=412)
+                raise exc
+            return original(**kwargs)
+        self.api.create_commit=conflict_once
+        self.run_backup()
+        self.assertEqual(calls,['0','1','2'])
+        self.assertEqual(len(list((self.root/'state/conflicts').glob('*.json'))),1)
+        self.assertEqual(len(list((self.root/'state/receipts').glob('*.json'))),1)
+
+    def test_repeated_precondition_conflicts_stop_after_three_attempts(self):
+        calls=[]
+        def conflict(**kwargs):
+            calls.append(kwargs)
+            exc=RuntimeError('precondition');exc.response=NS(status_code=412)
+            raise exc
+        self.api.create_commit=conflict
+        with self.assertRaisesRegex(RuntimeError,'precondition'):self.run_backup()
+        self.assertEqual(len(calls),3)
+        self.assertFalse((self.root/'state/receipts').exists())
+
     def test_conflicting_remote_is_rejected(self):
         path = f'raw/archive/sha256/{self.sha}/audio'
         self.objects[path] = NS(size=5, lfs={'sha256': 'wrong'})

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "gma-balitang-bisdak",
+    "url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/",
+    "language": "ceb",
+    "description": "GMA official dated Balitang Bisdak full-episode archive; show-specific selection only, not whole national/regional channel.",
+    "language_evidence_url": "https://www.gmanetwork.com/regionaltv/specials/13621/gma-regional-tv-newscasts-balitang-bisdak-and-balitang-amianan-no-1-in-ratings/story/",
+    "channel_url": "https://www.youtube.com/channel/UCVoawkpW12kgtXgInbPCrhQ",
+    "language_status": "provisional; publisher identifies Cebuano newscast, exact audio language and regional variety unverified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil",
+      "war"
+    ],
+    "english_code_switching": "preserve; valid data, do not normalize or translate",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "pilot_inventory": "curation/outputs/cebuano/archive-expansion/inventory.json",
+    "evidence_snapshots": "curation/outputs/cebuano/archive-expansion/evidence",
+    "inventory_scope": "Two finite dated full episodes embedded on publisher site; wider archive not enumerated or counted."
+  }
+]

@@ -139,19 +139,32 @@ def backup(manifest, state_dir, repo='sapinsapin/chika', max_files=4, max_bytes=
             durable(state / 'plans' / f'{meta_sha}.json', encoded(dict(repo=repo, entries=entries)))
             revisions = []
             for entry, content in zip(entries, (record['audio'], metadata)):
-                info = api.dataset_info(repo)
-                if not info.private:
-                    raise ValueError('existing private dataset required')
-                revision = info.sha
-                if not verify(api, repo, revision, entry, download):
+                for attempt in range(3):
+                    info = api.dataset_info(repo)
+                    if not info.private:
+                        raise ValueError('existing private dataset required')
+                    revision = info.sha
+                    if verify(api, repo, revision, entry, download):
+                        break
                     if record['audio'].stat() != record['stat'] or digest(record['audio']) != sha:
                         raise ValueError('audio changed before upload')
-                    commit = api.create_commit(repo_id=repo, repo_type='dataset', parent_commit=revision,
-                                               operations=[operation(path_in_repo=entry['path'], path_or_fileobj=content)],
-                                               commit_message='Back up verified full recording object')
+                    try:
+                        commit = api.create_commit(repo_id=repo, repo_type='dataset', parent_commit=revision,
+                                                   operations=[operation(path_in_repo=entry['path'], path_or_fileobj=content)],
+                                                   commit_message='Back up verified full recording object')
+                    except Exception as exc:
+                        # A competing commit can land during a long object upload.
+                        # Only explicit precondition conflicts are safe to rebase:
+                        # re-read privacy/head and reverify immutable content first.
+                        if getattr(getattr(exc, 'response', None), 'status_code', None) != 412 or attempt == 2:
+                            raise
+                        conflict = dict(path=entry['path'], parent_commit=revision, attempt=attempt+1, status_code=412)
+                        durable(state / 'conflicts' / f'{hashlib.sha256(encoded(conflict)).hexdigest()}.json', encoded(conflict))
+                        continue
                     revision = commit.oid
                     if not verify(api, repo, revision, entry, download):
                         raise ValueError('remote object absent after upload')
+                    break
                 progress = dict(repo=repo, revision=revision, **entry)
                 durable(state / 'progress' / f'{hashlib.sha256(encoded(progress)).hexdigest()}.json', encoded(progress))
                 revisions.append(revision)
