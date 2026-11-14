@@ -335,3 +335,17 @@ curation/.venv/bin/python -m curation.import_media   --radio-root curation/outpu
 Check actual live processes before starting another capture. Each invocation records a new time interval, not a resume of missed live audio. Keep radio roots separated by provisional language. Import rejects records whose declared acquisition language conflicts with the requested import language, preventing accidental default-Hiligaynon relabeling. Active or incomplete captures are excluded.
 
 Discovery did not justify importing the station website's linked YouTube channel as Ilocano: it is the national Bombo network, with no Ilocano/Vigan/Laoag title matches in the latest 1,000 streams inspected. The local streaming page also embedded the already known Bacolod stream. Neither page location nor a search title is sufficient evidence of the audio's language. A terminated search-result channel was excluded without attempting access circumvention.
+
+### Targeted archive recovery checkpoint
+
+Aksyon recording `1JsYMPNU2z8` had a terminal fixed-one-hour timeout, while the main round-robin collector had moved to other recordings. After confirming no live transfer for that ID, one targeted retry was launched under `curation/outputs/archive-recovery-1JsYMPNU2z8/`. Its previous acquisition record is preserved in `prior-attempt.json`; its one-item inventory and worker state are alongside it. The retry uses the new media-progress/disk guard and existing yt-dlp partials. Other collectors were not restarted. This retry remains incomplete until its final acquisition record and media checksum are verified.
+
+For a future recovery after confirming this retry has terminated, the existing CLI accepts the isolated inventory:
+
+```sh
+curation/.venv/bin/python -m curation.acquire_archives --source youtube   --inventory curation/outputs/archive-recovery-1JsYMPNU2z8/inventory.json   --source-id aksyon-streams
+```
+
+Do not launch a second transfer for the same ID. Retain the prior record and inspect the current error before retrying; live/upcoming exclusions require fresh discovery, not blind download retries. The default all-source queue does not automatically retry a failed item during the same pass.
+
+The 49-recording archive backup has produced its first verified recording receipt: revision `b53ba777174932bceb4c3883b126460746ca43d1`, two objects totaling 159,443,623 bytes. A separate read-only audit revalidated both objects at that pinned revision. This proves one recording checkpoint, not completion of the full backup; remaining work stays with the existing live worker.
