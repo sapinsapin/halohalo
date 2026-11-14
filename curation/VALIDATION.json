@@ -121,11 +121,13 @@
     "smoke_languages": [
       "hil",
       "fil",
+      "ceb",
       "bik",
       "ilo"
     ],
     "quality_benchmarked": false,
-    "audio_verified_hours": 0
+    "audio_verified_hours": 0,
+    "cebuano_smoke_segments_hash_checked": 9
   },
   "short_segment_asr": {
     "hil_windows": 2,
