@@ -1,0 +1,213 @@
+[
+  {
+    "id": "barok-and-takya",
+    "url": "https://www.cocknduckpodbean.com/feed.xml",
+    "language": "ceb",
+    "description": "Publisher explicitly describes the show as Cebuano; family, society and culture conversations.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/barok-and-takya-bisaya-podcast/id1445558228?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "en-ph",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1445558228.xml",
+    "language_evidence_url": "https://barokandtakya.com/about/"
+  },
+  {
+    "id": "brighter-bisaya",
+    "url": "https://anchor.fm/s/137cc564/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher identifies Cebuano/Binisaya with English and Filipino; conversation-based arts, science and education.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/brighter-bisaya/id1498469597?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "en",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1498469597.xml"
+  },
+  {
+    "id": "dili-ni-advice",
+    "url": "https://feeds.acast.com/public/shows/67e22c695926376d2a6c452d",
+    "language": "ceb",
+    "description": "Publisher identifies Bisaya conversation hosted by sisters from Davao; Cebuano-looking episode titles; provisional.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/dili-ni-advice-a-bisaya-podcast/id1731520640?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "en",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1731520640.xml"
+  },
+  {
+    "id": "naysjuan-sessions",
+    "url": "https://anchor.fm/s/4855826c/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher describes practical life discussions in Binisaya; Cebuano-looking feed prose; provisional.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/naysjuan-sessions-binisaya-podcast/id1549595896?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "en",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1549595896.xml"
+  },
+  {
+    "id": "unsa-man-jud",
+    "url": "https://anchor.fm/s/6dccefe4/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher explicitly identifies the talk show language as Cebuano.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/unsa-man-jud/id1589049137?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "fil",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1589049137.xml"
+  },
+  {
+    "id": "kasikas",
+    "url": "https://anchor.fm/s/ce28944c/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher title identifies Bisaya; Cebu university guests and Cebuano-looking episode metadata; provisional.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/kasikas-bisaya-podcast/id1715623839?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "fil",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1715623839.xml"
+  },
+  {
+    "id": "wanbats-ra-besh",
+    "url": "https://anchor.fm/s/625d2890/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher identifies hosts from Cebu; Bisaya conversation and Cebuano-looking episode titles; provisional.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/wanbats-ra-besh-bisaya-society-culture/id1583176423?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "en",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1583176423.xml"
+  },
+  {
+    "id": "bisaya-banter",
+    "url": "https://anchor.fm/s/69e68e58/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher identifies Bisaya diaspora conversation; English-heavy or Filipino-only segments may occur; provisional.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/bisaya-banter/id1585702346?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "en",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1585702346.xml"
+  },
+  {
+    "id": "cge-storya-ta",
+    "url": "https://anchor.fm/s/f2b7b310/podcast/rss",
+    "language": "ceb",
+    "description": "Publisher identifies Bisaya couple conversation; Cebuano-looking title, language needs audio verification.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/cge-storya-ta-a-bisaya-couple-podcast/id1733215814?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "fil",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1733215814.xml"
+  },
+  {
+    "id": "kinabuhing-kristohanon",
+    "url": "https://rss.buzzsprout.com/2224230.rss",
+    "language": "ceb",
+    "description": "Publisher describes Wali Bisaya preaching in Cebuano-looking feed prose and references Barok and Takya; provisional.",
+    "evidence_url": "https://podcasts.apple.com/ph/podcast/kinabuhing-kristohanon-a-wali-bisaya-preaching/id1723424172?uo=4",
+    "language_status": "provisional; Bisaya is ambiguous and audio language is not verified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil"
+    ],
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "feed_reported_language": "fil",
+    "english_code_switching": "preserve; do not normalize or translate",
+    "evidence_snapshot": "curation/outputs/cebuano/1723424172.xml"
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "language": "bik",
+    "language_verified": false,
+    "code_switch_policy": "Retain English and Tagalog code-switching; annotate per segment after audio review",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "id": "taga-bikol",
+    "url": "https://anchor.fm/s/4e760c20/podcast/rss",
+    "description": "Conversational podcast; publisher states Bikol Naga with a hint of Rinconada. Music/intros require filtering.",
+    "variety_claim": "Bikol Naga with Rinconada",
+    "candidate_varieties": [
+      "bcl",
+      "bto"
+    ],
+    "evidence_url": "https://podcasts.apple.com/sg/podcast/taga-bikol/id1651164828"
+  },
+  {
+    "language": "bik",
+    "language_verified": false,
+    "code_switch_policy": "Retain English and Tagalog code-switching; annotate per segment after audio review",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "id": "kaulay-podcast",
+    "url": "https://media.rss.com/kaulay-podcast1502/feed.xml",
+    "description": "Publisher states Bicolano mental health and personal growth speech; exact variety unverified; background music present.",
+    "variety_claim": "Bikol unspecified; do not assume Central Bikol",
+    "candidate_varieties": [],
+    "evidence_url": "https://kaulaypodcastbicol.my.canva.site/en/production"
+  },
+  {
+    "language": "bik",
+    "language_verified": false,
+    "code_switch_policy": "Retain English and Tagalog code-switching; annotate per segment after audio review",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "id": "bikol-mass-readings",
+    "url": "https://anchor.fm/s/25299364/podcast/rss",
+    "description": "Publisher states Mass readings in Bikol; read religious speech, not conversational. Exact regional variety unverified.",
+    "variety_claim": "Bikol unspecified; do not assume Central Bikol",
+    "candidate_varieties": [],
+    "evidence_url": "https://podcasts.apple.com/us/podcast/bikol-mass-readings/id1517460676"
+  }
+]

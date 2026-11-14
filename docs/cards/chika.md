@@ -4,9 +4,12 @@ language:
 - tgl
 - hil
 - eng
+- ceb
+- bik
+- ilo
 license: other
 license_name: source-specific-rights-unresolved
-pretty_name: Chika — Filipino and Hiligaynon Speech Curation
+pretty_name: Chika — Philippine Languages Speech Curation
 multilinguality:
 - multilingual
 task_categories:
@@ -19,6 +22,14 @@ tags:
 - code-switching
 - work-in-progress
 configs:
+- config_name: hil_collected_pilot_v1
+  data_files:
+  - split: unassigned
+    path: curation/collected-hil-pilot-v1/curation-unassigned-*.parquet
+- config_name: fil_collected_pilot_v1
+  data_files:
+  - split: unassigned
+    path: curation/collected-fil-pilot-v1/curation-unassigned-*.parquet
 - config_name: hil_pld_curation_v2
   data_files:
   - split: unassigned
@@ -35,11 +46,15 @@ configs:
 
 # Chika
 
-A work-in-progress collection of conversational Filipino/Taglish and Hiligaynon speech, preserving natural English code-switching. The target is approximately **250 unique retained, transcribed hours per language group**. This target is not a claim about currently completed data.
+A work-in-progress collection of Filipino/Taglish, Hiligaynon, Cebuano, Bikolano and Ilocano speech, preserving natural English code-switching. The target is approximately **250 unique retained, transcribed hours per language group** (1,250 hours overall). This target is not a claim about currently completed data.
 
 Tracking and workflow: [sapinsapin/halohalo issue #8](https://github.com/sapinsapin/halohalo/issues/8). The repository is private while source rights and curation are unresolved.
 
 ## Available configuration
+
+Cebuano, Bikolano and Ilocano acquisition is being added; no completed transcribed configurations for those languages are claimed. Bikolano is a collection label: specific varieties and unresolved variety labels remain explicit in source metadata.
+
+`hil_collected_pilot_v1` contains 3 newly collected transport windows (90 seconds), one with a validated text-only LLM review. `fil_collected_pilot_v1` contains 2 windows (60 seconds). All are unassigned, machine-transcribed drafts, with source-level language labels and unknown training/commercial/redistribution rights. These are integration pilots, not clean speech or accuracy benchmarks. Automatic ASR cuts can split phrases within a transport window; music, ads, mixed speakers and English-only content may remain. Bulk ASR was stopped after server finalization timeouts. No audio verification is claimed.
 
 `hil_pld_curation_v2` contains **229 PLD spontaneous recordings, 2.9522 hours**, with machine-generated transcript drafts and text-only review. There are **190 unassigned and 39 reserved-test recordings**. These recordings are an initial schema migration/curation set; they do not establish completion of the new 250-hour Hiligaynon collection. No audio-verified training labels are claimed. PLD source restrictions remain applicable.
 

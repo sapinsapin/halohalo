@@ -1,0 +1,72 @@
+{
+  "metric": "unique retained audio hours with transcripts; raw downloads are not completion",
+  "targets": [
+    {
+      "group": "fil_taglish",
+      "name": "Filipino/Taglish",
+      "hours": 250,
+      "language_codes": [
+        "fil",
+        "tgl"
+      ],
+      "rss_root": "outputs/taglish/shared",
+      "namespace": "taglish-rss",
+      "max_acquired_hours": 300,
+      "max_source_hours": 50
+    },
+    {
+      "group": "hil",
+      "name": "Hiligaynon",
+      "hours": 250,
+      "language_codes": [
+        "hil"
+      ],
+      "rss_root": "outputs/rss",
+      "namespace": "hiligaynon-rss",
+      "max_acquired_hours": 0,
+      "max_source_hours": 0
+    },
+    {
+      "group": "ceb",
+      "name": "Cebuano",
+      "hours": 250,
+      "language_codes": [
+        "ceb"
+      ],
+      "rss_root": "outputs/cebuano/rss",
+      "namespace": "cebuano-rss",
+      "max_acquired_hours": 300,
+      "max_source_hours": 75
+    },
+    {
+      "group": "bik",
+      "name": "Bikolano",
+      "hours": 250,
+      "language_codes": [
+        "bik",
+        "bcl",
+        "bto"
+      ],
+      "rss_root": "outputs/bikolano/rss",
+      "namespace": "bikolano-rss",
+      "max_acquired_hours": 300,
+      "max_source_hours": 0,
+      "note": "Bikolano is a collection label. Preserve source variety and uncertainty; do not relabel unknown variety as Central Bikol. Additional varieties may be added with source evidence; this is not an exhaustive code list.",
+      "code_reference": "https://ceds.ed.gov/iso639-3LanguageCodev7.aspx"
+    },
+    {
+      "group": "ilo",
+      "name": "Ilocano",
+      "hours": 250,
+      "language_codes": [
+        "ilo"
+      ],
+      "rss_root": "outputs/ilocano/rss",
+      "namespace": "ilocano-rss",
+      "max_acquired_hours": 300,
+      "max_source_hours": 0
+    }
+  ],
+  "code_switching": "Preserve natural English and other language switches. Source labels remain provisional until audio review.",
+  "asr": "Only fil/hil Boses routes have live integration evidence; bulk deferred after server finalization errors. No validated route yet for ceb/bik/ilo."
+}

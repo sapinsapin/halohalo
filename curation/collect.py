@@ -7,6 +7,7 @@ python -m curation.collect status --root curation/outputs/rss
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -65,9 +66,13 @@ def seconds(value):
 
 
 def discover(args):
+    sources = json.loads(Path(args.sources).read_text())
+    # Validate every selector before touching the ledger or fetching a feed.
+    selectors = [re.compile(source['include_title_regex'])
+                 if 'include_title_regex' in source else None for source in sources]
     root = Path(args.root)
     db = connect(root)
-    for source in json.loads(Path(args.sources).read_text()):
+    for source, selector in zip(sources, selectors):
         sid = source['id']
         try:
             with request(source['url']) as response:
@@ -94,10 +99,20 @@ def discover(args):
                 guid = item.findtext('guid') or url
                 ident = hashlib.sha256((sid + '\0' + guid).encode()).hexdigest()[:32]
                 duration = seconds(item.findtext('{http://www.itunes.com/dtds/podcast-1.0.dtd}duration'))
-                db.execute('''INSERT INTO items(id,source_id,url,guid,title,published,estimated_seconds,status,updated_at)
-                              VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
-                              url=excluded.url,title=excluded.title,estimated_seconds=excluded.estimated_seconds''',
-                           (ident, sid, url, guid, item.findtext('title'), item.findtext('pubDate'), duration, 'pending', now()))
+                title = item.findtext('title')
+                selected = selector is None or selector.search(title or '') is not None
+                selection_error = None if selected else 'Title does not match source include_title_regex'
+                # Exclusions stay excluded on rediscovery. Never reset a completed
+                # recording or an in-flight download when source policy changes.
+                db.execute('''INSERT INTO items(id,source_id,url,guid,title,published,estimated_seconds,status,updated_at,error)
+                              VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+                              url=excluded.url,title=excluded.title,estimated_seconds=excluded.estimated_seconds,
+                              status=CASE WHEN excluded.status='excluded' AND items.status NOT IN
+                                ('downloaded','remote','downloading','excluded') THEN 'excluded' ELSE items.status END,
+                              error=CASE WHEN excluded.status='excluded' AND items.status NOT IN
+                                ('downloaded','remote','downloading','excluded') THEN excluded.error ELSE items.error END''',
+                           (ident, sid, url, guid, title, item.findtext('pubDate'), duration,
+                            'pending' if selected else 'excluded', now(), selection_error))
                 count += 1
             db.commit()
             print(json.dumps({'source': sid, 'discovered': count}), flush=True)

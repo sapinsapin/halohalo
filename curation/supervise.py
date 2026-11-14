@@ -3,7 +3,7 @@
 python -m curation.supervise --once
 python -m curation.supervise --apply
 
-Only the two explicitly registered SQLite RSS roots are supported. Archive-source
+Only the explicitly registered SQLite RSS roots in targets.json are supported. Archive-source
 manifests (including non-RSS Hiligaynon archives) need their own checkpoint and
 worker adapters and are deliberately not restarted or evicted here. No workers
 are killed. A global flock serializes supervisors; an inherited per-root launch
@@ -37,9 +37,10 @@ class Profile:
     max_source_hours: float
 
 
-PROFILES = (
-    Profile(BASE/'curation/outputs/rss', 'hiligaynon-rss', 0, 0),
-    Profile(BASE/'curation/outputs/taglish/shared', 'taglish-rss', 300, 50),
+PROFILES = tuple(
+    Profile(BASE/'curation'/entry['rss_root'], entry['namespace'],
+            entry['max_acquired_hours'], entry['max_source_hours'])
+    for entry in json.loads((BASE/'curation/targets.json').read_text())['targets']
 )
 
 

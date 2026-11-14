@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T21:59:02.830326+00:00",
-  "unit_tests": 94,
+  "updated_at": "2026-11-14T22:13:17.948876+00:00",
+  "unit_tests": 119,
   "pld_rows_locally_decoded": 229,
   "hf_v2_remote_shards_hash_verified": 3,
   "hf_v2_streaming_rows_checked": 1,
@@ -62,5 +62,45 @@
   "radio_backup": {
     "focused_tests": 7,
     "upload_status": "in_progress; no verified receipt yet"
+  },
+  "imported_archive_radio": {
+    "recordings": 29,
+    "sources": 11,
+    "measured_media_hours": 21.356142,
+    "exact_byte_duplicates": 0,
+    "excluded_noncompleted": 2,
+    "snapshot": "37910b28e3574faf4b7f022da3831a22c9ccb6ca9e1f272165d2692e774753fd",
+    "verified_speech_hours": 0
+  },
+  "imported_prepare": {
+    "recordings": 1,
+    "windows": 6,
+    "window_seconds": 28,
+    "schema_hash_coverage_checked": true,
+    "cached_rerun": true,
+    "asr_completed": false
+  },
+  "new_collected_exports": {
+    "hil_rows": 3,
+    "fil_rows": 2,
+    "audio_decoded_rows": 5,
+    "remote_files_hash_verified": 9,
+    "hub_revision": "db224906b9ca13c8eb14b382443f9080c99c62d1",
+    "audio_verified": false,
+    "hf_streaming_rows_checked": 5,
+    "hf_streaming_configs_checked": 2
+  },
+  "publication_recovery": {
+    "real_existing_prefix_verified": true,
+    "new_commits_created": 0
+  },
+  "five_language_targets": {
+    "hours_each": 250,
+    "total_target_hours": 1250,
+    "asr_validated_languages": [
+      "fil",
+      "hil"
+    ],
+    "new_language_asr_validated": false
   }
 }

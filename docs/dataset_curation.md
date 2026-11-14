@@ -173,3 +173,51 @@ For Filipino use language `fil` and model `fw/whisper-large-v3-pld-fil-norm`. Th
 The first larger batch encountered repeated server `finalize_timeout` errors despite successful small pilots. It was stopped; successful draft caches remain reusable and failed windows do not count as transcribed. Resolve service finalization before resuming bulk ASR. The initial new-audio LLM check accepted one text review and rejected one invalid identity/triage response under the strict contract; original transcripts remain unchanged.
 
 Finalized radio captures can be backed up with `curation/.venv/bin/python -m curation.media_backup --root curation/outputs/radio`. This bounded adapter validates local audio against capture receipts, uploads only audio and selected provenance to the existing private dataset, and verifies downloaded bytes at an immutable revision before publishing `hub-media-receipt.json`. It never deletes local audio. A running upload is not a verified backup.
+
+## Use the same schema for archives and radio
+
+```sh
+curation/.venv/bin/python -m curation.import_media \
+  --archive-root curation/outputs/archive_sources --radio-root curation/outputs/radio \
+  --output curation/outputs/imported-media
+curation/.venv/bin/python -m curation.prepare \
+  --manifest /path/returned/by/import/manifest.jsonl \
+  --output curation/outputs/imported-prepared --max-recordings 1 --window-seconds 28
+```
+
+The importer checks finalized metadata against actual file hashes, sizes, audio streams and durations. It writes immutable content-addressed snapshots and a report of exclusions and exact-byte duplicates. Rerunning discovers newly completed downloads without changing prior snapshots. Canonical rights, language, split and provenance survive preparation; changed annotations require a fresh preparation output root. These 28-second windows remain transport units, not detected speech or aligned TTS utterances. The first real import contained 29 recordings from 11 sources, 21.3561 measured media hours, with no claim of unique speech or linguistic verification.
+
+## Join text review and export collected drafts
+
+```sh
+curation/.venv/bin/python -m curation.attach_reviews \
+  --manifest curation/outputs/asr-client-hil/manifest.jsonl \
+  --reviews curation/outputs/review-new-hil \
+  --output curation/outputs/review-new-hil/joined-manifest.jsonl
+curation/.venv/bin/python -m curation.cli export \
+  --manifest curation/outputs/review-new-hil/joined-manifest.jsonl \
+  --output curation/outputs/new-hil-export-v1 --profile curation
+```
+
+Joining requires matching input/configuration, sentence/audio hashes, and the saved provider response. It rechecks the audio bytes and exact review contract, attaches only validated reviews, and reports missing/ineligible rows. It never changes transcripts, rights or split assignments, and never grants audio verification. A changed input requires a new output snapshot; rerunning the same join is idempotent. Invalid model responses stay outside the attached reviews. Curation export includes unreviewed drafts; training export continues to require audio verification and source permission.
+
+## Publish immutable curation exports
+
+```sh
+curation/.venv/bin/python -m curation.publish \
+  --export-root curation/outputs/new-hil-export-v1 \
+  --prefix curation/a-new-versioned-prefix \
+  --receipt curation/outputs/publication-receipt.json
+```
+
+The target dataset must already exist and be private. The publisher stages only the export summary, canonical manifest, README and explicitly listed Parquet shards; logs and arbitrary files are excluded. It validates file hashes and row consistency, enforces file/byte limits, rejects an occupied prefix, and uses a parent-commit condition to detect concurrent updates. Remote bytes must match at the immutable resulting revision before a receipt is written. Register the new prefix in `docs/cards/chika.md` and upload that card after verification; raw backups should never be listed as train splits. If commit succeeded but verification was interrupted, the explicit `--verify-existing` mode checks that exact prefix without uploading or overwriting it.
+
+The first collected pilot configurations were uploaded at revision `db224906b9ca13c8eb14b382443f9080c99c62d1`. All nine exported/card files passed remote checksum checks; all five rows decoded locally and both configurations loaded through Hugging Face streaming. This validates format/integration only.
+
+## Five-language collection targets
+
+`curation/targets.json` is the shared target and RSS supervision registry: 250 unique retained/transcribed hours each for Filipino/Taglish, Hiligaynon, Cebuano, Bikolano and Ilocano (1,250 hours overall). Raw acquisition limits provide headroom but are not success criteria. Hiligaynon's identified archives remain uncapped as requested. Cebuano uses 300 raw hours with a 75-hour per-show cap. Bikolano and Ilocano currently use 300-hour RSS limits without per-show caps because their discovered sources are scarcer; domain concentration must be measured during curation.
+
+Use the same discover/download/prepare/review/export commands with `cebuano_sources.json`, `bikolano_sources.json`, or `ilocano_sources.json` and isolated `outputs/<language>/rss` roots. `curation.status` and the storage supervisor read all five registered roots. Bikolano is a collection label, not a claim of one uniform variety: retain source variety evidence and uncertainty. RSS preparation carries full source metadata into provenance. New-language Boses ASR routes have **not** been validated, so do not send those languages to the Hiligaynon or Filipino model merely because it accepts a connection.
+
+Text-review prompt v3 adds Cebuano, Bikolano and Ilocano, preserves code-switching and prohibits imposing another language's grammar. Its changed prompt hash separates it from v2 caches. Existing v2 review attachments remain reproducible using their saved configuration and raw responses. This prompt update is not evidence of model accuracy in the added languages; linguistic/audio evaluation remains required.

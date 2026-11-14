@@ -10,8 +10,10 @@ ROOT=Path(__file__).resolve().parent
 
 
 def snapshot():
+    targets=json.loads((ROOT/'targets.json').read_text())['targets']
     reports=[]
-    for label,root in [('hiligaynon-rss',ROOT/'outputs/rss'),('taglish-rss',ROOT/'outputs/taglish/shared')]:
+    for target in targets:
+        label,root=target['namespace'],ROOT/target['rss_root']
         path=root/'state.sqlite'
         if not path.exists(): continue
         db=sqlite3.connect(f'file:{path}?mode=ro',uri=True);db.row_factory=sqlite3.Row
@@ -40,12 +42,12 @@ def snapshot():
     for path in (ROOT/'outputs/radio').glob('*/*/status.json'):
         r=json.loads(path.read_text())
         radio.append({k:r.get(k) for k in ['station','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
-    asr_hours = {}
+    asr_hours = {t['group']:0 for t in targets}
     for language, directory in [('hil', 'asr-client-hil'), ('fil_taglish', 'asr-client-fil')]:
         path = ROOT/'outputs'/directory/'summary.json'
         asr_hours[language] = json.loads(path.read_text()).get('transcribed_hours', 0) if path.exists() else 0
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
-                target_retained_transcribed_hours={'fil_taglish':250,'hil':250},
+                target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; ASR bulk deferred after server finalize_timeout',rss=reports,archives=archives,radio=radio,
                 new_audio_transcribed_hours=asr_hours,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},

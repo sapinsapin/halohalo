@@ -5,6 +5,7 @@ Original media stays intact. Whole-recording canonical PCM hashes expose exact d
 repeats; acoustic near-duplicates, embedded clips, simulcasts and speech QC remain separate.
 """
 import argparse
+import copy
 import fcntl
 import hashlib
 import json
@@ -16,7 +17,7 @@ import subprocess
 import tempfile
 import wave
 
-from .schema import VERSION, digest, validate
+from .schema import VERSION, digest, validate, load_manifest
 from .cli import write_jsonl
 
 RATE = 16000
@@ -56,11 +57,25 @@ def prepare_one(record, root, db, cfg, min_free_gib=25):
     if digest(path)!=record['sha256']:
         raise ValueError('original audio checksum mismatch')
     cfg_hash=identity(cfg)
-    stage=identity({'source_id':record['source_id'],'id':record['id'],'bytes':record['sha256'],'config':cfg_hash})
+    stage_input={'source_id':record['source_id'],'id':record['id'],'bytes':record['sha256'],'config':cfg_hash}
+    source_metadata=json.loads(record['source_metadata']) if record.get('source_metadata') else None
+    canonical=record.get('canonical_record')
+    if canonical is not None:
+        validate(canonical)
+        # Metadata changes (especially rights/splits) must never reuse stale windows.
+        stage_input['canonical_record_sha256']=identity(canonical)
+        previous=db.execute("SELECT metadata FROM recordings WHERE source_id=? AND recording_id=? AND status='prepared'",
+                            (record['source_id'],record['id'])).fetchall()
+        if any(json.loads(r[0]).get('canonical_record') != canonical for r in previous):
+            raise ValueError('recording metadata changed; use a new output root')
+    stage=identity(stage_input)
     old=db.execute('SELECT * FROM recordings WHERE stage_id=?',(stage,)).fetchone()
     if old and old['status']=='prepared':
         rows=[json.loads(r[0]) for r in db.execute('SELECT row_json FROM windows WHERE stage_id=?',(stage,))]
-        if rows and all(Path(r['audio_path']).is_file() and digest(r['audio_path'])==r['audio_sha256'] for r in rows):
+        if rows and all(Path(r['audio_path']).is_file() and digest(r['audio_path'])==r['audio_sha256']
+                        and (canonical is None or r['provenance'].get('canonical_preparation_version') == 2)
+                        and (source_metadata is None or r['provenance'].get('acquisition_source_metadata') == source_metadata)
+                        for r in rows):
             return {'stage_id':stage,'status':'cached','windows':len(rows),'duration':old['duration']}
     # Budget for uncompressed decode + window output. Never decode hours into RAM.
     expected_bytes=max(0,record.get('duration',0))*RATE*2
@@ -111,6 +126,29 @@ def prepare_one(record, root, db, cfg, min_free_gib=25):
                              start=start/RATE,end=(start+count)/RATE,asr_status='pending',llm_status='pending',
                              timestamp_kind=cfg['timestamp_kind'],synthetic=False,
                              flags=['speech_presence_unverified','speaker_unknown','language_unverified','alignment_required_for_tts'])
+                    if source_metadata is not None:
+                        row['provenance']['acquisition_source_metadata']=copy.deepcopy(source_metadata)
+                    if canonical is not None:
+                        # Keep acquisition annotations, resetting original audio/text claims.
+                        preserved=copy.deepcopy(canonical)
+                        provenance=preserved.pop('provenance')
+                        generated_provenance=row['provenance']
+                        for key in ('language','languages','language_annotation','speech_type',
+                                    'speaker_id','split','rights','synthetic'):
+                            if key in preserved:
+                                row[key]=preserved[key]
+                        row['flags']=list(dict.fromkeys(preserved.get('flags',[])+row['flags']))
+                        # Unknown annotations (including original prompts and alignment)
+                        # belong to the parent, never to the derivative's ASR payload.
+                        for key,value in preserved.items():
+                            if key.startswith('source_') and key not in row:
+                                row[key]=value
+                        row['audio_bytes']=dest.stat().st_size
+                        row['provenance']={**provenance,**generated_provenance,
+                                           'canonical_preparation_version':2,
+                                           'parent_manifest_id':canonical['id'],
+                                           'parent_record':preserved,
+                                           'parent_record_provenance':copy.deepcopy(provenance)}
                     rows.append(validate(row));start+=count
                 if start!=frames or not rows:
                     raise ValueError('decoded samples were not fully covered')
@@ -139,13 +177,20 @@ def export_manifest(db,root):
     return summary
 
 
-def main():
+def parser():
     p=argparse.ArgumentParser(__doc__)
-    p.add_argument('--rss-root',required=True)
+    source=p.add_mutually_exclusive_group(required=True)
+    source.add_argument('--rss-root')
+    source.add_argument('--manifest',help='canonical full-recording JSONL manifest')
     p.add_argument('--output',required=True)
     p.add_argument('--max-recordings',type=int,default=2)
     p.add_argument('--window-seconds',type=float,default=30)
     p.add_argument('--min-free-gib',type=float,default=25)
+    return p
+
+
+def main():
+    p=parser()
     a=p.parse_args()
     if a.max_recordings < 1 or a.min_free_gib < 0:
         p.error('max-recordings must be positive and min-free-gib nonnegative')
@@ -156,10 +201,15 @@ def main():
         if config_path.exists() and json.loads(config_path.read_text()) != cfg:
             raise ValueError('preparation config changed; use a new output root')
         config_path.write_text(json.dumps(cfg,indent=2)+'\n')
-        source=sqlite3.connect(f'file:{Path(a.rss_root)/"state.sqlite"}?mode=ro',uri=True);source.row_factory=sqlite3.Row
+        if a.manifest:
+            from .import_media import acquisition_record
+            records=[acquisition_record(row) for row in load_manifest(a.manifest)]
+        else:
+            source=sqlite3.connect(f'file:{Path(a.rss_root)/"state.sqlite"}?mode=ro',uri=True);source.row_factory=sqlite3.Row
+            records=source.execute("SELECT i.*,s.language,s.metadata AS source_metadata FROM items i JOIN sources s ON s.id=i.source_id WHERE i.status='downloaded' ORDER BY i.updated_at,i.id")
         processed=0
-        for row in source.execute("SELECT i.*,s.language FROM items i JOIN sources s ON s.id=i.source_id WHERE i.status='downloaded' ORDER BY i.updated_at,i.id"):
-            record=dict(row)
+        for record in records:
+            record=dict(record)
             result=prepare_one(record,root,db,cfg,a.min_free_gib)
             print(json.dumps(result),flush=True)
             if result['status']!='cached':processed+=1
