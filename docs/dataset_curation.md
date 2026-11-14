@@ -364,3 +364,13 @@ curation/.venv/bin/python -m curation.vad   --manifest curation/outputs/five-lan
 Do not run these commands concurrently with the active batch. For recovery, inspect actual process state and each stage's return code first; skip completed stages. If preparation is extended after VAD was created, use a new VAD output root because its input/configuration binding is immutable. `curation.status` reports actual worker observation and completed stage summaries. These candidates overlap earlier pilots; use source-interval accounting instead of summing configurations.
 
 The targeted Aksyon retry `1JsYMPNU2z8` completed successfully, measuring 3,400.901 seconds (56.7 minutes). Its acquisition record now contains the completed media hash; the prior fixed-hour timeout record remains preserved in the recovery directory.
+
+### Independent derivative audit
+
+Use `curation.audit_vad` after a VAD stage completes. It reads the independently supplied parent manifest, rechecks parent and candidate file hashes, compares every decoded candidate sample with the exact parent slice, checks relative/absolute offsets and timestamps, rejects duplicate IDs and within-parent overlaps, and checks inherited language, prompt, rights and split metadata. It does not rerun the VAD heuristic or validate speech content, language, transcripts, speakers or rights claims. Only parents referenced by candidates are decoded; silence-only parents may have no candidate.
+
+```sh
+curation/.venv/bin/python -m curation.audit_vad   --parents curation/outputs/five-language-preparation-v1/fil_taglish/prepared/manifest.jsonl   --candidates curation/outputs/five-language-preparation-v1/fil_taglish/vad/manifest.jsonl   --report curation/outputs/five-language-preparation-v1/fil_taglish/vad-audit.json
+```
+
+Real-data checks passed on all 1,375 earlier Hiligaynon candidates (1.19318 padded hours) all 5,189 new Filipino/Taglish candidates (6.43737 padded hours), and all 2,755 new Hiligaynon candidates (3.52511 padded hours). The Filipino batch began with 859 transport windows / 7.12117 raw hours; 857 windows produced candidates. Candidate runtime is not unique verified speech. Audit reports bind both input manifests by SHA256. Regression tests include a wrong audio slice with a freshly updated checksum, altered timestamps, conflicting embedded parents and changed rights metadata.
