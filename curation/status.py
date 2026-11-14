@@ -43,9 +43,9 @@ def snapshot():
         archives_by_language[language]=archives
     archives=archives_by_language['hil']
     radio=[]
-    for path in (ROOT/'outputs/radio').glob('*/*/status.json'):
+    for path in [* (ROOT/'outputs/radio').glob('*/*/status.json'), * (ROOT/'outputs/ilocano/radio').glob('*/*/status.json')]:
         r=json.loads(path.read_text())
-        radio.append({k:r.get(k) for k in ['station','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
+        radio.append({k:r.get(k) for k in ['station','candidate_language','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
     from .account import account
     inputs=[]
     for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl'])]:

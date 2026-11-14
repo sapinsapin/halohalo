@@ -54,6 +54,17 @@ class ImportMediaTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'immutable snapshot modified'):
             run(self.root/'out', self.archive, self.radio)
 
+    def test_radio_language_mismatch_is_excluded(self):
+        metadata, _ = self.record(kind='radio')
+        record = json.loads(metadata.read_text())
+        record['candidate_language'] = 'ilo'
+        metadata.write_text(json.dumps(record))
+        rows, report = build(radio_root=self.radio)
+        self.assertEqual(rows, [])
+        self.assertIn('language conflicts', report['excluded'][0]['reason'])
+        rows, _ = build(radio_root=self.radio, language='ilo')
+        self.assertEqual(rows[0]['language'], 'ilo')
+
     def test_duplicates_and_partial(self):
         self.record('z', 'last')
         self.record('a', 'first', 'radio')

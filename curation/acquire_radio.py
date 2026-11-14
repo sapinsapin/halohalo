@@ -16,6 +16,7 @@ import subprocess
 import time
 
 STATIONS = {
+    'bombo-vigan': ('https://stream.zenolive.com/ebcyau9nz9duv', 'https://www.bomboradyo.com/live-stream'),
     'rmn-iloilo': ('https://us1.amfmph.com/ssl/rmniloilo?mp=%2Fstream', 'https://onlineradio.ph/934-rmn-bacolod.html'),
     'rmn-bacolod': ('http://us2.amfmph.com:8848/live', 'https://onlineradio.ph/934-rmn-bacolod.html'),
     'bombo-iloilo': ('https://stream.zenolive.com/gzudz59nz9duv', 'https://www.bomboradyo.com/live-stream'),
@@ -48,7 +49,7 @@ def capture(station, seconds, root, min_free_gib=25):
     status = dict(id=f'{station}:{stamp}', station=station, source_url=url,
                   source_page=source_page, source_kind='live_radio',
                   started_at=now(), requested_seconds=seconds, runner_pid=os.getpid(),
-                  candidate_language='hil', language_verified=False, code_switching_expected=True,
+                  candidate_language='ilo' if station == 'bombo-vigan' else 'hil', language_verified=False, code_switching_expected=True,
                   rights={'training':'unknown','commercial':'unknown','redistribution':'unknown'},
                   transcript_status='not_started', state='starting', audio_path=str(audio.resolve()))
     atomic(status_path, status)

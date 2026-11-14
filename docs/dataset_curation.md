@@ -322,3 +322,16 @@ curation/.venv/bin/python -m curation.archive_backup   curation/outputs/imported
 ```
 
 Re-running after confirmed termination revalidates remote content-addressed objects and resumes missing work. New recordings require a fresh import snapshot; this frozen job does not include later downloads. Status source-interval accounting also includes the persistent Filipino drafts and the published 194-review Hiligaynon manifest, without adding overlapping segments twice.
+
+### Ilocano radio expansion
+
+The [network player](https://www.bomboradyo.com/live-stream) explicitly maps **Bombo Radyo Vigan** to `https://stream.zenolive.com/ebcyau9nz9duv`. Source evidence and rejected alternatives are recorded in `curation/ilocano_radio_sources.json`. The station is an Ilocano candidate; actual speech and code-switching remain unverified. A 30-second smoke capture completed (30.016 measured seconds, 241,268 bytes) and imported successfully with `--language ilo`. A separate two-hour capture was launched, with status under `curation/outputs/ilocano/radio/bombo-vigan/` and launch metadata under `curation/outputs/ilocano/vigan-capture-2h/`.
+
+```sh
+curation/.venv/bin/python -m curation.acquire_radio --station bombo-vigan   --seconds 7200 --output curation/outputs/ilocano/radio --min-free-gib 25
+curation/.venv/bin/python -m curation.import_media   --radio-root curation/outputs/ilocano/radio --language ilo   --output curation/outputs/imported-ilocano-radio
+```
+
+Check actual live processes before starting another capture. Each invocation records a new time interval, not a resume of missed live audio. Keep radio roots separated by provisional language. Import rejects records whose declared acquisition language conflicts with the requested import language, preventing accidental default-Hiligaynon relabeling. Active or incomplete captures are excluded.
+
+Discovery did not justify importing the station website's linked YouTube channel as Ilocano: it is the national Bombo network, with no Ilocano/Vigan/Laoag title matches in the latest 1,000 streams inspected. The local streaming page also embedded the already known Bacolod stream. Neither page location nor a search title is sufficient evidence of the audio's language. A terminated search-result channel was excluded without attempting access circumvention.

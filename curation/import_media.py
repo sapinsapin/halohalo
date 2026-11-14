@@ -35,6 +35,9 @@ def verify_record(metadata, kind, language='hil'):
         raise ValueError('explicit language code required')
     raw = metadata.read_bytes()
     record = json.loads(raw)
+    declared = record.get('language') if kind == 'archive' else record.get('candidate_language')
+    if declared and declared != language:
+        raise ValueError('source language conflicts with requested import language')
     if (record.get('status') if kind == 'archive' else record.get('state')) != ('downloaded' if kind == 'archive' else 'acquired'):
         raise ValueError('not completed')
     path = Path(record['audio_path']).resolve(strict=True)

@@ -1,0 +1,32 @@
+[
+  {
+    "source_id": "bombo-vigan",
+    "kind": "live_radio",
+    "candidate_language": "ilo",
+    "language_verified": false,
+    "code_switching": "Preserve Ilocano, Filipino and English; verify from audio.",
+    "source_url": "https://stream.zenolive.com/ebcyau9nz9duv",
+    "evidence_url": "https://www.bomboradyo.com/live-stream",
+    "evidence": "Player entry explicitly titled Bombo Radyo Vigan maps to this stream URL.",
+    "evidence_sha256": "ea666b1866361d311fac753fb80ec6d915c4eab589f347ca6b6f642b28338b13",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "discovery_exclusions": [
+      {
+        "url": "https://www.youtube.com/channel/UCyicU1L-ZA1cjIENeqWc1mA",
+        "reason": "YouTube reports account terminated; do not attempt recovery or bypass."
+      },
+      {
+        "url": "https://www.youtube.com/channel/UCVVw9u0pZ3nnWxx7WyE8YkQ/streams",
+        "reason": "Station website links to national network channel; no Ilocano/Vigan/Laoag title matches among latest 1000 entries. Not an Ilocano archive."
+      },
+      {
+        "url": "https://vigan.bomboradyo.com/streaming/",
+        "reason": "Page embeds wg8yn4cnz9duv, already mapped to Bombo Bacolod; station-page placement alone is insufficient for language attribution."
+      }
+    ]
+  }
+]
