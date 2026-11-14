@@ -374,3 +374,19 @@ curation/.venv/bin/python -m curation.audit_vad   --parents curation/outputs/fiv
 ```
 
 Real-data checks passed on all 1,375 earlier Hiligaynon candidates (1.19318 padded hours) all 5,189 new Filipino/Taglish candidates (6.43737 padded hours), and all 2,755 new Hiligaynon candidates (3.52511 padded hours). The Filipino batch began with 859 transport windows / 7.12117 raw hours; 857 windows produced candidates. Candidate runtime is not unique verified speech. Audit reports bind both input manifests by SHA256. Regression tests include a wrong audio slice with a freshly updated checksum, altered timestamps, conflicting embedded parents and changed rights metadata.
+
+### Completed five-language candidate checkpoint
+
+The first source-balanced batch completed all ten preparation/VAD stages successfully. It contains 50 recordings, 27.07428 transport hours and **19,357 candidates / 24.40479 padded hours**. Every exported candidate passed the independent PCM/offset/metadata audit. The machine-readable [preparation checkpoint](../curation/PREPARATION_CHECKPOINT.json) records per-language counts, source counts and input/output manifest hashes.
+
+| Group | Candidate segments | Padded candidate hours |
+| --- | ---: | ---: |
+| Filipino/Taglish | 5,189 | 6.43737 |
+| Hiligaynon | 2,755 | 3.52511 |
+| Cebuano | 5,800 | 7.83103 |
+| Bikolano | 1,975 | 3.07390 |
+| Ilocano | 3,638 | 3.53738 |
+
+These are local pending-ASR candidates, not completed transcribed datasets. Source labels, music/overlap, speakers, rights and acoustic near-duplicates remain unresolved. Parent/source overlap with earlier pilots means these durations cannot be added as new unique retained hours. No additional ASR calls were made for this batch.
+
+A separate text-only review worker at `curation/outputs/collected-hil-remaining-467-v1/` processes the 467 successful Hiligaynon ASR rows outside the earlier 200-row snapshot. Input SHA256 is `43a283cfd684605db7c24eba37aa82443ae792957b1da8c319b39bb2352fd444`. It retains drafts, uses one attempt per item and stops after two consecutive failures. It is still running; inspect actual process and `worker.json`/`worker.log` before recovery. Existing published exports remain unchanged. After termination, attach validated reviews to a new manifest and reconcile those rows with the earlier snapshot before publishing a new combined configuration.
