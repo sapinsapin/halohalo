@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T21:29:50.210982+00:00",
-  "unit_tests": 52,
+  "updated_at": "2026-11-14T21:37:18.192010+00:00",
+  "unit_tests": 68,
   "pld_rows_locally_decoded": 229,
   "hf_v2_remote_shards_hash_verified": 3,
   "hf_v2_streaming_rows_checked": 1,
@@ -30,5 +30,13 @@
     "new_probes": 3,
     "audio_verified": false,
     "limitations": "Small instruction regression check, not a linguistic accuracy benchmark. Prompt v1 overflagged phonetic English; v2 fixed known example, but actual draft triage still needs listening."
-  }
+  },
+  "pld_v2_rows_locally_decoded": 229,
+  "storage_eviction": {
+    "live_downloader_lock_refused": true,
+    "real_hub_backed_dry_run_verified": true,
+    "real_files_deleted": 0,
+    "crash_and_restore_journal_tests_passed": true
+  },
+  "radio_completed_captures_verified": 4
 }

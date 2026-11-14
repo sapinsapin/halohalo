@@ -115,6 +115,13 @@ def restore(root, *, receipt=None, repo=None, revision=None, checkpoint=None,
             source.close()
         db.row_factory = sqlite3.Row
         db.execute('PRAGMA trusted_schema=OFF')
+        # Imported unlink intents belong to the old filesystem. Preserve them as
+        # provenance, never execute them against this recovered archive.
+        if 'eviction_journal' in tables:
+            db.execute('CREATE TABLE IF NOT EXISTS restore_eviction_history(restored_at TEXT,payload TEXT)')
+            for entry in list(db.execute('SELECT * FROM eviction_journal')):
+                db.execute('INSERT INTO restore_eviction_history VALUES(?,?)', (now(), json.dumps(dict(entry))))
+            db.execute('DROP TABLE eviction_journal')
         db.execute('''CREATE TABLE IF NOT EXISTS restore_inventory(
             item_id TEXT PRIMARY KEY, original_status TEXT, original_path TEXT,
             original_sha256 TEXT, original_duration REAL, original_bytes INTEGER,
