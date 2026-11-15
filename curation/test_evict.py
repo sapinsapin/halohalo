@@ -88,6 +88,29 @@ class EvictTests(unittest.TestCase):
         self.assertEqual(before,self.row())
         self.assertIsNone(self.db.execute("SELECT name FROM sqlite_master WHERE name='eviction_journal'").fetchone())
 
+    def test_explicit_hash_subset_ignores_newer_uncheckpointed_backup(self):
+        older=self.add('z',b'old audio');self.checkpoint()
+        newer=self.add('a',b'new audio');self.db.commit()
+        sha=file_hash(older)
+        result=self.run_evict(apply=True,max_files=10,only_sha256=[sha])
+        self.assertEqual(result['evicted_files'],1)
+        self.assertFalse(older.exists());self.assertTrue(newer.exists())
+        self.assertEqual(self.row('a')['status'],'downloaded')
+
+    def test_hash_filter_never_bypasses_checkpoint_proof(self):
+        self.add('z',b'old');self.checkpoint()
+        newer=self.add('a',b'new');self.db.commit()
+        with self.assertRaisesRegex(ValueError,'immutable checkpoint'):
+            self.run_evict(apply=True,only_sha256=[file_hash(newer)])
+        self.assertTrue(newer.exists())
+
+    def test_empty_and_invalid_hash_filters(self):
+        path=self.add();self.checkpoint()
+        self.assertEqual(self.run_evict(apply=True,only_sha256=[])['evicted_files'],0)
+        for value in (['bad'],[None],'a'*64):
+            with self.assertRaises(ValueError):self.run_evict(apply=True,only_sha256=value)
+        self.assertTrue(path.exists())
+
     def test_apply_preserves_metadata_and_can_restore_from_same_checkpoint(self):
         path=self.add();payload=path.read_bytes();self.checkpoint();before=self.row()
         report=self.run_evict(apply=True)

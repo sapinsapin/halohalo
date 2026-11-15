@@ -125,7 +125,13 @@ def prove(rows, local_db, checkpoint_db, coords, api):
 
 
 def evict(root, *, receipt=None, max_files=1, max_bytes=1024**3,
-          target_free_gib=None, apply=False, api=None, downloader=None):
+          target_free_gib=None, apply=False, api=None, downloader=None, only_sha256=None):
+    if only_sha256 is not None:
+        if isinstance(only_sha256, (str, bytes)):
+            raise ValueError('only_sha256 must be a collection of hashes')
+        only_sha256 = set(only_sha256)
+        if any(not isinstance(value, str) or not HASH.fullmatch(value) for value in only_sha256):
+            raise ValueError('invalid selected audio hash')
     if max_files < 0 or max_bytes < 0 or (target_free_gib is not None and target_free_gib < 0):
         raise ValueError('limits must be nonnegative')
     root = Path(root).absolute()
@@ -179,6 +185,8 @@ def evict(root, *, receipt=None, max_files=1, max_bytes=1024**3,
             plan=[]
             planned_bytes=0
             for path,rows,proof_coords,prepared in candidates:
+                if only_sha256 is not None and rows[0]['sha256'] not in only_sha256:
+                    continue
                 if len(plan)>=max_files or (target is not None and free+planned_bytes>=target):
                     break
                 size=rows[0]['bytes']
@@ -236,6 +244,7 @@ def evict(root, *, receipt=None, max_files=1, max_bytes=1024**3,
                     db.commit()
                     completed.append(entry)
             return dict(dry_run=not apply,root=str(root),planned_files=len(plan),
+                        selected_hashes=None if only_sha256 is None else sorted(only_sha256),
                         planned_bytes=planned_bytes,evicted_files=len(completed),
                         unlinked_bytes=sum(e['bytes'] for e in completed if not e['already_absent']),
                         free_bytes_before=free,free_bytes_after=shutil.disk_usage(root).free,
@@ -253,10 +262,11 @@ def main():
     p.add_argument('--max-files',type=int,default=1)
     p.add_argument('--max-bytes',type=int,default=1024**3,help='maximum planned media bytes; 0 means unlimited')
     p.add_argument('--target-free-gib',type=float)
+    p.add_argument('--only-sha256',action='append',help='restrict to these exact audio hashes; repeat as needed; all proofs still required')
     p.add_argument('--apply',action='store_true',help='actually mark remote and unlink; default is dry run')
     a=p.parse_args()
     print(json.dumps(evict(a.root,receipt=a.receipt,max_files=a.max_files,max_bytes=a.max_bytes,
-                           target_free_gib=a.target_free_gib,apply=a.apply),indent=2))
+                           target_free_gib=a.target_free_gib,apply=a.apply,only_sha256=a.only_sha256),indent=2))
 
 
 if __name__=='__main__':main()
