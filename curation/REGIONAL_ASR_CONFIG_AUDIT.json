@@ -50,6 +50,25 @@
         "id": 50348,
         "basis": "matching pinned generation config and tokenizer vocabulary",
         "runtime_verified": false
+      },
+      "processor_evidence": {
+        "container": "processor_config.json.feature_extractor",
+        "source_sha256": "8efb801da889b24fc64a28d0af16d376852508aefb97d497a4c6d2200b114a33",
+        "settings": {
+          "chunk_length": 30,
+          "dither": 0.0,
+          "feature_extractor_type": "WhisperFeatureExtractor",
+          "feature_size": 128,
+          "hop_length": 160,
+          "n_fft": 400,
+          "n_samples": 480000,
+          "nb_max_frames": 3000,
+          "padding_side": "right",
+          "padding_value": 0.0,
+          "return_attention_mask": false,
+          "sampling_rate": 16000
+        },
+        "conversion_note": "Use these pinned checkpoint settings when materializing a legacy preprocessor_config.json; do not substitute an unrecorded base processor. Conversion/runtime verification remains pending."
       }
     },
     {
@@ -102,6 +121,25 @@
         "id": 50348,
         "basis": "matching pinned generation config and tokenizer vocabulary",
         "runtime_verified": false
+      },
+      "processor_evidence": {
+        "container": "processor_config.json.feature_extractor",
+        "source_sha256": "8efb801da889b24fc64a28d0af16d376852508aefb97d497a4c6d2200b114a33",
+        "settings": {
+          "chunk_length": 30,
+          "dither": 0.0,
+          "feature_extractor_type": "WhisperFeatureExtractor",
+          "feature_size": 128,
+          "hop_length": 160,
+          "n_fft": 400,
+          "n_samples": 480000,
+          "nb_max_frames": 3000,
+          "padding_side": "right",
+          "padding_value": 0.0,
+          "return_attention_mask": false,
+          "sampling_rate": 16000
+        },
+        "conversion_note": "Use these pinned checkpoint settings when materializing a legacy preprocessor_config.json; do not substitute an unrecorded base processor. Conversion/runtime verification remains pending."
       }
     },
     {
@@ -154,6 +192,25 @@
         "id": 50348,
         "basis": "matching pinned generation config and tokenizer vocabulary",
         "runtime_verified": false
+      },
+      "processor_evidence": {
+        "container": "processor_config.json.feature_extractor",
+        "source_sha256": "8efb801da889b24fc64a28d0af16d376852508aefb97d497a4c6d2200b114a33",
+        "settings": {
+          "chunk_length": 30,
+          "dither": 0.0,
+          "feature_extractor_type": "WhisperFeatureExtractor",
+          "feature_size": 128,
+          "hop_length": 160,
+          "n_fft": 400,
+          "n_samples": 480000,
+          "nb_max_frames": 3000,
+          "padding_side": "right",
+          "padding_value": 0.0,
+          "return_attention_mask": false,
+          "sampling_rate": 16000
+        },
+        "conversion_note": "Use these pinned checkpoint settings when materializing a legacy preprocessor_config.json; do not substitute an unrecorded base processor. Conversion/runtime verification remains pending."
       }
     }
   ],

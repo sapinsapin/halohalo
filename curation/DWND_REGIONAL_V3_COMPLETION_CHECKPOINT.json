@@ -62,10 +62,39 @@
         "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
       },
       "manifest": "/home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v3/vad/manifest.jsonl"
+    },
+    "bik": {
+      "worker": {
+        "pid": 1428358,
+        "status": "complete",
+        "stage": "complete",
+        "started_at": 1794715710.3883765,
+        "verified_windows": 3759,
+        "finished_at": 1794716595.0629776
+      },
+      "audit": {
+        "rows": 12785,
+        "parents_checked": 3560,
+        "exact_pcm_samples": 1368990656,
+        "candidate_hours": 23.76719888888889,
+        "parent_manifest_sha256": "4e59af8031ea437a090479dd69e5e0dba2e8446ecd512d08ab838e6d8be16b54",
+        "candidate_manifest_sha256": "7d0f2abd60aae110316a722a7cb49318e2265598f958b890d506a18c9eb334ad",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "summary": {
+        "input_windows": 3759,
+        "input_hours": 28.0084415625,
+        "segments": 12785,
+        "candidate_hours": 23.767198888889066,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "7d0f2abd60aae110316a722a7cb49318e2265598f958b890d506a18c9eb334ad",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      },
+      "manifest": "/home/iotim/chika-curation/curation/outputs/remote-bik-processing-v3/vad/manifest.jsonl"
     }
   },
-  "pending": {
-    "bik": "vad"
-  },
+  "pending": {},
   "scope": "Canonical schema, counts and audit manifest identities verified; no language or transcription approval"
 }
