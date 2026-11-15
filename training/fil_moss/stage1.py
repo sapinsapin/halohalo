@@ -1,241 +1,151 @@
-"""Stage 1, a trustworthy SFT of MOSS-TTS-Realtime on Filipino (GPU, dwnd-01).
+"""Stage 1, engineering smoke of MOSS-TTS-Realtime on the frozen Filipino codes (GPU, dwnd-01).
 
-    python -m training.fil_moss.guard --max-seconds 3600 -- \
-        python -m training.fil_moss.stage1 verify --codes /abs/run/codes --out /abs/run/stage1-verify
-    python -m training.fil_moss.guard --max-seconds 14400 -- \
-        python -m training.fil_moss.stage1 train --codes /abs/run/codes \
-            --verify-report /abs/run/stage1-verify/verify_report.json --out /abs/run/stage1 \
-            [--english /abs/english_regression.jsonl]
+    python -m training.fil_moss.guard --max-seconds 1800 -- \
+        python -m training.fil_moss.stage1 --codes /abs/run/codes --out /abs/run/stage1
 
-``verify`` (S1, all three must pass before ``train`` will start):
-  1. parity: our per-token log-probabilities, gathered from ``local_logits``, reproduce upstream's loss on a
-     frozen batch. Stage 2 optimises those log-probabilities, so this is the check that they are the real ones.
-  2. overfit: 32 training clips, 200 steps at a high learning rate; loss must collapse and the overfit model
-     must speak those texts at the reference pace (duration ratio 1 +/- 0.05). This catches the off-by-one /
-     never-stops family of bugs that broke our Qwen3-TTS finetune.
-  3. save/reload: the saved checkpoint reloads to identical weights and an identical loss.
+Execution-sequence step 4 of README.md, with the Hiligaynon pilot's checks, before anything is scaled:
 
-``train`` (S2): full finetune from the pinned pretrained model, FP32 weights, BF16 autocast, AdamW8bit
-(the configuration the Hiligaynon pilot measured), ``language_model.embed_tokens`` frozen as upstream does.
-Evaluates on validation at step 0 (zero-shot) and every ``eval_every_updates``; stops on the duration kill or
-on ending worse than zero-shot; keeps best (validation worst-judge CER) and last checkpoints; judges success
-on the best checkpoint. Thresholds: ``recipe.json`` ``stage1``.
+1. parity: per-token log-probabilities gathered from ``local_logits`` reproduce upstream's loss (evaluation and
+   per-domain losses are computed from them);
+2. batch parity: the same per-utterance values in one padded batch and one at a time (batched training and
+   evaluation are allowed only if this holds);
+3. one step: forward/backward/AdamW8bit on real training codes; FP32 gradients, BF16 linear outputs observed with
+   a hook, finite loss and gradient norm, and the probed weights moved;
+4. save/reload: the checkpoint reloads to identical weights and an identical validation loss;
+5. comparison samples: matched-seed generations of validation texts from the pretrained model and the one-step
+   model, both finite and not silent, written as WAVs for listening.
+
+All five must pass before stage 2 will start. Nothing here is a quality measurement.
 """
 import argparse
+import hashlib
 import json
-import time
 from pathlib import Path
 
-import soundfile as sf
+import numpy as np
 import torch
-from transformers import get_scheduler
 
 from . import evaluation as E
 from . import gates as G
 from . import judges as J
 from . import runtime as R
+from .scoring import silence_fraction
 
 HERE = Path(__file__).resolve().parent
 
 
-def load_recipe(path):
-    return json.loads(Path(path).read_text())
-
-
 def load_codes(codes_dir, split):
-    rows = R.read_jsonl(Path(codes_dir) / ("%s_codes.jsonl" % split))
     if split == "test":
-        raise SystemExit("stage 1 never reads the test split")
-    return rows
+        raise SystemExit("stages 1 and 2 never read the test split")
+    return R.read_jsonl(Path(codes_dir) / ("%s_codes.jsonl" % split))
 
 
-def step(model, params, optimizer, scheduler, inputs, clip):
-    optimizer.zero_grad(set_to_none=True)
-    with torch.autocast("cuda", dtype=torch.bfloat16):
-        loss = model(**inputs).loss
-    if not torch.isfinite(loss):
-        raise AssertionError("non-finite training loss")
-    loss.backward()
-    if not all(p.grad is None or p.grad.dtype == torch.float32 for p in params):
-        raise AssertionError("gradients must be FP32")
-    norm = torch.nn.utils.clip_grad_norm_(params, clip, error_if_nonfinite=True)
-    optimizer.step()
-    if scheduler is not None:
-        scheduler.step()
-    return float(loss.detach()), float(norm)
-
-
-# -------------------------------------------------------------------------------------------------- verify
-
-def verify(a):
-    recipe = load_recipe(a.recipe)
-    v, t, gen = recipe["stage1"]["verify"], recipe["stage1"]["train"], recipe["generation"]
-    out = R.new_output_dir(a.out)
-    R.setup()
-    R.seed_all(recipe["baseline"]["seed"])
-    proc = R.processor()
-    train = [r for r in load_codes(a.codes, "train") if r.get("ref_audio_codes") is not None]
-    if len(train) < v["overfit_clips"]:
-        raise SystemExit("need %d training clips with a reference voice, have %d" % (v["overfit_clips"], len(train)))
-    clips = E.generation_subset(train, v["overfit_clips"], recipe["baseline"]["seed"])
-    ds = R.dataset(clips, proc)
-    report = {"recipe_sha256": _sha(a.recipe), "codes": a.codes, "overfit_ids": [r["id"] for r in clips]}
-
-    model = R.load_model(R.MODEL_DIR)
-    params = R.freeze(model, t["frozen"])
-    model.eval()
-    with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
-        mine, theirs = R.wrapper_loss(model, R.batch(ds, clips[0]))
-    report["parity"] = G.parity_check(float(mine), float(theirs), v["parity_rtol"])
-    print(json.dumps({"parity": report["parity"]}), flush=True)
-    model.train()
-
-    initial = E.teacher_forced_loss(model, ds, clips)
-    optimizer = R.adamw8bit(params, v["overfit_learning_rate"], t)
-    losses = []
-    for i in range(v["overfit_steps"]):
-        loss, _ = step(model, params, optimizer, None, R.batch(ds, clips[i % len(clips)]), t["grad_clip"])
-        losses.append(loss)
-    final = E.teacher_forced_loss(model, ds, clips)
-    codec = R.load_codec()
-    eng = R.engine(model, codec)
-    ratios = []
-    model.eval()
-    for r in clips:
-        R.seed_all(recipe["baseline"]["seed"])
-        (codes, _), = R.generate(eng, [r["conversations"][0]["text"]], [r["ref_audio_codes"]],
-                                 R.max_frames(r["seconds"], gen), gen)
-        gen16 = J.resample(R.decode(codec, codes), R.SAMPLE_RATE)
-        real, sr = sf.read(r["conversations"][0]["wav"], dtype="float32")
-        ref_secs = J.trimmed_seconds(J.resample(real, sr), J.JUDGE_SR)
-        ratios.append(J.trimmed_seconds(gen16, J.JUDGE_SR) / ref_secs)
-    report["overfit"] = G.overfit_check(initial, final, ratios, v)
-    report["overfit"]["train_losses"] = losses
-    report["overfit"]["duration_ratios"] = ratios
-    print(json.dumps({"overfit": {k: x for k, x in report["overfit"].items() if k not in ("train_losses",)}}),
-          flush=True)
-
-    ckpt = out / "overfit_checkpoint"
-    R.save(model, proc, ckpt)
-    probe = {n: p.detach()[:8].cpu().clone() for n, p in list(model.named_parameters())[:4]}
-    del eng, optimizer
-    model.cpu()
-    del model
-    torch.cuda.empty_cache()
-    reloaded = R.load_model(ckpt, train=False)
-    same = all(torch.equal(probe[n], p.detach()[:8].cpu()) for n, p in list(reloaded.named_parameters())[:4])
-    again = E.teacher_forced_loss(reloaded, ds, clips)
-    report["reload"] = {"weights_equal": same, "loss_before": final, "loss_after": again,
-                        "loss_equal": abs(again - final) <= 1e-6 * max(1.0, abs(final))}
-    report["verification"] = G.verification_verdict(report["parity"], report["overfit"],
-                                                    same and report["reload"]["loss_equal"])
-    R.write_json(out / "verify_report.json", report)
-    print("STAGE1_VERIFY", report["verification"]["verdict"], flush=True)
-    return 0 if report["verification"]["verdict"] == G.PASS else 3
-
-
-# --------------------------------------------------------------------------------------------------- train
-
-def train(a):
-    recipe = load_recipe(a.recipe)
-    t, gen, seed = recipe["stage1"]["train"], recipe["generation"], recipe["baseline"]["seed"]
-    verified = json.loads(Path(a.verify_report).read_text())
-    if verified.get("verification", {}).get("verdict") != G.PASS:
-        raise SystemExit("stage 1 verification has not passed; refusing to train")
-    if verified.get("codes") != a.codes:
-        raise SystemExit("verification ran on different codes (%s)" % verified.get("codes"))
-    out = R.new_output_dir(a.out)
-    R.setup()
-    R.seed_all(seed)
-    proc = R.processor()
-    train_rows, val_rows = load_codes(a.codes, "train"), load_codes(a.codes, "validation")
-    if {r["id"] for r in train_rows} & {r["id"] for r in val_rows}:
-        raise SystemExit("train/validation id overlap")
-    train_ds, val_ds = R.dataset(train_rows, proc), R.dataset(val_rows, proc)
-    subset = E.generation_subset(val_rows, t["eval_generation_clips"], seed)
-    english = R.read_jsonl(a.english) if a.english else None
-
-    model = R.load_model(R.MODEL_DIR)
-    params = R.freeze(model, t["frozen"])
-    optimizer = R.adamw8bit(params, t["learning_rate"], t)
-    per_epoch = len(train_rows)
-    total = per_epoch * t["epochs"]
-    scheduler = get_scheduler(t["schedule"], optimizer, num_warmup_steps=t["warmup_steps"],
-                              num_training_steps=total)
-    codec = R.load_codec()
-    eng = R.engine(model, codec)
-    fil_judges, fil_failed = J.load(recipe["judges"]["fil"])
-    eng_judges, eng_failed = J.load(recipe["judges"]["eng"]) if english else ({}, {})
-    speaker = J.Speaker(recipe["judges"]["speaker"])
-    report = {"recipe_sha256": _sha(a.recipe), "codes": a.codes, "verification": verified["verification"],
-              "train_rows": len(train_rows), "validation_rows": len(val_rows), "updates": total,
-              "judges": sorted(fil_judges), "judges_failed": fil_failed, "english_judges_failed": eng_failed,
-              "evals": [], "steps": [], "best": None, "best_checkpoint": None, "status": "running"}
-
-    def evaluate(update):
-        m = E.generate_and_score(model, eng, subset, fil_judges, speaker, gen, t["eval_seeds"])
-        m["validation_loss"] = E.teacher_forced_loss(model, val_ds, val_rows)
-        if english:
-            m.update(E.english_regression(model, eng, english, eng_judges, gen, t["eval_seeds"][0]))
-        m["update"], m["epoch_fraction"] = update, update / per_epoch
-        report["evals"].append(m)
-        print(json.dumps({"eval": {k: v for k, v in m.items()}}), flush=True)
-        return m
-
-    zero = evaluate(0)
-    report["zero_shot"] = zero
-    g = torch.Generator().manual_seed(seed)
-    order = [i for _ in range(t["epochs"]) for i in torch.randperm(per_epoch, generator=g).tolist()]
-    start = time.monotonic()
-    verdict = G._result(G.CONTINUE, [])
-    for update, i in enumerate(order, 1):
-        loss, norm = step(model, params, optimizer, scheduler, R.batch(train_ds, train_rows[i]), t["grad_clip"])
-        report["steps"].append({"update": update, "loss": loss, "grad_norm": norm})
-        if update % t["eval_every_updates"] == 0 or update == total:
-            m = evaluate(update)
-            verdict = G.sft_evaluation_verdict(m, zero, m["epoch_fraction"], t)
-            m["verdict"] = verdict
-            if G.better_checkpoint(m, report["best"]):
-                R.save(model, proc, out / "best_checkpoint")
-                report["best"], report["best_checkpoint"] = m, str(out / "best_checkpoint")
-            R.write_json(out / "progress.json", report)
-            if verdict["verdict"] == G.KILL:
-                break
-    report["train_seconds"] = time.monotonic() - start
-    report["cuda_peak_allocated_gib"] = torch.cuda.max_memory_allocated() / 2 ** 30
-    R.save(model, proc, out / "last_checkpoint")
-    report["last_checkpoint"] = str(out / "last_checkpoint")
-    if report["best"] is None:  # the pretrained model was never beaten
-        report["best"], report["best_checkpoint"] = zero, str(R.MODEL_DIR)
-    report["status"] = "killed" if verdict["verdict"] == G.KILL else "complete"
-    report["kill"] = verdict if verdict["verdict"] == G.KILL else None
-    report["success"] = (G._result(G.FAIL, ["run killed"]) if report["status"] == "killed"
-                         else G.sft_success(report["best"], zero, t))
-    if report["best_checkpoint"] == str(R.MODEL_DIR) and report["success"]["verdict"] == G.PASS:
-        report["success"] = G._result(G.FAIL, ["no finetuned checkpoint beat zero-shot"])
-    R.write_json(out / "report.json", report)
-    print("STAGE1_TRAIN", report["status"], report["success"]["verdict"], flush=True)
-    return 0 if report["success"]["verdict"] == G.PASS else 3
-
-
-def _sha(path):
-    import hashlib
+def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def per_utterance_logp(model, ds, rows, batch_size):
+    out = []
+    with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
+        for part in R.chunks(rows, batch_size):
+            logp, valid, _, sample = R.token_logprobs(model, R.batch_many(ds, part))
+            for j in range(len(part)):
+                m = sample == j
+                out.append(float(logp[m][valid[m]].mean()))
+    return out
+
+
+def samples(eng, rows, gen_cfg, seed, out_dir, label):
+    """Matched-seed, unconditioned generations (as in the pilot), each checked for finite, non-silent audio."""
+    import soundfile as sf
+    res = []
+    for part, audio in E._batches(eng, rows, "none", gen_cfg, len(rows), seed):
+        for r, (a24, trunc) in zip(part, audio):
+            name = "%s_%s" % (label, r["id"])
+            sf.write(Path(out_dir) / (name + ".wav"), a24, R.SAMPLE_RATE)
+            res.append({"name": name, "seconds": len(a24) / R.SAMPLE_RATE, "truncated": bool(trunc),
+                        "finite": E.finite(a24), "silence_fraction": silence_fraction(a24.tolist(), R.SAMPLE_RATE)})
+    return res
 
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    sub = p.add_subparsers(dest="cmd", required=True)
-    for name in ("verify", "train"):
-        s = sub.add_parser(name)
-        s.add_argument("--codes", required=True, help="output directory of training.fil_moss.encode")
-        s.add_argument("--out", required=True)
-        s.add_argument("--recipe", default=str(HERE / "recipe.json"))
-        if name == "train":
-            s.add_argument("--verify-report", required=True)
-            s.add_argument("--english", help="English regression prompts: jsonl of {text, ref_audio_codes, seconds}")
+    p.add_argument("--codes", required=True, help="output directory of training.fil_moss.encode")
+    p.add_argument("--out", required=True)
+    p.add_argument("--recipe", default=str(HERE / "recipe.json"))
     a = p.parse_args(argv)
-    return verify(a) if a.cmd == "verify" else train(a)
+    recipe = json.loads(Path(a.recipe).read_text())
+    s1, s2, gen, seed = recipe["stage1"], recipe["stage2"], recipe["generation"], recipe["baseline"]["seed"]
+    out = R.new_output_dir(a.out)
+    (out / "samples").mkdir()
+    R.setup()
+    R.seed_all(seed)
+    proc = R.processor()
+    train = [E.condition(r, "none") for r in load_codes(a.codes, "train")]
+    val = [E.condition(r, "none") for r in load_codes(a.codes, "validation")]
+    probe = E.generation_subset(train, s1["probe_clips"], seed, "none")
+    texts = E.generation_subset(val, s1["sample_texts"], seed, "none")
+    ds = R.dataset(probe, proc)
+    report = {"recipe_sha256": sha(a.recipe), "codes": a.codes, "probe_ids": [r["id"] for r in probe],
+              "sample_ids": [r["id"] for r in texts], "checks": {}}
+    checks = report["checks"]
+
+    model = R.load_model(R.MODEL_DIR)
+    params = R.freeze(model, s2["frozen"])
+    model.eval()
+    with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
+        mine, theirs = R.wrapper_loss(model, R.batch(ds, probe[0]))
+    checks["parity"] = G.parity_check(float(mine), float(theirs), s1["parity_rtol"])
+    checks["batch_parity"] = G.batch_parity_check(per_utterance_logp(model, ds, probe, 1),
+                                                  per_utterance_logp(model, ds, probe, len(probe)),
+                                                  s1["batch_parity_atol"])
+    print(json.dumps({k: v for k, v in checks.items()}), flush=True)
+
+    codec = R.load_codec()
+    mirror = R.mirror(R.MODEL_DIR)
+    eng = R.engine(mirror, codec)
+    before = samples(eng, texts, gen, seed, out / "samples", "pretrained")
+
+    model.train()
+    optimizer = R.adamw8bit(params, s2["learning_rate"], s2)
+    probe_param = next(q for q in params if q.ndim == 2)
+    probe_before = probe_param.detach().flatten()[:4096].clone()
+    seen = R.observe_linear_dtype(model)
+    loss, norm = R.train_step(model, params, optimizer, None, R.batch(ds, probe[0]), s2["grad_clip"])
+    one = {"loss": loss, "grad_norm": norm, "grads_fp32": True, "linear_output_dtype": seen.get("dtype"),
+           "probe_changed_elements": int((probe_before != probe_param.detach().flatten()[:4096]).sum()),
+           "optimizer_state_bytes": sum(t.numel() * t.element_size() for st in optimizer.state.values()
+                                        for t in st.values() if torch.is_tensor(t)),
+           "cuda_peak_allocated_gib": torch.cuda.max_memory_allocated() / 2 ** 30}
+    checks["one_step"] = G.one_step_check(one)
+    report["one_step"] = one
+    print(json.dumps({"one_step": one}), flush=True)
+
+    R.sync(mirror, model)
+    after = samples(eng, texts, gen, seed, out / "samples", "one_step")
+    checks["samples"] = G.sample_check(before + after)
+    report["samples"] = before + after
+
+    val_ds = R.dataset(val, proc)
+    loss_before = E.domain_losses(model, val_ds, val[:16], "none", s2["eval_batch_size"])["balanced_validation_loss"]
+    ckpt = out / "checkpoint"
+    R.save(model, proc, ckpt)
+    probe_w = {n: q.detach()[:8].cpu().clone() for n, q in list(model.named_parameters())[:4]}
+    del eng, mirror, optimizer
+    model.cpu()
+    del model
+    torch.cuda.empty_cache()
+    reloaded = R.load_model(ckpt, train=False)
+    same = all(torch.equal(probe_w[n], q.detach()[:8].cpu()) for n, q in list(reloaded.named_parameters())[:4])
+    loss_after = E.domain_losses(reloaded, val_ds, val[:16], "none", s2["eval_batch_size"])["balanced_validation_loss"]
+    checks["reload"] = G.reload_check(same, loss_before, loss_after)
+    del reloaded
+    import shutil
+    shutil.rmtree(ckpt)  # an 8 GB one-step checkpoint has no further use
+    report["smoke"] = G.smoke_verdict(checks)
+    R.write_json(out / "report.json", report)
+    print("STAGE1_SMOKE", report["smoke"]["verdict"], flush=True)
+    return 0 if report["smoke"]["verdict"] == G.PASS else 3
 
 
 if __name__ == "__main__":

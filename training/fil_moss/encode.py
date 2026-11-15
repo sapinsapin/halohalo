@@ -3,11 +3,12 @@
     python -m training.fil_moss.encode --export /abs/new-fil-run/data --recipe training/fil_moss/recipe.json \
         --output /abs/new-fil-run/codes
 
-For every split: re-verify audio hashes, encode 16 codebooks, and attach ``ref_audio_codes`` from a different
-clip of the same speaker in the same split (deterministic choice), so training is multi-speaker without baking a
-voice into the weights and no reference ever crosses a split. Rows whose speaker has one clip in the split keep
-no reference. The first clips of each split are decoded back and checked (finite, not silent, duration).
-The output directory must be new.
+For every split: re-verify audio hashes, encode 16 codebooks, record each row's validation domain
+(``encode.domain_key`` of the canonical row, e.g. its source) and whether it is Tagalog-English code-switched,
+and attach ``ref_audio_codes`` from a different clip of the same speaker in the same split (deterministic choice;
+singleton speakers get none). The baseline trains without references, as the pilot did; the references are
+there for the separate reference-conditioned experiment and never cross a split. The first clips of each split
+are decoded back and checked (finite, not silent, duration). The output directory must be new.
 """
 import argparse
 import hashlib
@@ -68,7 +69,10 @@ def main(argv=None):
             wav, sr = sf.read(path, dtype="float32")
             if sr != enc_cfg["sample_rate"] or wav.ndim != 1:
                 raise SystemExit("unexpected waveform format for %s" % path)
-            rows.append({"id": rec["id"], "speaker_id": rec["provenance"]["canonical_row"]["speaker_id"],
+            canon = rec["provenance"]["canonical_row"]
+            rows.append({"id": rec["id"], "speaker_id": canon["speaker_id"],
+                         "domain": str(canon.get(enc_cfg["domain_key"]) or "unknown"),
+                         "code_switched": "en" in (canon.get("languages") or []),
                          "text": turn["text"], "wav": str(path), "seconds": len(wav) / sr,
                          "codes": R.encode_wav(codec, wav, enc_cfg["n_vq"]), "provenance": rec["provenance"]})
         refs = choose_references(rows, seed)
@@ -86,7 +90,8 @@ def main(argv=None):
         for r in rows:
             ref = by_id[refs[r["id"]]] if refs[r["id"]] else None
             lines.append(json.dumps({
-                "id": r["id"], "speaker_id": r["speaker_id"], "split": split,
+                "id": r["id"], "speaker_id": r["speaker_id"], "split": split, "domain": r["domain"],
+                "code_switched": r["code_switched"],
                 "conversations": [{"role": "assistant", "text": r["text"], "audio_codes": r["codes"].tolist(),
                                    "wav": r["wav"]}],
                 "seconds": r["seconds"],
@@ -95,6 +100,8 @@ def main(argv=None):
                 "audio_sha256": r["provenance"]["audio_sha256"]}, ensure_ascii=False))
         (out / ("%s_codes.jsonl" % split)).write_text("\n".join(lines) + "\n")
         summary["splits"][split] = {"rows": len(rows), "with_reference": sum(1 for v in refs.values() if v),
+                                    "domains": sorted({r["domain"] for r in rows}),
+                                    "code_switched": sum(r["code_switched"] for r in rows),
                                     "speakers": len({r["speaker_id"] for r in rows}),
                                     "hours": sum(r["seconds"] for r in rows) / 3600, "reconstruction": checks}
         print(json.dumps({split: {k: v for k, v in summary["splits"][split].items() if k != "reconstruction"}}),

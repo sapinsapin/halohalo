@@ -76,7 +76,16 @@ def dataset(records, proc):
 
 def batch(ds, record, device="cuda"):
     """Collate one record (not necessarily in ``ds``) into model inputs."""
-    return {k: v.to(device) for k, v in ds.collate_fn([ds._pack_record(record)]).items()}
+    return batch_many(ds, [record], device)
+
+
+def batch_many(ds, records, device="cuda"):
+    """Collate several records with upstream's right padding and attention mask."""
+    return {k: v.to(device) for k, v in ds.collate_fn([ds._pack_record(r) for r in records]).items()}
+
+
+def chunks(items, size):
+    return [items[i:i + size] for i in range(0, len(items), size)]
 
 
 # --------------------------------------------------------------------------------------------- model loading
@@ -144,9 +153,55 @@ def adamw8bit(params, lr, cfg):
                                weight_decay=cfg["weight_decay"])
 
 
+def train_step(model, params, optimizer, scheduler, inputs, clip):
+    """One FP32-weight / BF16-autocast / AdamW8bit update with the pilot's assertions. Returns (loss, grad norm)."""
+    optimizer.zero_grad(set_to_none=True)
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        loss = model(**inputs).loss
+    if not torch.isfinite(loss):
+        raise AssertionError("non-finite training loss")
+    loss.backward()
+    if not all(p.grad is None or p.grad.dtype == torch.float32 for p in params):
+        raise AssertionError("gradients must be FP32")
+    norm = torch.nn.utils.clip_grad_norm_(params, clip, error_if_nonfinite=True)
+    optimizer.step()
+    if scheduler is not None:
+        scheduler.step()
+    return float(loss.detach()), float(norm)
+
+
+def observe_linear_dtype(model):
+    """Record the dtype of the first Linear layer's output on the next forward (the pilot's check that autocast
+    really computes in BF16, rather than inferring it from flags). Returns a dict filled on that forward."""
+    seen = {}
+    linear = next(m for m in model.modules() if isinstance(m, torch.nn.Linear))
+
+    def hook(module, inputs, output):
+        if torch.is_tensor(output):
+            seen["dtype"] = str(output.dtype)
+        handle.remove()
+    handle = linear.register_forward_hook(hook)
+    return seen
+
+
 def save(model, proc, path):
     model.save_pretrained(path, max_shard_size="5GB")
     proc.tokenizer.save_pretrained(path)
+
+
+def mirror(path, device="cuda"):
+    """A frozen BF16 copy for generation. The FP32 training policy cannot generate under autocast (the local
+    transformer's static KV cache takes its dtype from the config), and FP32 decoding is bandwidth-bound at twice
+    the bytes per step on the GB10's 273 GB/s. Call ``sync`` after every optimizer step."""
+    return load_model(path, dtype=torch.bfloat16, train=False, device=device)
+
+
+@torch.no_grad()
+def sync(mirror_model, policy):
+    """Copy the policy's weights into the BF16 mirror (about 12 GB of memory traffic, tens of ms)."""
+    src = dict(policy.named_parameters())
+    for name, dst in mirror_model.named_parameters():
+        dst.copy_(src[name])
 
 
 # ----------------------------------------------------------------------------------------- log-probabilities
@@ -154,8 +209,9 @@ def save(model, proc, path):
 def token_logprobs(model, inputs):
     """Per-token log-probabilities of the audio labels, from the same forward the training loss uses.
 
-    Returns (logp [N, 16], valid [N, 16] bool, upstream loss). ``-logp[valid].mean()`` equals upstream's loss
-    (stage 1 parity check). Runs under the caller's autocast; logits are upcast to FP32 as upstream's loss does.
+    Returns (logp [N, 16], valid [N, 16] bool, upstream loss, sample [N]) where ``sample`` is each row's index in
+    the batch. ``-logp[valid].mean()`` equals upstream's loss (stage 1 parity check). Runs under the caller's
+    autocast; logits are upcast to FP32 as upstream's loss does.
     """
     out = model(**inputs)
     audio_labels = inputs["labels"][:, :, 1:]
@@ -166,19 +222,23 @@ def token_logprobs(model, inputs):
         raise AssertionError("local logits %s do not match labels %s" % (tuple(logits.shape), tuple(labels.shape)))
     valid = labels != -100
     logp = torch.log_softmax(logits, dim=-1).gather(-1, labels.clamp(min=0).unsqueeze(-1)).squeeze(-1)
-    return logp, valid, out.loss
+    return logp, valid, out.loss, train_mask.nonzero(as_tuple=True)[0]
 
 
 def wrapper_loss(model, inputs):
-    logp, valid, loss = token_logprobs(model, inputs)
+    logp, valid, loss, _ = token_logprobs(model, inputs)
     return -logp[valid].mean(), loss
 
 
-def drop_eos_label(inputs):
-    """For a rollout that hit the frame cap: the SFT packer appends an EOS label the policy never produced.
-    Remove it so the update does not credit a stop that did not happen."""
+def drop_eos_label(inputs, samples=None):
+    """For rollouts that hit the frame cap: the SFT packer appends an EOS label the policy never produced.
+    Remove it (for the given batch indices, default all) so the update does not credit a stop that did not
+    happen."""
     labels = inputs["labels"].clone()
-    labels[..., 1][labels[..., 1] == AUDIO_EOS] = -100
+    rows = range(labels.shape[0]) if samples is None else samples
+    for b in rows:
+        ch = labels[b, :, 1]
+        ch[ch == AUDIO_EOS] = -100
     inputs = dict(inputs)
     inputs["labels"] = labels
     return inputs
@@ -219,7 +279,7 @@ def decode(codec, codes, device="cuda"):
 def engine(model, codec, max_length=1000):
     from transformers import AutoTokenizer
     from inferencer import MossTTSRealtimeInference
-    tok = AutoTokenizer.from_pretrained(MODEL_DIR)
+    tok = AutoTokenizer.from_pretrained(MODEL_DIR, trust_remote_code=True)  # the pinned local snapshot
     return MossTTSRealtimeInference(model, tok, max_length=max_length, codec=codec, codec_sample_rate=SAMPLE_RATE)
 
 
@@ -229,14 +289,16 @@ def max_frames(seconds, gen_cfg):
 
 
 def generate(eng, texts, ref_codes, frame_cap, gen_cfg, do_sample=True, device="cuda"):
-    """Generate codes for each text with its reference-voice codes (or None). Returns [(codes [T,16],
-    truncated)], truncated meaning no EOS before ``frame_cap``. Uses the upstream inferencer's own prefill and
-    sampling, with reference codes passed directly instead of re-encoding a wav file."""
+    """Generate codes for each text with its reference-voice codes (or None), as one batch. ``frame_cap`` is
+    an int or one cap per text; the batch runs to the largest and each output is cut to its own cap.
+    Returns [(codes [T,16], truncated)], truncated meaning no EOS before the cap. Uses the upstream
+    inferencer's own batched prefill and sampling, with reference codes passed directly."""
+    caps = [int(frame_cap)] * len(texts) if np.isscalar(frame_cap) else [int(c) for c in frame_cap]
     ids = [eng.processor.make_ensemble(None if r is None else np.asarray(r)) for r in ref_codes]
     text_ids = [eng.tokenizer(t)["input_ids"] for t in texts]
     out = eng._generate_from_ids(
-        input_ids=ids, text_ids=text_ids, text_lengths=[len(t) for t in text_ids], max_length=int(frame_cap),
+        input_ids=ids, text_ids=text_ids, text_lengths=[len(t) for t in text_ids], max_length=max(caps),
         temperature=float(gen_cfg["temperature"]), top_p=float(gen_cfg["top_p"]), top_k=int(gen_cfg["top_k"]),
         do_sample=bool(do_sample), repetition_penalty=float(gen_cfg["repetition_penalty"] if do_sample else 1.0),
         repetition_window=gen_cfg["repetition_window"], device=torch.device(device))
-    return [(c, len(c) >= frame_cap) for c in out]
+    return [(c[:cap], len(c) >= cap) for c, cap in zip(out, caps)]

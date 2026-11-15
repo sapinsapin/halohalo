@@ -1,296 +1,232 @@
-"""Stage 2, judge-robust twin-anchored GRPO on the stage 1 checkpoint (GPU, dwnd-01).
+"""Stage 2, bounded baseline SFT of MOSS-TTS-Realtime on Filipino plus held-out evaluation (GPU, dwnd-01;
+judges optionally on the RTX 3070).
 
-    # once: genuine same-person EN->FIL ECAPA similarity on held-out bilingual speakers (gates arm d)
-    python -m training.fil_moss.stage2 ceiling --bilingual /abs/bilingual.jsonl --out /abs/run/ceiling.json
-    # one arm per run, each under the guard
-    python -m training.fil_moss.guard --max-seconds 14400 -- python -m training.fil_moss.stage2 run --arm c \
-        --stage1-report /abs/run/stage1/report.json --codes /abs/run/codes --prompts /abs/prompts.txt \
-        --out /abs/run/stage2-c [--bilingual /abs/bilingual.jsonl --ceiling /abs/run/ceiling.json]
-    # after all arms: pre-registered adoption decisions
-    python -m training.fil_moss.stage2 compare --reports /abs/run/stage2-{a,b,c,d}/report.json
+    python -m training.fil_moss.guard --max-seconds 14400 -- python -m training.fil_moss.stage2 train \
+        --codes /abs/run/codes --stage1-report /abs/run/stage1/report.json --out /abs/run/stage2
+    python -m training.fil_moss.guard --max-seconds 1800 -- python -m training.fil_moss.stage2 latency \
+        --checkpoint /abs/run/stage2/best_checkpoint --codes /abs/run/codes --out /abs/run/stage2-latency.json
 
-Per step: one unpaired Filipino prompt, ``rollouts_per_prompt`` sampled rollouts from the policy with one
-training speaker's clip as the voice, each scored by every judge, ECAPA and pacing; rewards are ranks within the
-group (``grpo.group_rewards``); advantages are group-normalised; the update is the clipped surrogate plus k3 KL
-to the frozen stage 1 model (``objective.grpo_token_loss``). Truncated rollouts lose their artificial EOS label.
-The judge gap is logged as an alarm. Tripwires (silence fraction, codec-token entropy) abort the run when the
-reward rises while they degrade; aborts are appended to the arm's ledger, and two aborts kill the arm.
+Execution-sequence steps 5 and 6 of README.md, in the configuration the Hiligaynon pilot measured on the GB10:
+start from the pinned pretrained model (not the Hiligaynon checkpoint); FP32 weights and gradients, BF16
+autocast, bitsandbytes AdamW8bit, LR 1e-5, betas (0.9, 0.95), weight decay 0.1, 20 warmup steps, linear decay,
+clip 1.0, ``language_model.embed_tokens`` frozen; recorded seed, order and schedule. The update budget is
+``epochs`` passes over the frozen training split (not a fixed step count). No reference voice by default
+(``conditioning: none``, as in the pilot); ``reference`` conditions on another clip of the same speaker and is
+the separate multi-speaker experiment the pilot did not run.
 
-``bilingual.jsonl`` rows: {"speaker_id", "consent_signed": bool, "role": "train"|"heldout",
-"en": [wav paths], "fil": [wav paths]}. Only consented speakers are used, for rewards and for evaluation.
+Evaluation at step 0 (the pretrained model) and every ``eval_every_updates``: per-domain teacher-forced loss and
+their equally weighted mean, which selects ``best_checkpoint`` (kept apart from ``last_checkpoint``), plus
+generation metrics from every judge (``evaluation.py``) and WAVs for native listening. Test rows are never read.
+The report compares the selected checkpoint with step 0 per domain and per judge; it does not call the voice good.
+
+``latency`` measures streaming first-audio latency and real-time factor separately, through upstream's own
+streaming session and frame decoder with the defaults of upstream ``app.py`` (offline generation time is not a
+streaming benchmark).
 """
 import argparse
+import hashlib
 import json
-import random
+import math
 import time
 from pathlib import Path
 
 import numpy as np
-import soundfile as sf
 import torch
 from transformers import get_scheduler
 
 from . import evaluation as E
 from . import gates as G
-from . import grpo as P
 from . import judges as J
 from . import runtime as R
-from .objective import grpo_token_loss
-from .scoring import cer, judge_gap, silence_fraction, token_entropy
+from .stage1 import load_codes, sha
 
 HERE = Path(__file__).resolve().parent
 
 
-def _wav(path, sr_to):
-    wav, sr = sf.read(path, dtype="float32")
-    if wav.ndim != 1:
-        wav = wav.mean(axis=1)
-    return J.resample(wav, sr, sr_to)
-
-
-def load_bilingual(path):
-    rows = [r for r in R.read_jsonl(path) if r.get("consent_signed") is True]
-    return [r for r in rows if r["role"] == "train"], [r for r in rows if r["role"] == "heldout"]
-
-
-# ------------------------------------------------------------------------------------------------- ceiling
-
-def ceiling(a):
+def train(a):
     recipe = json.loads(Path(a.recipe).read_text())
-    _, heldout = load_bilingual(a.bilingual)
-    if not heldout:
-        raise SystemExit("no consented held-out bilingual speakers")
-    speaker = J.Speaker(recipe["judges"]["speaker"])
-    sims = []
-    for r in heldout:
-        en = speaker.centroid([_wav(p, J.JUDGE_SR) for p in r["en"]])
-        fil = speaker.centroid([_wav(p, J.JUDGE_SR) for p in r["fil"]])
-        sims.append({"speaker_id": r["speaker_id"], "sim": speaker.cosine(en, fil)})
-    out = {"speakers": len(sims), "ecapa_ceiling": float(np.mean([s["sim"] for s in sims])), "per_speaker": sims}
-    R.write_json(a.out, out)
-    print(json.dumps({k: v for k, v in out.items() if k != "per_speaker"}), flush=True)
-
-
-# ----------------------------------------------------------------------------------------------------- run
-
-def run(a):
-    recipe = json.loads(Path(a.recipe).read_text())
-    cfg, gen, seed = recipe["stage2"], recipe["generation"], recipe["baseline"]["seed"]
-    arm = cfg["arms"][a.arm]
+    t, gen, seed = recipe["stage2"], recipe["generation"], recipe["baseline"]["seed"]
     s1 = json.loads(Path(a.stage1_report).read_text())
-    entry = G.stage2_entry(s1)
+    entry = G.stage2_entry(s1, a.codes)
     if entry["verdict"] != G.PASS:
         raise SystemExit("stage 2 refused: %s" % "; ".join(entry["reasons"]))
-    if s1.get("codes") != a.codes:
-        raise SystemExit("stage 1 trained on different codes (%s)" % s1.get("codes"))
-
-    bi_train, bi_heldout = load_bilingual(a.bilingual) if a.bilingual else ([], [])
-    ceiling_value = json.loads(Path(a.ceiling).read_text())["ecapa_ceiling"] if a.ceiling else None
-    clvi = G.clvi_mode(len(bi_train), ceiling_value, cfg)
-    if arm["speaker"] == "conditioning+clvi" and clvi["verdict"] != "reward":
-        raise SystemExit("arm %s needs the CLVI reward, which is %s: %s"
-                         % (a.arm, clvi["verdict"], "; ".join(clvi["reasons"])))
-
     out = R.new_output_dir(a.out)
-    ledger = Path(a.ledger or (out.parent / ("stage2-arm-%s-ledger.jsonl" % a.arm)))
-    aborts = len(ledger.read_text().splitlines()) if ledger.exists() else 0
-    if aborts >= cfg["kill"]["max_tripwire_aborts"]:
-        raise SystemExit("arm %s already aborted %d times; killed" % (a.arm, aborts))
-
     R.setup()
     R.seed_all(seed)
-    rng = random.Random(seed)
     proc = R.processor()
-    train_rows = R.read_jsonl(Path(a.codes) / "train_codes.jsonl")
-    val_rows = R.read_jsonl(Path(a.codes) / "validation_codes.jsonl")
-    test_texts = [r["conversations"][0]["text"] for r in R.read_jsonl(Path(a.codes) / "test_codes.jsonl")]
-    heldout_texts = [r["conversations"][0]["text"] for r in val_rows] + test_texts
-    prompts, dropped = P.filter_prompts(Path(a.prompts).read_text().splitlines(), heldout_texts)
-    if not prompts:
-        raise SystemExit("no usable prompts (%s)" % dropped)
-    rng.shuffle(prompts)
-    voices = [r for r in train_rows if r.get("ref_audio_codes") is not None]
-    rate = P.speaking_rate([{"text": r["conversations"][0]["text"], "seconds": r["seconds"]} for r in train_rows])
-    ds = R.dataset(voices[:1], proc)
-    subset = E.generation_subset(val_rows, cfg["eval_generation_clips"], seed)
-    if not subset or not voices:
-        raise SystemExit("need validation and training rows with a reference voice")
+    cond = t["conditioning"]
+    train_rows = [E.condition(r, cond) for r in load_codes(a.codes, "train")
+                  if cond != "reference" or r.get("ref_audio_codes") is not None]
+    val_rows = load_codes(a.codes, "validation")
+    if {r["id"] for r in train_rows} & {r["id"] for r in val_rows}:
+        raise SystemExit("train/validation id overlap")
+    if cond == "reference":
+        val_rows = [r for r in val_rows if r.get("ref_audio_codes") is not None]
+    train_ds, val_ds = R.dataset(train_rows, proc), R.dataset(val_rows, proc)
+    subset = E.generation_subset(val_rows, t["eval_generation_clips"], seed, cond)
 
-    policy = R.load_model(s1["best_checkpoint"])
-    params = R.freeze(policy, recipe["stage1"]["train"]["frozen"])
-    reference = R.load_model(s1["best_checkpoint"], dtype=torch.bfloat16, train=False)
-    optimizer = R.adamw8bit(params, cfg["learning_rate"], recipe["stage1"]["train"])
-    scheduler = get_scheduler("constant", optimizer)
+    model = R.load_model(R.MODEL_DIR)
+    params = R.freeze(model, t["frozen"])
+    optimizer = R.adamw8bit(params, t["learning_rate"], t)
+    bs = t["batch_size"]
+    per_epoch = math.ceil(len(train_rows) / bs)
+    total = per_epoch * t["epochs"]
+    scheduler = get_scheduler(t["schedule"], optimizer, num_warmup_steps=t["warmup_steps"], num_training_steps=total)
     codec = R.load_codec()
-    eng = R.engine(policy, codec)
-    judges, failed = J.load(recipe["judges"]["fil"])
-    if arm["intelligibility"].startswith("single:") and arm["intelligibility"].split(":")[1] not in judges:
-        raise SystemExit("arm %s needs judge %s, which failed: %s" % (a.arm, arm["intelligibility"], failed))
+    mirror = R.mirror(R.MODEL_DIR)
+    eng = R.engine(mirror, codec)
+    pool = J.make_pool(recipe)
     speaker = J.Speaker(recipe["judges"]["speaker"])
+    cache = {}
+    g = torch.Generator().manual_seed(seed)
+    order = [i for _ in range(t["epochs"]) for i in torch.randperm(len(train_rows), generator=g).tolist()]
+    batches = R.chunks(order, bs)
+    report = {"recipe_sha256": sha(a.recipe), "codes": a.codes, "stage1_smoke": s1["smoke"], "conditioning": cond,
+              "train_rows": len(train_rows), "validation_rows": len(val_rows), "batch_size": bs, "updates": total,
+              "seed": seed, "training_order_sha256": hashlib.sha256(
+                  json.dumps([train_rows[i]["id"] for i in order]).encode()).hexdigest(),
+              "judges": pool.names, "judges_failed": pool.failed, "judge_events": pool.events,
+              "evals": [], "steps": [], "best": None, "best_checkpoint": None, "status": "running"}
 
-    def encode_en(path):
-        return R.encode_wav(codec, _wav(path, R.SAMPLE_RATE))
-
-    clvi_pool = []
-    if clvi["verdict"] == "reward":
-        for r in bi_train:
-            clvi_pool.append({"speaker_id": r["speaker_id"], "en_codes": [encode_en(p) for p in r["en"]],
-                              "en_emb": [speaker.embed(_wav(p, J.JUDGE_SR)) for p in r["en"]],
-                              "fil_centroid": speaker.centroid([_wav(p, J.JUDGE_SR) for p in r["fil"]])})
-    xling = []
-    for i, r in enumerate(bi_heldout):
-        text = subset[i % len(subset)]["conversations"][0]["text"]
-        xling.append({"text": text, "ref_codes": encode_en(r["en"][0]),
-                      "target_centroid": speaker.centroid([_wav(p, J.JUDGE_SR) for p in r["fil"]]),
-                      "frame_cap": R.max_frames(P.expected_seconds(text, rate), gen)})
-
-    report = {"arm": a.arm, "arm_config": arm, "stage1_report": a.stage1_report, "start_checkpoint":
-              s1["best_checkpoint"], "judges": sorted(judges), "judges_failed": failed, "clvi": clvi,
-              "ecapa_ceiling": ceiling_value, "prompts": len(prompts), "prompts_dropped": dropped,
-              "speaking_rate_chars_per_second": rate, "prior_aborts": aborts, "evals": [], "steps": [],
-              "status": "running"}
-
-    def evaluate(step):
-        m = E.generate_and_score(policy, eng, subset, judges, speaker, gen, [seed], xling=xling or None)
-        m["step"] = step
+    def evaluate(update):
+        started = time.monotonic()
+        m = E.evaluate(model, mirror, eng, val_ds, val_rows, subset, pool, speaker, t, gen, seed, cache,
+                       out / "samples" / ("update-%06d" % update))
+        m.update(update=update, epoch_fraction=update / per_epoch, eval_seconds=time.monotonic() - started)
         report["evals"].append(m)
         print(json.dumps({"eval": m}), flush=True)
         return m
 
-    baseline = evaluate(0)
-    best = None
-    history = []
+    zero = evaluate(0)
+    report["zero_shot"] = zero
     start = time.monotonic()
-    status, stop_reason = "complete", None
-    for step in range(1, cfg["max_steps"] + 1):
-        text = prompts[(step - 1) % len(prompts)]
-        use_clvi = bool(clvi_pool) and rng.random() < arm.get("clvi_batch_fraction", 0.0)
-        if use_clvi:
-            who = rng.choice(clvi_pool)
-            j = rng.randrange(len(who["en_codes"]))
-            ref_codes, cond_emb, clvi_target = who["en_codes"][j], who["en_emb"][j], who["fil_centroid"]
-        else:
-            voice = rng.choice(voices)
-            ref_codes = voice["conversations"][0]["audio_codes"]
-            cond_emb = speaker.embed(_wav(voice["conversations"][0]["wav"], J.JUDGE_SR))
-            clvi_target = None
-        expected = P.expected_seconds(text, rate)
-        cap = R.max_frames(expected, gen)
-        policy.eval()
-        outs = R.generate(eng, [text] * cfg["rollouts_per_prompt"], [ref_codes] * cfg["rollouts_per_prompt"],
-                          cap, gen, do_sample=True)
-        rollouts, sil, ent = [], [], []
-        for codes, truncated in outs:
-            wav16 = J.resample(R.decode(codec, codes), R.SAMPLE_RATE)
-            hyps = J.transcribe_all(judges, wav16)
-            emb = speaker.embed(wav16) if len(wav16) >= J.JUDGE_SR // 4 else None
-            rollouts.append({
-                "codes": codes, "truncated": truncated,
-                "cers": {k: cer(text, h) for k, h in hyps.items()},
-                "cond_sim": speaker.cosine(emb, cond_emb) if emb is not None else 0.0,
-                "clvi_sim": (speaker.cosine(emb, clvi_target) if emb is not None else 0.0) if use_clvi else None,
-                "duration_ratio": max(J.trimmed_seconds(wav16, J.JUDGE_SR), 1e-3) / expected})
-            sil.append(silence_fraction(wav16.tolist(), J.JUDGE_SR))
-            ent.append(token_entropy(np.asarray(codes)[:, 0].tolist()) if len(codes) else 0.0)
-        rewards, adv, _ = P.group_rewards(arm, cfg, rollouts)
-        policy.train()
-        optimizer.zero_grad(set_to_none=True)
-        kls, updated = [], 0
-        if any(x != 0.0 for x in adv):
-            usable = [(r, x) for r, x in zip(rollouts, adv) if len(r["codes"]) > 0]
-            for r, x in usable:
-                inputs = R.batch(ds, R.record(text, r["codes"], ref_codes))
-                if r["truncated"]:
-                    inputs = R.drop_eos_label(inputs)
-                with torch.autocast("cuda", dtype=torch.bfloat16):
-                    logp, valid, _ = R.token_logprobs(policy, inputs)
-                    with torch.no_grad():
-                        logp_ref, _, _ = R.token_logprobs(reference, inputs)
-                loss, kl = grpo_token_loss(logp, logp.detach(), logp_ref, float(x), valid, cfg["clip_epsilon"],
-                                           cfg["kl_beta"])
-                (loss / len(usable)).backward()
-                kls.append(float(kl))
-                updated += 1
-            torch.nn.utils.clip_grad_norm_(params, recipe["stage1"]["train"]["grad_clip"], error_if_nonfinite=True)
-            optimizer.step()
-            scheduler.step()
-        gaps = [judge_gap(r["cers"]) for r in rollouts]
-        row = {"step": step, "reward": float(np.mean(rewards)),
-               "worst_cer": float(np.mean([max(r["cers"].values()) for r in rollouts])),
-               "judge_gap": float(np.mean(gaps)), "kl": float(np.mean(kls)) if kls else None,
-               "silence_fraction": float(np.mean(sil)), "token_entropy": float(np.mean(ent)),
-               "truncated": sum(r["truncated"] for r in rollouts), "updated_rollouts": updated, "clvi": use_clvi}
-        report["steps"].append(row)
-        history.append(row)
-        print(json.dumps(row), flush=True)
-        w = P.windows(history, cfg["tripwires"]["window_steps"])
-        if w:
-            trip = G.tripwire(w[0], w[1], cfg)
-            if trip["verdict"] == G.KILL:
-                status, stop_reason = "tripwire_abort", trip
-                with ledger.open("a") as f:
-                    f.write(json.dumps({"run": str(out), "step": step, "reasons": trip["reasons"]}) + "\n")
-                break
-        if step % cfg["eval_every_steps"] == 0 or step == cfg["max_steps"]:
-            m = evaluate(step)
-            verdict = G.stage2_evaluation_verdict(m, step, baseline, cfg)
-            m["verdict"] = verdict
-            if best is None or G.better_checkpoint(m, best):
-                R.save(policy, proc, out / "best_checkpoint")
-                best = m
+    for update, idx in enumerate(batches, 1):
+        t0 = time.monotonic()
+        loss, norm = R.train_step(model, params, optimizer, scheduler,
+                                  R.batch_many(train_ds, [train_rows[i] for i in idx]), t["grad_clip"])
+        report["steps"].append({"update": update, "loss": loss, "grad_norm": norm,
+                                "lr": optimizer.param_groups[0]["lr"], "seconds": time.monotonic() - t0})
+        if update % t["eval_every_updates"] == 0 or update == len(batches):
+            m = evaluate(update)
+            if G.better_checkpoint(m, report["best"]):
+                R.save(model, proc, out / "best_checkpoint")
+                report["best"], report["best_checkpoint"] = m, str(out / "best_checkpoint")
+            report["judge_events"] = pool.events
             R.write_json(out / "progress.json", report)
-            if verdict["verdict"] == G.KILL:
-                status, stop_reason = "killed", verdict
-                break
-    R.save(policy, proc, out / "last_checkpoint")
-    final = report["evals"][-1]
-    report.update(status=status, stop_reason=stop_reason, train_seconds=time.monotonic() - start,
-                  cuda_peak_allocated_gib=torch.cuda.max_memory_allocated() / 2 ** 30,
-                  best=best, best_checkpoint=str(out / "best_checkpoint") if best else None,
-                  last_checkpoint=str(out / "last_checkpoint"),
-                  final={"worst_cer": final["worst_cer"], "spk_sim": final["spk_sim"],
-                         "judge_gap": final["judge_gap"], "xling_sim": final.get("xling_sim"),
-                         "steps": len(report["steps"]),
-                         "aborts": aborts + (1 if status == "tripwire_abort" else 0)})
+    report["train_seconds"] = time.monotonic() - start
+    report["cuda_peak_allocated_gib"] = torch.cuda.max_memory_allocated() / 2 ** 30
+    R.save(model, proc, out / "last_checkpoint")
+    report["last_checkpoint"] = str(out / "last_checkpoint")
+    pretrained_best = report["best"] is None or not G.better_checkpoint(report["best"], zero)
+    if pretrained_best:
+        report["best"], report["best_checkpoint"] = zero, str(R.MODEL_DIR)
+    report["summary"] = G.baseline_summary(zero, report["best"], pretrained_best)
+    report["status"] = "complete"
     R.write_json(out / "report.json", report)
-    print("STAGE2_ARM", a.arm, status, flush=True)
-    return 0 if status == "complete" else 3
+    print("STAGE2_BASELINE complete", json.dumps(report["summary"]), flush=True)
+    return 0
 
 
-# ------------------------------------------------------------------------------------------------- compare
+# ------------------------------------------------------------------------------------------------- latency
 
-def compare(a):
+def latency(a):
+    """First-audio latency and real-time factor through upstream's streaming path (``app.py`` run_stream)."""
     recipe = json.loads(Path(a.recipe).read_text())
-    final = {}
-    for path in a.reports:
-        rep = json.loads(Path(path).read_text())
-        if rep["arm"] in final:
-            raise SystemExit("two reports for arm %s" % rep["arm"])
-        final[rep["arm"]] = rep["final"]
-    decisions = G.arm_decisions(final, recipe["stage2"])
-    print(json.dumps({"final": final, "decisions": decisions}, indent=2))
+    lc, gen, seed = recipe["latency"], recipe["generation"], recipe["baseline"]["seed"]
+    R.setup()
+    from transformers import AutoTokenizer
+    from mossttsrealtime.processing_mossttsrealtime import MossTTSRealtimeProcessor
+    from mossttsrealtime.streaming_mossttsrealtime import (AudioStreamDecoder, MossTTSRealtimeInference,
+                                                           MossTTSRealtimeStreamingSession)
+    model = R.load_model(a.checkpoint, dtype=torch.bfloat16, train=False)
+    tok = AutoTokenizer.from_pretrained(R.MODEL_DIR, trust_remote_code=True)
+    proc = MossTTSRealtimeProcessor(tokenizer=tok)
+    codec = R.load_codec()
+    rows = E.generation_subset(load_codes(a.codes, "validation"), lc["sentences"], seed, "none")
+    results = []
+    for i, r in enumerate([rows[0]] + rows):  # first run warms kernels and is discarded
+        R.seed_all(seed)
+        inf = MossTTSRealtimeInference(model, tok, max_length=lc["max_length"])
+        inf.reset_generation_state(keep_cache=False)
+        session = MossTTSRealtimeStreamingSession(
+            inf, proc, codec=codec, codec_sample_rate=R.SAMPLE_RATE,
+            codec_encode_kwargs={"chunk_duration": lc["chunk_duration"]}, prefill_text_len=proc.delay_tokens_len,
+            temperature=gen["temperature"], top_p=gen["top_p"], top_k=gen["top_k"], do_sample=True,
+            repetition_penalty=gen["repetition_penalty"], repetition_window=gen["repetition_window"])
+        session.clear_voice_prompt()
+        system = proc.make_ensemble(None)
+        user = tok("<|im_end|>\n<|im_start|>user\n" + lc["user_text"] + "<|im_end|>\n<|im_start|>assistant\n")["input_ids"]
+        turn = np.full((len(user), proc.channels + 1), proc.audio_channel_pad, dtype=np.int64)
+        turn[:, 0] = user
+        session.reset_turn(input_ids=np.concatenate([system, turn], axis=0), include_system_prompt=True,
+                           reset_cache=True)
+        decoder = AudioStreamDecoder(codec, chunk_frames=lc["decode_chunk_frames"],
+                                     overlap_frames=lc["decode_overlap_frames"], device=torch.device("cuda"))
+        text_tokens = tok.encode(r["conversations"][0]["text"], add_special_tokens=False)
+        first, samples = None, 0
+        torch.cuda.synchronize()
+        t0 = time.monotonic()
+
+        def emit(frames):
+            nonlocal first, samples
+            for frame in frames:
+                tokens = frame[0] if frame.dim() == 3 else frame
+                stop = bool((tokens[:, 0] == 1026).any())
+                tokens = tokens[(tokens[:, 0] != 1026) & ((tokens >= 0) & (tokens < 1024)).all(dim=1)]
+                if tokens.numel():
+                    decoder.push_tokens(tokens.detach())
+                    for wav in decoder.audio_chunks():
+                        if wav.numel():
+                            if first is None:
+                                torch.cuda.synchronize()
+                                first = time.monotonic() - t0
+                            samples += wav.numel()
+                if stop:
+                    return True
+            return False
+        with codec.streaming(batch_size=1):
+            for k in range(0, len(text_tokens), lc["text_chunk_tokens"]):
+                emit(session.push_text_tokens(text_tokens[k:k + lc["text_chunk_tokens"]]))
+            emit(session.end_text())
+            while True:
+                more = session.drain(max_steps=1)
+                if not more or emit(more) or session.inferencer.is_finished:
+                    break
+            final = decoder.flush()
+            if final is not None:
+                samples += final.numel()
+        torch.cuda.synchronize()
+        wall = time.monotonic() - t0
+        if i:
+            secs = samples / R.SAMPLE_RATE
+            results.append({"id": r["id"], "first_audio_seconds": first, "wall_seconds": wall,
+                            "audio_seconds": secs, "rtf": wall / secs if secs else None})
+    firsts = [x["first_audio_seconds"] for x in results if x["first_audio_seconds"] is not None]
+    rtfs = [x["rtf"] for x in results if x["rtf"]]
+    out = {"checkpoint": a.checkpoint, "settings": lc, "runs": results,
+           "first_audio_p50": float(np.median(firsts)) if firsts else None,
+           "first_audio_p90": float(np.percentile(firsts, 90)) if firsts else None,
+           "rtf_p50": float(np.median(rtfs)) if rtfs else None,
+           "note": "batch 1, one stream, GB10 shared with resident services; full text available at start"}
+    R.write_json(a.out, out)
+    print(json.dumps({k: v for k, v in out.items() if k != "runs"}), flush=True)
+    return 0
 
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     p.add_argument("--recipe", default=str(HERE / "recipe.json"))
     sub = p.add_subparsers(dest="cmd", required=True)
-    c = sub.add_parser("ceiling")
-    c.add_argument("--bilingual", required=True)
-    c.add_argument("--out", required=True)
-    r = sub.add_parser("run")
-    r.add_argument("--arm", required=True, choices=("a", "b", "c", "d"))
-    r.add_argument("--stage1-report", required=True)
-    r.add_argument("--codes", required=True)
-    r.add_argument("--prompts", required=True, help="unpaired Filipino text, one prompt per line")
-    r.add_argument("--out", required=True)
-    r.add_argument("--bilingual")
-    r.add_argument("--ceiling")
-    r.add_argument("--ledger")
-    m = sub.add_parser("compare")
-    m.add_argument("--reports", nargs="+", required=True)
+    tr = sub.add_parser("train")
+    tr.add_argument("--codes", required=True)
+    tr.add_argument("--stage1-report", required=True)
+    tr.add_argument("--out", required=True)
+    la = sub.add_parser("latency")
+    la.add_argument("--checkpoint", required=True)
+    la.add_argument("--codes", required=True)
+    la.add_argument("--out", required=True)
     a = p.parse_args(argv)
-    return {"ceiling": ceiling, "run": run, "compare": compare}[a.cmd](a)
+    return train(a) if a.cmd == "train" else latency(a)
 
 
 if __name__ == "__main__":

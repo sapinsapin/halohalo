@@ -1,12 +1,21 @@
-"""Stage 1 and stage 2 decisions as pure functions of recorded metrics and ``recipe.json``. Standard library only.
+"""Stage 1, 2 and 3 decisions as pure functions of recorded metrics. Standard library only.
 
-The GPU scripts measure; these functions decide. Each returns a dict with a ``verdict`` and the reasons, and
-the scripts write that dict into their report, so a reader can see why a run stopped or passed without
-rerunning it. Held-out test metrics are never an input here: selection and stopping use validation only.
+The stages follow the MOSS notes in this repository: ``training/fil_moss/README.md`` (execution sequence) and the
+Hiligaynon GB10 pilot (``hiligaynon_tts/moss/README.md``):
+
+* stage 1, engineering smoke on the frozen Filipino data: loss and batch parity, one forward/backward/AdamW8bit
+  step with FP32 gradients and BF16 compute verified, save/reload, and a matched-seed comparison sample;
+* stage 2, bounded baseline SFT and held-out evaluation: checkpoint selection by the equally weighted mean of
+  per-domain validation losses (the pilot's rule), best and last kept separately, no test data in selection;
+* stage 3, GRPO on the stage 2 baseline: entry, CLVI descoping, tripwires, stop rules and arm adoption, each
+  relative to the arm's own step-0 evaluation.
+
+Training completion is never a quality verdict: native listening stays pending in every stage 2 summary.
+Each function returns a dict with a ``verdict`` and its reasons; the scripts store it in their reports.
 """
 import math
 
-PASS, FAIL, CONTINUE, KILL, INCOMPLETE = "pass", "fail", "continue", "kill", "incomplete"
+PASS, FAIL, INCOMPLETE, CONTINUE = "pass", "fail", "incomplete", "continue"
 
 
 def _result(verdict, reasons, **extra):
@@ -15,11 +24,11 @@ def _result(verdict, reasons, **extra):
     return out
 
 
-# ----------------------------------------------------------------------------------------- stage 1, S1 checks
+# --------------------------------------------------------------------------------------------- stage 1 checks
 
 def parity_check(wrapper_loss, reference_loss, rtol):
-    """Our token-level loss, recomputed from ``local_logits``, must equal upstream ``model(...).loss`` on the
-    same frozen batch. This is what proves the log-probabilities stage 2 optimises are the trained ones."""
+    """Per-token log-probabilities gathered from ``local_logits`` must reproduce upstream's loss on the same batch.
+    Batched evaluation and per-domain losses are computed from them."""
     if not (math.isfinite(wrapper_loss) and math.isfinite(reference_loss)):
         return _result(FAIL, ["non-finite loss"], wrapper=wrapper_loss, reference=reference_loss)
     rel = abs(wrapper_loss - reference_loss) / max(abs(reference_loss), 1e-12)
@@ -28,132 +37,144 @@ def parity_check(wrapper_loss, reference_loss, rtol):
                    wrapper=wrapper_loss, reference=reference_loss, relative_difference=rel)
 
 
-def overfit_check(initial_loss, final_loss, duration_ratios, cfg):
-    """32-clip overfit: loss must collapse and the overfit model must stop at the reference pace.
-    ``duration_ratios`` are generated/reference seconds for the overfit clips' own texts."""
+def batch_parity_check(single, batched, atol):
+    """Per-utterance mean log-probabilities one at a time vs in one padded batch. Batched training and
+    evaluation must credit each utterance the same (BF16 kernels differ by shape, hence a tolerance)."""
+    if len(single) != len(batched) or not single:
+        return _result(FAIL, ["length mismatch"])
+    worst = max(abs(x - y) for x, y in zip(single, batched))
+    ok = math.isfinite(worst) and worst <= atol
+    return _result(PASS if ok else FAIL, [] if ok else ["max difference %.4g > %.4g" % (worst, atol)],
+                   max_abs_difference=worst)
+
+
+def one_step_check(m):
+    """One optimizer step: finite loss and gradient norm, FP32 gradients, BF16 linear outputs under autocast
+    (observed, not inferred from flags, as in the pilot), and the probed weights actually moved."""
     reasons = []
-    if not math.isfinite(final_loss):
-        reasons.append("non-finite final loss")
-    elif final_loss > cfg["overfit_max_final_loss"]:
-        reasons.append("final train loss %.4f > %.4f" % (final_loss, cfg["overfit_max_final_loss"]))
-    if not duration_ratios:
-        reasons.append("no duration measurements")
-    tol = cfg["overfit_duration_tolerance"]
-    bad = [r for r in duration_ratios if abs(r - 1.0) > tol]
-    if bad:
-        reasons.append("%d of %d clips outside duration ratio 1 +/- %.2f" % (len(bad), len(duration_ratios), tol))
-    return _result(FAIL if reasons else PASS, reasons, initial_loss=initial_loss, final_loss=final_loss,
-                   duration_ratio_min=min(duration_ratios) if duration_ratios else None,
-                   duration_ratio_max=max(duration_ratios) if duration_ratios else None)
-
-
-def duration_alarm(mean_ratio, cfg):
-    """Per-evaluation pacing alarm. Above the kill ratio the run stops (the Qwen3-TTS failure mode: speech that
-    runs to the generation cap). Outside the success band it is a warning only."""
-    lo, hi = cfg["success"]["duration_ratio_range"]
-    if mean_ratio > cfg["kill"]["duration_ratio_max"]:
-        return _result(KILL, ["mean duration ratio %.3f > kill %.2f" % (mean_ratio, cfg["kill"]["duration_ratio_max"])])
-    if not lo <= mean_ratio <= hi:
-        return _result(CONTINUE, ["duration ratio %.3f outside [%.2f, %.2f]" % (mean_ratio, lo, hi)], warning=True)
-    return _result(CONTINUE, [], warning=False)
-
-
-def verification_verdict(parity, overfit, reload_ok):
-    """S1 passes only if all three checks pass. Nothing in the main SFT runs before this."""
-    reasons = []
-    if parity["verdict"] != PASS:
-        reasons.append("loss parity: " + "; ".join(parity["reasons"]))
-    if overfit["verdict"] != PASS:
-        reasons.append("overfit: " + "; ".join(overfit["reasons"]))
-    if not reload_ok:
-        reasons.append("checkpoint save/reload changed weights or outputs")
+    if not (math.isfinite(m["loss"]) and math.isfinite(m["grad_norm"])):
+        reasons.append("non-finite loss or gradient norm")
+    if not m["grads_fp32"]:
+        reasons.append("gradients are not FP32")
+    if m["linear_output_dtype"] != "torch.bfloat16":
+        reasons.append("linear output dtype %s, expected torch.bfloat16" % m["linear_output_dtype"])
+    if m["probe_changed_elements"] <= 0:
+        reasons.append("optimizer step did not change the probed parameters")
     return _result(FAIL if reasons else PASS, reasons)
 
 
-# --------------------------------------------------------------------------------------- stage 1, main SFT
+def reload_check(weights_equal, loss_before, loss_after):
+    reasons = []
+    if not weights_equal:
+        reasons.append("reloaded weights differ")
+    if not abs(loss_after - loss_before) <= 1e-6 * max(1.0, abs(loss_before)):
+        reasons.append("reloaded loss %.6f differs from %.6f" % (loss_after, loss_before))
+    return _result(FAIL if reasons else PASS, reasons, loss_before=loss_before, loss_after=loss_after)
 
-def sft_evaluation_verdict(metrics, zero_shot, epoch_fraction, cfg):
-    """Decide after one validation evaluation of the main SFT.
 
-    ``metrics`` / ``zero_shot``: {"worst_cer", "cer": {judge: x}, "spk_sim", "duration_ratio",
-    "english_worst_cer" (optional)}. ``zero_shot`` is the same evaluation at step 0 (pretrained model).
-    ``epoch_fraction`` is updates done / updates per epoch.
-    """
-    alarm = duration_alarm(metrics["duration_ratio"], cfg)
-    if alarm["verdict"] == KILL:
-        return alarm
-    epochs = cfg["epochs"]
-    if epoch_fraction >= epochs and metrics["worst_cer"] > zero_shot["worst_cer"]:
-        return _result(KILL, ["worst-judge CER %.4f after %d epochs is worse than zero-shot %.4f"
-                              % (metrics["worst_cer"], epochs, zero_shot["worst_cer"])])
-    return _result(CONTINUE, alarm["reasons"])
+def sample_check(samples, max_silence_fraction=0.95):
+    """Comparison samples: every one finite and not silent. Hitting the frame cap is reported, not failed
+    (the pilot's Bible previews hit it); listening decides."""
+    reasons = []
+    if not samples:
+        reasons.append("no samples generated")
+    for s in samples:
+        if not s["finite"]:
+            reasons.append("%s: non-finite audio" % s["name"])
+        elif s["silence_fraction"] > max_silence_fraction:
+            reasons.append("%s: silent (%.2f)" % (s["name"], s["silence_fraction"]))
+    return _result(FAIL if reasons else PASS, reasons, truncated=[s["name"] for s in samples if s["truncated"]])
+
+
+def smoke_verdict(checks):
+    """Stage 1 passes only if every named check passed."""
+    failed = ["%s: %s" % (k, "; ".join(v["reasons"]) or v["verdict"]) for k, v in checks.items() if v["verdict"] != PASS]
+    return _result(FAIL if failed else PASS, failed, checks=sorted(checks))
+
+
+# ----------------------------------------------------------------------------------------------- stage 2
+
+def balanced_validation_loss(domain_losses):
+    """Equally weighted mean of per-domain validation losses: a large domain cannot hide a worsening small one
+    (the pilot's Bible loss rose 21% while the PLD-dominated mean would have looked fine)."""
+    if not domain_losses:
+        raise ValueError("no validation domains")
+    return sum(domain_losses.values()) / len(domain_losses)
 
 
 def better_checkpoint(candidate, best):
-    """Checkpoint selection on validation only: lower worst-judge CER, ties broken by higher speaker
-    similarity. ``best`` may be None."""
-    if best is None:
-        return True
-    if candidate["worst_cer"] != best["worst_cer"]:
-        return candidate["worst_cer"] < best["worst_cer"]
-    return candidate["spk_sim"] > best["spk_sim"]
+    """Lower balanced validation loss wins. ``best`` may be None."""
+    return best is None or candidate["balanced_validation_loss"] < best["balanced_validation_loss"]
 
 
-def sft_success(metrics, zero_shot, cfg):
-    """Stage 1 success criteria on the selected checkpoint (validation). All must hold; a criterion whose
-    measurement is missing makes the result incomplete, never a pass."""
-    s = cfg["success"]
-    reasons, missing = [], []
-    mms = metrics.get("cer", {}).get(s["primary_judge"])
-    if mms is None:
-        missing.append("%s CER" % s["primary_judge"])
-    elif mms > s["primary_judge_cer_max"]:
-        reasons.append("%s CER %.4f > %.4f" % (s["primary_judge"], mms, s["primary_judge_cer_max"]))
-    if metrics.get("spk_sim") is None:
-        missing.append("speaker similarity")
-    elif metrics["spk_sim"] < s["spk_sim_min"]:
-        reasons.append("speaker similarity %.3f < %.2f" % (metrics["spk_sim"], s["spk_sim_min"]))
-    lo, hi = s["duration_ratio_range"]
-    if not lo <= metrics["duration_ratio"] <= hi:
-        reasons.append("duration ratio %.3f outside [%.2f, %.2f]" % (metrics["duration_ratio"], lo, hi))
-    eng, eng0 = metrics.get("english_worst_cer"), zero_shot.get("english_worst_cer")
-    if eng is None or eng0 is None:
-        missing.append("English regression set")
-    elif eng > eng0 * (1 + s["english_cer_max_relative_regression"]):
-        reasons.append("English worst-judge CER %.4f regressed more than %.0f%% from %.4f"
-                       % (eng, 100 * s["english_cer_max_relative_regression"], eng0))
-    if reasons:
-        return _result(FAIL, reasons, missing=missing)
-    if missing:
-        return _result(INCOMPLETE, ["not measured: " + ", ".join(missing)], missing=missing)
-    return _result(PASS, [])
-
-
-# ------------------------------------------------------------------------------------------- stage 2 entry
-
-def stage2_entry(stage1_report):
-    """Stage 2 runs only from a stage 1 checkpoint that passed. The Qwen plan's kill clause also allows RL from
-    the zero-shot base, but its dependency section cancels stage 2 when stage 1 fails; this follows the stricter
-    rule until someone decides otherwise in recipe.json."""
+def stage2_entry(stage1_report, codes):
     reasons = []
     if not stage1_report:
         return _result(FAIL, ["no stage 1 report"])
-    if stage1_report.get("verification", {}).get("verdict") != PASS:
-        reasons.append("stage 1 verification did not pass")
-    if stage1_report.get("success", {}).get("verdict") != PASS:
-        reasons.append("stage 1 success criteria: %s" % stage1_report.get("success", {}).get("verdict"))
-    if not stage1_report.get("best_checkpoint"):
-        reasons.append("no selected checkpoint")
-    return _result(FAIL if reasons else PASS, reasons, checkpoint=stage1_report.get("best_checkpoint"))
+    if stage1_report.get("smoke", {}).get("verdict") != PASS:
+        reasons.append("stage 1 smoke did not pass")
+    if stage1_report.get("codes") != codes:
+        reasons.append("stage 1 ran on different codes (%s)" % stage1_report.get("codes"))
+    return _result(FAIL if reasons else PASS, reasons)
+
+
+def baseline_summary(zero, best, best_is_pretrained):
+    """What the baseline changed relative to the step-0 (pretrained) evaluation, per domain and per judge.
+    Lower is better for every delta. Quality is not judged here."""
+    def delta(a, b):
+        return None if a is None or b is None else b - a
+    out = {
+        "balanced_validation_loss": delta(zero["balanced_validation_loss"], best["balanced_validation_loss"]),
+        "domain_losses": {d: delta(zero["domain_losses"].get(d), v) for d, v in best["domain_losses"].items()},
+        "cer": {j: delta(zero["cer"].get(j), v) for j, v in best["cer"].items()},
+        "worst_cer": delta(zero["worst_cer"], best["worst_cer"]),
+        "code_switched_worst_cer": delta(zero.get("code_switched_worst_cer"), best.get("code_switched_worst_cer")),
+    }
+    worse = [d for d, v in out["domain_losses"].items() if v is not None and v > 0]
+    notes = []
+    if best_is_pretrained:
+        notes.append("no finetuned checkpoint beat the pretrained model on balanced validation loss")
+    if worse:
+        notes.append("validation loss rose in: %s" % ", ".join(sorted(worse)))
+    return _result("complete", notes, deltas_vs_zero_shot=out, quality="native listening pending",
+                   domains_worse=sorted(worse))
+
+
+# ----------------------------------------------------------------------------------------- stage 3 (GRPO)
+# Every limit below is relative to stage 3's own step-0 evaluation of the stage 2 checkpoint; none is borrowed
+# from another model's numbers.
+
+KILL = "kill"
+
+
+def voice_measure(m):
+    """The speaker number an evaluation reports for its conditioning: voice consistency for unconditioned runs,
+    similarity to the target speaker's real recording for reference-conditioned runs."""
+    return m["similarity_to_real_speaker"] if m.get("conditioning") == "reference" else m["voice_consistency"]
+
+
+def stage3_entry(stage2_report, codes):
+    """GRPO starts only from a completed stage 2 baseline whose selected checkpoint is a finetuned one."""
+    reasons = []
+    if not stage2_report:
+        return _result(FAIL, ["no stage 2 report"])
+    if stage2_report.get("status") != "complete":
+        reasons.append("stage 2 status %s" % stage2_report.get("status"))
+    if stage2_report.get("stage1_smoke", {}).get("verdict") != PASS:
+        reasons.append("stage 1 smoke did not pass")
+    if stage2_report.get("codes") != codes:
+        reasons.append("stage 2 ran on different codes (%s)" % stage2_report.get("codes"))
+    best = stage2_report.get("best_checkpoint") or ""
+    if not best.endswith("best_checkpoint"):
+        reasons.append("stage 2 kept the pretrained model (%s); there is no baseline to improve" % best)
+    return _result(FAIL if reasons else PASS, reasons, checkpoint=best,
+                   conditioning=stage2_report.get("conditioning"))
 
 
 def clvi_mode(consented_bilingual_speakers, ecapa_ceiling, cfg):
-    """Whether the cross-lingual voice-identity term may be a reward.
-
-    Descope rule: fewer consented bilingual speakers than the minimum -> evaluation metric only.
-    ECAPA ceiling: genuine same-person EN->FIL similarity below the floor means ECAPA is too language-biased
-    to reward; arm d is dropped until it is renormalised per language pair.
-    """
+    """Whether the cross-lingual voice-identity term may be a reward. Too few consented bilingual speakers ->
+    evaluation metric only; ECAPA's genuine same-person EN->FIL similarity below the floor -> ECAPA is too
+    language-biased to reward, arm d is dropped until renormalised per language pair."""
     c = cfg["clvi"]
     if consented_bilingual_speakers < c["min_consented_bilingual_speakers"]:
         return _result("eval_only", ["%d consented bilingual speakers < %d"
@@ -166,11 +187,8 @@ def clvi_mode(consented_bilingual_speakers, ecapa_ceiling, cfg):
     return _result("reward", [])
 
 
-# ----------------------------------------------------------------------------------------- stage 2 running
-
 def tripwire(window_first, window_last, cfg):
-    """Abort when reward rises while a tripwire degrades between the first and last window of a run.
-    Windows: {"reward", "silence_fraction", "token_entropy"} means over consecutive steps."""
+    """Abort when the reward rises while silence rises or codec-token entropy falls (reward hacking signs)."""
     t = cfg["tripwires"]
     reasons = []
     if window_last["reward"] > window_first["reward"]:
@@ -179,16 +197,22 @@ def tripwire(window_first, window_last, cfg):
                            % (window_first["silence_fraction"], window_last["silence_fraction"]))
         e0 = window_first["token_entropy"]
         if e0 > 0 and (e0 - window_last["token_entropy"]) / e0 > t["token_entropy_drop_max"]:
-            reasons.append("codec token entropy fell %.3f -> %.3f while reward rose"
-                           % (e0, window_last["token_entropy"]))
+            reasons.append("codec token entropy fell %.3f -> %.3f while reward rose" % (e0, window_last["token_entropy"]))
     return _result(KILL if reasons else CONTINUE, reasons)
 
 
-def stage2_evaluation_verdict(metrics, step, baseline, cfg):
-    """Per-evaluation stop rules for one arm. ``baseline`` is the same evaluation at step 0."""
+def stage3_evaluation_verdict(metrics, step, baseline, cfg):
+    """Stop rules for one arm, relative to its step-0 evaluation: the voice must not drift, the policy must not
+    leave the data distribution (balanced validation loss), and the worst-judge CER must improve by
+    ``no_gain_step``."""
     k = cfg["kill"]
-    if metrics["spk_sim"] < k["spk_sim_min"]:
-        return _result(KILL, ["speaker similarity %.3f < %.2f" % (metrics["spk_sim"], k["spk_sim_min"])])
+    v0, v = voice_measure(baseline), voice_measure(metrics)
+    if v0 is not None and v is not None and v0 - v > k["voice_drop_max"]:
+        return _result(KILL, ["voice measure fell %.3f -> %.3f (> %.2f)" % (v0, v, k["voice_drop_max"])])
+    b0, b = baseline["balanced_validation_loss"], metrics["balanced_validation_loss"]
+    if (b - b0) / b0 > k["validation_loss_rise_max"]:
+        return _result(KILL, ["balanced validation loss rose %.4f -> %.4f (> %.0f%%)"
+                              % (b0, b, 100 * k["validation_loss_rise_max"])])
     if step >= k["no_gain_step"] and metrics["worst_cer"] >= baseline["worst_cer"]:
         return _result(KILL, ["no worst-judge CER gain by step %d (%.4f vs %.4f at step 0)"
                               % (k["no_gain_step"], metrics["worst_cer"], baseline["worst_cer"])])
@@ -196,47 +220,49 @@ def stage2_evaluation_verdict(metrics, step, baseline, cfg):
 
 
 def arm_decisions(final, cfg):
-    """Pre-registered adoption rules across arms, from each arm's final validation metrics.
+    """Pre-registered adoption rules across arms, from each arm's final validation metrics and its own step 0.
 
-    ``final``: {"a"|"b"|"c"|"d": {"worst_cer", "spk_sim", "judge_gap", "xling_sim" (d, optional),
-    "aborts": int, "steps": int}}.
+    ``final``: {"a"|"b"|"c"|"d": {"worst_cer", "voice", "judge_gap", "xling_sim" (optional), "aborts", "steps",
+    "start_worst_cer", "start_voice"}}.
     """
     a = cfg["adoption"]
     out = {}
     for arm, m in final.items():
         if m.get("aborts", 0) >= cfg["kill"]["max_tripwire_aborts"]:
             out[arm] = _result(KILL, ["tripwire aborted %d times" % m["aborts"]])
+        elif m["worst_cer"] >= m["start_worst_cer"]:
+            out[arm] = _result(FAIL, ["worst-judge CER did not improve on its starting checkpoint"])
+        else:
+            out[arm] = _result(PASS, [], relative_gain=(m["start_worst_cer"] - m["worst_cer"]) / m["start_worst_cer"])
     b, c, d = final.get("b"), final.get("c"), final.get("d")
     if b and c:
         gain = (b["worst_cer"] - c["worst_cer"]) / b["worst_cer"] if b["worst_cer"] else 0.0
-        sim_equal = abs(c["spk_sim"] - b["spk_sim"]) <= a["equal_sim_tolerance"]
-        if gain >= a["c_over_b_min_relative_gain"] and sim_equal and c["judge_gap"] < b["judge_gap"]:
-            out["c_over_b"] = _result(PASS, [], relative_gain=gain)
-        else:
-            why = []
-            if gain < a["c_over_b_min_relative_gain"]:
-                why.append("worst-judge CER gain %.3f < %.2f" % (gain, a["c_over_b_min_relative_gain"]))
-            if not sim_equal:
-                why.append("speaker similarity differs by more than %.2f" % a["equal_sim_tolerance"])
-            if c["judge_gap"] >= b["judge_gap"]:
-                why.append("judge gap did not shrink")
-            steps = min(b.get("steps", 0), c.get("steps", 0))
-            verdict = KILL if steps >= cfg["kill"]["no_separation_step"] and gain <= 0 else FAIL
-            out["c_over_b"] = _result(verdict, why, relative_gain=gain)
+        voice_equal = abs(c["voice"] - b["voice"]) <= a["equal_voice_tolerance"]
+        why = []
+        if gain < a["c_over_b_min_relative_gain"]:
+            why.append("worst-judge CER gain %.3f < %.2f" % (gain, a["c_over_b_min_relative_gain"]))
+        if not voice_equal:
+            why.append("voice measure differs by more than %.2f" % a["equal_voice_tolerance"])
+        if c["judge_gap"] >= b["judge_gap"]:
+            why.append("judge gap did not shrink")
+        steps = min(b.get("steps", 0), c.get("steps", 0))
+        verdict = PASS if not why else (KILL if steps >= cfg["kill"]["no_separation_step"] and gain <= 0 else FAIL)
+        out["c_over_b"] = _result(verdict, why, relative_gain=gain)
     if c and d:
         why = []
         xs = d.get("xling_sim")
         if xs is None:
             why.append("cross-lingual similarity not measured")
         else:
-            if xs < a["d_xling_sim_min"]:
-                why.append("cross-lingual similarity %.3f < %.2f" % (xs, a["d_xling_sim_min"]))
+            if xs < d.get("start_xling_sim", 0) + a["d_xling_sim_min_gain_over_start"]:
+                why.append("cross-lingual similarity %.3f gained less than %.2f over its start"
+                           % (xs, a["d_xling_sim_min_gain_over_start"]))
             if c.get("xling_sim") is not None and xs - c["xling_sim"] < a["d_xling_sim_min_gain_over_c"]:
                 why.append("cross-lingual similarity gain over c %.3f < %.2f"
                            % (xs - c["xling_sim"], a["d_xling_sim_min_gain_over_c"]))
-        if c["spk_sim"] - d["spk_sim"] > a["d_same_language_sim_max_drop"]:
-            why.append("same-language similarity dropped %.3f" % (c["spk_sim"] - d["spk_sim"]))
+        if c["voice"] - d["voice"] > a["d_same_language_voice_max_drop"]:
+            why.append("same-language voice measure dropped %.3f" % (c["voice"] - d["voice"]))
         if d["worst_cer"] > c["worst_cer"]:
-            why.append("worst-judge CER regressed")
-        out["d"] = _result(FAIL if why else PASS, why)
+            why.append("worst-judge CER regressed vs c")
+        out["d_over_c"] = _result(FAIL if why else PASS, why)
     return out

@@ -4,14 +4,16 @@ Same three families as the Hiligaynon bake-off (``bench/hil_tts/eval/judge_asr.p
 Filipino: PLD Whisper (in-family), MMS-1b-all with the ``tgl`` adapter and Omnilingual CTC-1B through the same
 port (both independent). Differences from the bake-off, on purpose:
 
-* Whisper decodes greedily without the temperature fallback. Rewards need thousands of transcripts per hour
-  and a fallback would make the reward stochastic in the judge as well as the policy.
+* Whisper decodes greedily without the temperature fallback, batched, so every evaluation is deterministic in
+  the judge and fast enough to run every ``eval_every_updates``.
 * No UTMOS: it is an English naturalness proxy and no gate reads it.
 
 A judge that fails to load is reported, not fatal: worst-judge CER is then taken over the remaining families
 (recipe ``judges.fallback``), and every report names the judges that actually scored it.
 """
+import json
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -39,8 +41,17 @@ def trimmed_seconds(wav, sr):
 
 
 def _snapshot(repo, revision):
-    from huggingface_hub import snapshot_download
-    return snapshot_download(repo, revision=revision)
+    """The cached snapshot directory at the pinned revision, without network and without huggingface_hub's
+    completeness check (the same rule as the Hiligaynon bake-off's ``common.hf_snapshot``: only the files a judge
+    uses are cached, e.g. mms-1b-all's safetensors and the needed adapters). ``snapshot_download`` would instead
+    fetch the whole repository, which stalled the first GB10 benchmark."""
+    import os
+    home = Path(os.environ.get("HF_HOME", "~/.cache/huggingface")).expanduser()
+    base = Path(os.environ.get("HF_HUB_CACHE", str(home / "hub"))).expanduser() / ("models--" + repo.replace("/", "--"))
+    d = base / "snapshots" / revision
+    if not d.is_dir():
+        raise FileNotFoundError("%s@%s is not in the local Hugging Face cache (%s)" % (repo, revision, d))
+    return str(d)
 
 
 def make_mms(cfg, device="cuda"):
@@ -85,12 +96,16 @@ def make_whisper(cfg, device="cuda"):
     proc = WhisperProcessor.from_pretrained(d)
     model = WhisperForConditionalGeneration.from_pretrained(d, dtype=torch.bfloat16).to(device).eval()
 
-    def transcribe(wav16):
-        feats = proc.feature_extractor(wav16, sampling_rate=JUDGE_SR, return_tensors="pt").input_features
+    def batch(wavs16):
+        feats = proc.feature_extractor(list(wavs16), sampling_rate=JUDGE_SR, return_tensors="pt").input_features
         with torch.inference_mode():
             ids = model.generate(feats.to(device, torch.bfloat16), language=cfg["language_token"],
                                  task="transcribe", do_sample=False, num_beams=1, max_new_tokens=224)
-        return proc.batch_decode(ids, skip_special_tokens=True)[0].strip()
+        return [t.strip() for t in proc.batch_decode(ids, skip_special_tokens=True)]
+
+    def transcribe(wav16):
+        return batch([wav16])[0]
+    transcribe.batch = batch
     return transcribe
 
 
@@ -116,6 +131,118 @@ def transcribe_all(judges, wav16):
     if len(wav16) < JUDGE_SR // 10:  # under 0.1 s: nothing a judge can hear
         return {name: "" for name in judges}
     return {name: fn(wav16) for name, fn in judges.items()}
+
+
+def transcribe_batch(judges, wavs16):
+    """Like ``transcribe_all`` over many clips; judges with a ``.batch`` method (Whisper) decode them together.
+    Clips under 0.1 s get "" from every judge, as in ``transcribe_all``."""
+    out = [{} for _ in wavs16]
+    audible = [i for i, w in enumerate(wavs16) if len(w) >= JUDGE_SR // 10]
+    for i in range(len(wavs16)):
+        if i not in audible:
+            out[i] = {name: "" for name in judges}
+    for name, fn in judges.items():
+        if not audible:
+            break
+        if hasattr(fn, "batch"):
+            texts = fn.batch([wavs16[i] for i in audible])
+        else:
+            texts = [fn(wavs16[i]) for i in audible]
+        for i, t in zip(audible, texts):
+            out[i][name] = t
+    return out
+
+
+def make_pool(recipe, lang="fil", placement=None):
+    j = recipe["judges"]
+    return JudgePool(j[lang], j.get("placement") if placement is None else placement, j.get("remote"))
+
+
+class JudgePool:
+    """Local judges plus judges served by ``judge_server`` on a second GPU, behind one interface.
+
+    ``submit(wavs16)`` starts the remote part in a background thread and returns a handle; ``collect(handle)``
+    runs the local judges in the calling thread and merges. So a caller can submit step t's audio, do GPU work,
+    and collect later: the remote judges run while the GB10 generates or trains.
+
+    Placement comes from ``recipe.json`` ``judges.placement``. If the server is unreachable at start, or fails
+    three times in a row mid-run, its judges are loaded locally and the run continues with the same judges; the
+    switch is recorded in ``events``. Judges and decoding are identical either way.
+    """
+
+    def __init__(self, judge_cfg, placement=None, remote=None, device="cuda"):
+        import concurrent.futures
+        placement = placement or {}
+        self.cfg, self.device, self.events = judge_cfg, device, []
+        self.remote_names = [n for n in judge_cfg if placement.get(n) == "remote"] if remote else []
+        self.remote = remote
+        if self.remote_names:
+            try:
+                self.token = Path(remote["token_file"]).expanduser().read_text().strip()
+                health = self._call("GET", "/healthz", None, timeout=10)
+                missing = [n for n in self.remote_names if n not in health["judges"]]
+                if missing:
+                    raise RuntimeError("server does not serve %s" % missing)
+                self.events.append({"event": "remote_ok", "judges": self.remote_names, "server": health})
+            except Exception as exc:
+                self.events.append({"event": "remote_unavailable_at_start", "error": str(exc)})
+                self.remote_names = []
+        local_names = [n for n in judge_cfg if n not in self.remote_names]
+        self.local, self.failed = load(judge_cfg, only=local_names, device=device) if local_names else ({}, {})
+        self.executor = concurrent.futures.ThreadPoolExecutor(1)
+        self.strikes = 0
+
+    @property
+    def names(self):
+        return sorted(list(self.local) + self.remote_names)
+
+    def _call(self, method, path, body, timeout):
+        import urllib.request
+        data = None if body is None else json.dumps(body).encode()
+        req = urllib.request.Request(self.remote["url"].rstrip("/") + path, data=data, method=method,
+                                     headers={"Authorization": "Bearer " + self.token,
+                                              "Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read())
+
+    def _remote(self, wavs16, names):
+        from .judge_server import encode_audio
+        last = None
+        for attempt in range(3):
+            try:
+                out = self._call("POST", "/transcribe", {"judges": names, "audio_b64": [encode_audio(w) for w in wavs16]},
+                                 timeout=self.remote.get("timeout_seconds", 120))
+                return out["hyps"]
+            except Exception as exc:
+                last = exc
+                time.sleep(2 * (attempt + 1))
+        raise RuntimeError("remote judges failed 3 times: %s" % last)
+
+    def submit(self, wavs16):
+        wavs16 = list(wavs16)
+        names = list(self.remote_names)
+        fut = self.executor.submit(self._remote, wavs16, names) if names else None
+        return wavs16, names, fut
+
+    def collect(self, handle):
+        wavs16, names, fut = handle
+        out = transcribe_batch(self.local, wavs16)
+        if fut is not None:
+            try:
+                remote = fut.result()
+            except Exception as exc:
+                self.events.append({"event": "remote_failed_loading_locally", "judges": names, "error": str(exc)})
+                extra, failed = load(self.cfg, only=names, device=self.device)
+                self.failed.update(failed)
+                self.local.update(extra)
+                self.remote_names = [n for n in self.remote_names if n not in names]
+                remote = transcribe_batch(extra, wavs16)
+            for d, r in zip(out, remote):
+                d.update(r)
+        return out
+
+    def transcribe_many(self, wavs16):
+        return self.collect(self.submit(wavs16))
 
 
 class Speaker:
