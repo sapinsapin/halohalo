@@ -1,0 +1,30 @@
+{
+  "repo": "sapinsapin/chika",
+  "revision": "40019c3d6aa82bb0a566e988dc74be85fdbe4763",
+  "private": true,
+  "verified": true,
+  "metadata_only": true,
+  "audio_uploaded": false,
+  "files": [
+    {
+      "source": "curation/outputs/imported-hil-archives-floor-v1/snapshots/9043d2bd71f1fd89b7021c1b2230084c0d512d5daabfb0fc1daedd5c7ac9032f/manifest.jsonl",
+      "path": "checkpoints/canonical-archives/9043d2bd71f1fd89b7021c1b2230084c0d512d5daabfb0fc1daedd5c7ac9032f/manifest.jsonl",
+      "sha256": "9ae273e77e45df816d4c21e303ab7a4e1bb22ece3eac6a797f1f991e449f7a86"
+    },
+    {
+      "source": "curation/outputs/imported-hil-archives-floor-v1/snapshots/9043d2bd71f1fd89b7021c1b2230084c0d512d5daabfb0fc1daedd5c7ac9032f/report.json",
+      "path": "checkpoints/canonical-archives/9043d2bd71f1fd89b7021c1b2230084c0d512d5daabfb0fc1daedd5c7ac9032f/report.json",
+      "sha256": "de9e5846671fd33f3a11357430a6fd18a19c53906cc5442802ef9f99ca94d082"
+    },
+    {
+      "source": "curation/outputs/imported-bik-archives-floor-v1/snapshots/628b41290d6a8d656c9caa27c6faa53a8f8c324838090ecdf3c7e848973282a0/manifest.jsonl",
+      "path": "checkpoints/canonical-archives/628b41290d6a8d656c9caa27c6faa53a8f8c324838090ecdf3c7e848973282a0/manifest.jsonl",
+      "sha256": "30e63f2f708e1b75d6a90a7bb4e5b4634cb49e59fbd8a43fe362cfe0a196c598"
+    },
+    {
+      "source": "curation/outputs/imported-bik-archives-floor-v1/snapshots/628b41290d6a8d656c9caa27c6faa53a8f8c324838090ecdf3c7e848973282a0/report.json",
+      "path": "checkpoints/canonical-archives/628b41290d6a8d656c9caa27c6faa53a8f8c324838090ecdf3c7e848973282a0/report.json",
+      "sha256": "1c38baa5163f1e69c3d0101505d04f1cec9a0b9207fa2a80d5c277cc759913c6"
+    }
+  ]
+}
