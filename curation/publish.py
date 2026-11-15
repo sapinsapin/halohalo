@@ -142,25 +142,40 @@ def publish(export_root, prefix, receipt, repo='sapinsapin/chika', max_files=100
     with tempfile.TemporaryDirectory(prefix='speech-publish-') as temp:
         staging = Path(temp)
         files, rows = stage_export(root, staging, max_files, max_bytes)
-        info = api.dataset_info(repo)
-        if info.private is not True:
-            raise ValueError('publication requires an existing private dataset')
-        parent = info.sha
-        if not parent:
-            raise ValueError('missing immutable parent revision')
-        existing = api.list_repo_files(repo_id=repo, repo_type='dataset', revision=parent)
-        occupied = {path for path in existing if path == prefix or path.startswith(prefix+'/')}
-        if verify_existing:
-            if occupied != {prefix+'/'+name for name in files}:
-                raise ValueError('existing prefix files differ from export allowlist')
-            revision = parent
-        else:
+        conflicts = []
+        for attempt in range(3):
+            info = api.dataset_info(repo)
+            if info.private is not True:
+                raise ValueError('publication requires an existing private dataset')
+            parent = info.sha
+            if not parent:
+                raise ValueError('missing immutable parent revision')
+            existing = api.list_repo_files(repo_id=repo, repo_type='dataset', revision=parent)
+            occupied = {path for path in existing if path == prefix or path.startswith(prefix+'/')}
+            if verify_existing:
+                if occupied != {prefix+'/'+name for name in files}:
+                    raise ValueError('existing prefix files differ from export allowlist')
+                revision = parent
+                break
             if occupied:
                 raise ValueError('target prefix is nonempty; immutable exports cannot be overwritten')
+            for name, expected in files.items():
+                staged = staging/name
+                if staged.stat().st_size != expected['bytes'] or digest(staged) != expected['sha256']:
+                    raise ValueError('staged artifact changed before publication')
             operations = [CommitOperationAdd(path_in_repo=prefix+'/'+name, path_or_fileobj=str(staging/name)) for name in sorted(files)]
-            commit = api.create_commit(repo_id=repo, repo_type='dataset', operations=operations,
-                                       parent_commit=parent, commit_message='Publish validated speech export '+prefix)
+            try:
+                commit = api.create_commit(repo_id=repo, repo_type='dataset', operations=operations,
+                                           parent_commit=parent, commit_message='Publish validated speech export '+prefix)
+            except Exception as exc:
+                # Only explicit parent-precondition rejection proves this commit
+                # was not applied. Never retry uncertain transport/auth failures.
+                if getattr(getattr(exc, 'response', None), 'status_code', None) != 412 or attempt == 2:
+                    raise
+                conflicts.append(dict(parent_commit=parent, status_code=412))
+                continue
             revision = commit.oid
+            break
         if not revision:
             raise ValueError('missing immutable publication revision')
         for name, expected in files.items():
@@ -170,7 +185,7 @@ def publish(export_root, prefix, receipt, repo='sapinsapin/chika', max_files=100
                 raise ValueError('remote artifact verification failed; no receipt written')
         result = dict(repo=repo, prefix=prefix, revision=revision, parent_commit=parent,
                       rows=rows, files=files, verified=True, private=True,
-                      verification_only=verify_existing)
+                      verification_only=verify_existing, parent_conflicts=conflicts)
         receipt.parent.mkdir(parents=True, exist_ok=True)
         # Exclusive creation avoids silently replacing earlier publication evidence.
         with receipt.open('x') as out:

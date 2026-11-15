@@ -157,6 +157,52 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(self.api.create_commit.call_count,1)
         self.assertFalse(self.receipt.exists())
 
+    def conflict(self):
+        error = RuntimeError('explicit precondition rejection')
+        error.response = SimpleNamespace(status_code=412)
+        return error
+
+    def test_explicit_conflict_rechecks_head_and_commits_frozen_staging(self):
+        commit = self.api.create_commit.side_effect
+        self.api.dataset_info.side_effect = [SimpleNamespace(private=True,sha='old'),
+                                             SimpleNamespace(private=True,sha='new')]
+        calls = []
+        def race(**kwargs):
+            calls.append(kwargs['parent_commit'])
+            if len(calls) == 1:
+                raise self.conflict()
+            return commit(**kwargs)
+        self.api.create_commit.side_effect = race
+        result = self.call()
+        self.assertEqual(calls, ['old', 'new'])
+        self.assertEqual(result['parent_commit'], 'new')
+        self.assertEqual(result['parent_conflicts'], [{'parent_commit':'old','status_code':412}])
+        self.assertEqual(self.api.list_repo_files.call_count, 2)
+
+    def test_conflict_cannot_overwrite_newly_occupied_prefix(self):
+        self.api.create_commit.side_effect = self.conflict()
+        self.api.list_repo_files.side_effect = [[], ['exports/pilot/new-file']]
+        with self.assertRaisesRegex(ValueError, 'nonempty'):
+            self.call()
+        self.assertEqual(self.api.create_commit.call_count, 1)
+        self.assertFalse(self.receipt.exists())
+
+    def test_conflict_rechecks_privacy_and_stops(self):
+        self.api.create_commit.side_effect = self.conflict()
+        self.api.dataset_info.side_effect = [SimpleNamespace(private=True,sha='old'),
+                                             SimpleNamespace(private=False,sha='new')]
+        with self.assertRaisesRegex(ValueError, 'private'):
+            self.call()
+        self.assertEqual(self.api.create_commit.call_count, 1)
+        self.assertFalse(self.receipt.exists())
+
+    def test_explicit_conflict_has_three_attempt_limit(self):
+        self.api.create_commit.side_effect = self.conflict()
+        with self.assertRaisesRegex(RuntimeError, 'precondition'):
+            self.call()
+        self.assertEqual(self.api.create_commit.call_count, 3)
+        self.assertFalse(self.receipt.exists())
+
     def test_tamper_and_rows(self):
         self.summary['artifacts'][0]['sha256'] = '0'*64; self.write_summary()
         with self.assertRaisesRegex(ValueError,'checksum'):
