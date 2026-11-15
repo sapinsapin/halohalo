@@ -1,0 +1,93 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:09:42.218605+00:00",
+  "jobs": [
+    {
+      "language": "bik",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1",
+      "launch": {
+        "pid": 466782,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.prepare",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/canonical-bik-remote-v1/snapshots/45e92c68065c893a3a8cb68100650899af05eebc67ece89d0d8ae5419807f595/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1/prepared",
+          "--max-recordings",
+          "17",
+          "--window-seconds",
+          "27",
+          "--min-free-gib",
+          "100"
+        ],
+        "manifest_sha256": "31a82a39f3d9f3bad3427cc1b3b9a91bafb324123b3c238d91ec8d5b1474b8a9",
+        "recordings": 17,
+        "raw_hours": 9.72959361111111,
+        "import_command": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.import_media",
+          "--archive-root",
+          "/home/iotim/chika-curation/views/bik",
+          "--language",
+          "bik",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/canonical-bik-remote-v1"
+        ]
+      },
+      "worker": {
+        "pid": 466782,
+        "status": "running",
+        "started_at": 1794712166.8262398
+      },
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1/run.py",
+      "recovery_script": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv/bin/python', '-m', 'curation.prepare', '--manifest', '/home/iotim/chika-curation/curation/outputs/canonical-bik-remote-v1/snapshots/45e92c68065c893a3a8cb68100650899af05eebc67ece89d0d8ae5419807f595/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1/prepared', '--max-recordings', '17', '--window-seconds', '27', '--min-free-gib', '100'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n"
+    },
+    {
+      "language": "ilo",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1",
+      "launch": {
+        "pid": 466824,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.prepare",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/canonical-ilo-remote-v1/snapshots/e3771881fc040add0a7803d6e3c8402d8031bbf4b1b54b5a15313018cd94e7b3/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1/prepared",
+          "--max-recordings",
+          "19",
+          "--window-seconds",
+          "27",
+          "--min-free-gib",
+          "100"
+        ],
+        "manifest_sha256": "abf49f1db31f7121a9509e17c6087fae43efd6dd1ece7d7f3dfe8d09667e80b7",
+        "recordings": 19,
+        "raw_hours": 9.772842485555556,
+        "import_command": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.import_media",
+          "--archive-root",
+          "/home/iotim/chika-curation/views/ilo",
+          "--language",
+          "ilo",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/canonical-ilo-remote-v1"
+        ]
+      },
+      "worker": {
+        "pid": 466824,
+        "status": "running",
+        "started_at": 1794712167.8024998
+      },
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1/run.py",
+      "recovery_script": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv/bin/python', '-m', 'curation.prepare', '--manifest', '/home/iotim/chika-curation/curation/outputs/canonical-ilo-remote-v1/snapshots/e3771881fc040add0a7803d6e3c8402d8031bbf4b1b54b5a15313018cd94e7b3/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1/prepared', '--max-recordings', '19', '--window-seconds', '27', '--min-free-gib', '100'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n"
+    }
+  ],
+  "transcribed_hours": 0
+}
