@@ -38,5 +38,13 @@
     "status_at_launch": "waiting_for_verified_publication",
     "observation_deadline_seconds": 3600,
     "retries": 0
+  },
+  "remote_presence_observation": {
+    "observed_at": 1794707024.523293,
+    "private": true,
+    "head_revision": "6c49ef5a0523d4688cd3b3c9624435e4d68fd56b",
+    "prefix": "data/fil_collected_vad_5671_v1/",
+    "remote_files": 60,
+    "note": "Presence only; does not replace publisher hash verification or streaming audit"
   }
 }
