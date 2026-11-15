@@ -826,3 +826,7 @@ All 146 v2 regional items initially failed with `transfer_monitor_error`: nonint
 ### Filipino remote preparation verified; VAD and audit started (2026-11-15)
 
 The eight-recording Filipino preparation snapshot completed with 1,017 windows / 7.600932049 decoded window hours. Every window passed schema validation and its stored audio SHA-256 check. A persistent dwnd-01 CPU job now runs pinned Silero VAD across the full snapshot, then automatically runs the independent exact-PCM/offset/inherited-metadata audit. An audit failure has a distinct terminal status and cannot be reported as completion. `curation/DWND_FIL_VAD_CHECKPOINT.json` records input hashes, command, required PYTHONPATH, recovery code and live process evidence. No ASR request has been made for these new remote recordings.
+
+### Remote Filipino ASR client ready (2026-11-15)
+
+Installed the existing bounded persistent ASR client on dwnd-01, matching local websockets 16.1.1. Provisioned the existing authorized Boses bulk credential over SSH to an owner-only file under `.credentials` (directory 0700, file 0600); no secret is committed or printed. `curation/DWND_ASR_CLIENT_READY.json` records module hashes, endpoint/model, permissions and the live VAD dependency. No remote ASR request has been sent. Require terminal successful VAD and its exact-PCM audit before the two-item smoke; use `fw/whisper-large-v3-pld-fil-norm`, language `fil`, and preserve the uncertain-request stop/no-replay contract. Production serving remains unchanged.
