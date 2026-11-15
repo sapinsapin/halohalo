@@ -1,0 +1,31 @@
+{
+  "repo": "sapinsapin/chika",
+  "revision": "d8afa809fbff479d90d904b591fcf6bd99e4e210",
+  "private": true,
+  "metadata_only": true,
+  "audio_uploaded": false,
+  "files": [
+    {
+      "local": "curation/outputs/collected-fil-7460-v1/metadata-backup/manifest.jsonl.gz",
+      "path": "checkpoints/fil-deduplicated/aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73/manifest.jsonl.gz",
+      "sha256": "030ae9ddf23ddbe8eb9e6692b079504509f2d84fb1ba60119cc3ed012a327e47",
+      "original_sha256": "aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73",
+      "source": "curation/outputs/collected-fil-7460-v1/manifest.jsonl"
+    },
+    {
+      "local": "curation/outputs/collected-fil-7460-v1/metadata-backup/aliases.jsonl.gz",
+      "path": "checkpoints/fil-deduplicated/aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73/aliases.jsonl.gz",
+      "sha256": "9bebbecf626485ac69334e25b90e145068cdd0ea28bd1c78170d9c9d104ccba7",
+      "original_sha256": "e89027910f695d6ff6acf38aa8cc82409509cfead34bc64ff00e73c598e1253c",
+      "source": "curation/outputs/collected-fil-7460-v1/aliases.jsonl"
+    },
+    {
+      "local": "curation/outputs/collected-fil-7460-v1/metadata-backup/audit.json.gz",
+      "path": "checkpoints/fil-deduplicated/aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73/audit.json.gz",
+      "sha256": "4f09a9e321c842f74d75f45b91f8db8e4bd416dcc52e7ded652e091331789d7b",
+      "original_sha256": "5cb42ed7c16048ff7298299e714ad68adc6e167ba7f35655263732b2a917a2dd",
+      "source": "curation/outputs/collected-fil-7460-v1/audit.json"
+    }
+  ],
+  "verified": true
+}
