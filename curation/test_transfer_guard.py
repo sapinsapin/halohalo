@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from . import transfer_guard as guard
 
@@ -15,7 +15,7 @@ class TransferTests(unittest.TestCase):
         clock = SimpleNamespace(now=0)
         process = SimpleNamespace(pid=12345)
         process.poll = lambda: exitcode if clock.now >= end else None
-        process.wait = lambda timeout=None: exitcode
+        process.wait = Mock(return_value=exitcode)
         def sleep(seconds):
             clock.now += seconds
             if change:
@@ -72,6 +72,63 @@ class TransferTests(unittest.TestCase):
         self.assertEqual(result, 'disk_floor')
         popen.assert_not_called()
         self.assertEqual(self.run_fake(free=lambda t: (100 if t < 5 else 0)*1024**3)[0], 'disk_floor')
+
+    def test_preexisting_overbudget_does_not_launch(self):
+        (self.root/'item.webm.part').write_bytes(b'x'*11)
+        result, _, popen, kill = self.run_fake(max_transfer_bytes=10)
+        self.assertEqual(result, 'transfer_budget')
+        popen.assert_not_called()
+        kill.assert_not_called()
+
+    def test_budget_crossing_stops_reaps_and_preserves_partial(self):
+        partial = self.root/'item.webm.part'
+        result, _, popen, kill = self.run_fake(end=100, max_transfer_bytes=10,
+            change=lambda t: partial.write_bytes(b'x'*11))
+        self.assertEqual(result, 'transfer_budget')
+        popen.return_value.wait.assert_called_once_with(timeout=5)
+        self.assertEqual([c.args for c in kill.call_args_list],
+                         [(12345, signal.SIGTERM), (12345, signal.SIGKILL)])
+        self.assertEqual(partial.read_bytes(), b'x'*11)
+
+    def test_oversized_successful_exit_is_rejected(self):
+        partial = self.root/'item.webm.part'
+        result, _, popen, kill = self.run_fake(end=5, max_transfer_bytes=10,
+            change=lambda t: partial.write_bytes(b'x'*11))
+        self.assertEqual(result, 'transfer_budget')
+        popen.return_value.wait.assert_called_once_with()
+        kill.assert_not_called()
+        self.assertEqual(partial.read_bytes(), b'x'*11)
+
+    def test_default_has_no_transfer_budget(self):
+        partial = self.root/'item.webm.part'
+        result, _, _, kill = self.run_fake(end=5,
+            change=lambda t: partial.write_bytes(b'x'*11))
+        self.assertEqual(result, 0)
+        kill.assert_not_called()
+
+    def test_budget_sums_distinct_media_inodes(self):
+        def change(t):
+            (self.root/'item.audio.webm').write_bytes(b'x'*6)
+            if t >= 10:
+                (self.root/'item.audio.flac').write_bytes(b'y'*5)
+        result, _, _, _ = self.run_fake(end=100, change=change, max_transfer_bytes=10)
+        self.assertEqual(result, 'transfer_budget')
+
+    def test_rename_does_not_double_count_budget(self):
+        partial = self.root/'item.webm.part'
+        partial.write_bytes(b'x'*6)
+        def change(t):
+            if partial.exists():
+                partial.rename(self.root/'item.webm')
+        result, _, _, _ = self.run_fake(end=5, change=change, max_transfer_bytes=6)
+        self.assertEqual(result, 0)
+
+    def test_invalid_transfer_budgets(self):
+        for budget in (True, False, 0, -1, 1.5, '1'):
+            with self.subTest(budget=budget):
+                result, _, popen, _ = self.run_fake(max_transfer_bytes=budget)
+                self.assertEqual(result, 'invalid_bounds')
+                popen.assert_not_called()
 
     def test_unrelated_metadata_and_mtime_are_not_progress(self):
         partial = self.root/'item.m4a.part'

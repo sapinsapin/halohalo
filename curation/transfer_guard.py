@@ -66,12 +66,15 @@ def _stop(process):
 
 def run_transfer(command, output_directory, item_id, log_handle,
                  min_free_gib=25, idle_timeout=300, max_seconds=21600,
-                 poll_seconds=5):
+                 poll_seconds=5, max_transfer_bytes=None):
     """Return the child exit code or raise TransferFailure, preserving partials.
 
     Only increases above each media inode's previous byte high-water mark reset
     inactivity. Renames, deletion, truncation, mtimes, and log writes do not.
     Commands run without a shell in their own process group. Bounds are seconds.
+    max_transfer_bytes is a monitored cumulative budget for matching-media
+    inode high-water bytes, including existing partials. It is not a hard
+    filesystem quota, so writes may overshoot it between polls.
     """
     if (not isinstance(item_id, str) or not re.fullmatch(r'[A-Za-z0-9_-]+', item_id)
             or isinstance(command, (str, bytes)) or not command):
@@ -81,12 +84,21 @@ def run_transfer(command, output_directory, item_id, log_handle,
         raise TransferFailure('invalid_bounds')
     if min_free_gib < 0 or min(idle_timeout, max_seconds, poll_seconds) <= 0:
         raise TransferFailure('invalid_bounds')
+    if max_transfer_bytes is not None and (
+            isinstance(max_transfer_bytes, bool)
+            or not isinstance(max_transfer_bytes, int) or max_transfer_bytes <= 0):
+        raise TransferFailure('invalid_bounds')
     directory = Path(output_directory)
     process = None
     try:
         if shutil.disk_usage(directory).free < min_free_gib * 1024**3:
             raise TransferFailure('disk_floor')
         high_water = _snapshot(directory, item_id)
+        def over_budget():
+            return (max_transfer_bytes is not None
+                    and sum(high_water.values()) > max_transfer_bytes)
+        if over_budget():
+            raise TransferFailure('transfer_budget')
         started = last_progress = time.monotonic()
         process = subprocess.Popen(command, stdout=log_handle,
                                    stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
@@ -94,7 +106,13 @@ def run_transfer(command, output_directory, item_id, log_handle,
         while True:
             code = process.poll()
             if code is not None:
-                return process.wait()
+                result = process.wait()
+                process = None  # The owned child has already exited and been reaped.
+                for key, size in _snapshot(directory, item_id).items():
+                    high_water[key] = max(size, high_water.get(key, 0))
+                if over_budget():
+                    raise TransferFailure('transfer_budget')
+                return result
             now = time.monotonic()
             if shutil.disk_usage(directory).free < min_free_gib * 1024**3:
                 raise TransferFailure('disk_floor')
@@ -103,6 +121,8 @@ def run_transfer(command, output_directory, item_id, log_handle,
                 last_progress = now
             for key, size in current.items():
                 high_water[key] = max(size, high_water.get(key, 0))
+            if over_budget():
+                raise TransferFailure('transfer_budget')
             if now - started >= max_seconds:
                 raise TransferFailure('hard_timeout')
             if now - last_progress >= idle_timeout:

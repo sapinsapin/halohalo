@@ -15,11 +15,12 @@ class InventoryTests(unittest.TestCase):
                 (root/(ident+'.info.json')).write_text('{}')
                 return 0
             with patch('curation.acquire_inventory.run_transfer',side_effect=download) as run, patch('curation.acquire_inventory.probe',return_value={'format':{'duration':'3'},'streams':[{'codec_type':'audio','sample_rate':'16000'}]}):
-                r=acquire(item,root,'bik','dzgb',{'variety_claim':'unverified'},0)
+                r=acquire(item,root,'bik','dzgb',{'variety_claim':'unverified'},0,max_transfer_bytes=1000)
                 self.assertEqual(r['language'],'bik');self.assertEqual(r['duration'],3)
                 self.assertEqual(r['rights']['training'],'unknown')
                 self.assertEqual(acquire(item,root,'bik','dzgb',{},0),r)
                 self.assertEqual(run.call_count,1)
+                self.assertEqual(run.call_args.kwargs['max_transfer_bytes'],1000)
                 (root/(ident+'.m4a')).write_bytes(b'corrupt')
                 r=acquire(item,root,'bik','dzgb',{},0)
                 self.assertEqual(run.call_count,2);self.assertEqual(r['attempts'],2)

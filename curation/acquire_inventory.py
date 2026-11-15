@@ -18,7 +18,7 @@ def checked(record):
             digest(record['audio_path']) == record['audio_sha256'])
 
 
-def acquire(item, root, language, source_id, provenance, min_free_gib=25, max_attempts=2):
+def acquire(item, root, language, source_id, provenance, min_free_gib=25, max_attempts=2, max_transfer_bytes=None):
     ident=item['id']
     if not re.fullmatch(r'[A-Za-z0-9_-]{11}',ident):
         raise ValueError('invalid YouTube ID')
@@ -52,7 +52,7 @@ def acquire(item, root, language, source_id, provenance, min_free_gib=25, max_at
                 '--socket-timeout','25','--retries','2','--fragment-retries','2',
                 '--concurrent-fragments','1','--write-info-json','--match-filter',
                 '!is_live & !is_upcoming','-o',str(root/'%(id)s.%(ext)s'),record['page_url']],
-                root,ident,output,min_free_gib=min_free_gib)
+                root,ident,output,min_free_gib=min_free_gib, max_transfer_bytes=max_transfer_bytes)
         if result:raise RuntimeError('yt-dlp failed; inspect '+str(log))
         info_path=root/(ident+'.info.json');info=json.loads(info_path.read_text())
         if info.get('live_status') in ('is_live','is_upcoming'):
@@ -78,10 +78,12 @@ def main():
     for key in ('inventory','root','language','source-id'):p.add_argument('--'+key,required=True)
     p.add_argument('--max-hours',type=float,default=300)
     p.add_argument('--min-free-gib',type=float,default=25)
+    p.add_argument('--max-transfer-bytes',type=int,default=None,help='Per-item monitored media byte budget; may overshoot between polls')
     p.add_argument('--max-items',type=int,default=10000)
     p.add_argument('--max-attempts',type=int,default=2)
     a=p.parse_args()
     if not math.isfinite(a.max_hours) or a.max_hours<=0 or not math.isfinite(a.min_free_gib) or a.min_free_gib<0 or min(a.max_items,a.max_attempts)<1:p.error('invalid bounds')
+    if a.max_transfer_bytes is not None and a.max_transfer_bytes<=0:p.error('byte budget must be positive')
     root=Path(a.root).resolve();root.mkdir(parents=True,exist_ok=True)
     data=json.loads(Path(a.inventory).read_text());items=data.get('items',data.get('entries',[]))
     provenance={k:v for k,v in data.items() if k not in ('items','entries')}
@@ -103,7 +105,7 @@ def main():
         for item in items:
             if measured>=a.max_hours*3600 or processed>=a.max_items:break
             if any(r['id']==item['id'] for r in records):continue
-            result=acquire(item,root,a.language,a.source_id,provenance,a.min_free_gib,a.max_attempts)
+            result=acquire(item,root,a.language,a.source_id,provenance,a.min_free_gib,a.max_attempts,a.max_transfer_bytes)
             processed+=1
             if result['status']=='downloaded':measured+=result['duration'];records.append(result)
             print(json.dumps({k:result.get(k) for k in ('id','status','duration','error')}),flush=True)
