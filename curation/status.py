@@ -88,6 +88,10 @@ def snapshot():
         for relative in directories:
             path=ROOT/'outputs'/relative
             if path.exists(): inputs.append((language,path))
+    known_paths={path for _,path in inputs}
+    for path in sorted((ROOT/'outputs').glob('fil-persistent-batch-v*/asr/manifest.jsonl')):
+        if path not in known_paths:
+            inputs.append(('fil_taglish',path))
     coverage=account(inputs)
     asr_hours={t['group']:coverage['groups'].get(t['group'],{}).get('covered_source_hours',{}).get('draft_transcribed',0) for t in targets}
     batch_path=ROOT/'outputs/vad-asr-batch-v1/worker.json'
