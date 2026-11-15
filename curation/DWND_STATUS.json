@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:42:06.452659+00:00",
-  "free_gib": 1797.5214805603027,
+  "updated_at": "2026-11-15T03:45:14.640242+00:00",
+  "free_gib": 1793.1974334716797,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -135,15 +135,14 @@
       "worker": {
         "pid": 440397
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "acquisition": {
         "statuses": {
           "failed": 10,
-          "downloaded": 185,
-          "downloading": 1
+          "downloaded": 194
         },
-        "raw_hours": 95.06591805555558
+        "raw_hours": 100.11685944444446
       },
       "summaries": {
         "summary.json": {}
@@ -242,6 +241,7 @@
       "worker": {
         "pid": 763123,
         "status": "running",
+        "stage": "preparation",
         "started_at": 1794713830.872178
       },
       "process_present": true,
@@ -296,10 +296,19 @@
       "worker": {
         "pid": 763121,
         "status": "running",
+        "stage": "vad",
+        "verified_windows": 3179,
         "started_at": 1794713830.862062
       },
       "process_present": true,
       "process_matches_root": true,
+      "summaries": {
+        "prepared/summary.json": {
+          "windows": 3179,
+          "window_hours": 23.639556510416668,
+          "transcribed_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {
@@ -364,6 +373,18 @@
       },
       "process_present": false,
       "process_matches_root": false,
+      "summaries": {
+        "responses/summary.json": {
+          "selected": 100,
+          "completed": 100,
+          "failed": 0,
+          "manifest_rows": 100,
+          "stopped_early": false,
+          "stop_reason": null,
+          "transcribed_hours": 0.2871588888888889,
+          "empty": 0
+        }
+      },
       "observation_errors": []
     },
     {
@@ -516,10 +537,19 @@
       "worker": {
         "pid": 763143,
         "status": "running",
+        "stage": "vad",
+        "verified_windows": 3213,
         "started_at": 1794713830.8721144
       },
       "process_present": true,
       "process_matches_root": true,
+      "summaries": {
+        "prepared/summary.json": {
+          "windows": 3213,
+          "window_hours": 23.93918703125,
+          "transcribed_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {

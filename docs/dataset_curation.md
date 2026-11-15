@@ -892,3 +892,7 @@ The 49-recording /29.866669514 prepared-hour snapshot produced 22,150 speech-can
 ### Second 1,000-row Kimi review completed and merged
 
 The second large Kimi assignment processed all 1,000 rows: 990 accepted, 10 rejected, no early stop. The strict finalizer verified stored response/content bindings and audio hashes, attached 990 reviews, and confirmed zero transcript changes or audio approvals. A subsequent exact-ID/input-identity merge into the staged 7,460-row Filipino manifest added all 990 accepted reviews without changing audio, text, rights or splits. The new staged v3 snapshot contains 4,057 text-reviewed and 3,403 draft rows, with 7,460 distinct audio hashes. `curation/FIL_7460_V3_CHECKPOINT.json` pins input/output hashes and counts. Rejected reviews are retained and not automatically retried. This metadata update is not a new dataset release, audio approval or TTS training gate pass.
+
+### Filipino staged v3 remotely preserved
+
+The 7,460-row v3 manifest, merge audit and complete second 1,000-row reviewed manifest are backed up in private `sapinsapin/chika` at immutable revision `4034cf08b6555e376ac4fe1cda07a2079704faa7`. All three deterministic gzip objects were freshly downloaded, compressed-hash checked and decompressed to the exact original bytes. `curation/FIL_7460_V3_REMOTE_CHECKPOINT.json` records recovery coordinates. No new dataset configuration or audio upload is implied. Remote status now reports the active preparation/VAD/audit stage and nested ASR response summaries, alongside actual process identity checks.

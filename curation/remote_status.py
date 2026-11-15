@@ -30,7 +30,7 @@ def observe(root):
         if (root / name).exists():
             state.update(read(root / name, errors))
     report['worker'] = {k: state[k] for k in
-                        ('pid', 'status', 'returncode', 'started_at', 'finished_at') if k in state}
+                        ('pid', 'status', 'stage', 'verified_windows', 'returncode', 'started_at', 'finished_at') if k in state}
     pid = state.get('pid')
     if isinstance(pid, int) and pid > 0:
         result = subprocess.run(['ps', '-p', str(pid), '-o', 'command='],
@@ -62,7 +62,7 @@ def observe(root):
     fields = ('windows', 'window_hours', 'input_windows', 'input_hours', 'segments',
               'candidate_hours', 'selected', 'completed', 'failed', 'manifest_rows',
               'stopped_early', 'stop_reason', 'transcribed_hours', 'verified_hours', 'empty')
-    for name in ('summary.json', 'prepared/summary.json', 'vad/summary.json'):
+    for name in ('summary.json', 'prepared/summary.json', 'vad/summary.json', 'responses/summary.json'):
         path = root / name
         if path.exists():
             value = read(path, errors)
