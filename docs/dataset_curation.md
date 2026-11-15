@@ -746,3 +746,11 @@ Prepared 1,000 additional draft clips from the 7,460-row exact-audio-unique mani
 ### Kimi rejection audit (2026-11-15)
 
 Re-parsed the eleven recorded failures in the running 1,000-row batch offline against each original input/config: three proposed lexical changes requiring listening, three had invalid request identity, one completion did not finish normally, one contradicted its no-obvious-issue triage, two had invalid issue structure, and one had no saved response. `curation/FIL_KIMI_1000_REJECTION_AUDIT.json` records response hashes and validation categories. This is an observation during a running batch, not its terminal failure total. No requests, retries, prompt changes or transcript edits were made. The strict contract remains in place; text review must not invent words or reject valid code-switching by normalizing it into another language.
+
+### Kimi 1,000 v1 completed; terminal-status wrapper corrected
+
+The batch processed all 1,000 inputs without early stopping: 988 accepted, 12 rejected. `curation.review` returned exit code 1 because individual rows failed; the conservative wrapper labeled this `stopped_with_failures`, causing both the finalizer and queued continuation to stop. Inspection proved full coverage from the terminal summary and absent worker processes. No requests were replayed.
+
+Finalization now accepts either successful or failed-row terminal status only after verifying full processed coverage and no early stop. It attached all 988 accepted reviews after content-bound validation; independent checks confirmed all 1,000 IDs, transcripts and audio hashes unchanged. `curation/FIL_KIMI_1000_COMPLETE.json` pins the reviewed manifest. Rejected rows remain drafts; no audio approvals were granted.
+
+The next batch had no reviews directory and had never issued requests. After preserving its stopped state, the corrected wrapper was launched for those 1,000 new inputs. Recovery scripts/checkpoints were updated. Future workers must distinguish per-row rejection from interrupted/early-stopped batches; exit code alone is insufficient to decide whether an entire batch was processed.
