@@ -1,0 +1,134 @@
+{
+  "host": "dwnd-01",
+  "updated_at": "2026-11-15T03:24:34.571088+00:00",
+  "free_gib": 1819.502082824707,
+  "archives": [
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/cebuano-next",
+      "pid": 438136,
+      "process": "",
+      "downloaded": 19,
+      "raw_hours": 9.706021944444444,
+      "failed": 0,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2",
+      "pid": 589096,
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/cebuano-next-v2/run-after-path-fix.py",
+      "downloaded": 17,
+      "raw_hours": 8.74332138888889,
+      "failed": 29,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
+      "pid": 438137,
+      "process": "",
+      "downloaded": 17,
+      "raw_hours": 9.72959361111111,
+      "failed": 0,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next-v2",
+      "pid": 589103,
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/bikolano-next-v2/run-after-path-fix.py",
+      "downloaded": 14,
+      "raw_hours": 7.684365,
+      "failed": 34,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/ilocano-next",
+      "pid": 438138,
+      "process": "",
+      "downloaded": 19,
+      "raw_hours": 9.772842485555556,
+      "failed": 0,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/ilocano-next-v2",
+      "pid": 589107,
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/ilocano-next-v2/run-after-path-fix.py",
+      "downloaded": 16,
+      "raw_hours": 8.184987773888889,
+      "failed": 33,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada",
+      "pid": 440397,
+      "process": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/gma-ratsada.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada --language hil --source-id gma-ratsada --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824",
+      "downloaded": 110,
+      "raw_hours": 55.62390277777778,
+      "failed": 8,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos",
+      "pid": 440399,
+      "process": "",
+      "downloaded": 17,
+      "raw_hours": 2.2178991666666663,
+      "failed": 2,
+      "note": "Acquisition records only, not fresh media hash verification"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams",
+      "pid": 440398,
+      "process": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/aksyon-streams.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams --language hil --source-id aksyon-streams --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824",
+      "downloaded": 41,
+      "raw_hours": 76.92304472222222,
+      "failed": 1,
+      "note": "Acquisition records only, not fresh media hash verification"
+    }
+  ],
+  "fil_rss": {
+    "groups": [
+      [
+        "downloaded",
+        55,
+        34.320422775555556
+      ],
+      [
+        "downloading",
+        1,
+        null
+      ],
+      [
+        "pending",
+        76,
+        null
+      ]
+    ],
+    "worker": {
+      "pid": 570576,
+      "status": "running",
+      "started_at": 1794712675.7895827
+    },
+    "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/taglish-rss-v1/run.py"
+  },
+  "fil_asr": {
+    "worker": {
+      "pid": 595271,
+      "status": "running",
+      "started_at": 1794713033.5161204
+    },
+    "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-fil-asr-batch-v1/run.py",
+    "summary": {
+      "selected": 5400,
+      "completed": 44,
+      "failed": [],
+      "manifest_rows": 25,
+      "checkpoint_every": 25,
+      "min_free_gib": 100.0,
+      "stopped_early": false,
+      "stop_reason": null,
+      "review_status": "draft",
+      "transcribed_hours": 0.09206666666666669,
+      "empty": 0
+    }
+  }
+}
