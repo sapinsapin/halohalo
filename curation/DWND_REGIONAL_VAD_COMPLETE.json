@@ -1,0 +1,101 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:16:16.608206+00:00",
+  "languages": {
+    "ceb": {
+      "worker": {
+        "pid": 520128,
+        "status": "complete",
+        "started_at": 1794712374.133138,
+        "returncode": 0,
+        "finished_at": 1794712460.809937
+      },
+      "summary": {
+        "input_windows": 1233,
+        "input_hours": 9.18717501736111,
+        "segments": 3663,
+        "candidate_hours": 7.57952777777777,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "d6c8e13eb58dcc0d21352db98ab47d69f4e7f398f1a7008c1b7f9ab06b780f85",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      },
+      "audit": {
+        "rows": 3663,
+        "parents_checked": 1129,
+        "exact_pcm_samples": 436580800,
+        "candidate_hours": 7.579527777777778,
+        "parent_manifest_sha256": "01709dcb12f43ce258454ea3ccb3a194bcf58dc8aac812d086d22d756b14c018",
+        "candidate_manifest_sha256": "d6c8e13eb58dcc0d21352db98ab47d69f4e7f398f1a7008c1b7f9ab06b780f85",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "manifest": "/home/iotim/chika-curation/curation/outputs/remote-ceb-vad-full-v1/vad/manifest.jsonl",
+      "parent_manifest": "/home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1/prepared/manifest.jsonl"
+    },
+    "bik": {
+      "worker": {
+        "pid": 520953,
+        "status": "complete",
+        "started_at": 1794712425.064156,
+        "returncode": 0,
+        "finished_at": 1794712517.3460076
+      },
+      "summary": {
+        "input_windows": 1308,
+        "input_hours": 9.729509322916666,
+        "segments": 4185,
+        "candidate_hours": 8.269753333333327,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "6446a7849e6a0b597e16506c310f58c4621b4928a80895495d39e40a643db9eb",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      },
+      "audit": {
+        "rows": 4185,
+        "parents_checked": 1233,
+        "exact_pcm_samples": 476337792,
+        "candidate_hours": 8.269753333333334,
+        "parent_manifest_sha256": "fc61cbe5d6bb98d3868463ce84eceb7aa548539194a3b299c974f8f881da5c26",
+        "candidate_manifest_sha256": "6446a7849e6a0b597e16506c310f58c4621b4928a80895495d39e40a643db9eb",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "manifest": "/home/iotim/chika-curation/curation/outputs/remote-bik-vad-full-v1/vad/manifest.jsonl",
+      "parent_manifest": "/home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1/prepared/manifest.jsonl"
+    },
+    "ilo": {
+      "worker": {
+        "pid": 520984,
+        "status": "complete",
+        "started_at": 1794712425.440526,
+        "returncode": 0,
+        "finished_at": 1794712516.3993673
+      },
+      "summary": {
+        "input_windows": 1312,
+        "input_hours": 9.77280170138889,
+        "segments": 3464,
+        "candidate_hours": 8.541022777777773,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "fa9b7208e66895d5688052ca045eeabe50690aab065809ccf2ce2d7cbe6f6817",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      },
+      "audit": {
+        "rows": 3464,
+        "parents_checked": 1295,
+        "exact_pcm_samples": 491962912,
+        "candidate_hours": 8.541022777777778,
+        "parent_manifest_sha256": "74a77a5be13b1f70ea45c9cfacf6f2e9ce264ce9a89a8213709afe1f0959bb27",
+        "candidate_manifest_sha256": "fa9b7208e66895d5688052ca045eeabe50690aab065809ccf2ce2d7cbe6f6817",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "manifest": "/home/iotim/chika-curation/curation/outputs/remote-ilo-vad-full-v1/vad/manifest.jsonl",
+      "parent_manifest": "/home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1/prepared/manifest.jsonl"
+    }
+  },
+  "transcribed_hours": 0,
+  "audio_approved_hours": 0
+}
