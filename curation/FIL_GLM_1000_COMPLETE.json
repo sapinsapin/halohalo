@@ -1,0 +1,15 @@
+{
+  "rows": 1000,
+  "attached": 952,
+  "rejected": 48,
+  "transcript_changes": 0,
+  "audio_approvals": 0,
+  "input_sha256": "fa5f7e35983536f81a2a885ff02fe4f8002905a971d68206cdde5bd378c9bfb1",
+  "reviewed_manifest_sha256": "01fa93702c12633c89f6cf607ac9b9147c61eb4ba2937cc1c01bf36aee8c03a6",
+  "triage": {
+    "no_obvious_text_issue": 553,
+    "needs_audio_review": 354,
+    "unintelligible_text": 45
+  },
+  "status": "terminal_all_selected_processed"
+}
