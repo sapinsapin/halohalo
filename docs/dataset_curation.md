@@ -448,3 +448,10 @@ When a publication receives an explicit HTTP 412, another writer has advanced th
 The worker prepares separate 16 kHz windows, exports per-recording checkpoints, runs VAD with a 1,000-minute/100,000-row bound, then independently audits PCM and offsets against the parent manifest. It enforces a 45 GiB disk floor at preparation and before VAD. The currently running ASR batch's manifest is not edited. Inspect the worker's actual process, stage, and audit result before assigning these candidates to a subsequent ASR session. `curation.status` now observes continuation preparation workers separately.
 
 The Hiligaynon full-recording backup's second attempt ended with explicit HTTP 409 (“another commit operation is in progress”). After verifying its process had exited and publication had completed, recovery preserved `worker-attempt-2.json` and resumed the same plan/state. Existing immutable remote objects are reverified before reuse. This was a deliberate recovery, not an automatic retry of an uncertain network failure; originals remain intact.
+
+
+### Cebuano full-broadcast expansion completed (15 November)
+
+Seven additional distinct dated Balitang Bisdak full broadcasts completed: 3.659496389 measured raw hours, 173,892,278 bytes. All seven source hashes were rechecked against the imported canonical manifest. The archive now contains 22 recordings (nine full broadcasts and thirteen clips), totaling 5.122861667 raw hours. The public selection and publisher links are preserved in `curation/cebuano_archive_inventory.json`.
+
+Private evidence: `curation/outputs/cebuano/archive-expansion/full-batch/receipt.json`; canonical snapshot `05b4d9fb5cc9c3f0bcac5cac8a8ea5440892b849b1a2fe4d7a55bb2d2f94d101` under `full-batch/canonical/snapshots/`. Import the archive parent, not its `audio/` directory: the latter produced an empty snapshot during the automatic first import, which was preserved and superseded by the verified 22-row snapshot. Different dates avoid known same-episode overlap but do not prove acoustic uniqueness. No verified-language or transcribed hours are claimed.

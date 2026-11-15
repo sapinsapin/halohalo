@@ -8,7 +8,7 @@
     "commercial": "unknown",
     "redistribution": "unknown"
   },
-  "scope": "Frozen two-episode and thirteen-clip selection. Exact-byte checked; acoustic overlap unresolved. Public video IDs and publisher metadata only.",
+  "scope": "Frozen nine full broadcasts and thirteen clips. Exact-byte checked; acoustic overlap unresolved. Public video IDs and publisher metadata only.",
   "items": [
     {
       "id": "TVve_CROifU",
@@ -185,6 +185,90 @@
       "publisher_date": "2026-11-12T20:02:34+00:00",
       "recording_kind": "excerpt_clip",
       "channel_id": "UCVoawkpW12kgtXgInbPCrhQ"
+    },
+    {
+      "id": "2rd0uFlYaig",
+      "title": "Balitang Bisdak: March 10, 2025",
+      "duration": 1923,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 25667984,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/131162/balitang-bisdak-march-10-2025/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=2rd0uFlYaig",
+      "selection_scope": "additional_dated_full_broadcast"
+    },
+    {
+      "id": "foe9xn2eBJs",
+      "title": "Balitang Bisdak: November 4, 2025 [HD]",
+      "duration": 1897,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 25028371,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/143015/balitang-bisdak-november-4-2025-hd/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=foe9xn2eBJs",
+      "selection_scope": "additional_dated_full_broadcast"
+    },
+    {
+      "id": "RuFaTQzCiRQ",
+      "title": "Balitang Bisdak: January 26, 2023",
+      "duration": 1743,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 23138157,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/78596/balitang-bisdak-january-26-2023/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=RuFaTQzCiRQ",
+      "selection_scope": "additional_dated_full_broadcast"
+    },
+    {
+      "id": "HQ-I4jGL_9w",
+      "title": "Balitang Bisdak: January 22, 2021",
+      "duration": 2138,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 27885404,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/33541/balitang-bisdak-january-22-2021/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=HQ-I4jGL_9w",
+      "selection_scope": "additional_dated_full_broadcast"
+    },
+    {
+      "id": "YfctM9wrjo8",
+      "title": "Balitang Bisdak: August 24, 2026 [HD]",
+      "duration": 1928,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 25481404,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/157906/balitang-bisdak-august-24-2026-hd/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=YfctM9wrjo8",
+      "selection_scope": "additional_dated_full_broadcast"
+    },
+    {
+      "id": "MZ05u80_Cq0",
+      "title": "Balitang Bisdak: June 15, 2026 [HD]",
+      "duration": 1680,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 21812612,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/154243/balitang-bisdak-june-15-2026-hd/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=MZ05u80_Cq0",
+      "selection_scope": "additional_dated_full_broadcast"
+    },
+    {
+      "id": "YPew5NXJUss",
+      "title": "Balitang Bisdak: May 22, 2026 [HD]",
+      "duration": 1865,
+      "live_status": "not_live",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "filesize": 24878346,
+      "publisher_episode_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/153124/balitang-bisdak-may-22-2026-hd/video/",
+      "recording_kind": "full_episode",
+      "url": "https://www.youtube.com/watch?v=YPew5NXJUss",
+      "selection_scope": "additional_dated_full_broadcast"
     }
   ]
 }
