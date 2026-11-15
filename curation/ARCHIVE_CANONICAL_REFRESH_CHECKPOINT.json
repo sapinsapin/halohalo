@@ -1,0 +1,33 @@
+{
+  "snapshots": [
+    {
+      "language": "hil",
+      "snapshot": "78ad3d5453bcc1e866437e3bac3d2d7f92c9c772ffae82eae085ed85995b2b92",
+      "root": "curation/outputs/imported-hil-archives-current-v2/snapshots/78ad3d5453bcc1e866437e3bac3d2d7f92c9c772ffae82eae085ed85995b2b92",
+      "manifest_sha256": "1834130edf864c9c9963b2b86bcf105af17b7d31014c71ed4da75a08c40d013e",
+      "recordings": 152,
+      "raw_hours": 128.96675759277772,
+      "source_count": 8,
+      "excluded_metadata_entries": 4,
+      "exact_byte_duplicates": 0,
+      "audio_bytes": 8016762570,
+      "asr_completed": 0,
+      "audio_verified": 0
+    },
+    {
+      "language": "bik",
+      "snapshot": "ac4b92475205cb8476b226b77684120303215c309acdbffeea5ad5f21213ed59",
+      "root": "curation/outputs/imported-bik-archives-current-v2/snapshots/ac4b92475205cb8476b226b77684120303215c309acdbffeea5ad5f21213ed59",
+      "manifest_sha256": "18f16222aecf8a3d859d3a24b41733bbe68558b1ef4a8606e8903c8fc8f67083",
+      "recordings": 96,
+      "raw_hours": 76.64492087111113,
+      "source_count": 1,
+      "excluded_metadata_entries": 5,
+      "exact_byte_duplicates": 0,
+      "audio_bytes": 4107009756,
+      "asr_completed": 0,
+      "audio_verified": 0
+    }
+  ],
+  "note": "Raw archive snapshots overlap earlier imports and may acoustically overlap RSS; never sum as unique speech."
+}
