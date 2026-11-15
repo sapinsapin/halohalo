@@ -1010,3 +1010,7 @@ A separate card-registration worker now waits for the publisher's successful ver
 ### Filipino ASR queue v5 reserved from the canonical candidate pool
 
 Reserved another 2,000 unique audio hashes /2.473383889 candidate hours from the verified deduplicated pool. Selection excluded all first-batch VAD audio (including the historical uncertain request) and all v3/v4 plan reservations, then rehashed every selected file. A live follow-on waits for queue v4's successful terminal state and full offline audits before sending any new request. `curation/DWND_FIL_ASR_QUEUE_V5_CHECKPOINT.json` freezes the twenty 100-row sessions and selected hashes. The same storage floor and stop-on-error behavior apply. Future queues must exclude these reservations even while this worker is waiting.
+
+### Regional processing v4: next 50 completed acquisitions each
+
+Created another frozen 50-recording snapshot per regional language from the ongoing acquisition-v3 roots, excluding the first 50 IDs already assigned to processing-v3. The importer rehashed and probed all selected media before launch. New raw durations: Cebuano 25.981658333 hours, Bikolano 26.658397222, Ilocano 24.765963446. Three live workers chain preparation, window hashing, VAD and PCM audits. `curation/DWND_REGIONAL_PROCESSING_V4_CHECKPOINT.json` preserves both selected and excluded IDs. Future processing must exclude the union of v3 and v4 assignments from these acquisition roots. These raw hours are not yet transcribed or quality-approved.
