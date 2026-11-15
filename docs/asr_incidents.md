@@ -42,3 +42,12 @@ After confirmed completion of v2, `curation/outputs/fil-persistent-batch-v3/` wa
 Future persistent-client launches default to `--checkpoint-every 25`. Every individual response/result still reaches its atomic cache before an item is counted complete; only the combined manifest is batched. It flushes at the cadence, on the first failure, and on normal or interrupted exit. Abrupt process termination can leave the aggregate manifest behind the response caches, which are revalidated and reused on recovery. `summary.json` distinguishes completed responses from `manifest_rows`; source-interval accounting reads the last available manifest, not an estimated future result.
 
 This avoids rewriting an increasingly large manifest after every row. Tests cover final partial batches, failure flushes and replay with networking forbidden. The already running v4 process retains its earlier per-row behavior; do not restart it merely to load this optimization. No cache fingerprint or model configuration changed.
+
+
+## Hiligaynon persistent route: new-source pilot and bounded continuation (15 November)
+
+A ten-segment pilot on previously unattempted original recordings completed successfully through `fw/whisper-large-v3-pld-hil-norm`: all ten nonempty transcripts, zero errors, 82.448 padded seconds. The input deliberately excludes the two original recording hashes used by the earlier timeout-affected serial batch. This is evidence of current service on these requests, not proof the prior timeout defect is fixed. Failed earlier items were not retried.
+
+The follow-on `curation/outputs/hil-persistent-new-batch-v1/` freezes 1,380 VAD candidates (2.331931111 padded hours), including the ten successful pilot segments. All ten caches were validated with network exchange forbidden before launch; the maximum new-request count is 1,370. Input SHA256: `1ecbeb6ec2444b24a3282906ab48082620dda2541354acc08c336e5dd33da733`. Inspect `selection.json`, `worker.json`, actual process, and `asr/summary.json` before recovery. One persistent session, no request retries, stop on first error, combined-manifest checkpoints every 25 completions. Per-item evidence is durable between checkpoints.
+
+The pilot root is `curation/outputs/hil-persistent-new-10-v1/`; its ten rows overlap the larger batch and must not be summed twice. These remain source-labeled machine drafts, not audio-verified transcripts.

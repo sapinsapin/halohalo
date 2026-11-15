@@ -1,0 +1,54 @@
+{
+  "preparation_root": "curation/outputs/fil-preparation-next-20-v1",
+  "selection": {
+    "rows": 20,
+    "raw_hours": 15.977050383888889,
+    "excluded_original_hashes": [
+      "033555cc1f363519e5b49592d1bef5487a320166ca737ce7407e1a84cbacfdfd",
+      "0d7681473ecb483011dae21ac992e91edc7675885139e020c52285955fc6c039",
+      "139ccc460943dfc3fd067dc9bc65e63db5ea6d975b4f32697d21db0f99582976",
+      "2729179507bfa8904f042964500375da10462418f8554fd2fd1208cdf3166a27",
+      "a5d2edd0b50f25b142df0a231eeedd8adc41d038e0c5aec0692d8d84556dd9f5",
+      "a602cb19cf0bfea80afbc9080bc6ecd4d082cf9eb308120ac58304ea8f1f5078",
+      "b16ebd57a6b5a724ffe6e4c6c73125f2af9a839941c15d9cf32f46fa8c56fd75",
+      "b4dc1e9fa6a53bba443acc69024ac7a84b45494fc02495a498a3038af16e18e0",
+      "cccdace3c4feb843674c6401fbcfe6719565a4481446d98ccc49189ac2bdac3e",
+      "f12f206ec97f4808cf3242209baddbd91f5bc57853777250f37ae91d649fd3bd"
+    ],
+    "source_counts": {
+      "adulting-with-joyce-pring": 3,
+      "boiling-waters-ph": 2,
+      "creepsilog": 2,
+      "kudazzers": 2,
+      "tamang-usapan": 2,
+      "the-koolpals": 3,
+      "the-linya-linya-show": 2,
+      "underpaid-with-stanley-chi": 2,
+      "wake-up-with-jim-and-saab": 2
+    },
+    "selection": "round-robin sources; skip prior prepared original hashes; max16raw hours; max20recordings"
+  },
+  "vad_audit": {
+    "rows": 10118,
+    "parents_checked": 1914,
+    "exact_pcm_samples": 856247629,
+    "candidate_hours": 14.865410225694443,
+    "parent_manifest_sha256": "e7a80cfeee8eee917081e5f0ac3d9e0825f01a79bc7f6cdef42a9fa8526f0f8c",
+    "candidate_manifest_sha256": "aa84c3f0245058cdf88e9edb4c7948a54aa14f61e97775b5a6d08b0c86ba55b9",
+    "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+  },
+  "queue_root": "curation/outputs/fil-asr-queue-v1",
+  "queue_policy": "Wait for completed v4 with5189 rows/no failures, then v5(10000) and v6(118) sequentially; no automatic retry;45GiB stage floor",
+  "asr_batches": [
+    {
+      "name": "fil-persistent-batch-v5",
+      "rows": 10000,
+      "input_sha256": "073a89fdca68559d432bd0e77399eb5d58ae34bd3b4637ddee5773e4dcd1d060"
+    },
+    {
+      "name": "fil-persistent-batch-v6",
+      "rows": 118,
+      "input_sha256": "446cf6a9bdecd4cd9b78195cffb6ea79fecb8a51d4c1d160b447b2f3e4f2edaf"
+    }
+  ]
+}

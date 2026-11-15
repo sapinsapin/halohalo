@@ -1,0 +1,59 @@
+{
+  "source_id": "abscbn-tvpatrol-ilocos",
+  "publisher": "ABS-CBN News",
+  "publisher_channel_id": "UCE2606prvXQc_noEqKxVJXA",
+  "publisher_channel_url": "https://www.youtube.com/@abscbnnews",
+  "language": "ilo",
+  "language_verified": false,
+  "language_evidence": "Official publisher titles name TV Patrol Ilocos and descriptions contain Ilocano headlines (e.g. Mannalon, pimmusay gapu ti Leptospirosis; Health Office, nagballaag). This supports provisional source selection, not audio-language verification or purity.",
+  "selection": "Five dated full TV Patrol Ilocos broadcasts from verified ABS-CBN News channel, distinct calendar dates, publisher metadata duration 20–50 min. Not TV Patrol North Luzon, Cagayan Valley, Balitang Amianan, or Pangasinan broadcasts.",
+  "rights": {
+    "training": "unknown",
+    "commercial": "unknown",
+    "redistribution": "unknown"
+  },
+  "preserve_code_switching": true,
+  "items": [
+    {
+      "id": "K9fkmJCGAHk",
+      "url": "https://www.youtube.com/watch?v=K9fkmJCGAHk",
+      "title": "TV Patrol Ilocos - July 23, 2014",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "metadata_duration_seconds": 1838
+    },
+    {
+      "id": "OgVzUkmrj-c",
+      "url": "https://www.youtube.com/watch?v=OgVzUkmrj-c",
+      "title": "TV Patrol Ilocos - June 24, 2015",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "metadata_duration_seconds": 1671
+    },
+    {
+      "id": "QeMLBQmWZvE",
+      "url": "https://www.youtube.com/watch?v=QeMLBQmWZvE",
+      "title": "TV Patrol Ilocos - Apr 18, 2017",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "metadata_duration_seconds": 2352
+    },
+    {
+      "id": "XIgj-kMRYgw",
+      "url": "https://www.youtube.com/watch?v=XIgj-kMRYgw",
+      "title": "TV Patrol Ilocos - March 20, 2015",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "metadata_duration_seconds": 1882
+    },
+    {
+      "id": "7ovRGc867fw",
+      "url": "https://www.youtube.com/watch?v=7ovRGc867fw",
+      "title": "TV Patrol Ilocos - Jan 4, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "metadata_duration_seconds": 1873
+    }
+  ],
+  "excluded_source_note": "GMA Balitang Amianan/One North Central Luzon not selected: regional coverage does not establish Ilocano language; predominantly Filipino may occur."
+}

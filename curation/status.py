@@ -47,7 +47,7 @@ def snapshot():
         if receipt.exists():report['hub_checkpoint']=json.loads(receipt.read_text())
         reports.append(report);db.close()
     archives_by_language={}
-    for language,root,pattern in [('hil',ROOT/'outputs/archive_sources','*/*.json'),('bik',ROOT/'outputs/bikolano/dzgb','*.json'),('ceb',ROOT/'outputs/cebuano/archive-expansion/audio','*.json')]:
+    for language,root,pattern in [('hil',ROOT/'outputs/archive_sources','*/*.json'),('bik',ROOT/'outputs/bikolano/dzgb','*.json'),('ceb',ROOT/'outputs/cebuano/archive-expansion/audio','*.json'),('ilo',ROOT/'outputs/ilocano/archive-expansion/media','*/*.json')]:
         archives={}
         for path in root.glob(pattern):
             try:r=json.loads(path.read_text())
@@ -65,7 +65,7 @@ def snapshot():
         radio.append({k:r.get(k) for k in ['station','candidate_language','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
     from .account import account
     inputs=[]
-    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl','collected-hil-667-v1/manifest.jsonl','collected-hil-667-v2/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl','fil-persistent-batch-v4/asr/manifest.jsonl','collected-fil-482-v1/manifest.jsonl'])]:
+    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl','collected-hil-667-v1/manifest.jsonl','collected-hil-667-v2/manifest.jsonl','hil-persistent-new-10-v1/asr/manifest.jsonl','hil-persistent-new-batch-v1/asr/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl','fil-persistent-batch-v4/asr/manifest.jsonl','fil-persistent-batch-v5/asr/manifest.jsonl','fil-persistent-batch-v6/asr/manifest.jsonl','collected-fil-482-v1/manifest.jsonl'])]:
         for relative in directories:
             path=ROOT/'outputs'/relative
             if path.exists(): inputs.append((language,path))
@@ -105,15 +105,17 @@ def snapshot():
             report['process_observation']=process.stdout.strip()
         archive_backups.append(report)
     persistent_batches=[job_observation(path,path.parent/'asr/summary.json')
-                        for path in sorted((ROOT/'outputs').glob('fil-persistent-batch-v*/worker.json'))]
+                        for pattern in ('fil-persistent-batch-v*/worker.json','hil-persistent-new-*/worker.json')
+                        for path in sorted((ROOT/'outputs').glob(pattern))]
     review_batches=[job_observation(path,path.parent/'reviews/summary.json')
                     for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json')
                     for path in sorted((ROOT/'outputs').glob(pattern))]
+    asr_queues=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-asr-queue-*/worker.json'))]
     preparation_batches=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-preparation-next-*/worker.json'))]
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; segmented ASR retry is bounded and circuit-limited',rss=reports,archives=archives,archives_by_language=archives_by_language,radio=radio,
-                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,preparation_batches=preparation_batches,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
+                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,preparation_batches=preparation_batches,asr_queues=asr_queues,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',

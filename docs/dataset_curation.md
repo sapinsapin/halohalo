@@ -455,3 +455,16 @@ The Hiligaynon full-recording backup's second attempt ended with explicit HTTP 4
 Seven additional distinct dated Balitang Bisdak full broadcasts completed: 3.659496389 measured raw hours, 173,892,278 bytes. All seven source hashes were rechecked against the imported canonical manifest. The archive now contains 22 recordings (nine full broadcasts and thirteen clips), totaling 5.122861667 raw hours. The public selection and publisher links are preserved in `curation/cebuano_archive_inventory.json`.
 
 Private evidence: `curation/outputs/cebuano/archive-expansion/full-batch/receipt.json`; canonical snapshot `05b4d9fb5cc9c3f0bcac5cac8a8ea5440892b849b1a2fe4d7a55bb2d2f94d101` under `full-batch/canonical/snapshots/`. Import the archive parent, not its `audio/` directory: the latter produced an empty snapshot during the automatic first import, which was preserved and superseded by the verified 22-row snapshot. Different dates avoid known same-episode overlap but do not prove acoustic uniqueness. No verified-language or transcribed hours are claimed.
+
+
+### Audited Filipino continuation queued for ASR (15 November)
+
+The twenty-recording continuation completed preparation and VAD: 10,118 candidate segments, 14.865410226 padded hours. Independent audit checked all derivative PCM/offsets and inherited metadata against 1,914 parent windows. The full selection, hashes and audit are recorded in `curation/FIL_NEXT_PREPARATION_CHECKPOINT.json`. This is not verified clean speech.
+
+The supervised queue `curation/outputs/fil-asr-queue-v1/` waits for `fil-persistent-batch-v4` to finish successfully with all 5,189 rows and no failures. It checks the actual dependency process while waiting, then launches `fil-persistent-batch-v5` (10,000 rows) and `v6` (118 rows) sequentially. Each input is frozen and hash-checked; each stage checks a 45 GiB disk floor. Any failed dependency, missing process, changed input, or unsuccessful stage stops the queue for inspection. The queue does not retry ASR failures or rerun non-queued stages. Do not manually start v5/v6 while this queue is live.
+
+### Ilocano archive pilot completed (15 November)
+
+Five distinct dated TV Patrol Ilocos broadcasts from the verified ABS-CBN News channel were downloaded and imported: 2.670427352 raw hours, 133,950,519 bytes. All five hashes were independently rechecked against canonical snapshot `fce4019a7f2ffed23cf19cc8f42e5f6eb20beb879028d5a07de804daed2920d9` under `curation/outputs/ilocano/archive-expansion/canonical/snapshots/`. Receipt: `curation/outputs/ilocano/archive-expansion/receipt.json`; public source evidence: `curation/ilocano_archive_inventory.json`.
+
+Publisher titles and Ilocano descriptions support provisional source selection; language and speech remain unverified, permissions unknown, and no ASR hours are claimed. Regional coverage alone was insufficient evidence to label GMA Balitang Amianan recordings Ilocano, so those were excluded from this pilot. The status report now includes the separately stored Ilocano archive.
