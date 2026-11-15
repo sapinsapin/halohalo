@@ -487,3 +487,36 @@ The first 982-row Filipino publication attempt received an explicit HTTP 412 and
 
 
 The 982-row Filipino publication retry completed and all thirteen artifacts were verified. Its configuration `fil_collected_vad_982_v1` was registered and read back at pinned revision `f24f5047cfa44c4a2644f2bd7c1ddb566036c5c5`, yielding exactly 982 IDs/sentences with 961 text-reviewed and 21 draft rows. Data revision: `2b04e79bc36bf65d7d020e9322a7ca529e7d84a4`. Receipts and streaming evidence are under `curation/outputs/collected-fil-982-v1/`. No publication worker remains pending for this snapshot.
+
+### Reusable sequential ASR queue
+
+`python -m curation.asr_queue` replaces one-off queue scripts for **new plans**. It supports the existing Filipino and Hiligaynon persistent client, 1–20 sequential stages, and at most 10,000 rows per stage. It does not migrate or restart the already-running `fil-asr-queue-v1` supervisor.
+
+A plan has this structure; roots resolve relative to the plan file (absolute roots also work):
+
+```json
+{
+  "version": 1,
+  "dependency": {"root": "../previous-batch", "rows": 5189},
+  "batches": [
+    {"root": "batch-001", "rows": 500, "input_sha256": "SHA256_OF_INPUT_JSONL"}
+  ]
+}
+```
+
+Omit `dependency` when none is required. Each new batch root must contain a validated `input.jsonl` and `worker.json` containing `{"status":"queued"}`; its `asr/` directory must not exist. Compute the input hash with `curation.schema.digest`, and set `rows` to the exact manifest length. The queue state directory must be separate from every batch and dependency root.
+
+```sh
+curation/.venv/bin/python -m curation.asr_queue \
+  --plan /absolute/path/to/plan.json \
+  --state-dir /absolute/path/to/queue-state \
+  --key-file /absolute/path/to/asr-key \
+  --language fil --model fw/whisper-large-v3-pld-fil-norm \
+  --min-free-gib 45
+```
+
+The queue checks all inputs before any stage, rejects duplicate IDs across stages, and checks frozen plan/input hashes again before launch and after completion. It requires successful dependency status, complete ASR summary, and output manifest; while a dependency is running it also checks the actual process. It does not infer completion from a missing process. Each stage checks the disk floor and proceeds only when the preceding output has the expected IDs/audio hashes and processed ASR states.
+
+A queue lock and per-batch launch locks prevent competing launches. The batch enters `launching` **before** child creation, then records the actual PID. If interruption leaves `launching`, `running`, or an existing `asr/` directory, a subsequent run refuses to replay that batch. Inspect the child process and response ledger first; preserve uncertain paid attempts. The queue does not automatically kill a child on interruption, repair failures, or reset queued markers. Use the documented ASR cache-reconciliation procedure before constructing a new recovery plan.
+
+Validation: nine queue regressions plus eleven persistent-client tests passed. Tests cover sequential execution, failure stopping, changed inputs, duplicate IDs, absent dependencies, wrong outputs, storage floor, interrupted launch, competing batch claim, plan mutation and separate state roots. A read-only preflight of the real 10,118-row pending Filipino plan validated both stages with zero network calls and no new worker launches. This preflight does not claim that the new generic queue has run those production stages; their existing supervisor retains ownership.
