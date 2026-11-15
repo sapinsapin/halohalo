@@ -25,5 +25,21 @@ class JobObservationTests(unittest.TestCase):
             self.assertTrue(result['process_present'])
             self.assertFalse(result['process_matches_job'])
 
+    def test_publication_complete_does_not_imply_card_or_stream_receipts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory)/'curation';root=base/'outputs/release';root.mkdir(parents=True)
+            worker=root/'publisher.json';worker.write_text(json.dumps({'status':'complete'}))
+            (root/'hub-receipt.json').write_text(json.dumps({'verified':True,'rows':5,'files':{'private':'data'}}))
+            with patch.object(status,'ROOT',base):
+                result=status.publication_observation(worker)
+            self.assertEqual(result['recorded_receipts'],{'hub-receipt.json':{'rows':5,'verified':True}})
+            self.assertNotIn('files',json.dumps(result))
+            (root/'card-receipt.json').write_text(json.dumps({'revision':'card','config':'release','card_verified':True}))
+            (root/'stream-check.json').write_text(json.dumps({'revision':'stream','rows':5,'exact_ids_and_sentences':True}))
+            with patch.object(status,'ROOT',base):
+                result=status.publication_observation(worker)
+            self.assertEqual(result['recorded_receipts']['card-receipt.json']['revision'],'card')
+            self.assertEqual(result['recorded_receipts']['stream-check.json']['revision'],'stream')
+
 
 if __name__=='__main__':unittest.main()
