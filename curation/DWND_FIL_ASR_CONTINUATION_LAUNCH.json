@@ -1,0 +1,41 @@
+{
+  "pid": 715516,
+  "args": [
+    "/home/iotim/chika-curation/.venv-compute/bin/python",
+    "-m",
+    "curation.asr_session",
+    "--manifest",
+    "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2/input.jsonl",
+    "--output",
+    "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2/responses",
+    "--key-file",
+    "/home/iotim/chika-curation/.credentials/boses.key",
+    "--model",
+    "fw/whisper-large-v3-pld-fil-norm",
+    "--language",
+    "fil",
+    "--max-items",
+    "100",
+    "--checkpoint-every",
+    "10",
+    "--min-free-gib",
+    "100",
+    "--timeout",
+    "60"
+  ],
+  "canary_summary": {
+    "selected": 1,
+    "completed": 1,
+    "failed": [],
+    "manifest_rows": 1,
+    "checkpoint_every": 1,
+    "min_free_gib": 100.0,
+    "stopped_early": false,
+    "stop_reason": null,
+    "review_status": "draft",
+    "transcribed_hours": 0.0033127777777777778,
+    "empty": 0
+  },
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.asr_session', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2/input.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2/responses', '--key-file', '/home/iotim/chika-curation/.credentials/boses.key', '--model', 'fw/whisper-large-v3-pld-fil-norm', '--language', 'fil', '--max-items', '100', '--checkpoint-every', '10', '--min-free-gib', '100', '--timeout', '60'])\ns.update(status='complete' if r.returncode==0 else 'stopped_for_inspection',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2/run.py"
+}

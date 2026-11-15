@@ -854,3 +854,7 @@ The first full remote Filipino ASR run stopped after 160 completed rows (one emp
 ### Partial remote Filipino transcripts backed up (2026-11-15)
 
 The 160-row draft ASR manifest and terminal stop summary are backed up as deterministic gzip objects in private `sapinsapin/chika` at revision `fd5ddb7001090975252780158bb9697f2e422779`. Both objects were freshly downloaded from that immutable revision, checked by compressed SHA-256 and decompressed to exactly the local source bytes. `curation/DWND_FIL_ASR_PARTIAL_REMOTE_CHECKPOINT.json` pins recovery paths. This is metadata-only preservation: no new audio upload, dataset configuration, text review or audio approval. The uncertain request remains excluded from automatic retries.
+
+### Bounded Filipino ASR continuation after timeout inspection
+
+The first remote stop was a service `finalize_timeout`. A new 100-row batch contains only never-attempted audio, excludes the timed-out ID/hash, and preserves the 160 validated prior results separately. Its single-row canary passed before launch. See the continuation selection/launch checkpoints and `docs/asr_incidents.md`; do not combine stages or replay quarantine entries. NYO us.kimi-k3 supplied the recovery review.
