@@ -29,7 +29,7 @@
     "pcm_matches": 5671,
     "sentences_unchanged": true
   },
-  "publication_status": "remote_artifacts_verified",
+  "publication_status": "data_card_and_stream_verified",
   "publication_prefix": "data/fil_collected_vad_5671_v1",
   "card_status": "registered_and_readback_verified",
   "finalizer": {
@@ -50,5 +50,18 @@
   "data_revision": "d1daed197a5ea2fbaae3eb25e2b52802f356a418",
   "remote_verified_artifacts": 60,
   "card_revision": "e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3",
-  "stream_status": "verification_running"
+  "stream_status": "verified",
+  "stream_audit": {
+    "revision": "e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3",
+    "config": "fil_collected_vad_5671_v1",
+    "rows": 5671,
+    "statuses": {
+      "text_reviewed": 1061,
+      "draft": 4610
+    },
+    "exact_ids_and_sentences": true
+  },
+  "finished_at": 1794708610.513098,
+  "distinct_audio_hashes": 5189,
+  "duplicate_audio_rows": 482
 }

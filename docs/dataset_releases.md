@@ -60,3 +60,10 @@ Completed GLM952 and Kimi491 reviews were joined into the existing 5,671-clip ma
 ### Filipino 5,671 v1 data and card verified; stream audit running
 
 All sixty remote export artifacts were freshly downloaded and hash/size verified at data revision `d1daed197a5ea2fbaae3eb25e2b52802f356a418`. The private dataset card now registers `fil_collected_vad_5671_v1`; exact README readback passed at `e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3`. The finalizer is still streaming all rows at the card revision; full release verification is not yet claimed. The tracked export checkpoint now separates these completed data/card stages from the pending stream audit.
+
+
+### Filipino 5,671 v1 release verification complete
+
+The finalizer completed successfully. Streaming at immutable revision `e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3` matched all 5,671 IDs, exact transcripts and review statuses (1,061 text-reviewed / 4,610 draft), with nonempty embedded audio and unassigned splits. Data, card readback and complete stream checks have now all passed.
+
+There are 5,189 distinct audio hashes among these 5,671 IDs; 482 rows repeat exact audio bytes. Publication verification does not imply acoustic uniqueness or training approval. The later 7,460-row deduplicated staging manifest supersedes this collection for future export planning, but has not yet been published as a dataset configuration.
