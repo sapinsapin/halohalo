@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parent
 def job_observation(path, summary_path=None):
     """Report allowlisted state plus an actual process observation, not a PID claim."""
     worker=json.loads(path.read_text())
-    report={k:worker[k] for k in ('pid','status','started_at','finished_at','returncode','rows','cached_items','max_new_items') if k in worker}
+    report={k:worker[k] for k in ('pid','status','started_at','finished_at','returncode','rows','cached_items','max_new_items','stage','completed_recordings') if k in worker}
     report['root']=str(path.parent.relative_to(ROOT.parent))
     if isinstance(worker.get('pid'),int):
         process=subprocess.run(['ps','-p',str(worker['pid']),'-o','pid=,etime=,command='],capture_output=True,text=True)
@@ -109,10 +109,11 @@ def snapshot():
     review_batches=[job_observation(path,path.parent/'reviews/summary.json')
                     for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json')
                     for path in sorted((ROOT/'outputs').glob(pattern))]
+    preparation_batches=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-preparation-next-*/worker.json'))]
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; segmented ASR retry is bounded and circuit-limited',rss=reports,archives=archives,archives_by_language=archives_by_language,radio=radio,
-                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
+                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,preparation_batches=preparation_batches,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',
