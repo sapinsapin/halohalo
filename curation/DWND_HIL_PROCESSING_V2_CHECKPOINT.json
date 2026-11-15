@@ -1,0 +1,520 @@
+{
+  "host": "dwnd-01",
+  "pid": 1684665,
+  "root": "/home/iotim/chika-curation/curation/outputs/remote-hil-processing-v2",
+  "import": {
+    "manifest": "/home/iotim/chika-curation/curation/outputs/canonical-hil-remote-v2/snapshots/0d9cd1da96120b9f1c9c57738f7ce5b0dcf4148cde64432b444da66b615392b7/manifest.jsonl",
+    "report": "/home/iotim/chika-curation/curation/outputs/canonical-hil-remote-v2/snapshots/0d9cd1da96120b9f1c9c57738f7ce5b0dcf4148cde64432b444da66b615392b7/report.json",
+    "imported_recordings": 100,
+    "source_count": 2,
+    "measured_media_hours": 113.14233888888889,
+    "exact_byte_duplicates": 0,
+    "excluded": 0
+  },
+  "manifest_sha256": "1c3866ff17606f3daa4b8e7192109c190dd4750e6af33cbf5242df0e6f5096cf",
+  "excluded_prior_manifest_sha256": "a8f33bd9db3a8bfa2223b9355b72b786654b1393d6bc7956bd12085eda3d819b",
+  "selected": [
+    {
+      "source_id": "aksyon-streams",
+      "id": "Al458uO0DI8",
+      "audio_sha256": "e02f844d03d29aa248c28d42c480bbf108cdcfefe3bb92a7aca6073d7fd67d56"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "-dFDqCPY6dM",
+      "audio_sha256": "603badd4ddef9e547dcb16aad5bd868f47d650e15919ae10d2eafdf5b642ac19"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "DviKBNWWh40",
+      "audio_sha256": "cbd4f35803c6f21a32358d116a50ab7d46b30783330dfa4c0a9bd690e4fc5689"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "-xgfkrXKe2o",
+      "audio_sha256": "8aa52d704943eb0fd208047089751b01aef26bc0ec4e0d85c88f332d85161739"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "EXMcanQc3Vw",
+      "audio_sha256": "1b19d71182097fcec346a865a8ad50ef57bf557177568fea66543bce7b46c83e"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "0ICLSqbU_Bw",
+      "audio_sha256": "4e781b72ff2cade8bfac6a0e44cdb1303e67ececda7147a400184978609ae315"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "IG_tlpJ66dQ",
+      "audio_sha256": "5324d3f914d5e3073f8cf47e814a2c15e01cdc59f30e6fbe83912d669deba717"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "0XE5thj298g",
+      "audio_sha256": "2588373cffdeb1a3ad1d0eb0d9a8ecfbb231561523932806eb8e1393d2be3657"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "JKpLQ3gH9FI",
+      "audio_sha256": "705c321d8021ff4d64db8a2a43714f36af2f099c570e73fa50fcdde568e31b6d"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "0fBOTXtf_Rg",
+      "audio_sha256": "03abfd1af8ae6880f8361695ce8e9d989f6267e157ec687a1260da1ab56e0138"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "MlEfJZ2-5sI",
+      "audio_sha256": "cc703a74bdd5ccb721b5eb6102b7cc9717d6a56daa8e9425631b9e5e750a759e"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "1T6cg0p3IXs",
+      "audio_sha256": "a58f2278ca0c757c623620f214c140c9a013eb4586bceed55b491547b7199986"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "QehbMzzeMV0",
+      "audio_sha256": "248465a2decf3d772b4be59d33127c9e3c9bcb12cbbf235a96b099df8ce5c3cd"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "1TIHPcx9sPU",
+      "audio_sha256": "d332c65e0add54731fe09235a8bf49f3f4d2e4d6ceecd77ba1b844387b7a24f2"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "j-BdAKRnV60",
+      "audio_sha256": "9aebe1910abe856f3d4f65dc41e8dc09828512b5b72d181b9637a0a02e269dc4"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "2HMCDoT8orU",
+      "audio_sha256": "26c7a5d559d429574e8f90c41edff62ce21143b86459658232a7afdef1fed990"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "oFdGuzsdj-0",
+      "audio_sha256": "980450c1dc0255d8b5ab68a965435d1f2674c1f8c9dc2a4717dafb0a97f0822f"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "2Oih8ZifSh8",
+      "audio_sha256": "a82cf366563cc1a61f18e86a0b3981510e13b6b4cffd9fc7823f760000e85801"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "uPIWxgtH9Bs",
+      "audio_sha256": "8fbf3dbebd496b3702cb1ca7a6a3030806bf3486dc55087f44fff5b129a634ae"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "3VtN2T0F1QY",
+      "audio_sha256": "c015101460d9d0ef6c96f86e27174cf73bee408361c74f2a470f59447d7adaf9"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "-Rb2XVNlKnw",
+      "audio_sha256": "5bac2e276e5f8d91c142c1905b6fe463b96281b301528abdcec55bf242761c29"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "7XkwIZJ16Gs",
+      "audio_sha256": "0fde1ff4579b9b510ec23410cce58a59e0dcd159020c3f9b6ec751b207643393"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "-nS07X8oNm4",
+      "audio_sha256": "638e4ee787b46b5834dc560c6f5e23fab35179d9ba0859a028209a70f4bf9e2a"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "8boUW1Sok64",
+      "audio_sha256": "d353a44e1eb4a4e05b7ed092229fbe7ed602403a0ccafc7a03e5a53b92bca0e7"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "1oR6AKfvH-Q",
+      "audio_sha256": "a32e18d987c52c34f29dd1138be707d76c22ab7d35ec17caa0f29c58add1f0bd"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "BNrvE-st3Uk",
+      "audio_sha256": "3c6d6373fdd7636f43947d500449794bf0ffa027ffb2a4cce0f6d9990773cdee"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "2zY3wsUSKSc",
+      "audio_sha256": "7984cd4941c1b9d5e8c29fb39dd91f249c03b3bab79215755c391c6a285fdfa7"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "D8Z_Umb46yg",
+      "audio_sha256": "8eb0e064bca14d85af881ebb38703c237a4137d70ce5c6db474e6f30cecc85aa"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "4ch8h5opY2k",
+      "audio_sha256": "fb05d1150fe36c9699f5eeca705d29d5e43b477a85dd99e22253ee213c63f364"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "D_nEjP5LP4c",
+      "audio_sha256": "bf02169e363964db3c1f42b9349029c8b142b045fafb1116351cc3617250f719"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "4tQXrcKvly8",
+      "audio_sha256": "7b407d470915ac40a43f6c0bb6f42d9eb7ac3e58368ad67eed2a515a2a1b5726"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "FdvujK__hzM",
+      "audio_sha256": "e374f2aa03f4b2f8368208ec787293241813316cc7b386961da9da01b7ae2978"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "57RVXkyNyXY",
+      "audio_sha256": "9517d2a086cf9214121262422b1dc6aaf34415a448434d99184aa53e88390d75"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "I9sa7D7TJwY",
+      "audio_sha256": "85879d2e447bbb34deb8299ca8f32ff44ea2b5d15ca7fb0a1baa51e9eb567f00"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "96I5SA6Z7Z4",
+      "audio_sha256": "56803d7dbdda5619871064d1353fa4ce7768727fe07ee1442221b252033b84a4"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "IecAdXP4NRk",
+      "audio_sha256": "0910a561fb60ba7f1e6e19ddde83f4026772497d42026ea68ce2341f45d7da0d"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "9HZ6zMWX-dk",
+      "audio_sha256": "eff72540970cf4789f83313cac088df402aef777ef4c1474418e3a379e4edee6"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "J64eARC7VhU",
+      "audio_sha256": "bcb2530c03321eb1f1d59aad64ee6cdfb9a503b6356472970485e3cf5a5f0a8e"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "AqNmuOeCDuA",
+      "audio_sha256": "91850e5282a50ee3edfd9fe2c82dd7fc4be491f2fe965e3af2d4d32a744b28b5"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "JTPfuNsPyAc",
+      "audio_sha256": "21aec43189629841c372307e5062d5baf697ff1ba0d68ea674ac52c3368314cd"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "FB1Ps0Afeng",
+      "audio_sha256": "e2e2884c137445a57402e7cc5d5f56c2db4f301c9b02dfb51b9687d744ae561a"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "KAH3ciUNiMM",
+      "audio_sha256": "744579961cf4daa208094de22515dd60faf845f3288515e48ce6793d8523849e"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "FGzvn8Ssy7k",
+      "audio_sha256": "2cadb266190e1b31af0bf175b5b1b35f1836097a07696fef7e47862575670156"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "Kj09G00lrIM",
+      "audio_sha256": "01078f4c11b58b36bd91ec5cac10153eb02074a4969acdb4be55a257eafe789d"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "FIhbW0wr7rk",
+      "audio_sha256": "08f3e80fb847704d9663c86d883c5a67b71d2e3b8da416628b26c30ec203f6a6"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "L4WD4GaP4vc",
+      "audio_sha256": "ef4b6bb459578ee33c6f28634cd2aef1be49abcb9ab446b043f0a58fab902f96"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "GNYHP-2rtfo",
+      "audio_sha256": "1e894cfa58bfbb514b4bed1827dda5d1d0235b15dc212df462918fa13c26d044"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "NlX4YL5ReSY",
+      "audio_sha256": "60e2ad12a5e9d132597b5a53b064df38e9b2463e64782cd2962a361d25c87238"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "GvlbuMdP6-g",
+      "audio_sha256": "c5d6a0c1284103a0e016deb9a5f49532c2e31f8eb5b128d04a51356ac5ccc552"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "Nve6UbkhbIc",
+      "audio_sha256": "606101df0e3f151835c7363f6ef1ac8db8a24eca5aa1d781754a534933f3fdd2"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "Hp1vQorqmS0",
+      "audio_sha256": "42db86a130c36d3235c647ff0bc9e6d8e77f2851093cb32f70e3ba12cbc5c865"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "OQTkJ7atiog",
+      "audio_sha256": "3e4daa517743b776f152f5262bac4dfb3f56781ab88389ee1280acd0e0b87574"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "IJ3Vb8fdz44",
+      "audio_sha256": "9117b89958e45b8c8c5359b4c9943e04614c692eaa87c35764da5052e49374e3"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "P5ZsN2xqkG8",
+      "audio_sha256": "18879076d0d3701e5e15de860527a3517ad4479a19760191124d057e879efa9f"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "J2J41gX8MOc",
+      "audio_sha256": "1cd5ab3528500e2b9fef5f49cdbebf27565d12596a47dc344d6aa35b115dae0d"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "PEQELuuStTE",
+      "audio_sha256": "a4f2c96e96f8930eec528b4a2b228abf83ec645d8e458a3ef3b47426a16ef88c"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "JCyA0wvC4fo",
+      "audio_sha256": "24f043c60427f5b7338c638fe1f466bd484efdacef773fc572ff6b5038b27cae"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "QKF6CQ99rcY",
+      "audio_sha256": "127e3f88cbd1d7390d280eeef53ec2c0eac6321720de17d48163c6c501f77d45"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "LKj8iuwSbvE",
+      "audio_sha256": "583e1b6865a0d2ec3014289f0dfc2802135567b2c78a2c3246adebb627ca33a2"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "QUKG1iP_arg",
+      "audio_sha256": "b81ac0a9264993cb44228c0195324cd54ccadc7764fb88acd8a30efd82544287"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "MEMoSwNx7v8",
+      "audio_sha256": "a5dd6c5c5e2c1e244c24fa3fc0a951ccc963e2745a9f5fa278841abc8d4ed493"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "Qg9eTm4aXxg",
+      "audio_sha256": "979fa3b4e1e405cb82db2e3ab7356073a9ba743f6177bd698aff422863aacea4"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "MaBtuMQSNWc",
+      "audio_sha256": "3f3bf420f40571480c88f5a745d3bd05686d0d9a48e6d8c31a7da8d4d8aba8e4"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "R7kqButowUI",
+      "audio_sha256": "740d23d3e2d3a6a47ee9a46b5b30f3933677c9615c529a70eea1d6fc3331633e"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "NI0G6KSHz0A",
+      "audio_sha256": "e8b47cc3a71d78ea4169e47bc956e652c7e0833d435a370115a97f3cebf1f521"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "R8Epgcj7Jog",
+      "audio_sha256": "8c7a0f43a5e16b117f05cb0bdeea0cb77efa2819d59adb2fc120e65bf678ce17"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "Oc5mS_1ve0k",
+      "audio_sha256": "9e52a542decf5c796402c4c545a3c9b742981634361813b3239a66502d26e1be"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "R_Ovq3SY9Ek",
+      "audio_sha256": "d937050c1e8b4f31cb77fe1333651c0334e81d37531f7cc70c076e7e5cdc2a29"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "UgRBeFv9GhI",
+      "audio_sha256": "4bbf1f3a5cb50ced3fc234aee810425afea6fb538ed45a0c723fdd1409ba07e6"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "RcYNigKkawc",
+      "audio_sha256": "b789d547609d0f85fd8e39685329a634ef2d51ab1f922757bd263db1f9fae8c8"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "VbTDNbuN8-A",
+      "audio_sha256": "26eea64168a2ccceda8d8af54e97101b26718f7c616954b6be8822052b226128"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "TRESETzyHOU",
+      "audio_sha256": "8c947a8703c8eb7c48e433d8540859631bd1951b549bc8ec29d9bbf84460f7fe"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "WOPydYxEUzw",
+      "audio_sha256": "8c5f94e999f94435a057b65b7e0e6721bcc06386dd681b0044b0008e378b6235"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "U2UK6MVDvM4",
+      "audio_sha256": "7ca448d99c11b2b9ae48d07c3d1ca1e60520c93bbb14c61bab9d1eda10bb58f5"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "Y_hPVv4S5tE",
+      "audio_sha256": "1a6c60cff50204b75d33784d1cb6b3d1dba16bb98f47a93d661cb821cab420c0"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "U65GOkVa-UI",
+      "audio_sha256": "fec2ad9fa66deee9f11ac25b618a422d1d5b57d05a61ca0ac89f24aabbbc7888"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "ZXQojJFVX-k",
+      "audio_sha256": "76d67531800685f06e7e0afc8aef58e3bf476f25eba82b5dacdfc884455a557d"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "V3kotAOvmLA",
+      "audio_sha256": "c1debbfe0194edb5c11350dd9bfad77f624806b80408be2e26db2f03739d9bf5"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "_hm-IR_QZ34",
+      "audio_sha256": "5bc9fea65937a307b11452b86584f2c9865cf83ce1036ad2a0640af9aedc64b6"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "VDfGcC60suU",
+      "audio_sha256": "b540f4f9df7d8d28582d3c49222664045fde3e49e3496dd408a0cae82cb1134d"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "aZ0Y1yiWvZw",
+      "audio_sha256": "602404d474ca23c4a321f576c5fc95a1a52ba4be632d4e7ccd0f5686b3062e38"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "WLNQ_GWiVXw",
+      "audio_sha256": "9e8086e59163ccc4d898c93c039e891ee9d1a6b2f4660b514576ce5aff5edee7"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "boAqfrpLkBg",
+      "audio_sha256": "f53adf60fd19752b0c16874b95d654ba4e6ab6d2f4cb29a49c6e763e4d820dd7"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "X4gDVr-KqBo",
+      "audio_sha256": "911892b622f475904ddb1d6c79e985a96e79cd2a17ec72491da108b912bea282"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "dN_kBrpHkJM",
+      "audio_sha256": "43f41e67ad51631394509fd2056eb50c037287258206ad1fffaac95f0b66c2c3"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "Xo5GCdTFu6Y",
+      "audio_sha256": "21caf46aeb41af25e996e25b4936fb369272c2c22f7e19eae39e9b84e94c14c9"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "e_7QQuA4Lz0",
+      "audio_sha256": "c40b6a2cc9ba103ec8b0ba4cd36f289582ee5b46c06880dcb3facb0697cb023f"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "XoMpeNVtPoM",
+      "audio_sha256": "d1842fec6cc668dfa0e0b13b672dfd7720ed78b9c87f2ec759096d39665ed8b9"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "gk5Kzq23gg8",
+      "audio_sha256": "0d709f02e63e7a8b5b02e655292dbcf934335dbfa8ecf39a3219ba8a14077892"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "XtFs8DeEr-w",
+      "audio_sha256": "031ddf76b9a4cd50bf6950b57ae25d32b1abdd6d2c41b6acfadacef0616659e0"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "h-7Hb5ZH4cg",
+      "audio_sha256": "f3a50874ef9a9ac9bb0811390f572efd4e8776de0162eb7c007a30712e1169e7"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "Y1i8ynNsIHk",
+      "audio_sha256": "86f627bcfa6eb44413a9b08f4a12cf4b0cc341802bfc9f22a6083944d026f06f"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "i_9IycAk3eM",
+      "audio_sha256": "d5fcdd9a45ead08f3dd64b7c58fb6bc6392fe7a72ad2c92d696c7667f4355ca9"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "ZEisF99_u6Y",
+      "audio_sha256": "8f070049c5fb2b5867c611d597495be89b771f7be6c9f22fdf9c0f2d8e54933b"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "ifEV4VCccI0",
+      "audio_sha256": "bb07a3f65584b2fc8d89ba6028dcd5621140e6479bcb12776218c57ffd635eee"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "ZReexNhUoug",
+      "audio_sha256": "beb9a3c4ddfd3dc2264469616155367998d2ccf9a957a681bc39eed8d51b23bf"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "ixhDF5ZZFqk",
+      "audio_sha256": "93eb136d2a15ef3c1539f3cd01a09db5f7c2af02c858ea4607120d7cd35ebb52"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "ZiAyqyda8ok",
+      "audio_sha256": "1230d763c8284766f4039bf059b411fbeb08faded031016d1ee04d15bc5bdc27"
+    },
+    {
+      "source_id": "aksyon-streams",
+      "id": "jHROcuZCLM4",
+      "audio_sha256": "4196057779d4ff37326ff1b4e2f707c55c4c9a6d1774fda283373a1fde85a79c"
+    },
+    {
+      "source_id": "gma-ratsada",
+      "id": "a7gKZ71GGms",
+      "audio_sha256": "d5ed182619283e0533456dedf086bfc9d2df82f26af85537fdd6e881b20eabde"
+    }
+  ],
+  "recovery_code": "import json,os,subprocess,time,math,shutil,sys\nfrom pathlib import Path\nfrom curation.schema import load_manifest,digest\nfrom curation.audit_vad import audit\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','stage':'preparation','started_at':time.time()}\ndef save():\n tmp=root/'worker.tmp';tmp.write_text(json.dumps(s));tmp.replace(root/'worker.json')\nsave()\ntry:\n subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.prepare', '--manifest', '/home/iotim/chika-curation/curation/outputs/canonical-hil-remote-v2/snapshots/0d9cd1da96120b9f1c9c57738f7ce5b0dcf4148cde64432b444da66b615392b7/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-hil-processing-v2/prepared', '--max-recordings', '100', '--window-seconds', '27', '--min-free-gib', '100'],check=True)\n manifest=root/'prepared/manifest.jsonl';rows=load_manifest(manifest)\n for row in rows:\n  if digest(row['audio_path'])!=row['audio_sha256']:raise ValueError('prepared audio hash mismatch')\n if shutil.disk_usage(root).free<100*2**30:raise RuntimeError('storage floor before VAD')\n s.update(stage='vad',verified_windows=len(rows));save()\n subprocess.run([sys.executable,'-m','curation.vad','--manifest',str(manifest),'--output',str(root/'vad'),'--max-rows',str(len(rows)),'--max-minutes',str(math.ceil(sum(r['duration'] for r in rows)/60)+1)],check=True)\n s.update(stage='audit');save()\n report=audit(manifest,root/'vad/manifest.jsonl');(root/'pcm-audit.json').write_text(json.dumps(report,indent=2))\n s.update(status='complete',stage='complete',finished_at=time.time());save()\nexcept Exception as e:\n s.update(status='failed',error_kind=type(e).__name__,finished_at=time.time());save();raise\n",
+  "scope": "Additional frozen completed acquisitions; prior recording IDs and exact audio hashes excluded; prepare then VAD and PCM audit; no ASR/quality approval"
+}
