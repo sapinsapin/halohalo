@@ -31,5 +31,12 @@
   },
   "publication_status": "started_not_verified",
   "publication_prefix": "data/fil_collected_vad_5671_v1",
-  "card_status": "pending"
+  "card_status": "pending",
+  "finalizer": {
+    "pid": 74118,
+    "root": "curation/outputs/collected-fil-5671-v1",
+    "status_at_launch": "waiting_for_verified_publication",
+    "observation_deadline_seconds": 3600,
+    "retries": 0
+  }
 }

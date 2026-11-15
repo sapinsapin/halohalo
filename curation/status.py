@@ -29,6 +29,8 @@ def job_observation(path, summary_path=None):
 def publication_observation(path):
     """Report recorded stages separately; this does not revalidate remote artifacts."""
     report = job_observation(path)
+    if (path.parent/'finalizer.json').exists():
+        report['finalizer'] = job_observation(path.parent/'finalizer.json')
     report['recorded_receipts'] = {}
     for name, fields in {
         'hub-receipt.json': ('repo', 'prefix', 'revision', 'rows', 'private', 'verified'),
