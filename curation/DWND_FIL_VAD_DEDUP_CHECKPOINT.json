@@ -1,0 +1,22 @@
+{
+  "host": "dwnd-01",
+  "pid": 1723147,
+  "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-dedup-v1",
+  "sources": [
+    {
+      "path": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v1/vad/manifest.jsonl",
+      "sha256": "f35e800023145819cc65659b71c45125f6fd05b5326046c229e5173065318ccd"
+    },
+    {
+      "path": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2/vad/manifest.jsonl",
+      "sha256": "119c77c632a1d299a5ea70a989a7a94d77703aaddeb9ab29c1c8a7f55a413f67"
+    },
+    {
+      "path": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v3/vad/manifest.jsonl",
+      "sha256": "3fbc0bdebc554e555e774ec2d1cb67595098c888c8ad0285c7dc80a3b41a91d1"
+    }
+  ],
+  "input_sha256": "4ff38136ca6c36ddd17c6133331bed55174a72f3782df32499a6680f3be38284",
+  "recovery_code": "import json,subprocess,os,time\nfrom pathlib import Path\nr=Path(__file__).parent;s={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(r/'worker.json').write_text(json.dumps(s))\ntry:\n p=subprocess.run(['/home/iotim/chika-curation/.venv/bin/python','-m','curation.deduplicate','--manifest',str(r/'input.jsonl'),'--output',str(r/'deduplicated')],check=True)\n s.update(status='complete',finished_at=time.time())\nexcept BaseException as e:\n s.update(status='stopped_for_inspection',error_type=type(e).__name__,finished_at=time.time());raise\nfinally:\n (r/'worker.json').write_text(json.dumps(s))\n",
+  "scope": "Exact-byte deduplication with full audio rehash; preserve aliases and source rows, no media deletion"
+}
