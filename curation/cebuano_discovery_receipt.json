@@ -1,0 +1,34 @@
+{
+  "source_id": "gma-balitang-bisdak",
+  "official_show_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/",
+  "mapping": {
+    "navbar_url": "https://data.igma.tv/regionaltv2023/data/widgets/navbar.gz",
+    "navbar_match": {
+      "id": "2",
+      "title": "Balitang Bisdak",
+      "url": "balitangbisdak"
+    },
+    "navbar_sha256": "467342e998994ebc0ec9ab0df96ee12a52c87b103ea486565c3f655f817f7555",
+    "grid_script_url": "https://images.gmanews.tv/regionaltv2023/resources/dist/js/components/grid_with_filter.gz",
+    "derivation": "Grid script matches tvshow_url in navbar data.details and requests grid/videos/{matched id}.gz; id2 was observed, not guessed."
+  },
+  "endpoint": "https://data.igma.tv/regionaltv2023/data/grid/videos/2.gz",
+  "grid_sha256": "d29b82cf905ef5a444d26e9b27ffe567c83ce3b514bfa26e8b64e25ca608e12b",
+  "grid_bytes": 32495360,
+  "grid_records": 30477,
+  "additional_candidates": 300,
+  "baseline_acquired_ids_excluded": 22,
+  "filter": "Dated Balitang Bisdak title plus Full Episode in lead; unique ID/date, exclude existing broadcast dates, live-style titles, recent unverified items; cap300. Exact acoustic overlap unresolved.",
+  "candidate_date_range": [
+    "2023-01-20",
+    "2026-04-16"
+  ],
+  "availability": "Unverified; check official channel, completion, duration before acquisition",
+  "expected_channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+  "candidate_inventory_sha256": "4593f2ae5f87e065543345d5da626f69fe84d20f2041b5ed5a50370fecd97ddb",
+  "media_downloaded": 0,
+  "measured_hours": null,
+  "estimated_hours": null,
+  "verified_language_hours": 0,
+  "transcribed_hours": 0
+}

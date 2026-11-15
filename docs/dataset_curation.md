@@ -533,3 +533,29 @@ The job first verifies immutable remote audio hashes/sizes and the SQLite checkp
 Storage verification: all 40 supervisor, eviction, and restoration tests passed, including live-downloader exclusion, missing/corrupt backup proof, public-repository rejection, crash recovery, bounded eviction, and restoring from the same checkpoint.
 
 The tracked Ilocano inventory now includes all 21 explicit episode references, tagged by `pilot-five` or `expansion-sixteen` selection batch. It is a reproducible source inventory, not a download-completion claim. The expansion's worker/finalizer receipts remain the authority for actual acquired media.
+
+
+### Ilocano bounded expansion verified complete (15 November)
+
+All sixteen expansion episodes completed before the archive floor was reached: 8.059983693 new measured raw hours, 406,095,199 bytes. The combined archive has 21 recordings, 10.730411045 raw hours and 540,045,718 bytes. Parent verification independently rehashed all 21 files, checked receipt durations and byte counts, matched their IDs to the tracked source inventory, and confirmed the canonical rows remain empty-transcript provisional-language drafts.
+
+Tracked checkpoint: `curation/ILOCANO_ARCHIVE_CHECKPOINT.json`. Canonical snapshot: `b72a802054b0ac9cc5c16d31b2921e8955c70fd47e9992f2137ed78214415fa3`; manifest SHA256 `d0338bc347a21951cd35d374e4c9fb9d97debccf29e848ce0b1c817b86dd4366`. Private receipts and independent audit are in `curation/outputs/ilocano/archive-expansion/`. No exclusions or exact-byte duplicates were reported; acoustic overlap, language, speech and transcripts remain unverified.
+
+Free space subsequently fell below the 45 GiB archive/preparation floor. New archive work is discovery-only while the verified-backup job runs; do not lower an active downloader's guard or restart it on an observation timeout. Existing RSS acquisition retains its configured floor.
+
+### Larger Cebuano and Ilocano discovery inventories (15 November)
+
+Two discovery-only passes added reproducible candidate inventories without downloading media:
+
+| Candidate source | Additional candidates | Duration evidence | Tracked files |
+| --- | ---: | --- | --- |
+| GMA Balitang Bisdak | 300 distinct IDs and broadcast dates | Publisher grid provides no durations; no hours estimate | `curation/cebuano_discovery_inventory.json`, `curation/cebuano_discovery_receipt.json` |
+| ABS-CBN TV Patrol Ilocos | 300 distinct IDs and broadcast dates | 150.342222222 hours from flat-search metadata only; not measured media | `curation/ilocano_discovery_inventory.json`, `curation/ilocano_discovery_receipt.json` |
+
+Both selections exclude acquired IDs and known broadcast dates; story footage may still recur across dates. Parent checks verified item counts, unique IDs/dates, baseline exclusions, URL/ID correspondence, inventory hashes and the Ilocano duration sum. No candidate has become verified speech or transcribed data through discovery.
+
+For Cebuano, the actual publisher navbar maps `balitangbisdak` to program ID `2`; the publisher's grid JavaScript derives the corresponding `grid/videos/2.gz` endpoint. The retained private 32.50 MB grid contains 30,477 records. Selection requires a dated program title and full-episode marker, excludes clips/live-style titles and known dates, and caps the result at 300. The compact receipt preserves URLs, mapping evidence and raw-grid SHA256; raw grid/descriptions remain outside Git.
+
+For Ilocano, three bounded official-channel flat searches returned 469 entries, yielding 314 additional unique dated candidates before the 300-item cap. The receipt preserves the exact `yt-dlp --flat-playlist --dump-single-json --skip-download` commands, query URLs, limits and snapshot hashes. Uploader identity/badge comes from flat search metadata; `per_video_full_metadata_verified` is explicitly false.
+
+**These are not download-ready inventories.** Before selecting a bounded media batch, fetch full per-video metadata (without downloading media), require the expected official channel ID, reject live/upcoming/unavailable items, check positive finite duration, deduplicate known IDs/dates again, and freeze a new bounded inventory. Respect the 45 GiB archive floor. Do not pass all 300 discovery entries directly to acquisition or infer that their dated titles prove current availability. Preserve code-switching and keep source-language labels provisional.

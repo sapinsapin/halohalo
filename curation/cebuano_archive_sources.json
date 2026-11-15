@@ -21,7 +21,7 @@
     },
     "pilot_inventory": "curation/outputs/cebuano/archive-expansion/inventory.json",
     "evidence_snapshots": "curation/outputs/cebuano/archive-expansion/evidence",
-    "inventory_scope": "Two dated full-episode pilot recordings plus 13 completed short-clip candidates resolved from 30 official publisher-page embeds. Upcoming full episode and same-date clips excluded conservatively. Wider archive not enumerated; no unique-audio claim.",
+    "inventory_scope": "22 acquired recordings (nine full broadcasts and13clips), plus a separate300-candidate discovery inventory. Exact-byte checks do not establish acoustic uniqueness.",
     "expanded_inventory": "curation/outputs/cebuano/archive-expansion/expanded-inventory.json",
     "expanded_selection": {
       "completed_clips": 13,
@@ -33,6 +33,10 @@
       "min_free_gib": 45,
       "measured_clip_hours": 0.4564758333333333
     },
-    "frozen_inventory": "curation/cebuano_archive_inventory.json"
+    "frozen_inventory": "curation/cebuano_archive_inventory.json",
+    "discovery_inventory": "curation/cebuano_discovery_inventory.json",
+    "discovery_receipt": "curation/cebuano_discovery_receipt.json",
+    "publisher_program_id": "2",
+    "publisher_grid_url": "https://data.igma.tv/regionaltv2023/data/grid/videos/2.gz"
   }
 ]
