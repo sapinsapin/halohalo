@@ -4,21 +4,31 @@ These configurations are in the private [sapinsapin/chika dataset](https://huggi
 
 | Configuration | Rows | Text-reviewed | Padded audio seconds |
 | --- | ---: | ---: | ---: |
+| `hil_collected_vad_667_v2` | 667 | 654 | 1,596.56 |
+| `fil_collected_vad_482_v1` | 482 | 471 | 1,924.68 |
 | `hil_collected_vad_667_v1` | 667 | 531 | 1,596.56 |
 | `hil_collected_vad_200_reviewed_v2` | 200 | 194 | 489.686 |
 | `fil_collected_vad_100_v1` | 100 | 99 | 292.476 |
 
-The 667-row Hiligaynon configuration includes the entire 200-row set. Both also overlap earlier collected pilots. Do not concatenate configurations or sum their durations as unique hours. All listed rows are unassigned, with source rights unknown and zero audio approvals. Text review preserves code-switching and does not prove fidelity to audio.
+The two 667-row Hiligaynon configurations contain the same audio and transcripts and include the entire 200-row set. The 482-row Filipino configuration includes the 100-row set. Both also overlap earlier collected pilots. Do not concatenate configurations or sum their durations as unique hours. All listed rows are unassigned, with source rights unknown and zero audio approvals. Text review preserves code-switching and does not prove fidelity to audio.
 
-For the 667-row snapshot, 136 rows remain draft-only: eleven rejected reviews and 125 not attempted at snapshot time. Later reviews are tracked separately and do not mutate this release. Audio and transcripts were unchanged during attachment. All 667 embedded PCM arrays were compared against local source derivatives; all ten remote artifacts were hash-verified. Pinned Hugging Face streaming returned 667 rows with exactly 531 `text_reviewed` and 136 `draft` statuses.
+For the older 667-row v1 snapshot, 136 rows remain draft-only: eleven rejected reviews and 125 not attempted at snapshot time. Later reviews are tracked separately and do not mutate this release. Audio and transcripts were unchanged during attachment. All 667 embedded PCM arrays were compared against local source derivatives; all ten remote artifacts were hash-verified. Pinned Hugging Face streaming returned 667 rows with exactly 531 `text_reviewed` and 136 `draft` statuses.
 
-Data revision: `cad388ea5b586ef63907d196d271d1ea6b969843`. Dataset-card/config revision: `80641c19769f064f7e3a757cbabb9fe0af6c6e80`.
+Older v1 data revision: `cad388ea5b586ef63907d196d271d1ea6b969843`. Dataset-card/config revision: `80641c19769f064f7e3a757cbabb9fe0af6c6e80`.
+
+The Hiligaynon v2 snapshot adds the final completed reviews: 654 valid text reviews and 13 rejected reviews left draft-only. The Filipino 482-row snapshot has 471 valid reviews and 11 rejected reviews left draft-only. Every embedded PCM array and sentence was checked against the corresponding manifest (667 and 482 matches); all ten Hiligaynon and eight Filipino remote artifacts were hash-verified. Neither snapshot grants audio approval or changes the ASR text.
+
+Pinned streaming checks returned exactly 667 Hiligaynon rows (654 text-reviewed, 13 draft) and 482 Filipino rows (471 text-reviewed, 11 draft), with matching ID sets, sentences and review states.
+
+Shared dataset-card/config revision: `aa3b647061474e2d66e8677ebc80e66e26372dca`.
+
+Data revisions: Hiligaynon v2 `42532f747e25ca9f6edf7530c1104117eed199a8`; Filipino 482 `1eeac74a04cca6eac16aeb2e4cd5209611e31adb`.
 
 ```python
 from datasets import Audio, load_dataset
 rows = load_dataset(
-    "sapinsapin/chika", "hil_collected_vad_667_v1",
-    revision="80641c19769f064f7e3a757cbabb9fe0af6c6e80",
+    "sapinsapin/chika", "hil_collected_vad_667_v2",
+    revision="aa3b647061474e2d66e8677ebc80e66e26372dca",
     split="unassigned", streaming=True, token=True,
 ).cast_column("audio", Audio(decode=False))
 ```
