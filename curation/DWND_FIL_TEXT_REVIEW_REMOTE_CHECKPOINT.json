@@ -1,0 +1,21 @@
+{
+  "repo": "sapinsapin/chika",
+  "private_verified": true,
+  "revision": "ed0fd605d1106c6db1be482b16a734153e9a5d20",
+  "files": [
+    {
+      "local_path": "curation/outputs/dwnd-fil-review-v1/reviewed.jsonl",
+      "path": "checkpoints/dwnd-fil-review-v1/15104a363d0b1d922ab70297616af9fc4ca13769ffef7b6da2b49a1763aa0e36-reviewed.jsonl.gz",
+      "compressed_sha256": "15104a363d0b1d922ab70297616af9fc4ca13769ffef7b6da2b49a1763aa0e36",
+      "raw_sha256": "516dd22db7509ded164cdd1153f56f5258c4533618b75716a55d54d3b5862448"
+    },
+    {
+      "local_path": "curation/outputs/dwnd-fil-review-v1/attachment.json",
+      "path": "checkpoints/dwnd-fil-review-v1/110e7b2c9c7e7a24070449e3b8ceb0bcbecd86373190575f89d1a860b6b1d017-attachment.json.gz",
+      "compressed_sha256": "110e7b2c9c7e7a24070449e3b8ceb0bcbecd86373190575f89d1a860b6b1d017",
+      "raw_sha256": "4deecf77de6de76476f7c9969d359751c25682fa1f81ad2c205b2c7300ead972"
+    }
+  ],
+  "verification": "Fresh download compressed SHA256 and exact decompressed source bytes",
+  "scope": "Metadata backup only; no audio upload or publication approval"
+}
