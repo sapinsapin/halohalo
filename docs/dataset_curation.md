@@ -674,3 +674,9 @@ Completed acquisition records were re-imported without copying media: Hiligaynon
 `curation/ARCHIVE_CANONICAL_REFRESH_CHECKPOINT.json` records immutable snapshot/manifest hashes and sizes. Hiligaynon excluded four incomplete acquisition entries. Bikolano excluded five metadata entries: three incomplete acquisition records plus worker/smoke-inventory metadata, not five lost recordings. The importer expects archive records one directory below `--archive-root`: use `outputs/bikolano`, not its `dzgb` child. An initial child-root scan produced an empty snapshot; it is not the authoritative Bikolano result. The nonempty checkpoint above supersedes it.
 
 The finite Hiligaynon sources remain in scope: Deditos11, IlonggaTalks1, RMNBacolod8 and known Kuan2 were represented; larger GMA/Aksyon/Bombo inventories remain partially acquired with the original archive process still live. No source was declared exhaustively complete from runtime totals alone.
+
+### Canonical archive metadata checkpointed remotely
+
+The refreshed Hiligaynon and Bikolano manifests/reports (four files, 319,666 bytes) are saved under `checkpoints/canonical-archives/{snapshot}/` in private `sapinsapin/chika`, revision `dc6fcae14ce8d6dfff0739f589538f1f422cd18c`. All four were freshly downloaded at that immutable revision and compared byte-for-byte. `curation/ARCHIVE_CANONICAL_REMOTE_CHECKPOINT.json` records exact remote paths and hashes.
+
+This is **metadata-only recovery evidence**. It uploads no audio and grants no eviction eligibility for referenced originals. Full media backup proofs/checkpoints remain separately required.

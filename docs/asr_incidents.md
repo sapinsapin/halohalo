@@ -82,3 +82,9 @@ All 1,281 prior request fingerprints were excluded, including the uncertain requ
 All four rows held by queue v3 matched **complete** v5 response caches, not the uncertain failed request. Independent local audio rehashes passed. Complete raw responses were copied to isolated `outputs/fil-cache-reconciled-4-v1/`, then passed through the existing Session cache validation and row-specific `apply_result`. Both `Session.connect` and `Session.exchange` were replaced with raising functions during reconciliation, making any attempted network request fail. All four rows were transcribed from valid caches, with zero network requests.
 
 `curation/FIL_CACHE_RECONCILIATION_CHECKPOINT.json` binds each row/audio to its source response hash and the resulting manifest. These are additional source-manifest rows with duplicate audio bytes, not new unique audio hours; preserve duplicate-aware accounting. The uncertain connection-closed request remains excluded and unreplayed. The 8,833-row active queue is unchanged.
+
+### Queue v3 stopped at the storage floor
+
+After v8 completed, v9 processed 495/500 rows and stopped before the next request when free space fell to 32,205,045,760 bytes (below 30 GiB). The failed-entry record is `StorageFloor` with `request_attempted=false`, unlike the earlier uncertain transport failure. All 495 completed rows are flushed and parse correctly; five input rows remain unsent. Queue v3 stopped and did not launch the seventeen future stages (v10–v25 and v6).
+
+`curation/FIL_ASR_STORAGE_STOP_CHECKPOINT.json` records the exact unsent row, manifest hash and recovery plan. Do not lower the floor. After space recovers above 30 GiB, validate cached attempts and resume only v9 using its existing cache; after it completes, create a new queue for the still-queued future stages. Do not restart v3's whole frozen plan, which includes completed and partially completed stages. The original uncertain v5 request remains excluded.

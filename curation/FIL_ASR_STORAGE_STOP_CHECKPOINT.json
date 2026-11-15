@@ -1,0 +1,16 @@
+{
+  "batch": "fil-persistent-batch-v9",
+  "completed_rows": 495,
+  "completed_manifest_sha256": "635c9a761b4a354635ae351ad927388e0fc515d7439e612130188103e7fb26b7",
+  "stop": {
+    "id": "927393165a7742628569c32478a046546b395aef84f1c1bff53c20a47333233a",
+    "error_kind": "StorageFloor",
+    "request_attempted": false,
+    "free_bytes": 32205045760
+  },
+  "queue": "fil-asr-queue-v3",
+  "queue_status": "stopped_after_error",
+  "remaining_in_batch": 5,
+  "queued_future_stages": 17,
+  "recovery": "Wait for free space above30GiB; validate caches/ledger then resume v9 only; after complete create a fresh queue for still-queued v10-v25 and v6, never restart full v3 plan"
+}
