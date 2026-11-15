@@ -1,0 +1,240 @@
+{
+  "host": "dwnd-01",
+  "worker": {
+    "pid": 1117334,
+    "status": "complete",
+    "started_at": 1794714366.7309859,
+    "plan_sha256": "e3c7c2654b1dd9345968b28ab445a5733fbed20cb0751f5f659dd6844ed41bef",
+    "completed_batches": 20,
+    "batch": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-20",
+    "finished_at": 1794715860.8188317
+  },
+  "rows": 2000,
+  "nonempty": 1990,
+  "nonempty_hours": 2.272531111111114,
+  "manifest": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-2000-v3/manifest.jsonl",
+  "manifest_sha256": "fec302c6987dfe6309f4c5ea203416bbac993fc10970f3835f9aa23fab444765",
+  "offline_audits": [
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "88bbcd64bafef4108d55efb4102bad801662bf310dd12d3f2313a1c9b98088a3",
+      "manifest_sha256": "0cb19b2719215408bd660f44a147143516c6daddcec8d3eb8000f6cb34f7afe3",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "6b8f9ad7cb4aadaa038218d851af59eb1a7f1966612abd550669a59b57bbeec3",
+      "manifest_sha256": "af63d1c6f241703ae7e71ce08a9ab9fbf390f717d9ae96ca10e2ad1d3ce28d34",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "6aa82d06625965b86a433f56198e53c024a31359421e31cb533a93ac4e9e81c6",
+      "manifest_sha256": "4d06274a377d313edc773a5013f885e621bf9448eb93f24e1f8ce2d111a1366a",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "3cd7cd9a6eeeebe23b33cced39e934f20fdf9a5022a3760c0cf64cccc95b300d",
+      "manifest_sha256": "c609e0e889fa40c4690b189af5865bdc526dd141284d07bd911700a7246c391f",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "1d61496b0a33fcaceb5cb3832a2b97d4b62e903c2e4f7d373bbaaeaca42a81c5",
+      "manifest_sha256": "9abc6592e72d1aea116ec22bbbc99f6110d0c61ea1193f37bf2796d5f97d09c1",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "abfd12dfa0514f0513727b8fad6a3693b0c241505f85f28f5fc12777da6e00bb",
+      "manifest_sha256": "41e2753101a4ffe459ab90090f90a49f8aa862188a1555c4d9eb0f72ef19bcd4",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "ae76e6aa8748300da862daf6e34dcc1cd70e6f96c39cbbb59f1bdca5b162b5fe",
+      "manifest_sha256": "f6b9478dcc5565da4cc7bf13e3020daeb9678b253cde5fced0b6235d18bdfac9",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "42ddbdc96040d1693c7dd770fa9374a119c76e912f1ef35635d3c56cab3fac1d",
+      "manifest_sha256": "8fc86f544c52e9fe152707adec6cee386c972064e6b0e1164344f987e3fec174",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "209e62b19deba5626d0e01a34bb734cec1b1805c2f3aed61e3a0b33b908a0ec1",
+      "manifest_sha256": "85e34b03b74f8e49c3182fd0f77fe9210f024b30fa3ece8f8ad3cfa6d03697e1",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "cc0044223c8a3507281dac1c212a7bbc5ce9cc597687adb28e990ec9fbb4ff7a",
+      "manifest_sha256": "171555b5fff31d1707d03e0af0964ed379fc2c13502dacda22eb7ff5a9986585",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "067f5d290505843c2d4a06038ec92eabe0faea0b490d7290182d000c2da73f5c",
+      "manifest_sha256": "464fb0ed19bf3a4cd9d71be550045053139ccb2b2916cce2b00ecee8ce78e8bf",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "39e3145ffa4247ee7f5c381a127dba1896f9a17642d6a4ed78cbad92191da6a2",
+      "manifest_sha256": "6e1d11433ac17202271230ae140fb7135633732a89bc5ca6ca188635e6c32def",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "00de9b57f3ff733ad5a9f73d4ec2241835b7c984eb566073f84aaa4e3889de3c",
+      "manifest_sha256": "dfb5ead7adac7b7571001b4cfb19a730a26534b98cfe6dae55b6beef13b0e6f1",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "20718932d511e5b8df770f8817bd5639a49eef178703ecca0c21b40a466dc4ba",
+      "manifest_sha256": "dfadab907540108789911074e2620f329f6f3c714c749da2048aae34b493365e",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "d10fcf0753ff6facb596c26688a4de175cbcae58a92547500d0b4a67e0bd00e0",
+      "manifest_sha256": "d832642c1659720388a825f83cc8b9440bec63d8ba3cf3b6289f100a222ab587",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "906a223638e4ecc1f17d4f2c4b710944d45d92ddca008539f1b14ef5adf56a4f",
+      "manifest_sha256": "012ea98561e3b73bf0c07b499868ad50cb36757bd2e2d673e5ad836977c292e7",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "8dd9aa8451d8d05958e949ac66ef1f0c38d21d37af5aa6c16c557ae9a7b367ce",
+      "manifest_sha256": "d7b76c46bb8cc5f2cd03e4d873833bd03a0ed2fdf687bd99c9617f798df1be07",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "02c19955e2fb44a0f897cc66365a921dd564d206de0115d059dce2ccc9dc86a2",
+      "manifest_sha256": "8e6b2451db28369cb397a6d86a4c7db822e6734ce081a06e5b890f861328dd57",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 99,
+      "input_sha256": "bf1a610a91c9b2ba92f1a04788bab57cc103946fb5a66243698c1db8005580a1",
+      "manifest_sha256": "1ed10cd74380bfae481a7d0f306e4c59b2516b093a18374695632fb5b5f4efd8",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    },
+    {
+      "rows": 100,
+      "nonempty": 100,
+      "input_sha256": "78f4010b68f8a0a66beaed43d02ad35c59f088d5b722cf9738ea8aab27c78bc6",
+      "manifest_sha256": "521540976ec64a45c46db91fae439ce661b82afdf8ede4b553c53a9ff2378869",
+      "config_sha256": [
+        "7d142df3e39e40a093ec2ac7cf16fd62f76698d34c0805bd02fc7688d2ec35f1"
+      ],
+      "server_requests": 0,
+      "scope": "Protocol, content binding and exact decoded sample count; not transcription quality approval."
+    }
+  ],
+  "scope": "ASR transport/content integrity passed; draft transcription, no audio-quality approval"
+}

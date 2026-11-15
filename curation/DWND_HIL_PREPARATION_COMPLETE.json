@@ -1,0 +1,27 @@
+{
+  "host": "dwnd-01",
+  "preparation": {
+    "pid": 614220,
+    "status": "complete",
+    "started_at": 1794713205.1113648,
+    "returncode": 0,
+    "finished_at": 1794715841.3817356
+  },
+  "summary": {
+    "windows": 18980,
+    "window_hours": 141.65281854166665,
+    "transcribed_hours": 0,
+    "exact_decoded_duplicate_groups": [],
+    "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+  },
+  "followon": {
+    "pid": 1390564,
+    "status": "running",
+    "stage": "vad",
+    "started_at": 1794715457.54673,
+    "preparation_pid": 614220,
+    "verified_windows": 18980,
+    "parent_manifest_sha256": "719f9225aa116b6877c9bf8c52dc21b6ab15dda67908332358fae8850e8efd62"
+  },
+  "scope": "Preparation complete and full window hashing passed; VAD/audit still running"
+}
