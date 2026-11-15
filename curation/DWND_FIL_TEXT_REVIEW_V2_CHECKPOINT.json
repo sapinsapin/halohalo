@@ -1,0 +1,10 @@
+{
+  "pid": 89553,
+  "selected": 994,
+  "input_sha256": "a0404b8c45a0675616466ecc914fd86c0bcaf4706c61cccaf7c79b811bd0e816",
+  "root": "/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v2",
+  "model": "us.kimi-k3",
+  "max_attempts": 1,
+  "scope": "Text plausibility review only; no audio verification or transcript rewriting; excludes earlier input tuples",
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/Users/timsan/halohalo/repo/curation/.venv/bin/python', '-m', 'curation.review', '--manifest', '/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v2/input.jsonl', '--output', '/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v2/reviews', '--model', 'us.kimi-k3', '--max-attempts', '1', '--timeout', '60', '--max-consecutive-failures', '2', '--max-tokens', '2500'])\ns.update(status='process_exited',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n"
+}
