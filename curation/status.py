@@ -22,7 +22,7 @@ def job_observation(path, summary_path=None):
     if summary_path and summary_path.exists():
         summary=json.loads(summary_path.read_text())
         report['summary']={k:(len(summary[k]) if isinstance(summary[k],list) else summary[k])
-                           for k in ('selected','completed','failed','stopped_early','transcribed_hours','empty','manifest_rows','checkpoint_every') if k in summary}
+                           for k in ('selected','completed','failed','stopped_early','transcribed_hours','empty','manifest_rows','checkpoint_every','min_free_gib','stop_reason') if k in summary}
     return report
 
 

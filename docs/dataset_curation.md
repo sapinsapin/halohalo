@@ -559,3 +559,22 @@ For Cebuano, the actual publisher navbar maps `balitangbisdak` to program ID `2`
 For Ilocano, three bounded official-channel flat searches returned 469 entries, yielding 314 additional unique dated candidates before the 300-item cap. The receipt preserves the exact `yt-dlp --flat-playlist --dump-single-json --skip-download` commands, query URLs, limits and snapshot hashes. Uploader identity/badge comes from flat search metadata; `per_video_full_metadata_verified` is explicitly false.
 
 **These are not download-ready inventories.** Before selecting a bounded media batch, fetch full per-video metadata (without downloading media), require the expected official channel ID, reject live/upcoming/unavailable items, check positive finite duration, deduplicate known IDs/dates again, and freeze a new bounded inventory. Respect the 45 GiB archive floor. Do not pass all 300 discovery entries directly to acquisition or infer that their dated titles prove current availability. Preserve code-switching and keep source-language labels provisional.
+
+
+### Per-request ASR storage guard and waiting-queue migration (15 November)
+
+`curation.asr_session --min-free-gib` now checks available space before each item (default 25 GiB). A low-space stop flushes completed rows and records `StorageFloor`, `request_attempted=false`, and the observed free bytes. It does not submit that item or retry a paid request. Resume only after inspecting the result/attempt ledger; validated earlier caches are reused. The generic queue passes its configured floor through to the client, so its bound applies throughout each new stage.
+
+Tests demonstrated one successful request followed by a storage stop, then a resume that reused the first result and submitted only the previously unsent row. All 22 queue/client/status tests passed. Existing running ASR processes retain their loaded code.
+
+The old Filipino queue `fil-asr-queue-v1` was confirmed to be waiting, with no child process, both future batches still marked queued, and no `asr/` directories. Its state was preserved in `worker-before-migration.json`; it was deliberately retired before launching any paid stage. The current v4 ASR session was not stopped or restarted.
+
+Replacement `curation/outputs/fil-asr-queue-v2/` uses the reusable runner, the same frozen two-stage input plan, and a **30 GiB ASR floor checked before every request**. This is appropriate for already-prepared audio: the observed 4,300-plus-row ASR output occupied about 84 MiB, while new archive/preparation jobs retain a separate 45 GiB floor. The configured ASR threshold is 5 GiB above the RSS downloader floor; it does not lower media/preparation guards. `migration.json` records old/new PIDs, plan ownership and dependency counts. The v2 supervisor now exclusively owns pending v5/v6. Do not revive v1 or launch either stage manually while v2 is live.
+
+### Metadata-preflighted next archive batches
+
+The first twenty candidates per new discovery registry were inspected with full per-video metadata, without downloading media. Cebuano selected 19 episodes totaling 9.705833333 metadata-estimated hours; one candidate required sign-in and was excluded without bypass. Ilocano selected 19 totaling 9.773611111 metadata-estimated hours; one otherwise-valid item was excluded solely to stay below the 10-hour cap.
+
+Frozen selections and receipts are tracked as `curation/cebuano_next_acquisition_inventory.json`, `curation/cebuano_next_acquisition_receipt.json`, `curation/ilocano_next_acquisition_inventory.json`, and `curation/ilocano_next_acquisition_receipt.json`. Parent checks rehashed all 38 selected raw metadata files and verified IDs, official channel IDs, explicit completed status, titles, finite 20–60-minute durations, unique dates, source exclusions and aggregate limits. Metadata access does not grant source rights or establish spoken language.
+
+These selections are ready for a bounded acquisition after available space again satisfies the **45 GiB media floor**; recheck availability when starting later. No media was acquired in preflight and these estimates add zero measured or transcribed hours. Raw metadata/logs remain private under each language's `outputs/.../preflight-next-20-v1/` directory.

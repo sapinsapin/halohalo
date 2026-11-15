@@ -107,7 +107,7 @@ class PersistentTest(ASRTest):
         key=self.root/'key';key.write_text('secret-key')
         args=SimpleNamespace(endpoint=self.cfg.endpoint,model=self.cfg.model,language=self.cfg.language,
             timeout=self.cfg.timeout,pace=0,max_items=3,manifest=str(manifest),output=str(self.root/'batch'),
-            key_file=str(key),checkpoint_every=2)
+            key_file=str(key),checkpoint_every=2,min_free_gib=0)
         writes=[]
         def tracked(path,values):
             writes.append(len(values));write_jsonl(path,values)
@@ -124,6 +124,29 @@ class PersistentTest(ASRTest):
         self.assertEqual(summary['manifest_rows'],0)
         self.assertTrue(summary['stopped_early'])
         self.assertEqual((self.root/'failed-batch/manifest.jsonl').read_text(),'')
+
+    async def test_storage_floor_preserves_success_and_prevents_next_request(self):
+        from .asr_session import run
+        from .cli import write_jsonl
+        manifest=self.root/'disk-batch.jsonl';write_jsonl(manifest,[self.row,self.row2()])
+        key=self.root/'disk-key';key.write_text('secret-key')
+        args=SimpleNamespace(endpoint=self.cfg.endpoint,model=self.cfg.model,language=self.cfg.language,
+            timeout=self.cfg.timeout,pace=0,max_items=2,manifest=str(manifest),output=str(self.root/'disk-batch'),
+            key_file=str(key),checkpoint_every=25,min_free_gib=25)
+        with patch('curation.asr_session.shutil.disk_usage',side_effect=[SimpleNamespace(free=30*2**30),SimpleNamespace(free=24*2**30)]):
+            with self.assertRaises(SystemExit):await run(args)
+        self.assertEqual(self.finals,1)
+        summary=json.loads((self.root/'disk-batch/summary.json').read_text())
+        self.assertEqual(summary['completed'],1);self.assertEqual(summary['manifest_rows'],1)
+        self.assertEqual(summary['failed'][0]['error_kind'],'StorageFloor')
+        self.assertFalse(summary['failed'][0]['request_attempted'])
+        self.assertEqual(summary['min_free_gib'],25)
+        self.assertEqual(summary['stop_reason'],'StorageFloor')
+        self.clock=0  # The restarted connection has its own wire clock.
+        with patch('curation.asr_session.shutil.disk_usage',return_value=SimpleNamespace(free=30*2**30)):
+            await run(args)
+        self.assertEqual(self.finals,2)  # First row reused, only previously unsent row charged.
+        self.assertEqual(json.loads((self.root/'disk-batch/summary.json').read_text())['completed'],2)
 
     async def test_handshake_binding_and_word_clock_separation(self):
         result=await self.session.transcribe_one(self.row)

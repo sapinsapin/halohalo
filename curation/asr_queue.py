@@ -8,6 +8,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -88,7 +89,7 @@ def dependency_state(item):
 
 
 def run(plan_path, state_root, key_file, language, model, min_free_gib=45, poll_seconds=30):
-    if min_free_gib < 0 or poll_seconds < 30:
+    if not math.isfinite(min_free_gib) or min_free_gib < 0 or not math.isfinite(poll_seconds) or poll_seconds < 30:
         raise ValueError('invalid disk floor or polling interval')
     state_root = Path(state_root).resolve(); state_root.mkdir(parents=True, exist_ok=True)
     with (state_root/'queue.lock').open('a') as lock:
@@ -115,7 +116,7 @@ def run(plan_path, state_root, key_file, language, model, min_free_gib=45, poll_
                     command = [sys.executable, '-m', 'curation.asr_session', '--manifest', str(root/'input.jsonl'),
                                '--output', str(root/'asr'), '--key-file', str(Path(key_file).resolve()),
                                '--language', language, '--model', model, '--max-items', str(item['rows']),
-                               '--timeout', '60', '--pace', '0']
+                               '--timeout', '60', '--pace', '0', '--min-free-gib', str(min_free_gib)]
                     # Record intent BEFORE spawning: a crash must never leave a paid
                     # child behind while the batch still appears safe to launch.
                     worker = dict(status='launching', started_at=time.time(), rows=item['rows'], input_sha256=item['input_sha256'])

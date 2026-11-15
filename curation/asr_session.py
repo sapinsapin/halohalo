@@ -4,6 +4,8 @@ import asyncio
 from dataclasses import dataclass
 import fcntl
 import json
+import math
+import shutil
 from pathlib import Path
 import time
 from urllib.parse import urlencode
@@ -223,6 +225,9 @@ async def _run_locked(args):
     checkpoint_every = getattr(args, 'checkpoint_every', 25)
     if type(checkpoint_every) is not int or checkpoint_every < 1:
         raise ValueError('checkpoint-every must be a positive integer')
+    min_free_gib = getattr(args, 'min_free_gib', 25)
+    if not math.isfinite(min_free_gib) or min_free_gib < 0:
+        raise ValueError('min-free-gib must be finite and nonnegative')
     rows = load_manifest(args.manifest)[:args.max_items]
     session = Session(cfg, Path(args.key_file).read_text(), args.output)
     completed, failed = [], []
@@ -235,12 +240,18 @@ async def _run_locked(args):
             write_jsonl(session.root/'manifest.jsonl', completed)
             manifest_rows = last_checkpoint_rows = len(completed)
         atomic(session.root/'summary.json', dict(selected=len(rows), completed=len(completed), failed=failed,
-               manifest_rows=max(0,manifest_rows), checkpoint_every=checkpoint_every,
+               manifest_rows=max(0,manifest_rows), checkpoint_every=checkpoint_every, min_free_gib=min_free_gib,
                stopped_early=bool(failed) or (terminal and len(completed)<len(rows)),
+               stop_reason=failed[0]['error_kind'] if failed else None,
                review_status='draft', transcribed_hours=sum(r['duration'] for r in completed if r['asr_status']=='transcribed')/3600,
                empty=sum(r['asr_status']=='empty' for r in completed)))
     try:
         for row in rows:
+            free_bytes = shutil.disk_usage(session.root).free
+            if free_bytes < min_free_gib * 2**30:
+                failed.append(dict(id=row['id'], error_kind='StorageFloor', request_attempted=False, free_bytes=free_bytes))
+                checkpoint(flush=True)
+                break
             try:
                 completed.append(apply_result(row, await session.transcribe_one(row)))
             except Exception as exc:
@@ -273,6 +284,7 @@ def main():
     p.add_argument('--language', choices=['hil', 'fil'], default='hil')
     p.add_argument('--max-items', type=int, default=2)
     p.add_argument('--checkpoint-every', type=int, default=25, help='Write combined manifest every N completed rows; per-item responses remain durable')
+    p.add_argument('--min-free-gib', type=float, default=25, help='Stop before the next item when free space is below this floor')
     p.add_argument('--timeout', type=float, default=60); p.add_argument('--pace', type=float, default=0)
     asyncio.run(run(p.parse_args()))
 

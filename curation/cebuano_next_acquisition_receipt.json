@@ -1,0 +1,38 @@
+{
+  "source_inventory_sha256": "4593f2ae5f87e065543345d5da626f69fe84d20f2041b5ed5a50370fecd97ddb",
+  "acquired_inventory_sha256": "2346571b2699b0362ee3c0023b0ce5f2293d868bbefde2c6c29ac8c0f670dcac",
+  "checked": 20,
+  "selected": 19,
+  "rejected": [
+    {
+      "id": "mzbd01agfPE",
+      "reason": "Age-restricted: metadata requires sign-in; excluded without authentication or bypass."
+    }
+  ],
+  "metadata_hours_estimate": 9.705833333333333,
+  "selection_sha256": "55534b6a1d348711f3277096074d11cd2f4f801bf7da6faf84ee4b8b124760e3",
+  "attempts_sha256": "5cf71bf366eab34df46a7d298eab3a867b8c0f9d8c045cf771381bd9ef978968",
+  "expected_channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+  "rules": "ID match; official channel; live_status not_live/was_live; finite1200–3600s; exact dated Balitang Bisdak title matching source date; no acquired/selected ID/date overlap; max20items/10h",
+  "media_downloaded": 0,
+  "no_bypasses": true,
+  "finished_utc": "2026-11-15T00:55:42.197849+00:00",
+  "command_template": [
+    "yt-dlp",
+    "--skip-download",
+    "--no-playlist",
+    "--dump-single-json",
+    "--socket-timeout",
+    "20",
+    "--retries",
+    "1",
+    "--fragment-retries",
+    "1",
+    "VIDEO_URL"
+  ],
+  "per_item_timeout_seconds": 120,
+  "metadata_only": true,
+  "raw_evidence_bytes": 11394204,
+  "parent_rechecked_selected_metadata_files": 19,
+  "tracked_inventory_sha256": "55534b6a1d348711f3277096074d11cd2f4f801bf7da6faf84ee4b8b124760e3"
+}
