@@ -520,3 +520,16 @@ The queue checks all inputs before any stage, rejects duplicate IDs across stage
 A queue lock and per-batch launch locks prevent competing launches. The batch enters `launching` **before** child creation, then records the actual PID. If interruption leaves `launching`, `running`, or an existing `asr/` directory, a subsequent run refuses to replay that batch. Inspect the child process and response ledger first; preserve uncertain paid attempts. The queue does not automatically kill a child on interruption, repair failures, or reset queued markers. Use the documented ASR cache-reconciliation procedure before constructing a new recovery plan.
 
 Validation: nine queue regressions plus eleven persistent-client tests passed. Tests cover sequential execution, failure stopping, changed inputs, duplicate IDs, absent dependencies, wrong outputs, storage floor, interrupted launch, competing batch claim, plan mutation and separate state roots. A read-only preflight of the real 10,118-row pending Filipino plan validated both stages with zero network calls and no new worker launches. This preflight does not claim that the new generic queue has run those production stages; their existing supervisor retains ownership.
+
+
+### Preemptive offload of completed Bikolano RSS acquisition (15 November)
+
+The three registered Bikolano RSS sources reached 269 downloaded recordings, 120.908339333 raw hours, with no eligible remaining items in the current ledger. The downloader process had exited and its OS lock was free. This is finite-feed acquisition completion, not completion of the 250-hour retained/transcribed language target.
+
+With global free space near 46 GiB, `curation/outputs/bikolano-preemptive-backup-v1/` started a single bounded offload: at most 20 recordings selected for backup (839,147,161 local bytes at selection), at most 20/1 GiB of verified local originals eligible for eviction, and a 50 GiB target. It uses the existing `Supervisor.step` backup/checkpoint/eviction sequence under the **same global supervisor lock**; the ordinary supervisor may report busy while it runs. Other acquisition and ASR workers continue. Its 50 GiB threshold applies only to this one-shot job; normal supervisor settings remain unchanged.
+
+The job first verifies immutable remote audio hashes/sizes and the SQLite checkpoint. Eviction independently rechecks proof, requires an idle downloader, and journals the remote-ledger transition before unlink. No eviction is implied by a running job or uploaded-file count. Check `worker.json`, `step.json`, the actual process, `hub-checkpoint.json`, and the root's eviction journal before reporting reclaimed bytes or attempting recovery. A stopped backup retains local originals.
+
+Storage verification: all 40 supervisor, eviction, and restoration tests passed, including live-downloader exclusion, missing/corrupt backup proof, public-repository rejection, crash recovery, bounded eviction, and restoring from the same checkpoint.
+
+The tracked Ilocano inventory now includes all 21 explicit episode references, tagged by `pilot-five` or `expansion-sixteen` selection batch. It is a reproducible source inventory, not a download-completion claim. The expansion's worker/finalizer receipts remain the authority for actual acquired media.

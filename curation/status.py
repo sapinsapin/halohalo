@@ -110,12 +110,13 @@ def snapshot():
     review_batches=[job_observation(path,path.parent/'reviews/summary.json')
                     for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json','collected-hil-new-*-review-*/worker.json')
                     for path in sorted((ROOT/'outputs').glob(pattern))]
+    storage_jobs=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-preemptive-backup-*/worker.json'))]
     asr_queues=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-asr-queue-*/worker.json'))]
     preparation_batches=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-preparation-next-*/worker.json'))]
     return dict(updated_at=datetime.now(timezone.utc).isoformat(),tracking_issue='https://github.com/sapinsapin/halohalo/issues/8',
                 target_retained_transcribed_hours={t['group']:t['hours'] for t in targets},
                 priority='acquisition first; segmented ASR retry is bounded and circuit-limited',rss=reports,archives=archives,archives_by_language=archives_by_language,radio=radio,
-                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,preparation_batches=preparation_batches,asr_queues=asr_queues,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
+                new_audio_transcribed_hours=asr_hours,source_coverage=coverage,segmented_asr_batch=batch,archive_backups=archive_backups,candidate_preparation=preparation,preparation_batches=preparation_batches,asr_queues=asr_queues,storage_jobs=storage_jobs,persistent_asr_batches=persistent_batches,text_review_batches=review_batches,
                 pld_pilot={'recordings':229,'hours':2.9521978298611113,'reserved_test_recordings':39,'audio_verified':0},
                 limitations=['Raw runtime includes ads/music/silence. Source language labels unverified.',
                              'Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.',

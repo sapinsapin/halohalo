@@ -6,7 +6,7 @@
   "language": "ilo",
   "language_verified": false,
   "language_evidence": "Official publisher titles name TV Patrol Ilocos and descriptions contain Ilocano headlines (e.g. Mannalon, pimmusay gapu ti Leptospirosis; Health Office, nagballaag). This supports provisional source selection, not audio-language verification or purity.",
-  "selection": "Five dated full TV Patrol Ilocos broadcasts from verified ABS-CBN News channel, distinct calendar dates, publisher metadata duration 20–50 min. Not TV Patrol North Luzon, Cagayan Valley, Balitang Amianan, or Pangasinan broadcasts.",
+  "selection": "21 distinct dated TV Patrol Ilocos full broadcasts from verified ABS-CBN News, in pilot-five and expansion-sixteen batches. This inventory is a source selection, not a completion receipt. Language remains provisional; regional North Luzon/Amianan/Pangasinan coverage alone was not accepted as Ilocano evidence.",
   "rights": {
     "training": "unknown",
     "commercial": "unknown",
@@ -20,7 +20,9 @@
       "title": "TV Patrol Ilocos - July 23, 2014",
       "channel_id": "UCE2606prvXQc_noEqKxVJXA",
       "channel_is_verified": true,
-      "metadata_duration_seconds": 1838
+      "metadata_duration_seconds": 1838,
+      "selection_batch": "pilot-five",
+      "duration": 1838
     },
     {
       "id": "OgVzUkmrj-c",
@@ -28,7 +30,9 @@
       "title": "TV Patrol Ilocos - June 24, 2015",
       "channel_id": "UCE2606prvXQc_noEqKxVJXA",
       "channel_is_verified": true,
-      "metadata_duration_seconds": 1671
+      "metadata_duration_seconds": 1671,
+      "selection_batch": "pilot-five",
+      "duration": 1671
     },
     {
       "id": "QeMLBQmWZvE",
@@ -36,7 +40,9 @@
       "title": "TV Patrol Ilocos - Apr 18, 2017",
       "channel_id": "UCE2606prvXQc_noEqKxVJXA",
       "channel_is_verified": true,
-      "metadata_duration_seconds": 2352
+      "metadata_duration_seconds": 2352,
+      "selection_batch": "pilot-five",
+      "duration": 2352
     },
     {
       "id": "XIgj-kMRYgw",
@@ -44,7 +50,9 @@
       "title": "TV Patrol Ilocos - March 20, 2015",
       "channel_id": "UCE2606prvXQc_noEqKxVJXA",
       "channel_is_verified": true,
-      "metadata_duration_seconds": 1882
+      "metadata_duration_seconds": 1882,
+      "selection_batch": "pilot-five",
+      "duration": 1882
     },
     {
       "id": "7ovRGc867fw",
@@ -52,7 +60,153 @@
       "title": "TV Patrol Ilocos - Jan 4, 2018",
       "channel_id": "UCE2606prvXQc_noEqKxVJXA",
       "channel_is_verified": true,
-      "metadata_duration_seconds": 1873
+      "metadata_duration_seconds": 1873,
+      "selection_batch": "pilot-five",
+      "duration": 1873
+    },
+    {
+      "id": "SmRICKQHMDc",
+      "url": "https://www.youtube.com/watch?v=SmRICKQHMDc",
+      "title": "TV Patrol Ilocos - Jan 13, 2017",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1359,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "h8S_9SuYZtU",
+      "url": "https://www.youtube.com/watch?v=h8S_9SuYZtU",
+      "title": "TV Patrol Ilocos - Nov 15, 2016",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1608,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "y6EdXobT6Vs",
+      "url": "https://www.youtube.com/watch?v=y6EdXobT6Vs",
+      "title": "TV Patrol Ilocos - August 1, 2014",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1917,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "4QrMr_CEF6g",
+      "url": "https://www.youtube.com/watch?v=4QrMr_CEF6g",
+      "title": "TV Patrol Ilocos - Nov 9, 2016",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1463,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "lxEihAj3Qaw",
+      "url": "https://www.youtube.com/watch?v=lxEihAj3Qaw",
+      "title": "TV Patrol Ilocos - Jan 9, 2017",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1712,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "y9cpVI-5zMU",
+      "url": "https://www.youtube.com/watch?v=y9cpVI-5zMU",
+      "title": "TV Patrol Ilocos - January 21, 2016",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1747,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "5xJvM83cPTw",
+      "url": "https://www.youtube.com/watch?v=5xJvM83cPTw",
+      "title": "TV Patrol Ilocos - May 3, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1832,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "GpDG9Vc0ZU8",
+      "url": "https://www.youtube.com/watch?v=GpDG9Vc0ZU8",
+      "title": "TV Patrol Ilocos - Jan 31, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1743,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "vi52IOLf26I",
+      "url": "https://www.youtube.com/watch?v=vi52IOLf26I",
+      "title": "TV Patrol Ilocos - Apr 9, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 2236,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "Cet7fCJGBFs",
+      "url": "https://www.youtube.com/watch?v=Cet7fCJGBFs",
+      "title": "TV Patrol Ilocos - May 29, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 2096,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "ms2EtEB4t4g",
+      "url": "https://www.youtube.com/watch?v=ms2EtEB4t4g",
+      "title": "TV Patrol Ilocos - June 27, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1741,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "M5MXYI9RyNY",
+      "url": "https://www.youtube.com/watch?v=M5MXYI9RyNY",
+      "title": "TV Patrol Ilocos - Apr 27, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 2271,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "mid-TbnZw4k",
+      "url": "https://www.youtube.com/watch?v=mid-TbnZw4k",
+      "title": "TV Patrol Ilocos - May 16, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1862,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "99ne9fF4B_w",
+      "url": "https://www.youtube.com/watch?v=99ne9fF4B_w",
+      "title": "TV Patrol Ilocos - Mar 8, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 2211,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "BHeLtLPiCMc",
+      "url": "https://www.youtube.com/watch?v=BHeLtLPiCMc",
+      "title": "TV Patrol Ilocos - Jan 25, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1381,
+      "selection_batch": "expansion-sixteen"
+    },
+    {
+      "id": "5WDGm2SMo3w",
+      "url": "https://www.youtube.com/watch?v=5WDGm2SMo3w",
+      "title": "TV Patrol Ilocos - Feb 8, 2018",
+      "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+      "channel_is_verified": true,
+      "duration": 1844,
+      "selection_batch": "expansion-sixteen"
     }
   ],
   "excluded_source_note": "GMA Balitang Amianan/One North Central Luzon not selected: regional coverage does not establish Ilocano language; predominantly Filipino may occur."
