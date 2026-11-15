@@ -58,3 +58,9 @@ The pilot root is `curation/outputs/hil-persistent-new-10-v1/`; its ten rows ove
 The bounded continuation stopped after 51 completed, nonempty segments (0.082330556 padded hours), with one failed request. The server explicitly returned `finalize_timeout`: its engine did not finish finalization within 3,000 ms. The failed row ID is `e96017e8026cf02fac594c0c93eb64c9e3abd8d7757d4c2258d67a0c196e044c`; the raw attempt remains in `hil-persistent-new-batch-v1/asr/`. The process is terminal, `stopped_early=true`, and the combined manifest contains exactly the 51 successes. The initial ten-row pilot is included in those 51.
 
 This confirms the earlier successful pilot did not establish that the server deadline issue was resolved. No retry was issued for the failed request and the remaining candidates stay unattempted. Acquisition remains the priority. The successful drafts alone were selected for a bounded text-review job under `curation/outputs/collected-hil-new-51-review-v1/`; it cannot approve audio or recover a missing ASR transcript. Filipino's separate active route and queued stages are unaffected.
+
+### Filipino v5 connection closure (15 November)
+
+The v5 persistent session terminated after 780 completed rows (four empty; 1.005215556 padded transcribed hours). Failed row: `bfb22fee67856b5e8bda0a86d2e9aea64352f07dae37e76e240f799f3ceda1a2`. Its saved attempt `f917f4a231f44309d3ec9eac7507e8590e59c992da2296c70f77d8973f378c2f.attempt-146e1c0edb5442b2a67ee8f176d5a5fe.json` records `ConnectionClosedError` and no received events. This does not prove the server did not process or charge the request. Do not replay it automatically.
+
+The v2 queue stopped after this error and did not launch v6. Both v5 and queue terminal states were confirmed against missing process handles. Completed caches remain preserved; prioritize acquisition while ASR is degraded. This was not a storage-floor stop.
