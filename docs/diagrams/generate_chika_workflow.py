@@ -62,11 +62,11 @@ icons = [
 ]
 cards = [
  ('Discover', '#2389a2', ['RSS & podcasts','Videos & radio','PLD imports'], 'Keep source evidence'),
- ('Acquire', '#2389a2', ['Resumable downloads','Media checks + SHA256','Source + rights ledger'], 'Retries + disk floors'),
- ('Prepare', '#138f86', ['16 kHz mono audio','VAD candidates ≤ 27 s','Exact source offsets'], 'VAD ≠ verified speech'),
- ('Transcribe', '#6373cc', ['Boses ASR','Hil + Fil routes checked','Raw events + cache'], 'Other routes unverified'),
+ ('Acquire', '#2389a2', ['Resumable downloads','Media checks + SHA256','Source + rights ledger'], 'Independent of ASR'),
+ ('Prepare', '#138f86', ['16 kHz mono audio','VAD candidates ≤ 27 s','PCM + offset audits'], 'VAD ≠ verified speech'),
+ ('Transcribe', '#6373cc', ['Boses ASR','Hil + Fil routes checked','Cache + resume'], 'Other routes unverified'),
  ('Review', '#6373cc', ['LLM plausibility check','Keep code-switching','Bind review to hashes'], 'Text review ≠ listening'),
- ('Publish', '#138f86', ['PLD-style Parquet','Embedded FLAC + text','Private HF: Chika'], 'Unverified curation set'),
+ ('Publish', '#138f86', ['PLD-style Parquet','Embedded FLAC + text','Private HF: Chika'], 'Hash-verified draft files'),
 ]
 for i, (name, color, body, foot) in enumerate(cards):
     x, y = 64+i*232, 328

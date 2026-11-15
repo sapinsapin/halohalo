@@ -6,7 +6,9 @@ Chika turns Philippine-language recordings into traceable, reusable speech datas
 
 [Download PNG](diagrams/chika-workflow.png) · [Editable SVG](diagrams/chika-workflow.svg) · [Operational playbook](dataset_curation.md) · [Live checkpoint files](../curation/STATUS.json) · [Tracking issue](https://github.com/sapinsapin/halohalo/issues/8)
 
-Architecture snapshot: **14 November 2026**. The graphic describes responsibilities and boundaries; it is not a live progress dashboard.
+[Published draft configurations and verification evidence](dataset_releases.md) are documented separately from this architecture.
+
+Architecture snapshot: **15 November 2026**. The graphic describes responsibilities and boundaries; it is not a live progress dashboard.
 
 ## Read the diagram
 
@@ -22,10 +24,10 @@ The amber promotion path is separate from publishing private drafts. A draft can
 | --- | --- | --- |
 | Discover | Inventory public RSS, podcast/video archives, bounded radio sources and PLD inputs; preserve source and language evidence. | [Source registries and targets](../curation/targets.json), `collect`, `acquire_archives`, `acquire_inventory`, `acquire_radio`; feed/inventory snapshots. |
 | Acquire | Resume downloads, probe actual media, hash originals and record attempts, permissions and failures. | `collect`, `acquire_archives`, `acquire_inventory`, `acquire_radio`; SQLite/event ledgers or acquisition receipts. |
-| Prepare | Import into one working schema, decode 16 kHz mono transport windows, then create nonoverlapping VAD candidates capped at 27 seconds. | [Schema](../curation/schema.py), `import_media`, `prepare`, `vad`; model/config hashes, original-source sample offsets and checked derivatives. VAD is not language or music verification. |
-| Transcribe | Send audio to the configured Boses model; retain raw responses, model identity and complete finalization/coverage checks. | `asr`, `asr_session`; per-item response caches and versioned session receipts. Persistent sessions have bounded live checks, not sustained throughput validation. |
+| Prepare | Import into one working schema, decode 16 kHz mono transport windows, then create nonoverlapping VAD candidates capped at 27 seconds. | [Schema](../curation/schema.py), `import_media`, `prepare`, `vad`; model/config hashes, original-source sample offsets and independent PCM/offset audits. VAD is not language or music verification. |
+| Transcribe | Send audio to the configured Boses model; retain raw responses, model identity and complete finalization/coverage checks. | `asr`, `asr_session`; per-item response caches and versioned session receipts. Persistent sessions reuse validated per-item caches and periodically checkpoint the combined manifest; interruption recovery reconciles caches before issuing new requests. |
 | Review | Assess text plausibility, preserve natural code-switching, and attach validated reviews without rewriting the transcript. | `review`, `attach_reviews`; exact request identities, raw responses and input/audio/text/configuration hashes. This is text-only review. |
-| Publish | Export PLD-compatible embedded-FLAC Parquet and publish immutable, verified snapshots to private `sapinsapin/chika`. | `cli export`, `publish`; shard hashes, canonical manifests, pinned Hub revisions and recoverable publication receipts. |
+| Publish | Export PLD-compatible embedded-FLAC Parquet and publish immutable, verified snapshots to private `sapinsapin/chika`. | `cli export`, `publish`; embedded-audio decoding and provenance checks, shard hashes, canonical manifests, pinned Hub revisions and recoverable publication receipts. |
 
 Module names refer to Python modules under [`curation/`](../curation/), invoked as `python -m curation.<module>`. Installation, bounded commands and recovery procedures are in the [playbook](dataset_curation.md).
 
@@ -39,6 +41,8 @@ Module names refer to Python modules under [`curation/`](../curation/), invoked 
 - **Counts are not interchangeable.** Raw runtime, padded candidates, transcribed source coverage and audio-verified speech are different metrics. Source-interval unions prevent duplicate windows from inflating coverage; acoustic near-duplicate work is still needed.
 
 ## Recovery and storage
+
+**Acquisition continues when ASR is unavailable.** Download workers and transcription workers are independent. Preserve failed ASR attempts and cached results, queue the remaining audio, and prioritize source acquisition within disk limits. Do not turn a server failure into an unbounded retry loop.
 
 The reliability layer connects the stages through durable manifests, caches and checksums. `hub`, `media_backup` and `archive_backup` verify remote originals and metadata; `restore` supports RSS checkpoint recovery. `supervise` monitors registered RSS roots, and `evict` reclaims eligible originals only after verified backup and idle-worker checks. Archive eviction is not yet implemented. These capabilities do not imply every artifact has already been remotely backed up.
 
