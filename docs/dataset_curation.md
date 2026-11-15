@@ -652,3 +652,11 @@ Tracked selection: `curation/FIL_KIMI_NEXT_1000_SELECTION.json`; input hash `4dc
 The Kimi 500-row batch processed all rows: 491 accepted strict reviews and nine rejected responses. All 491 were independently attached after response/configuration/transcript validation and audio rehashes; no transcripts changed or audio approvals were granted. Triage: 285 no-obvious-text-issue, 193 needs-audio-review, 13 unintelligible-text. Tracked audit: `curation/FIL_KIMI_500_COMPLETE.json`. Rejected responses remain unattached and were not retried.
 
 After rechecking the frozen input and all exclusion hashes, `fil-kimi-review-next-1000-v1` was launched using the same requested `us.kimi-k3` route, one attempt per row and two-consecutive-failure stop. Its tracked selection now records launch status.
+
+### First Bikolano backup-and-eviction batch verified complete
+
+The bounded preemptive job completed after backing up and checkpointing twenty Bikolano originals. It unlinked 839,147,161 bytes; the observed free-space increase during eviction was 804,147,200 bytes because other work was concurrent. Independent audit confirmed all twenty local paths are absent, SQLite now has twenty `remote` plus 249 `downloaded` rows, and twenty backup entries remain. No recording metadata was discarded.
+
+Recovery checkpoint: `checkpoints/bikolano-rss/3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c.sqlite` at private Chika revision `aaa52bab7b224da5d6cab4398893552832da836d`. Tracked evidence: `curation/BIKOL_BACKUP_EVICTION_CHECKPOINT.json`; detailed eviction journal/receipts remain in the source and job output roots.
+
+The existing global supervisor subsequently entered Taglish checkpointing. It retains the supervisor lock during uploads, so do not run competing backup/eviction work against the same roots or restart the supervisor solely for latency. Active downloader roots may be backed up but are not evicted until idle. Storage floors remain unchanged; this 0.78 GiB nominal offload does not establish sufficient space for new archive work.
