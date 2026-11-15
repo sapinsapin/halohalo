@@ -11,15 +11,17 @@
       "archive_availability_verified": false,
       "spoken_language_verified": false,
       "variety": "unspecified; do not infer bcl from location",
-      "rights": "unknown"
+      "rights": "unknown",
+      "archive_observation": "yt-dlp reports no streams tab and no videos tab; not currently acquisition-ready"
     },
     {
       "name": "Balitang Bicolandia",
       "identity_evidence": "GMA launch article appears in search index; direct article fetch returned 404",
       "discovery_url": "https://www.gmanetwork.com/entertainment/showbiznews/gma-regional-tv-launches-pioneering-balitang-bicolandia-this-february-1/73715/",
-      "archive_availability_verified": false,
+      "archive_availability_verified": true,
       "spoken_language_verified": false,
-      "rights": "unknown"
+      "rights": "unknown",
+      "evidence_scope": "Three full per-video metadata fetches confirm official GMA Regional TV channel and completed episodes; no audio downloaded"
     }
   ],
   "downloaded_hours": 0,
