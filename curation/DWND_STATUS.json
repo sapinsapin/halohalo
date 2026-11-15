@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:47:55.533661+00:00",
-  "free_gib": 1788.2723350524902,
+  "updated_at": "2026-11-15T03:48:27.606811+00:00",
+  "free_gib": 1788.1140518188477,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -101,9 +101,10 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 2
+          "downloading": 1,
+          "downloaded": 3
         },
-        "raw_hours": 4.223145
+        "raw_hours": 4.678278611111111
       },
       "summaries": {
         "summary.json": {}
@@ -321,18 +322,27 @@
       "root": "/home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v2",
       "worker": {
         "pid": 763121,
-        "status": "running",
-        "stage": "vad",
+        "status": "complete",
+        "stage": "complete",
         "verified_windows": 3179,
-        "started_at": 1794713830.862062
+        "started_at": 1794713830.862062,
+        "finished_at": 1794714500.5549688
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "summaries": {
         "prepared/summary.json": {
           "windows": 3179,
           "window_hours": 23.639556510416668,
           "transcribed_hours": 0
+        },
+        "vad/summary.json": {
+          "input_windows": 3179,
+          "input_hours": 23.639556510416668,
+          "segments": 9387,
+          "candidate_hours": 20.204623888888868,
+          "transcribed_hours": 0,
+          "verified_hours": 0
         }
       },
       "observation_errors": []
@@ -459,12 +469,12 @@
       "summaries": {
         "asr/summary.json": {
           "selected": 100,
-          "completed": 18,
+          "completed": 52,
           "failed": 0,
-          "manifest_rows": 0,
+          "manifest_rows": 50,
           "stopped_early": false,
           "stop_reason": null,
-          "transcribed_hours": 0.04631333333333334,
+          "transcribed_hours": 0.12660999999999997,
           "empty": 0
         }
       },
