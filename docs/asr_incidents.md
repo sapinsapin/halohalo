@@ -64,3 +64,9 @@ This confirms the earlier successful pilot did not establish that the server dea
 The v5 persistent session terminated after 780 completed rows (four empty; 1.005215556 padded transcribed hours). Failed row: `bfb22fee67856b5e8bda0a86d2e9aea64352f07dae37e76e240f799f3ceda1a2`. Its saved attempt `f917f4a231f44309d3ec9eac7507e8590e59c992da2296c70f77d8973f378c2f.attempt-146e1c0edb5442b2a67ee8f176d5a5fe.json` records `ConnectionClosedError` and no received events. This does not prove the server did not process or charge the request. Do not replay it automatically.
 
 The v2 queue stopped after this error and did not launch v6. Both v5 and queue terminal states were confirmed against missing process handles. Completed caches remain preserved; prioritize acquisition while ASR is degraded. This was not a storage-floor stop.
+
+#### Bounded continuation without replay
+
+After confirming v5 and queue v2 were terminal and their processes absent, all 781 prior attempt fingerprints were enumerated: 780 completed plus the uncertain connection-closed request. A new immutable 500-row v7 selection excludes every attempted fingerprint and completed/failed ID. It reads already-prepared audio, uses a separate fresh session and output directory, retains the 30 GiB per-request floor, and stops on any error. No failed request was retried. `curation/FIL_ASR_CONTINUATION_CHECKPOINT.json` records the frozen input and exclusions.
+
+**Do not restart v5 or queue v2.** v7 now owns these 500 formerly unsubmitted rows; subsequent recovery must exclude its input/attempts as well. v6 remains unlaunched. This bounded continuation does not resolve or clear the uncertain v5 attempt, and source acquisition remains the priority.

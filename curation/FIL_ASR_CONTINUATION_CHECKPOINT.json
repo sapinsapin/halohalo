@@ -1,0 +1,14 @@
+{
+  "rows": 500,
+  "input_sha256": "95b08d0b4405d0dd4d5d3d1bc6b124fc26e6f805e0f07090b8c17a4b7b4217af",
+  "source_input_sha256": "073a89fdca68559d432bd0e77399eb5d58ae34bd3b4637ddee5773e4dcd1d060",
+  "excluded_completed": 780,
+  "excluded_uncertain": [
+    "bfb22fee67856b5e8bda0a86d2e9aea64352f07dae37e76e240f799f3ceda1a2"
+  ],
+  "prior_attempt_fingerprints": 781,
+  "min_free_gib": 30,
+  "policy": "Only previously unsubmitted rows; no failed request replay; old queue remains stopped",
+  "pid": 73807,
+  "status": "launched_not_complete"
+}
