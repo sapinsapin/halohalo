@@ -1014,3 +1014,7 @@ Reserved another 2,000 unique audio hashes /2.473383889 candidate hours from the
 ### Regional processing v4: next 50 completed acquisitions each
 
 Created another frozen 50-recording snapshot per regional language from the ongoing acquisition-v3 roots, excluding the first 50 IDs already assigned to processing-v3. The importer rehashed and probed all selected media before launch. New raw durations: Cebuano 25.981658333 hours, Bikolano 26.658397222, Ilocano 24.765963446. Three live workers chain preparation, window hashing, VAD and PCM audits. `curation/DWND_REGIONAL_PROCESSING_V4_CHECKPOINT.json` preserves both selected and excluded IDs. Future processing must exclude the union of v3 and v4 assignments from these acquisition roots. These raw hours are not yet transcribed or quality-approved.
+
+### Filipino 2,000-clip private publication verified
+
+The publisher completed successfully at HF revision `e4bb1f1157632ff6ab82fc919f3811790627b2ab`. All 23 artifacts (20 Parquet shards plus manifest, summary and export README) passed fresh-download size/hash verification. Independently checked the pinned private repository revision, every remote size and all available LFS hashes against the receipt. `curation/DWND_FIL_2000_PUBLICATION_COMPLETE.json` preserves the evidence. The card-registration worker advanced to full streaming verification; that remains a separate completion condition. These 2,000 rows remain draft, unassigned private curation data, not approved training data.

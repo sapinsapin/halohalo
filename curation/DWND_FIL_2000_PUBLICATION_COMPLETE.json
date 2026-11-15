@@ -1,0 +1,111 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 428,
+      "sha256": "542bcad2a5de787302f712766c299d604973537f09e57139f5e7650715d7816a"
+    },
+    "curation-unassigned-00000-of-00020.parquet": {
+      "bytes": 15340129,
+      "sha256": "5f3622aafd85e31520c5b39e759ab1f1fb91b96793fd73017912e72d4df70007"
+    },
+    "curation-unassigned-00001-of-00020.parquet": {
+      "bytes": 18409644,
+      "sha256": "7ec80f6b54aa21d6707e04ed8542fdadaa589227f2ab796805e3833525081d84"
+    },
+    "curation-unassigned-00002-of-00020.parquet": {
+      "bytes": 12128003,
+      "sha256": "d6bef8c0d9b2ee5c1b929121c60330b1002f2e7087b8e8c434b841c274dad49b"
+    },
+    "curation-unassigned-00003-of-00020.parquet": {
+      "bytes": 10462646,
+      "sha256": "622f449b058d064a3eb84351dedfd5dc84761a1d0c127b828357e0f239370155"
+    },
+    "curation-unassigned-00004-of-00020.parquet": {
+      "bytes": 13501294,
+      "sha256": "36a41e9c1c71467eeaa2d59d997b38409ffdebcf32b73a149c60318064871675"
+    },
+    "curation-unassigned-00005-of-00020.parquet": {
+      "bytes": 13419975,
+      "sha256": "e0204bcbe8d295079a4b92766639dfecabac9d7aae9d440d89512a66ea58afda"
+    },
+    "curation-unassigned-00006-of-00020.parquet": {
+      "bytes": 7562790,
+      "sha256": "bf702c9da410720f986974a729ce0bbd6d127562f6817ac9d680f888603c6f2a"
+    },
+    "curation-unassigned-00007-of-00020.parquet": {
+      "bytes": 5250315,
+      "sha256": "20b5a4c59abb9e934b8c47853da20d2809a017512b0dd9d5f83a19701730f560"
+    },
+    "curation-unassigned-00008-of-00020.parquet": {
+      "bytes": 4974590,
+      "sha256": "92c25d6817b1ba2c9bfd7ab9a745147dd53eac106105072aee210bd2234c54f1"
+    },
+    "curation-unassigned-00009-of-00020.parquet": {
+      "bytes": 4898354,
+      "sha256": "7aff6470b00d0b75d2b22fa3a338149d7f0990aae8230481a6408ff873506f05"
+    },
+    "curation-unassigned-00010-of-00020.parquet": {
+      "bytes": 4498297,
+      "sha256": "e6e52b22d6d8867f102f4f77c06d3e0504f6125c0afdd0f60821bed0965dc239"
+    },
+    "curation-unassigned-00011-of-00020.parquet": {
+      "bytes": 4734954,
+      "sha256": "af6cf1efdbef10c83a2be9d52e9e1cdc19a807af896979555322c3d3d80a15b5"
+    },
+    "curation-unassigned-00012-of-00020.parquet": {
+      "bytes": 4655496,
+      "sha256": "735b434ca2e0bd0fb3af4aa451be585b2c79f870952b81659a0bb76727ad91f1"
+    },
+    "curation-unassigned-00013-of-00020.parquet": {
+      "bytes": 5179168,
+      "sha256": "c4153b29b4c70ebfaef521d10e7fa5e7e9b4f36d1c52da9423267e2866ac65b4"
+    },
+    "curation-unassigned-00014-of-00020.parquet": {
+      "bytes": 4695384,
+      "sha256": "3f90df8254a2b705d794b3a0b77aa4a0953c2c54d3dd67b068283db4c66cc158"
+    },
+    "curation-unassigned-00015-of-00020.parquet": {
+      "bytes": 4953449,
+      "sha256": "0f3b9448f767c5cfecf3b85ab7ceba8b9542f75f43a40cb542025966297acbdf"
+    },
+    "curation-unassigned-00016-of-00020.parquet": {
+      "bytes": 4011697,
+      "sha256": "106389eb591acb5201a421688e70f7c7046470bb72f48e2c0f6a57ce6b44d168"
+    },
+    "curation-unassigned-00017-of-00020.parquet": {
+      "bytes": 4267476,
+      "sha256": "b63e01ce62554228f1840d67c25ac6ceb2397043a461602f418977514f0b7c9b"
+    },
+    "curation-unassigned-00018-of-00020.parquet": {
+      "bytes": 5152997,
+      "sha256": "fd614e4618dfd2a55cb2f3ca2c6db715a440bf420812ed47d51f8a528cbe3ffd"
+    },
+    "curation-unassigned-00019-of-00020.parquet": {
+      "bytes": 7153070,
+      "sha256": "1fe878ed32019b8920c06c979c51cd856df3c542ea207b59f375a21b82c76bfd"
+    },
+    "manifest.jsonl": {
+      "bytes": 15202402,
+      "sha256": "fec302c6987dfe6309f4c5ea203416bbac993fc10970f3835f9aa23fab444765"
+    },
+    "summary.json": {
+      "bytes": 3758,
+      "sha256": "1a5a6423e96394c551208748c242522b51abd20142d86449453739bf43607662"
+    }
+  },
+  "parent_commit": "b5b34cdb394f32e185450b88d595e57ba0f2d2a6",
+  "parent_conflicts": [
+    {
+      "parent_commit": "3a90aef978023d7d82cc5f7cac556d0a60448ea7",
+      "status_code": 412
+    }
+  ],
+  "prefix": "data/fil_dwnd_asr_2000_v1",
+  "private": true,
+  "repo": "sapinsapin/chika",
+  "revision": "e4bb1f1157632ff6ab82fc919f3811790627b2ab",
+  "rows": 2000,
+  "verification_only": false,
+  "verified": true,
+  "independent_remote_check": "Pinned revision exists, private, all file sizes and available LFS hashes match verified publisher receipt"
+}
