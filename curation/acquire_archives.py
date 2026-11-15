@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import time
 import urllib.request
 
@@ -24,7 +25,7 @@ def executable(name):
     found = shutil.which(name)
     if found:
         return found
-    for directory in (Path.home() / '.local/bin', Path('/opt/homebrew/bin'), Path('/usr/local/bin')):
+    for directory in (Path(sys.executable).parent, Path.home() / '.local/bin', Path('/opt/homebrew/bin'), Path('/usr/local/bin')):
         candidate = directory / name
         if candidate.is_file():
             return str(candidate)
