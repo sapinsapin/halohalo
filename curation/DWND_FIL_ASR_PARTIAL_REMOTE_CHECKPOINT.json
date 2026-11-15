@@ -1,0 +1,39 @@
+{
+  "repo": "sapinsapin/chika",
+  "private_verified": true,
+  "revision": "fd5ddb7001090975252780158bb9697f2e422779",
+  "records": [
+    {
+      "local_name": "manifest.jsonl",
+      "path": "checkpoints/dwnd-fil-asr-partial-v1/61005cc60f60bd422a5b67ac6a771b2b1d6beac91e0123eb2540b00d0f50c219-manifest.jsonl.gz",
+      "sha256": "61005cc60f60bd422a5b67ac6a771b2b1d6beac91e0123eb2540b00d0f50c219",
+      "raw_sha256": "c090483984460febab26136c2e1642166ac910d8e0e5339853607fe78a26e4a0"
+    },
+    {
+      "local_name": "summary.json",
+      "path": "checkpoints/dwnd-fil-asr-partial-v1/abe4e73d4e12c0579452609459695a62ca81a12f1130245b19fc6f78efbc2361-summary.json.gz",
+      "sha256": "abe4e73d4e12c0579452609459695a62ca81a12f1130245b19fc6f78efbc2361",
+      "raw_sha256": "8eb97836a9e58049290f23638896b0265ff72ca088131de8b797a5c8139047ed"
+    }
+  ],
+  "rows": 160,
+  "summary": {
+    "selected": 5400,
+    "completed": 160,
+    "failed": [
+      {
+        "id": "c6506e60e8131953927fe7598cc9035ff979c740e9b8aef414b947aa49c83f3b",
+        "error_kind": "RuntimeError"
+      }
+    ],
+    "manifest_rows": 160,
+    "checkpoint_every": 25,
+    "min_free_gib": 100.0,
+    "stopped_early": true,
+    "stop_reason": "RuntimeError",
+    "review_status": "draft",
+    "transcribed_hours": 0.4177861111111111,
+    "empty": 1
+  },
+  "scope": "Metadata backup only; draft transcripts, no audio upload or approvals; fresh compressed hash and exact decompression verified"
+}

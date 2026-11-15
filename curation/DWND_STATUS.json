@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:27:52.545455+00:00",
-  "free_gib": 1815.1921768188477,
+  "updated_at": "2026-11-15T03:29:05.009557+00:00",
+  "free_gib": 1813.8549613952637,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -36,11 +36,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 26,
-          "failed": 22,
+          "downloaded": 31,
+          "failed": 17,
           "downloading": 1
         },
-        "raw_hours": 14.337312777777779
+        "raw_hours": 17.220608611111118
       },
       "summaries": {
         "summary.json": {}
@@ -80,11 +80,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 32,
-          "failed": 14,
+          "downloaded": 37,
+          "failed": 9,
           "downloading": 1
         },
-        "raw_hours": 16.068197777777776
+        "raw_hours": 18.5733325
       },
       "summaries": {
         "summary.json": {}
@@ -100,11 +100,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 45,
-          "downloading": 1,
-          "failed": 1
+          "downloaded": 48,
+          "failed": 1,
+          "downloading": 1
         },
-        "raw_hours": 87.85262916666669
+        "raw_hours": 90.68638000000003
       },
       "summaries": {
         "summary.json": {}
@@ -140,10 +140,10 @@
       "acquisition": {
         "statuses": {
           "failed": 9,
-          "downloaded": 122,
+          "downloaded": 126,
           "downloading": 1
         },
-        "raw_hours": 61.86831166666666
+        "raw_hours": 63.936362777777774
       },
       "summaries": {
         "summary.json": {}
@@ -183,11 +183,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "failed": 20,
-          "downloaded": 29,
+          "failed": 14,
+          "downloaded": 35,
           "downloading": 1
         },
-        "raw_hours": 14.474707016111111
+        "raw_hours": 17.178339167777782
       },
       "summaries": {
         "summary.json": {}
@@ -457,8 +457,8 @@
       "rss": [
         {
           "status": "downloaded",
-          "items": 76,
-          "raw_hours": 53.64068554333333
+          "items": 84,
+          "raw_hours": 60.01359873222222
         },
         {
           "status": "downloading",
@@ -467,7 +467,7 @@
         },
         {
           "status": "pending",
-          "items": 55,
+          "items": 47,
           "raw_hours": 0
         }
       ],
