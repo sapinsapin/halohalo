@@ -1,0 +1,48 @@
+{
+  "manifest": "curation/outputs/collected-fil-7946-v1/manifest.jsonl",
+  "status": "manifest_staged_not_exported_or_published",
+  "rows": 7946,
+  "sources": [
+    {
+      "path": "curation/outputs/collected-fil-5671-v2/manifest.jsonl",
+      "sha256": "73cc6d95f4a0aaa61e128ffe5aff1a54974362c412cd4290ec8c9f8677a95a7b",
+      "rows": 5671
+    },
+    {
+      "path": "curation/outputs/fil-persistent-batch-v5/asr/manifest.jsonl",
+      "sha256": "4048cb81b3dd311664bbb3a0a986f0821934bccb987645069d075e807277c558",
+      "rows": 780
+    },
+    {
+      "path": "curation/outputs/fil-persistent-batch-v7/asr/manifest.jsonl",
+      "sha256": "4211907a8ac7b0c5592dbe072401053b58f412da6dd0e0122a975da0f29a8e85",
+      "rows": 500
+    },
+    {
+      "path": "curation/outputs/fil-persistent-batch-v8/asr/manifest.jsonl",
+      "sha256": "a0e53de9ea070fa39c2a18c75929bc35c5a5e2b38309679b778f958a818ad32a",
+      "rows": 500
+    },
+    {
+      "path": "curation/outputs/fil-persistent-batch-v9/asr/manifest.jsonl",
+      "sha256": "635c9a761b4a354635ae351ad927388e0fc515d7439e612130188103e7fb26b7",
+      "rows": 495
+    }
+  ],
+  "overlap_rows": 0,
+  "manifest_sha256": "4d89a8443b2f160eb6f1032cc110650b4934b23431155f013ddb4c7092a248e0",
+  "audio_hashes_verified": 7946,
+  "distinct_audio_hashes": 7460,
+  "review_statuses": {
+    "text_reviewed": 2504,
+    "draft": 5442
+  },
+  "empty_transcripts": 27,
+  "padded_seconds": 34841.48437499991,
+  "transcript_changes": 0,
+  "audio_approvals": 0,
+  "note": "Only persisted completed ASR responses, including explicitly empty transcripts. Runtime is not verified unique speech; older configurations overlap. Running Kimi reviews not attached.",
+  "exact_audio_duplicate_groups": 486,
+  "duplicate_groups_with_different_transcripts": 0,
+  "export_hold": "Resolve exact-audio duplicate groups before a new consolidated export; preserve IDs and provenance in staging."
+}

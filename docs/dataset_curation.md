@@ -686,3 +686,10 @@ This is **metadata-only recovery evidence**. It uploads no audio and grants no e
 An isolated recovery test freshly downloaded the immutable Bikolano SQLite checkpoint and one backed original, with a one-file/64 MiB cap and 25 GiB floor. It recovered 33,977,796 bytes / 2,100.870998 seconds. Independent SHA256, size, ffprobe audio/duration and SQLite integrity checks passed. The original source ledger still marks the item remote and was not altered.
 
 Tracked proof: `curation/BIKOL_RESTORE_PROOF_CHECKPOINT.json`; isolated restored root: `outputs/bikolano-restore-proof-v1/`. The isolated ledger correctly marks one recording local, nineteen backed-but-not-restored recordings remote and 249 unbacked recordings pending. This is a recovery test, not new acquisition or unique audio hours; do not add the test root to production accounting.
+
+
+### Consolidated Filipino staging checkpoint (2026-11-15)
+
+Combined the reviewed 5,671-row snapshot with persisted ASR v5/v7/v8/v9 responses: 7,946 IDs, 2,504 text-reviewed and 5,442 draft, including 27 empty transcripts. Rehashed every local audio file; all 7,946 matched. No audio was copied or new ASR requested. The manifest is staged only; see `curation/FIL_CONSOLIDATED_MANIFEST_CHECKPOINT.json`.
+
+Exact audio hashing finds 7,460 distinct audio hashes across those IDs. Hold the consolidated export until duplicate groups and transcript differences are reconciled; do not count the 34,841.484375 padded seconds as unique verified speech. Existing snapshots remain unchanged.
