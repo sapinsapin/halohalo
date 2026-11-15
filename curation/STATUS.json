@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-15T01:19:27.606541+00:00",
+  "updated_at": "2026-11-15T01:42:30.175262+00:00",
   "tracking_issue": "https://github.com/sapinsapin/halohalo/issues/8",
   "target_retained_transcribed_hours": {
     "fil_taglish": 250,
@@ -17,9 +17,9 @@
         {
           "source_id": "adulting-with-joyce-pring",
           "status": "downloaded",
-          "files": 116,
-          "measured_file_hours": 21.5487418825,
-          "feed_estimated_hours": 21.5325
+          "files": 127,
+          "measured_file_hours": 23.661093898055555,
+          "feed_estimated_hours": 23.643333333333334
         },
         {
           "source_id": "adulting-with-joyce-pring",
@@ -31,134 +31,134 @@
         {
           "source_id": "adulting-with-joyce-pring",
           "status": "pending",
-          "files": 450,
+          "files": 439,
           "measured_file_hours": null,
-          "feed_estimated_hours": 159.45194444444445
+          "feed_estimated_hours": 157.3411111111111
         },
         {
           "source_id": "boiling-waters-ph",
           "status": "downloaded",
-          "files": 28,
-          "measured_file_hours": 21.846377606388888,
-          "feed_estimated_hours": 21.804166666666667
+          "files": 31,
+          "measured_file_hours": 24.17155854416667,
+          "feed_estimated_hours": 24.129166666666666
         },
         {
           "source_id": "boiling-waters-ph",
           "status": "pending",
-          "files": 357,
+          "files": 354,
           "measured_file_hours": null,
-          "feed_estimated_hours": 190.41666666666666
+          "feed_estimated_hours": 188.09166666666667
         },
         {
           "source_id": "creepsilog",
+          "status": "downloaded",
+          "files": 24,
+          "measured_file_hours": 23.78915472972222,
+          "feed_estimated_hours": 23.785555555555554
+        },
+        {
+          "source_id": "creepsilog",
+          "status": "pending",
+          "files": 153,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 170.89777777777778
+        },
+        {
+          "source_id": "kudazzers",
+          "status": "downloaded",
+          "files": 27,
+          "measured_file_hours": 23.8171138325,
+          "feed_estimated_hours": 23.816666666666666
+        },
+        {
+          "source_id": "kudazzers",
+          "status": "pending",
+          "files": 336,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 238.8411111111111
+        },
+        {
+          "source_id": "tamang-usapan",
           "status": "downloaded",
           "files": 23,
-          "measured_file_hours": 22.49419251,
-          "feed_estimated_hours": 22.490833333333335
-        },
-        {
-          "source_id": "creepsilog",
-          "status": "pending",
-          "files": 154,
-          "measured_file_hours": null,
-          "feed_estimated_hours": 172.1925
-        },
-        {
-          "source_id": "kudazzers",
-          "status": "downloaded",
-          "files": 25,
-          "measured_file_hours": 22.058100680555558,
-          "feed_estimated_hours": 22.057777777777776
-        },
-        {
-          "source_id": "kudazzers",
-          "status": "pending",
-          "files": 338,
-          "measured_file_hours": null,
-          "feed_estimated_hours": 240.6
+          "measured_file_hours": 24.8199318525,
+          "feed_estimated_hours": 24.817222222222224
         },
         {
           "source_id": "tamang-usapan",
-          "status": "downloaded",
-          "files": 20,
-          "measured_file_hours": 21.496060741666668,
-          "feed_estimated_hours": 21.49388888888889
+          "status": "pending",
+          "files": 125,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 176.61305555555555
         },
         {
-          "source_id": "tamang-usapan",
+          "source_id": "the-koolpals",
+          "status": "downloaded",
+          "files": 21,
+          "measured_file_hours": 23.574376243055553,
+          "feed_estimated_hours": 23.571944444444444
+        },
+        {
+          "source_id": "the-koolpals",
           "status": "downloading",
           "files": 1,
           "measured_file_hours": null,
-          "feed_estimated_hours": 1.6983333333333333
-        },
-        {
-          "source_id": "tamang-usapan",
-          "status": "pending",
-          "files": 127,
-          "measured_file_hours": null,
-          "feed_estimated_hours": 178.23805555555555
+          "feed_estimated_hours": 1.2505555555555556
         },
         {
           "source_id": "the-koolpals",
+          "status": "pending",
+          "files": 142,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 185.0572222222222
+        },
+        {
+          "source_id": "the-linya-linya-show",
           "status": "downloaded",
           "files": 20,
-          "measured_file_hours": 22.467418060833335,
-          "feed_estimated_hours": 22.465
-        },
-        {
-          "source_id": "the-koolpals",
-          "status": "pending",
-          "files": 144,
-          "measured_file_hours": null,
-          "feed_estimated_hours": 187.41472222222222
-        },
-        {
-          "source_id": "the-linya-linya-show",
-          "status": "downloaded",
-          "files": 19,
-          "measured_file_hours": 22.20453885611111,
-          "feed_estimated_hours": 22.201944444444443
+          "measured_file_hours": 24.747341873333333,
+          "feed_estimated_hours": 24.744722222222222
         },
         {
           "source_id": "the-linya-linya-show",
           "status": "pending",
-          "files": 411,
+          "files": 410,
           "measured_file_hours": null,
-          "feed_estimated_hours": 453.96416666666664
+          "feed_estimated_hours": 451.4213888888889
         },
         {
           "source_id": "underpaid-with-stanley-chi",
           "status": "downloaded",
-          "files": 37,
-          "measured_file_hours": 21.73206919638889,
-          "feed_estimated_hours": 21.727222222222224
+          "files": 40,
+          "measured_file_hours": 23.741110446666667,
+          "feed_estimated_hours": 23.735833333333332
         },
         {
           "source_id": "underpaid-with-stanley-chi",
           "status": "pending",
-          "files": 701,
+          "files": 698,
           "measured_file_hours": null,
-          "feed_estimated_hours": 377.655
+          "feed_estimated_hours": 375.6463888888889
         },
         {
           "source_id": "wake-up-with-jim-and-saab",
           "status": "downloaded",
-          "files": 43,
-          "measured_file_hours": 21.542163196944443,
-          "feed_estimated_hours": 21.537222222222223
+          "files": 47,
+          "measured_file_hours": 23.773006896666665,
+          "feed_estimated_hours": 23.7675
         },
         {
           "source_id": "wake-up-with-jim-and-saab",
           "status": "pending",
-          "files": 389,
+          "files": 385,
           "measured_file_hours": null,
-          "feed_estimated_hours": 229.24694444444444
+          "feed_estimated_hours": 227.01666666666668
         }
       ],
-      "measured_downloaded_hours": 197.38966273138888,
+      "measured_downloaded_hours": 216.09468831666666,
       "worker": {
         "pid": 13792,
-        "observation": "13792 04:15:55 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -u -m curation.collect download --root curation/outputs/taglish/shared --max-items 10000 --max-hours 300 --max-source-hours 50 --min-free-gib 25 --delay 1",
+        "observation": "13792 04:38:58 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -u -m curation.collect download --root curation/outputs/taglish/shared --max-items 10000 --max-hours 300 --max-source-hours 50 --min-free-gib 25 --delay 1",
         "process_present": true
       }
     },
@@ -204,23 +204,23 @@
         {
           "source_id": "ilonggo-preacher",
           "status": "downloaded",
-          "files": 133,
-          "measured_file_hours": 147.30297008944444,
-          "feed_estimated_hours": 147.28527777777776
+          "files": 147,
+          "measured_file_hours": 160.8841421338889,
+          "feed_estimated_hours": 160.86444444444444
         },
         {
           "source_id": "ilonggo-preacher",
           "status": "downloading",
           "files": 1,
           "measured_file_hours": null,
-          "feed_estimated_hours": 0.8541666666666666
+          "feed_estimated_hours": 1.1063888888888889
         },
         {
           "source_id": "ilonggo-preacher",
           "status": "pending",
-          "files": 86,
+          "files": 72,
           "measured_file_hours": null,
-          "feed_estimated_hours": 77.03194444444445
+          "feed_estimated_hours": 63.20055555555555
         },
         {
           "source_id": "pause-pod",
@@ -237,10 +237,10 @@
           "feed_estimated_hours": 14.584166666666667
         }
       ],
-      "measured_downloaded_hours": 252.82826536833335,
+      "measured_downloaded_hours": 266.4094374127778,
       "worker": {
         "pid": 13731,
-        "observation": "13731 04:16:18 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -u -m curation.collect download --root curation/outputs/rss",
+        "observation": "13731 04:39:21 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -u -m curation.collect download --root curation/outputs/rss",
         "process_present": true
       },
       "hub_checkpoint": {
@@ -413,7 +413,7 @@
       "measured_downloaded_hours": 39.54254141138889,
       "worker": {
         "pid": 29776,
-        "observation": "29776 03:10:52 /Users/timsan/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11 -m curation.collect download --root /Users/timsan/halohalo/repo/curation/outputs/cebuano/rss --max-hours 300 --max-source-hours 75 --min-free-gib 25 --delay 1 --max-items 10000",
+        "observation": "29776 03:33:55 /Users/timsan/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11 -m curation.collect download --root /Users/timsan/halohalo/repo/curation/outputs/cebuano/rss --max-hours 300 --max-source-hours 75 --min-free-gib 25 --delay 1 --max-items 10000",
         "process_present": true
       }
     },
@@ -457,30 +457,30 @@
         {
           "source_id": "awr-ilocano",
           "status": "downloaded",
-          "files": 31,
-          "measured_file_hours": 14.959810659722223,
-          "feed_estimated_hours": 7.733333333333333
+          "files": 36,
+          "measured_file_hours": 17.37081826388889,
+          "feed_estimated_hours": 9.183333333333334
         },
         {
           "source_id": "awr-ilocano",
           "status": "downloading",
           "files": 1,
           "measured_file_hours": null,
-          "feed_estimated_hours": 0.0
+          "feed_estimated_hours": 0.48333333333333334
         },
         {
           "source_id": "awr-ilocano",
           "status": "pending",
-          "files": 267,
+          "files": 262,
           "measured_file_hours": null,
-          "feed_estimated_hours": 67.13333333333334
+          "feed_estimated_hours": 65.2
         },
         {
           "source_id": "norma-ilocano",
           "status": "downloaded",
-          "files": 33,
-          "measured_file_hours": 15.170630408055555,
-          "feed_estimated_hours": 15.172777777777778
+          "files": 37,
+          "measured_file_hours": 17.41213707472222,
+          "feed_estimated_hours": 17.414722222222224
         },
         {
           "source_id": "norma-ilocano",
@@ -492,9 +492,9 @@
         {
           "source_id": "norma-ilocano",
           "status": "pending",
-          "files": 19,
+          "files": 15,
           "measured_file_hours": null,
-          "feed_estimated_hours": 8.135277777777778
+          "feed_estimated_hours": 5.8933333333333335
         },
         {
           "source_id": "subtle-ilokano-traits",
@@ -518,19 +518,19 @@
           "feed_estimated_hours": null
         }
       ],
-      "measured_downloaded_hours": 53.43483870305556,
+      "measured_downloaded_hours": 58.08735297388888,
       "worker": {
         "pid": 30164,
-        "observation": "30164 03:09:58 /Users/timsan/halohalo/repo/curation/.venv/bin/python -m curation.collect download --root /Users/timsan/halohalo/repo/curation/outputs/ilocano/rss --max-hours 300 --max-source-hours 0 --min-free-gib 25 --delay 3 --max-items 10000",
+        "observation": "30164 03:33:01 /Users/timsan/halohalo/repo/curation/.venv/bin/python -m curation.collect download --root /Users/timsan/halohalo/repo/curation/outputs/ilocano/rss --max-hours 300 --max-source-hours 0 --min-free-gib 25 --delay 3 --max-items 10000",
         "process_present": true
       }
     }
   ],
   "archives": {
     "bombo-ilonggo-drama": {
-      "downloaded": 28,
+      "downloaded": 31,
       "failed": 1,
-      "measured_file_hours": 9.252080000000001
+      "measured_file_hours": 10.272408611111114
     },
     "ilonggatalks": {
       "downloaded": 1,
@@ -548,14 +548,14 @@
       "measured_file_hours": 0.9710338888888889
     },
     "gma-ratsada": {
-      "downloaded": 28,
+      "downloaded": 31,
       "failed": 1,
-      "measured_file_hours": 13.909574444444445
+      "measured_file_hours": 15.440308611111114
     },
     "aksyon-streams": {
-      "downloaded": 27,
+      "downloaded": 31,
       "failed": 1,
-      "measured_file_hours": 61.02982416666667
+      "measured_file_hours": 69.42108083333332
     },
     "deditos-hiligaynon": {
       "downloaded": 11,
@@ -563,17 +563,17 @@
       "measured_file_hours": 4.426340648333333
     },
     "aksyon-videos": {
-      "downloaded": 27,
+      "downloaded": 31,
       "failed": 1,
-      "measured_file_hours": 6.027918611111112
+      "measured_file_hours": 6.579408611111113
     }
   },
   "archives_by_language": {
     "hil": {
       "bombo-ilonggo-drama": {
-        "downloaded": 28,
+        "downloaded": 31,
         "failed": 1,
-        "measured_file_hours": 9.252080000000001
+        "measured_file_hours": 10.272408611111114
       },
       "ilonggatalks": {
         "downloaded": 1,
@@ -591,14 +591,14 @@
         "measured_file_hours": 0.9710338888888889
       },
       "gma-ratsada": {
-        "downloaded": 28,
+        "downloaded": 31,
         "failed": 1,
-        "measured_file_hours": 13.909574444444445
+        "measured_file_hours": 15.440308611111114
       },
       "aksyon-streams": {
-        "downloaded": 27,
+        "downloaded": 31,
         "failed": 1,
-        "measured_file_hours": 61.02982416666667
+        "measured_file_hours": 69.42108083333332
       },
       "deditos-hiligaynon": {
         "downloaded": 11,
@@ -606,16 +606,16 @@
         "measured_file_hours": 4.426340648333333
       },
       "aksyon-videos": {
-        "downloaded": 27,
+        "downloaded": 31,
         "failed": 1,
-        "measured_file_hours": 6.027918611111112
+        "measured_file_hours": 6.579408611111113
       }
     },
     "bik": {
       "dzgb": {
-        "downloaded": 73,
-        "failed": 1,
-        "measured_file_hours": 57.61708670444443
+        "downloaded": 88,
+        "failed": 2,
+        "measured_file_hours": 70.67161864888887
       },
       "dzgb-legazpi-streams": {
         "downloaded": 0,
@@ -717,7 +717,7 @@
     }
   ],
   "new_audio_transcribed_hours": {
-    "fil_taglish": 7.438134548611111,
+    "fil_taglish": 8.297292326388888,
     "hil": 0.5303588888888889,
     "ceb": 0,
     "bik": 0,
@@ -736,17 +736,17 @@
         }
       },
       "fil_taglish": {
-        "input_rows": 13710,
+        "input_rows": 14444,
         "covered_source_hours": {
-          "prepared": 7.441579548611111,
-          "draft_transcribed": 7.438134548611111,
+          "prepared": 8.301345659722223,
+          "draft_transcribed": 8.297292326388888,
           "review_status_recorded": 0.7203777777777778,
           "audio_verified": 0.0,
           "training_permission_and_review": 0.0
         }
       }
     },
-    "checked_audio_files": 7169,
+    "checked_audio_files": 7903,
     "cross_group_source_hashes": {},
     "target_completion_assessed": false,
     "limitations": [
@@ -786,10 +786,10 @@
       "expected_recordings": 49,
       "max_bytes": 4294967296,
       "root": "curation/outputs/archive-backup-hil-49-v1",
-      "local_receipt_files": 43,
+      "local_receipt_files": 45,
       "receipt_count_note": "Local receipt files; not an independent remote revalidation or unique-recording count.",
       "process_present": true,
-      "process_observation": "57622 01:07:59 curation/.venv/bin/python curation/outputs/archive-backup-hil-49-v1/run.py"
+      "process_observation": "57622 01:31:02 curation/.venv/bin/python curation/outputs/archive-backup-hil-49-v1/run.py"
     }
   ],
   "candidate_preparation": {
@@ -983,12 +983,22 @@
     },
     {
       "pid": 70548,
-      "status": "running",
+      "status": "stopped_after_error",
       "started_at": 1794704353.156638,
+      "finished_at": 1794705571.242059,
       "root": "curation/outputs/fil-asr-queue-v2",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": ""
+    },
+    {
+      "pid": 74936,
+      "status": "running",
+      "started_at": 1794706693.146107,
+      "root": "curation/outputs/fil-asr-queue-v3",
       "process_present": true,
       "process_matches_job": true,
-      "process_observation": "70548 20:15 curation/.venv/bin/python -m curation.asr_queue --plan /Users/timsan/halohalo/repo/curation/outputs/fil-asr-queue-v2/plan.json --state-dir /Users/timsan/halohalo/repo/curation/outputs/fil-asr-queue-v2 --key-file /Users/timsan/nyo-demo-voice --language fil --model fw/whisper-large-v3-pld-fil-norm --min-free-gib 30"
+      "process_observation": "74936 04:18 curation/.venv/bin/python -m curation.asr_queue --plan /Users/timsan/halohalo/repo/curation/outputs/fil-asr-queue-v3/plan.json --state-dir /Users/timsan/halohalo/repo/curation/outputs/fil-asr-queue-v3 --key-file /Users/timsan/nyo-demo-voice --language fil --model fw/whisper-large-v3-pld-fil-norm --min-free-gib 30"
     }
   ],
   "storage_jobs": [
@@ -999,7 +1009,7 @@
       "root": "curation/outputs/bikolano-preemptive-backup-v1",
       "process_present": true,
       "process_matches_job": true,
-      "process_observation": "67570 36:16 curation/.venv/bin/python curation/outputs/bikolano-preemptive-backup-v1/run.py"
+      "process_observation": "67570 59:19 curation/.venv/bin/python curation/outputs/bikolano-preemptive-backup-v1/run.py"
     }
   ],
   "publication_jobs": [
@@ -1010,7 +1020,16 @@
       "root": "curation/outputs/collected-fil-5671-v1",
       "process_present": true,
       "process_matches_job": true,
-      "process_observation": "72364 02:09 curation/.venv/bin/python curation/outputs/collected-fil-5671-v1/publish.py",
+      "process_observation": "72364 25:12 curation/.venv/bin/python curation/outputs/collected-fil-5671-v1/publish.py",
+      "finalizer": {
+        "pid": 74118,
+        "status": "waiting_for_verified_publication",
+        "started_at": 1794706206.123893,
+        "root": "curation/outputs/collected-fil-5671-v1",
+        "process_present": true,
+        "process_matches_job": true,
+        "process_observation": "74118 12:24 curation/.venv/bin/python curation/outputs/collected-fil-5671-v1/finalize.py"
+      },
       "recorded_receipts": {},
       "note": "Recorded receipts only; worker completion alone does not prove card or streaming completion."
     }
@@ -1036,6 +1055,56 @@
       }
     },
     {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v10"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v11"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v12"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v13"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v14"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v15"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v16"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v17"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v18"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v19"
+    },
+    {
       "pid": 51649,
       "status": "complete",
       "started_at": 1794698833.086428,
@@ -1055,6 +1124,36 @@
         "transcribed_hours": 0.08124333333333339,
         "empty": 0
       }
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v20"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v21"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v22"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v23"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v24"
+    },
+    {
+      "status": "queued",
+      "rows": 215,
+      "root": "curation/outputs/fil-persistent-batch-v25"
     },
     {
       "pid": 51875,
@@ -1100,21 +1199,74 @@
     },
     {
       "pid": 71191,
-      "status": "running",
+      "status": "stopped_after_error",
       "started_at": 1794704803.5862389,
+      "finished_at": 1794705571.2121239,
+      "returncode": 1,
       "rows": 10000,
       "root": "curation/outputs/fil-persistent-batch-v5",
-      "process_present": true,
-      "process_matches_job": true,
-      "process_observation": "71191 12:44 /Users/timsan/halohalo/repo/curation/.venv/bin/python -m curation.asr_session --manifest /Users/timsan/halohalo/repo/curation/outputs/fil-persistent-batch-v5/input.jsonl --output /Users/timsan/halohalo/repo/curation/outputs/fil-persistent-batch-v5/asr --key-file /Users/timsan/nyo-demo-voice --language fil --model fw/whisper-large-v3-pld-fil-norm --max-items 10000 --timeout 60 --pace 0 --min-free-gib 30.0",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
       "summary": {
         "selected": 10000,
         "completed": 780,
-        "failed": 0,
-        "stopped_early": false,
+        "failed": 1,
+        "stopped_early": true,
         "transcribed_hours": 1.0052155555555562,
         "empty": 4,
-        "manifest_rows": 775,
+        "manifest_rows": 780,
+        "checkpoint_every": 25,
+        "min_free_gib": 30.0,
+        "stop_reason": "RuntimeError"
+      }
+    },
+    {
+      "status": "queued",
+      "rows": 118,
+      "root": "curation/outputs/fil-persistent-batch-v6"
+    },
+    {
+      "pid": 73807,
+      "status": "complete",
+      "started_at": 1794706013.041688,
+      "finished_at": 1794706555.012265,
+      "returncode": 0,
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v7",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 500,
+        "completed": 500,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.6218549999999999,
+        "empty": 4,
+        "manifest_rows": 500,
+        "checkpoint_every": 25,
+        "min_free_gib": 30.0,
+        "stop_reason": null
+      }
+    },
+    {
+      "pid": 74939,
+      "status": "running",
+      "started_at": 1794706693.167246,
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v8",
+      "process_present": true,
+      "process_matches_job": true,
+      "process_observation": "74939 04:17 /Users/timsan/halohalo/repo/curation/.venv/bin/python -m curation.asr_session --manifest /Users/timsan/halohalo/repo/curation/outputs/fil-persistent-batch-v8/input.jsonl --output /Users/timsan/halohalo/repo/curation/outputs/fil-persistent-batch-v8/asr --key-file /Users/timsan/nyo-demo-voice --language fil --model fw/whisper-large-v3-pld-fil-norm --max-items 500 --timeout 60 --pace 0 --min-free-gib 30.0",
+      "summary": {
+        "selected": 500,
+        "completed": 232,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.23703555555555553,
+        "empty": 0,
+        "manifest_rows": 225,
         "checkpoint_every": 25,
         "min_free_gib": 30.0,
         "stop_reason": null
@@ -1122,8 +1274,8 @@
     },
     {
       "status": "queued",
-      "rows": 118,
-      "root": "curation/outputs/fil-persistent-batch-v6"
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v9"
     },
     {
       "pid": 61894,
@@ -1211,17 +1363,19 @@
     },
     {
       "pid": 64412,
-      "status": "running",
+      "status": "stopped_with_failures",
       "started_at": 1794702464.668892,
+      "finished_at": 1794706287.728041,
+      "returncode": 1,
       "rows": 1000,
       "root": "curation/outputs/fil-review-next-1000-v1",
-      "process_present": true,
-      "process_matches_job": true,
-      "process_observation": "64412 51:43 curation/.venv/bin/python curation/outputs/fil-review-next-1000-v1/run.py",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
       "summary": {
-        "selected": 833,
-        "completed": 802,
-        "failed": 31,
+        "selected": 1000,
+        "completed": 952,
+        "failed": 48,
         "stopped_early": false
       }
     },
@@ -1269,11 +1423,11 @@
       "root": "curation/outputs/fil-kimi-review-next-500-v1",
       "process_present": true,
       "process_matches_job": true,
-      "process_observation": "72144 04:03 curation/.venv/bin/python curation/outputs/fil-kimi-review-next-500-v1/run.py",
+      "process_observation": "72144 27:06 curation/.venv/bin/python curation/outputs/fil-kimi-review-next-500-v1/run.py",
       "summary": {
-        "selected": 63,
-        "completed": 62,
-        "failed": 1,
+        "selected": 430,
+        "completed": 423,
+        "failed": 7,
         "stopped_early": false
       }
     },
