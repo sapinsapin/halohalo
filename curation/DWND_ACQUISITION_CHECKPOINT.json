@@ -1,0 +1,119 @@
+{
+  "host": "dwnd-01",
+  "user": "iotim",
+  "workspace": "/home/iotim/chika-curation",
+  "free_bytes": 1971513257984,
+  "jobs": [
+    {
+      "language_group": "cebuano",
+      "launch": {
+        "pid": 438136,
+        "root": "/home/iotim/chika-curation/curation/outputs/cebuano-next",
+        "argv": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/cebuano_next_acquisition_inventory.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/cebuano-next",
+          "--language",
+          "ceb",
+          "--source-id",
+          "gma-balitang-bisdak",
+          "--max-hours",
+          "10",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ],
+        "inventory_sha256": "55534b6a1d348711f3277096074d11cd2f4f801bf7da6faf84ee4b8b124760e3"
+      },
+      "worker": {
+        "pid": 438136,
+        "status": "running",
+        "started_at": 1794711460.5976715
+      },
+      "process_present": true,
+      "process_command": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/cebuano-next/run.py",
+      "downloaded_recordings": 3,
+      "raw_seconds": 5182.043
+    },
+    {
+      "language_group": "bikolano",
+      "launch": {
+        "pid": 438137,
+        "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
+        "argv": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/bikolano_next_acquisition_inventory.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/bikolano-next",
+          "--language",
+          "bik",
+          "--source-id",
+          "gma-balitang-bicolandia",
+          "--max-hours",
+          "10",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ],
+        "inventory_sha256": "1cfe84914d65d0ac399f5f276fa9549b6887b8746c5901af6e6fa6bbbe7a556b"
+      },
+      "worker": {
+        "pid": 438137,
+        "status": "running",
+        "started_at": 1794711460.6107962
+      },
+      "process_present": true,
+      "process_command": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/bikolano-next/run.py",
+      "downloaded_recordings": 2,
+      "raw_seconds": 3660.842
+    },
+    {
+      "language_group": "ilocano",
+      "launch": {
+        "pid": 438138,
+        "root": "/home/iotim/chika-curation/curation/outputs/ilocano-next",
+        "argv": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/ilocano_next_acquisition_inventory.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/ilocano-next",
+          "--language",
+          "ilo",
+          "--source-id",
+          "abscbn-tvpatrol-ilocos",
+          "--max-hours",
+          "10",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ],
+        "inventory_sha256": "716814a90bd6e71df9445d7d97719b9ef8001fcd57a9e2223a9d8ded95ad9644"
+      },
+      "worker": {
+        "pid": 438138,
+        "status": "running",
+        "started_at": 1794711460.612004
+      },
+      "process_present": true,
+      "process_command": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/ilocano-next/run.py",
+      "downloaded_recordings": 3,
+      "raw_seconds": 5427.322862
+    }
+  ],
+  "observed_at": "2026-11-15T02:58:17.843854+00:00",
+  "local_audio_copied": false,
+  "asr_serving_changed": false
+}
