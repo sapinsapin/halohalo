@@ -1,0 +1,182 @@
+{
+  "host": "dwnd-01",
+  "user": "iotim",
+  "observed_at": "2026-11-15T03:02:57.987620+00:00",
+  "jobs": [
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada",
+      "launch": {
+        "pid": 440397,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/hiligaynon-continuation/gma-ratsada.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada",
+          "--language",
+          "hil",
+          "--source-id",
+          "gma-ratsada",
+          "--max-hours",
+          "100",
+          "--max-items",
+          "10000",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ],
+        "scope": "bounded continuation; remaining finite inventory retained, not all-source completion"
+      },
+      "process_present": true,
+      "command": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/gma-ratsada.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada --language hil --source-id gma-ratsada --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos",
+      "launch": {
+        "pid": 440399,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/hiligaynon-continuation/aksyon-videos.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos",
+          "--language",
+          "hil",
+          "--source-id",
+          "aksyon-videos",
+          "--max-hours",
+          "100",
+          "--max-items",
+          "10000",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ],
+        "scope": "bounded continuation; remaining finite inventory retained, not all-source completion"
+      },
+      "process_present": true,
+      "command": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/aksyon-videos.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos --language hil --source-id aksyon-videos --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams",
+      "launch": {
+        "pid": 440398,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/hiligaynon-continuation/aksyon-streams.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams",
+          "--language",
+          "hil",
+          "--source-id",
+          "aksyon-streams",
+          "--max-hours",
+          "100",
+          "--max-items",
+          "10000",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ],
+        "scope": "bounded continuation; remaining finite inventory retained, not all-source completion"
+      },
+      "process_present": true,
+      "command": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/aksyon-streams.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams --language hil --source-id aksyon-streams --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1",
+      "launch": {
+        "pid": 440843,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.prepare",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/canonical-ceb-remote-v1/snapshots/7ae7bb77889ebda808514fa9de8edc9b3f688664f319f4d91653e9b07170f786/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1/prepared",
+          "--max-recordings",
+          "18",
+          "--window-seconds",
+          "27",
+          "--min-free-gib",
+          "100"
+        ]
+      },
+      "process_present": true,
+      "command": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1/run.py"
+    }
+  ],
+  "hiligaynon_selection": [
+    {
+      "source": "ilonggatalks",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/ilonggatalks.json",
+      "remaining": 0,
+      "local_reserved": 1,
+      "sha256": "f7ef6244b6adfe48c3db88369bfef5e013b0a73ac28dea48080ba299a0dc1b49"
+    },
+    {
+      "source": "bombo-ilonggo-drama",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/bombo-ilonggo-drama.json",
+      "remaining": 0,
+      "local_reserved": 36,
+      "sha256": "b00c956eade12e119ad6ad36b11f7d8ceadcf1f5131bd3edca953aeb2cd4a62c"
+    },
+    {
+      "source": "gma-ratsada",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/gma-ratsada.json",
+      "remaining": 22296,
+      "local_reserved": 39,
+      "sha256": "df3f5e9d0b89a0b509850a603482967cf213910ca90ff520fde9a9de5295a608",
+      "deferred_title_review": 6839
+    },
+    {
+      "source": "aksyon-streams",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/aksyon-streams.json",
+      "remaining": 6351,
+      "local_reserved": 39,
+      "sha256": "f3b950e299b1060fa96c30d4b81cb7bfb92a2b90fde4d383ed150e77e2249181"
+    },
+    {
+      "source": "aksyon-videos",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/aksyon-videos.json",
+      "remaining": 19,
+      "local_reserved": 38,
+      "sha256": "a74a91d1f31a0c4de6834677e3d8e9430698fbe5306666e19b2d541c88d35b52"
+    },
+    {
+      "source": "rmn-iloilo",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/rmn-iloilo.json",
+      "remaining": 0,
+      "local_reserved": 0,
+      "sha256": "5fdae82a395a5471dc782ddbccc63beaf24c44e255d1ef29193edf5cd2127543"
+    },
+    {
+      "source": "rmn-bacolod",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/rmn-bacolod.json",
+      "remaining": 0,
+      "local_reserved": 8,
+      "sha256": "92aebe50366ed0b930476d45bf0bf0a986e7b0f86c548de5ad017d81a115bfed"
+    },
+    {
+      "source": "kuan-joj-jai",
+      "inventory": "curation/outputs/dwnd-hiligaynon-continuation-v1/kuan-joj-jai.json",
+      "remaining": 0,
+      "local_reserved": 2,
+      "sha256": "2fc5163f82879cac644d7648a088e35c8fd7ea1be3e778031ebc9e12a374bf2c"
+    }
+  ],
+  "local_reserved_policy": "All previously attempted local IDs excluded from remote continuation; local failures remain pending inspection, not silently retried",
+  "asr_serving_changed": false,
+  "model_inference_started": false
+}
