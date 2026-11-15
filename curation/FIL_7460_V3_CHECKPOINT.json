@@ -1,0 +1,16 @@
+{
+  "status": "staged_not_exported",
+  "manifest": "curation/outputs/collected-fil-7460-v3/manifest.jsonl",
+  "manifest_sha256": "f43ac089b7e2b60767dbafaa64db34cb5c32ca4f15e205d5307c12ebacedeea9",
+  "source_manifest_sha256": "0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf",
+  "review_manifest_sha256": "e7cae817c2907b61a7f55f524e59cfde58a2013006a23af2a29cd7d78b4694c2",
+  "rows": 7460,
+  "new_reviews_joined": 990,
+  "review_statuses": {
+    "text_reviewed": 4057,
+    "draft": 3403
+  },
+  "rejected_reviews": 10,
+  "transcript_changes": 0,
+  "audio_approvals": 0
+}

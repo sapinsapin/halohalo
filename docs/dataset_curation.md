@@ -888,3 +888,7 @@ Started metadata-only verification on dwnd-01 for the remaining 615 candidates i
 ### Second Filipino VAD batch completed and audited
 
 The 49-recording /29.866669514 prepared-hour snapshot produced 22,150 speech-candidate segments totaling 27.354106406 hours. The chained independent audit verified exact PCM slices, sample boundaries, inherited metadata and audio hashes. A separate read verified schema, row count and candidate-manifest identity against both summary and audit. `curation/DWND_FIL_VAD_V2_COMPLETE.json` pins the terminal receipt and audit. These are untranscribed, language-unverified candidate hours and overlap their raw/prepared source durations; do not add pipeline stages together.
+
+### Second 1,000-row Kimi review completed and merged
+
+The second large Kimi assignment processed all 1,000 rows: 990 accepted, 10 rejected, no early stop. The strict finalizer verified stored response/content bindings and audio hashes, attached 990 reviews, and confirmed zero transcript changes or audio approvals. A subsequent exact-ID/input-identity merge into the staged 7,460-row Filipino manifest added all 990 accepted reviews without changing audio, text, rights or splits. The new staged v3 snapshot contains 4,057 text-reviewed and 3,403 draft rows, with 7,460 distinct audio hashes. `curation/FIL_7460_V3_CHECKPOINT.json` pins input/output hashes and counts. Rejected reviews are retained and not automatically retried. This metadata update is not a new dataset release, audio approval or TTS training gate pass.
