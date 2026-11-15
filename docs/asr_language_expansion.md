@@ -17,3 +17,17 @@ This is an implementation checklist, not a deployment receipt. No serving change
 ## Current unresolved items
 
 Production host/checkout mapping, candidate revisions/licenses, variety-matched gate data, remote capacity, conversion receipts, model quality gates, public route registration and bounded transcription results remain unverified for the three languages. Collection continues independently. Existing Filipino and Hiligaynon serving and running dataset jobs remain unchanged.
+
+## Candidate metadata verified on 2026-11-15
+
+Pinned model cards, architecture configs and generation configs are recorded with file hashes in `curation/ASR_CANDIDATE_MODELS_CHECKPOINT.json`:
+
+| Language | Candidate revision |
+|---|---|
+| Cebuano (`ceb`) | `109c7f42e40bfa071d53270115734dc2d88fb521` |
+| Central Bikol (`bcl`) | `a35847d1db75e5c72409be4cc7f8b03775b45fb7` |
+| Ilocano (`ilo`) | `00f3c4812849d7abfc0bb3519741b466457368ab` |
+
+All three advertise `cc-by-nc-4.0`; commercial permission is not established by these cards. All three configs identify Whisper conditional generation with 128 mel bins. Their cards explicitly describe using Whisper's `tl` language token for these languages; generation configs specify `tagalog` and `transcribe`. This verifies training-token evidence, not target-language quality. The cards describe read-speech training and warn that conversational and code-switching performance may degrade. Therefore a spontaneous, code-switched evaluation set remains necessary. The user’s valid code-switching convention is unchanged; mixed-language speech is not an error by itself.
+
+Only small metadata files were downloaded. No weights were converted, deployed or evaluated. These observations resolve candidate existence, immutable revisions, architecture and token evidence; production mapping, commercial permission, source variety, quality gates and capacity remain open.

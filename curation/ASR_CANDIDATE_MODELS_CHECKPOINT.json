@@ -1,0 +1,128 @@
+{
+  "observed_at": "2026-11-15T02:16:42.314540+00:00",
+  "candidates": [
+    {
+      "language": "ceb",
+      "repo": "sapinsapin/whisper-large-v3-pld-ceb-norm",
+      "revision": "109c7f42e40bfa071d53270115734dc2d88fb521",
+      "card_license": "cc-by-nc-4.0",
+      "files": {
+        "README.md": {
+          "sha256": "70a7a835aef3cd9015f54ee419c8addecb513ffaa4292c9808b6d2a59e652a84",
+          "relevant_lines": [
+            "language: ceb",
+            "license: cc-by-nc-4.0",
+            "- philippine-languages",
+            "finetuned on the [Philippine Language Dataset](https://huggingface.co/datasets/sapinsapin/pld)",
+            "It was trained on clear, read speech recorded for a corpus. Expect worse results on conversations, phone calls, music in the background, or a speaker switching languages mid-sentence.",
+            "    ids = model.generate(feats, task=\"transcribe\", max_new_tokens=200)",
+            "print(proc.batch_decode(ids, skip_special_tokens=True)[0])",
+            "Languages other than Filipino and English were trained under Whisper's `<|tl|>`",
+            "token, the closest one it has; do not pass a `language=` argument."
+          ]
+        },
+        "config.json": {
+          "sha256": "74a1f7f2748c5e22b91ab663c31cdca90f800c5c394c558ac2a933c1f031e098",
+          "settings": {
+            "model_type": "whisper",
+            "num_mel_bins": 128,
+            "architectures": [
+              "WhisperForConditionalGeneration"
+            ]
+          }
+        },
+        "generation_config.json": {
+          "sha256": "ee324eb0f545bb9f0d6fa5bc39f9a072c1765755aadc6f49eac5deac3ff0df2b",
+          "settings": {
+            "language": "tagalog",
+            "task": "transcribe",
+            "forced_decoder_ids": null
+          }
+        }
+      }
+    },
+    {
+      "language": "bcl",
+      "repo": "sapinsapin/whisper-large-v3-pld-bcl-norm",
+      "revision": "a35847d1db75e5c72409be4cc7f8b03775b45fb7",
+      "card_license": "cc-by-nc-4.0",
+      "files": {
+        "README.md": {
+          "sha256": "af0d6053435ca16bd86a2bd8a497a5ade281c5acfac279fc96747e53f4dfde2e",
+          "relevant_lines": [
+            "language: bcl",
+            "license: cc-by-nc-4.0",
+            "- philippine-languages",
+            "finetuned on the [Philippine Language Dataset](https://huggingface.co/datasets/sapinsapin/pld)",
+            "It was trained on clear, read speech recorded for a corpus. Expect worse results on conversations, phone calls, music in the background, or a speaker switching languages mid-sentence.",
+            "    ids = model.generate(feats, task=\"transcribe\", max_new_tokens=200)",
+            "print(proc.batch_decode(ids, skip_special_tokens=True)[0])",
+            "Languages other than Filipino and English were trained under Whisper's `<|tl|>`",
+            "token, the closest one it has; do not pass a `language=` argument."
+          ]
+        },
+        "config.json": {
+          "sha256": "74a1f7f2748c5e22b91ab663c31cdca90f800c5c394c558ac2a933c1f031e098",
+          "settings": {
+            "model_type": "whisper",
+            "num_mel_bins": 128,
+            "architectures": [
+              "WhisperForConditionalGeneration"
+            ]
+          }
+        },
+        "generation_config.json": {
+          "sha256": "ee324eb0f545bb9f0d6fa5bc39f9a072c1765755aadc6f49eac5deac3ff0df2b",
+          "settings": {
+            "language": "tagalog",
+            "task": "transcribe",
+            "forced_decoder_ids": null
+          }
+        }
+      }
+    },
+    {
+      "language": "ilo",
+      "repo": "sapinsapin/whisper-large-v3-pld-ilo-norm",
+      "revision": "00f3c4812849d7abfc0bb3519741b466457368ab",
+      "card_license": "cc-by-nc-4.0",
+      "files": {
+        "README.md": {
+          "sha256": "d56bb1d637f969e6c009989ddf1433037f8eeb25c2f591ca7e9c4187257d2d8c",
+          "relevant_lines": [
+            "language: ilo",
+            "license: cc-by-nc-4.0",
+            "- philippine-languages",
+            "finetuned on the [Philippine Language Dataset](https://huggingface.co/datasets/sapinsapin/pld)",
+            "It was trained on clear, read speech recorded for a corpus. Expect worse results on conversations, phone calls, music in the background, or a speaker switching languages mid-sentence.",
+            "    ids = model.generate(feats, task=\"transcribe\", max_new_tokens=200)",
+            "print(proc.batch_decode(ids, skip_special_tokens=True)[0])",
+            "Languages other than Filipino and English were trained under Whisper's `<|tl|>`",
+            "token, the closest one it has; do not pass a `language=` argument."
+          ]
+        },
+        "config.json": {
+          "sha256": "74a1f7f2748c5e22b91ab663c31cdca90f800c5c394c558ac2a933c1f031e098",
+          "settings": {
+            "model_type": "whisper",
+            "num_mel_bins": 128,
+            "architectures": [
+              "WhisperForConditionalGeneration"
+            ]
+          }
+        },
+        "generation_config.json": {
+          "sha256": "ee324eb0f545bb9f0d6fa5bc39f9a072c1765755aadc6f49eac5deac3ff0df2b",
+          "settings": {
+            "language": "tagalog",
+            "task": "transcribe",
+            "forced_decoder_ids": null
+          }
+        }
+      }
+    }
+  ],
+  "weights_downloaded": false,
+  "deployment_performed": false,
+  "commercial_permission_established": false
+}
