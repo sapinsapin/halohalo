@@ -1,0 +1,259 @@
+{
+  "status": "metadata_preflight_only",
+  "items": [
+    {
+      "id": "qtoePjFQUI4",
+      "webpage_url": "https://www.youtube.com/watch?v=qtoePjFQUI4",
+      "title": "Balitang Bicolandia: August 3, 2023",
+      "duration": 1736,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-08-03",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-discovery-v1/qtoePjFQUI4.info.json",
+      "metadata_sha256": "fb4d3be5c8d2717ad548787536afb08961b27b8e3efdbbbcea6a6d7f01e5a207"
+    },
+    {
+      "id": "hpNVkO6fl10",
+      "webpage_url": "https://www.youtube.com/watch?v=hpNVkO6fl10",
+      "title": "Balitang Bicolandia: March 1, 2021",
+      "duration": 1925,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2021-03-01",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-discovery-v1/hpNVkO6fl10.info.json",
+      "metadata_sha256": "a2b0c9bce3e6c5e9681700c72bdfa5376c42eee4a57e615521b8bb768acf112e"
+    },
+    {
+      "id": "Rv6FpbPoiYc",
+      "webpage_url": "https://www.youtube.com/watch?v=Rv6FpbPoiYc",
+      "title": "Balitang Bicolandia : August 26, 2022",
+      "duration": 2289,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2022-08-26",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-discovery-v1/Rv6FpbPoiYc.info.json",
+      "metadata_sha256": "a9221ed15617c6024fd815d61d842459d1dd8809d4ffe2f243b2500bbcaf251d"
+    },
+    {
+      "id": "Qcxhylz8cHg",
+      "webpage_url": "https://www.youtube.com/watch?v=Qcxhylz8cHg",
+      "title": "Balitang Bicolandia : October 10, 2022",
+      "duration": 2300,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2022-10-10",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/Qcxhylz8cHg.info.json",
+      "metadata_sha256": "c7343b0e331d4ff6aabe40b8752421171c2b22a3cef587599caa0b5ed8b031d1"
+    },
+    {
+      "id": "3DKgn4_pLBc",
+      "webpage_url": "https://www.youtube.com/watch?v=3DKgn4_pLBc",
+      "title": "Balitang Bicolandia: March 17, 2023",
+      "duration": 1782,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-03-17",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/3DKgn4_pLBc.info.json",
+      "metadata_sha256": "18c17fac06dba1db1dce510894c190e4524558a06adb65f87cfe30ddab2e02d6"
+    },
+    {
+      "id": "U8NnWzKs7zE",
+      "webpage_url": "https://www.youtube.com/watch?v=U8NnWzKs7zE",
+      "title": "Balitang Bicolandia: March 1, 2023",
+      "duration": 1921,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-03-01",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/U8NnWzKs7zE.info.json",
+      "metadata_sha256": "e5f9f74fb8183288a6633681d48d7c5cc6b7c4afbdc95989f82091ec1e4b3358"
+    },
+    {
+      "id": "yxZHs2PZal4",
+      "webpage_url": "https://www.youtube.com/watch?v=yxZHs2PZal4",
+      "title": "Balitang Bicolandia: February 3, 2021",
+      "duration": 2352,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2021-02-03",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/yxZHs2PZal4.info.json",
+      "metadata_sha256": "69f8d23d8fb11c000d93718fdbc8cfcc4271d4d04519071769b7a3f7d9f8f2ba"
+    },
+    {
+      "id": "XrbclGYO6sw",
+      "webpage_url": "https://www.youtube.com/watch?v=XrbclGYO6sw",
+      "title": "Balitang Bicolandia : March 31, 2022",
+      "duration": 2467,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2022-03-31",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/XrbclGYO6sw.info.json",
+      "metadata_sha256": "5303d1504ba61aba0ee05ba955942fbe1596045c7e5c05f74c5af6f33f179cad"
+    },
+    {
+      "id": "EUFRCGQDl-o",
+      "webpage_url": "https://www.youtube.com/watch?v=EUFRCGQDl-o",
+      "title": "Balitang Bicolandia : May 10, 2022",
+      "duration": 2444,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2022-05-10",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/EUFRCGQDl-o.info.json",
+      "metadata_sha256": "69bc9743ef4c4c4ac3982f710c8e25af5cd6e0e36b4607e71f19f4872af1d99b"
+    },
+    {
+      "id": "DTzZPtxyM_k",
+      "webpage_url": "https://www.youtube.com/watch?v=DTzZPtxyM_k",
+      "title": "Balitang Bicolandia : March 25, 2022",
+      "duration": 2211,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2022-03-25",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/DTzZPtxyM_k.info.json",
+      "metadata_sha256": "7ec1efcc7f8f56feff32b351466e3c837d3c1c19d3f6df75e1de9521ac68f1a4"
+    },
+    {
+      "id": "gMxImz7vscI",
+      "webpage_url": "https://www.youtube.com/watch?v=gMxImz7vscI",
+      "title": "Balitang Bicolandia: March 31, 2023",
+      "duration": 1887,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-03-31",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/gMxImz7vscI.info.json",
+      "metadata_sha256": "4a4d0d1d560e6c102995189f12ee1f113d87dafeb0b2d58274bc5c4afad7c1ff"
+    },
+    {
+      "id": "U_wzk2BrZf0",
+      "webpage_url": "https://www.youtube.com/watch?v=U_wzk2BrZf0",
+      "title": "Balitang Bicolandia: February 27, 2023",
+      "duration": 1849,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-02-27",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/U_wzk2BrZf0.info.json",
+      "metadata_sha256": "8f7b1b7262dbf731c4da5691b993662ae9060cb2a2f0bfe5a9679da810d59e32"
+    },
+    {
+      "id": "6R9q6TZSUbo",
+      "webpage_url": "https://www.youtube.com/watch?v=6R9q6TZSUbo",
+      "title": "Balitang Bicolandia : December 17, 2021",
+      "duration": 1648,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2021-12-17",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/6R9q6TZSUbo.info.json",
+      "metadata_sha256": "5e58c73a997cc598b0e0d56e313938b6ba6a4c55f0b24e54c946374a2a75c3c3"
+    },
+    {
+      "id": "vZAOsxqzNro",
+      "webpage_url": "https://www.youtube.com/watch?v=vZAOsxqzNro",
+      "title": "Balitang Bicolandia : November 15, 2022",
+      "duration": 2198,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2022-11-15",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/vZAOsxqzNro.info.json",
+      "metadata_sha256": "5f68df5def4b175cf4517ec92a0bbfd11989b1eb57c22b79f7b371eeb190c528"
+    },
+    {
+      "id": "MtR-U7UooUU",
+      "webpage_url": "https://www.youtube.com/watch?v=MtR-U7UooUU",
+      "title": "Balitang Bicolandia: April 3, 2023",
+      "duration": 1950,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-04-03",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/MtR-U7UooUU.info.json",
+      "metadata_sha256": "8c6f5a828b0b4e4181960080a3b1c8828d99c3cef8510fc8974e6ca256234212"
+    },
+    {
+      "id": "iundYlC4F3M",
+      "webpage_url": "https://www.youtube.com/watch?v=iundYlC4F3M",
+      "title": "Balitang Bicolandia: January 6, 2023",
+      "duration": 2307,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-01-06",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/iundYlC4F3M.info.json",
+      "metadata_sha256": "8d0671c9572b8276175ac85e50ac200001d90f5833edf94268d2e420fffc7b4c"
+    },
+    {
+      "id": "eZK-X5UvOMU",
+      "webpage_url": "https://www.youtube.com/watch?v=eZK-X5UvOMU",
+      "title": "Balitang Bicolandia: July 11, 2023",
+      "duration": 1760,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "live_status": "not_live",
+      "availability": "public",
+      "broadcast_date": "2023-07-11",
+      "metadata_path": "curation/outputs/bikolano/bicolandia-preflight-next-20-v1/eZK-X5UvOMU.info.json",
+      "metadata_sha256": "6eb38358b00ae0d250d2ca9ba40a1f5c1973ef406fc0878c3fc8117465a29b37"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "fOBfmb-weJ8",
+      "reason": "ten_hour_cap"
+    },
+    {
+      "id": "COXHtf5Lowc",
+      "reason": "ten_hour_cap"
+    },
+    {
+      "id": "kYv-y5v7b14",
+      "reason": "ten_hour_cap"
+    },
+    {
+      "id": "f3-cJnuy-Lc",
+      "reason": "ten_hour_cap"
+    },
+    {
+      "id": "d7LXR8E1yDg",
+      "reason": "ten_hour_cap"
+    },
+    {
+      "id": "Ov_BUhpgt-E",
+      "reason": "ten_hour_cap"
+    }
+  ],
+  "metadata_estimated_hours": 9.729444444444445,
+  "downloaded_hours": 0,
+  "media_floor_gib": 45,
+  "language_verified": false,
+  "variety": "unspecified Bikol",
+  "rights": "unknown",
+  "overlaps_pilot": true
+}
