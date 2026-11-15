@@ -646,3 +646,9 @@ NYO `us.kimi-k3` drafted the guard/tests (reported backend `global.moonshotai.ki
 `fil-review-source-1284-v1` freezes the 780 completed v5 rows, 500 completed v7 rows and four offline cache-reconciled rows. The reusable selector excluded every prior/current review assignment, skipped eight empty transcripts and prepared 1,000 rows in `fil-kimi-review-next-1000-v1` from 1,276 eligible candidates. All selected IDs are disjoint from earlier assigned inputs. This batch is **not launched**; finish and audit `fil-kimi-review-next-500-v1` first. Include this new reserved input in future exclusions.
 
 Tracked selection: `curation/FIL_KIMI_NEXT_1000_SELECTION.json`; input hash `4dc8710e647d9b3b6a41efbea2b0e3223f339303101c0e27351b9c6bc0663ee1`. The source is a combination of already-retained clips, not new acquisition or unique-hour evidence. No empty transcript was submitted for review.
+
+### Kimi 500 complete; next 1,000 running
+
+The Kimi 500-row batch processed all rows: 491 accepted strict reviews and nine rejected responses. All 491 were independently attached after response/configuration/transcript validation and audio rehashes; no transcripts changed or audio approvals were granted. Triage: 285 no-obvious-text-issue, 193 needs-audio-review, 13 unintelligible-text. Tracked audit: `curation/FIL_KIMI_500_COMPLETE.json`. Rejected responses remain unattached and were not retried.
+
+After rechecking the frozen input and all exclusion hashes, `fil-kimi-review-next-1000-v1` was launched using the same requested `us.kimi-k3` route, one attempt per row and two-consecutive-failure stop. Its tracked selection now records launch status.

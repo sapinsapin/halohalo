@@ -48,7 +48,8 @@
     "candidates": 1276,
     "selected": 1000
   },
-  "status": "prepared_not_launched",
+  "status": "launched_not_complete",
   "model_requested": "us.kimi-k3",
-  "prerequisite": "Finish and audit fil-kimi-review-next-500-v1 before launch"
+  "prerequisite": "Previous500 fully processed,491 accepted reviews independently attached;9 rejected left unattached",
+  "pid": 76018
 }
