@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:38:55.490458+00:00",
-  "free_gib": 1802.502212524414,
+  "updated_at": "2026-11-15T03:39:54.380348+00:00",
+  "free_gib": 1801.0653686523438,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -140,10 +140,9 @@
       "acquisition": {
         "statuses": {
           "failed": 9,
-          "downloaded": 169,
-          "downloading": 1
+          "downloaded": 174
         },
-        "raw_hours": 86.2370691666667
+        "raw_hours": 89.15680944444445
       },
       "summaries": {
         "summary.json": {}
