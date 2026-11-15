@@ -693,3 +693,10 @@ Tracked proof: `curation/BIKOL_RESTORE_PROOF_CHECKPOINT.json`; isolated restored
 Combined the reviewed 5,671-row snapshot with persisted ASR v5/v7/v8/v9 responses: 7,946 IDs, 2,504 text-reviewed and 5,442 draft, including 27 empty transcripts. Rehashed every local audio file; all 7,946 matched. No audio was copied or new ASR requested. The manifest is staged only; see `curation/FIL_CONSOLIDATED_MANIFEST_CHECKPOINT.json`.
 
 Exact audio hashing finds 7,460 distinct audio hashes across those IDs. Hold the consolidated export until duplicate groups and transcript differences are reconciled; do not count the 34,841.484375 padded seconds as unique verified speech. Existing snapshots remain unchanged.
+
+
+### Exact-audio deduplication (2026-11-15)
+
+Run `python -m curation.deduplicate --manifest INPUT --output NEW_DIRECTORY` to derive a unique-byte staging view. The command validates the schema, rehashes every source audio file, rejects conflicting text, split, rights, language, duration, speaker, synthetic status or speech type, and selects by existing review status then ID. It preserves selected rows verbatim and writes every excluded row in `aliases.jsonl`; no media is deleted. Review status selection grants no new approval. Keep the alias file with the canonical manifest for provenance and future split assignment.
+
+Applied to the 7,946-row Filipino snapshot: 7,460 canonical rows and 486 alias rows. Independent reconstruction proved the outputs preserve every original row exactly; all canonical audio hashes are distinct. This resolves the exact-byte export hold in the preceding checkpoint, but acoustic deduplication, audio review, permissions and final export remain pending. See `curation/FIL_DEDUPLICATED_CHECKPOINT.json`. Three focused tests cover conflict rejection, preservation and distinct audio with identical text. NYO requested `us.kimi-k3`, returned `global.moonshotai.kimi-k3.1`, supplied advisory rules; local code and data checks enforce them.
