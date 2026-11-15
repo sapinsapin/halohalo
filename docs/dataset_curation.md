@@ -838,3 +838,9 @@ Remote VAD and independent PCM audit completed for all 5,400 segments / 7.001574
 ### Second remote Filipino preparation snapshot (2026-11-15)
 
 A second consistent RSS snapshot selects 49 additional downloaded recordings / 29.865554864 raw hours, explicitly excluding all eight first-batch IDs. Preparation runs independently on dwnd-01 with the same 27-second windows and 100 GiB floor. `curation/DWND_FIL_PREPARATION_V2_CHECKPOINT.json` records every selected/excluded ID, input snapshot hash, command and process observation. The original acquisition ledger is unchanged. The current remote-only acquisition/ASR snapshot is `curation/DWND_STATUS.json`; pending recovery items may still carry their historical failed status until retried, so those counts are not terminal new failures. Do not add prepared/VAD/ASR durations to acquisition totals.
+
+### Remote Hiligaynon canonical import and preparation (2026-11-15)
+
+Imported a frozen snapshot of 175 completed remote Hiligaynon recordings from three source roots, totaling 141.653670833 raw hours. Import verified file hashes, sizes, probe durations and canonical schema; no exact byte duplicates were found within this snapshot. Twelve other entries were excluded by the importer. These are provisional language labels and do not establish unique speech or source rights.
+
+Preparation now runs for the entire snapshot on dwnd-01, using 27-second windows and a 100 GiB floor. Acquisition continues independently; later snapshots must reconcile IDs against this frozen batch. `curation/DWND_HIL_PREPARATION_CHECKPOINT.json` preserves the manifest hash, import report, included IDs, command, live process observation and recovery code. No additional Hiligaynon ASR or TTS training is implied by this preparation launch.
