@@ -108,7 +108,7 @@ def snapshot():
                         for pattern in ('fil-persistent-batch-v*/worker.json','hil-persistent-new-*/worker.json')
                         for path in sorted((ROOT/'outputs').glob(pattern))]
     review_batches=[job_observation(path,path.parent/'reviews/summary.json')
-                    for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json','collected-hil-new-*-review-*/worker.json')
+                    for pattern in ('fil-review-*/worker.json','fil-kimi-review-*/worker.json','collected-hil-remaining-*/worker.json','collected-hil-new-*-review-*/worker.json')
                     for path in sorted((ROOT/'outputs').glob(pattern))]
     storage_jobs=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-preemptive-backup-*/worker.json'))]
     asr_queues=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-asr-queue-*/worker.json'))]

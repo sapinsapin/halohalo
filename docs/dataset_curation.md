@@ -594,3 +594,9 @@ A Kimi-drafted smoke script was locally inspected and adjusted to preserve isola
 Tracked evidence: `curation/NYO_KIMI_CONTRACT_CHECKPOINT.json`; private script, raw responses and validated caches: `curation/outputs/nyo-kimi-contract-smoke-v1/`. Synthetic rows must never be published as acquired or transcribed data. The fixed isolated cache preserves successful responses on reruns; inspect attempt/error evidence before any failed-call recovery. Existing GLM jobs remain unchanged. A future real-data Kimi batch must retain its separate model/configuration cache identity and existing strict gates.
 
 Filipino ASR v4 subsequently completed all 5,189 selected clips with zero failures and 19 empty transcripts. Reported transcribed duration is 6.434397882 padded hours, not independently verified speech or unique source coverage. The existing v2 queue owns the next frozen v5/v6 stages; do not launch duplicate workers.
+
+### First real-data Kimi review batch
+
+`fil-kimi-review-100-v1` selects 100 nonempty completed Filipino v4 transcripts, excluding all 1,982 IDs assigned to the four prior Filipino review inputs (including the still-running GLM batch). `curation/FIL_KIMI_REVIEW_CHECKPOINT.json` freezes source/input hashes and exclusions. Requested route is `us.kimi-k3`, with a separate output/cache identity, one attempt per item, 60-second timeout, 2,500-token cap and a stop after two consecutive failures. The first response passed strict validation; this checkpoint is not a batch-completion claim.
+
+The status collector includes this worker. Private `worker.json`, `reviews/summary.json`, raw responses and cache records are the completion/provenance authority. Never automatically rerun rejected outputs or concatenate overlapping release snapshots. Only valid results may later be attached to their exact transcript/audio identities; no source question is submitted and no text review grants audio approval.
