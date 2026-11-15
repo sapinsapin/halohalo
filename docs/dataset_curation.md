@@ -484,3 +484,6 @@ Ilocano acquisition is continuing through a separate 16-recording inventory (8.0
 ### Publication conflict handling verified (15 November)
 
 The first 982-row Filipino publication attempt received an explicit HTTP 412 and exited without a receipt. This exposed the repeated manual-recovery cost of simultaneous archive backups and draft publication. `curation.publish` now handles only that explicit rejected-parent case with a three-attempt limit and renewed privacy/prefix/staged-byte checks. Four focused regressions cover a successful rebase, a newly occupied destination, changed privacy, and exhausted retries; all fourteen publication tests passed. A new bounded publication attempt was then started against the same immutable local export. This change does not restart active acquisition, ASR, or backup workers.
+
+
+The 982-row Filipino publication retry completed and all thirteen artifacts were verified. Its configuration `fil_collected_vad_982_v1` was registered and read back at pinned revision `f24f5047cfa44c4a2644f2bd7c1ddb566036c5c5`, yielding exactly 982 IDs/sentences with 961 text-reviewed and 21 draft rows. Data revision: `2b04e79bc36bf65d7d020e9322a7ca529e7d84a4`. Receipts and streaming evidence are under `curation/outputs/collected-fil-982-v1/`. No publication worker remains pending for this snapshot.
