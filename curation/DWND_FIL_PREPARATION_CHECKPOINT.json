@@ -1,0 +1,86 @@
+{
+  "pid": 571156,
+  "args": [
+    "/home/iotim/chika-curation/.venv-compute/bin/python",
+    "-m",
+    "curation.prepare",
+    "--rss-root",
+    "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v1/rss-snapshot",
+    "--output",
+    "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v1/prepared",
+    "--max-recordings",
+    "8",
+    "--window-seconds",
+    "27",
+    "--min-free-gib",
+    "100"
+  ],
+  "selected_recordings": [
+    {
+      "id": "4134cdd31a7e05ca0a7ab0df5f911700",
+      "source_id": "adulting-with-joyce-pring",
+      "sha256": "bad2735ca58430004686a24f17c31f22215e77d7df9c972e70deeb5b1a6c9066",
+      "duration": 528.114583,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/4134cdd31a7e05ca0a7ab0df5f911700.media"
+    },
+    {
+      "id": "ed9ce8948ab9c72bf49abda456b7acf0",
+      "source_id": "boiling-waters-ph",
+      "sha256": "ece8e8f9fc2dc2c303c0229acf34cc6fd11835b14fa735a1808b86588df99d1c",
+      "duration": 1088.627563,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/ed9ce8948ab9c72bf49abda456b7acf0.media"
+    },
+    {
+      "id": "d0a045f78829391e0c2e23e3de9f3a4e",
+      "source_id": "creepsilog",
+      "sha256": "099ca521372edea29e176c293b00912beb543e7718f7018c94c774ce88341dc3",
+      "duration": 6379.901429,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/d0a045f78829391e0c2e23e3de9f3a4e.media"
+    },
+    {
+      "id": "7f40573a248496034e868eb65263bce2",
+      "source_id": "kudazzers",
+      "sha256": "8add3af13c90444deeb467045e2d42b1f65a5d63e671b1f239e66d9145d43672",
+      "duration": 827.794286,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/7f40573a248496034e868eb65263bce2.media"
+    },
+    {
+      "id": "dfaaa214b91867ad26b70c7e72b77bca",
+      "source_id": "tamang-usapan",
+      "sha256": "d41b0b95b0150567ec349b0f811b61ed5653d96c6bf0608e4b7b163992ee547e",
+      "duration": 4343.645333,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/dfaaa214b91867ad26b70c7e72b77bca.media"
+    },
+    {
+      "id": "bd3c146ce36b17f409fbc7cf8d788fd9",
+      "source_id": "the-koolpals",
+      "sha256": "33038a204aa2330b6a22db3584a0aee0352b2fd51842722f0f70e6203d0c5e27",
+      "duration": 4582.164898,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/bd3c146ce36b17f409fbc7cf8d788fd9.media"
+    },
+    {
+      "id": "afec26fc45cb12523acfeaf0f5a0b0c9",
+      "source_id": "the-linya-linya-show",
+      "sha256": "1aaa2defb387ff51ee55b7a68b11aead84ebcbdc7ba1c02a30efd5566c9514b6",
+      "duration": 7127.562449,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/afec26fc45cb12523acfeaf0f5a0b0c9.media"
+    },
+    {
+      "id": "e4edd3110c925f208babf2222b1220be",
+      "source_id": "underpaid-with-stanley-chi",
+      "sha256": "c3895b0412a9061ebe78a631f408bd1f0699af5399eeebe90c49e4f37be2f4f7",
+      "duration": 2484.793375,
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/e4edd3110c925f208babf2222b1220be.media"
+    }
+  ],
+  "snapshot_sha256": "b93c740708d575354c88c4d999a7a94f1aa650dcb775dc1443784dfe7c59598b",
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:19:07.262217+00:00",
+  "worker": {
+    "pid": 571156,
+    "status": "running",
+    "started_at": 1794712732.8271725
+  },
+  "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v1/run.py",
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.prepare', '--rss-root', '/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v1/rss-snapshot', '--output', '/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v1/prepared', '--max-recordings', '8', '--window-seconds', '27', '--min-free-gib', '100'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n"
+}
