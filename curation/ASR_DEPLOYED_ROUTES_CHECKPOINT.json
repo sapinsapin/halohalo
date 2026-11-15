@@ -1,0 +1,76 @@
+{
+  "observed_at": "2026-11-15T02:14:12.492021+00:00",
+  "endpoint": "https://d1ve4x2dfkyese.cloudfront.net/v1/models",
+  "authenticated": true,
+  "http_status": 200,
+  "advertised_asr_models": [
+    {
+      "id": "halohalo/asr-fil",
+      "object": "model",
+      "owned_by": "halohalo",
+      "kind": "asr",
+      "language": "fil",
+      "endpoints": [
+        "wss /v1/asr"
+      ]
+    },
+    {
+      "id": "halohalo/asr-hil",
+      "object": "model",
+      "owned_by": "halohalo",
+      "kind": "asr",
+      "language": "hil",
+      "endpoints": [
+        "wss /v1/asr"
+      ]
+    },
+    {
+      "id": "fw/flipvox-whisper-base-fil",
+      "object": "model",
+      "owned_by": "sapinsapin",
+      "kind": "asr",
+      "languages": [
+        "fil"
+      ],
+      "quant": "float16",
+      "default": true,
+      "endpoints": [
+        "wss /v1/asr"
+      ]
+    },
+    {
+      "id": "fw/whisper-large-v3-pld-fil-norm",
+      "object": "model",
+      "owned_by": "sapinsapin",
+      "kind": "asr",
+      "languages": [
+        "fil"
+      ],
+      "quant": "float16",
+      "default": false,
+      "endpoints": [
+        "wss /v1/asr"
+      ]
+    },
+    {
+      "id": "fw/whisper-large-v3-pld-hil-norm",
+      "object": "model",
+      "owned_by": "sapinsapin",
+      "kind": "asr",
+      "languages": [
+        "hil"
+      ],
+      "quant": "int8_float16",
+      "default": false,
+      "endpoints": [
+        "wss /v1/asr"
+      ]
+    }
+  ],
+  "not_advertised_target_languages": [
+    "ceb",
+    "bcl",
+    "ilo"
+  ],
+  "note": "Local registry names are not deployment proof. No transcription requests made and no serving configuration modified. Bikol variety must be established before choosing bcl."
+}
