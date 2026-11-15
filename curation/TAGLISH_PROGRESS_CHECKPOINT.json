@@ -1,0 +1,11 @@
+{
+  "repo": "sapinsapin/chika",
+  "checkpoint": "checkpoints/taglish-rss/6bbfa8933a92a9c2fe4419f927d05809bcc0b30cac02d2cc15cdbc6bbadc9321.sqlite",
+  "revision": "b230dd4efec58eade728883a12f0f30289c56018",
+  "checkpoint_sha256": "6bbfa8933a92a9c2fe4419f927d05809bcc0b30cac02d2cc15cdbc6bbadc9321",
+  "checkpoint_download_verified": true,
+  "eviction_applied": false,
+  "dry_run_result": "checkpoint does not prove this item backup",
+  "reason": "Live backup advanced from 7 to 8 receipts while the independent checkpoint was uploaded. New candidate sorts first; no proven prefix can be evicted with existing selector.",
+  "next_action": "Wait for supervisor batch checkpoint; no deletion or backup replay."
+}
