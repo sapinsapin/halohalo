@@ -896,3 +896,9 @@ The second large Kimi assignment processed all 1,000 rows: 990 accepted, 10 reje
 ### Filipino staged v3 remotely preserved
 
 The 7,460-row v3 manifest, merge audit and complete second 1,000-row reviewed manifest are backed up in private `sapinsapin/chika` at immutable revision `4034cf08b6555e376ac4fe1cda07a2079704faa7`. All three deterministic gzip objects were freshly downloaded, compressed-hash checked and decompressed to the exact original bytes. `curation/FIL_7460_V3_REMOTE_CHECKPOINT.json` records recovery coordinates. No new dataset configuration or audio upload is implied. Remote status now reports the active preparation/VAD/audit stage and nested ASR response summaries, alongside actual process identity checks.
+
+### Sequential remote Filipino ASR queue v3
+
+Launched the existing tested ASR queue runner on dwnd-01 for 2,000 additional segments from the first audited Filipino VAD snapshot, in 20 sequential 100-row sessions. Selection acquired both old cache batch locks, excluded every prior attempt fingerprint (including the finalize-timeout attempt), excluded repeated selected audio hashes and rehashed every selected file. Frozen plan and per-batch input hashes passed `prepare_plan` before launch. `curation/DWND_FIL_ASR_QUEUE_V3_CHECKPOINT.json` records the exact plan, selected audio hashes and command.
+
+Only one session runs at a time; the entire queue stops on the first failed/incomplete stage. It retains a 100 GiB floor and never retries uncertain requests. Recovery must inspect individual stage receipts, preserve completed caches and exclude queued/reserved IDs from other assignments; do not rerun the original full plan after a partial execution. Downloads and CPU preparation continue independently.
