@@ -640,3 +640,9 @@ New `curation.acquire_inventory` invocations can specify `--max-transfer-bytes N
 This is **monitoring, not a hard filesystem quota or reserved space**. Writes can overshoot between the five-second polls; a file created and removed between observations is not accounted. Metadata/log files are not included. The existing disk floor and runtime/idle guards remain necessary. Do not use this change alone to lower the 45 GiB archive/preparation floor. Active workers were neither changed nor restarted.
 
 NYO `us.kimi-k3` drafted the guard/tests (reported backend `global.moonshotai.kimi-k3.1`); local integration completed CLI propagation and added cumulative-inode/rename checks. All 19 transfer/inventory tests passed, covering prelaunch rejection, running-child termination/reaping, oversized successful exit rejection, unchanged defaults, invalid budgets and CLI-function propagation.
+
+### Next Kimi review input prepared from newly completed ASR
+
+`fil-review-source-1284-v1` freezes the 780 completed v5 rows, 500 completed v7 rows and four offline cache-reconciled rows. The reusable selector excluded every prior/current review assignment, skipped eight empty transcripts and prepared 1,000 rows in `fil-kimi-review-next-1000-v1` from 1,276 eligible candidates. All selected IDs are disjoint from earlier assigned inputs. This batch is **not launched**; finish and audit `fil-kimi-review-next-500-v1` first. Include this new reserved input in future exclusions.
+
+Tracked selection: `curation/FIL_KIMI_NEXT_1000_SELECTION.json`; input hash `4dc8710e647d9b3b6a41efbea2b0e3223f339303101c0e27351b9c6bc0663ee1`. The source is a combination of already-retained clips, not new acquisition or unique-hour evidence. No empty transcript was submitted for review.
