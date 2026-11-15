@@ -44,3 +44,9 @@ The 718-row configuration was read back at card revision `40a461007fee00cf77169f
 The 982-row Filipino release contains the prior 482-row snapshot plus 500 new nonempty drafts, with 961 validated text reviews and 21 draft-only rows overall. All 982 PCM arrays and sentences matched local source derivatives; all thirteen remote artifacts were hash-verified at data revision `2b04e79bc36bf65d7d020e9322a7ca529e7d84a4`. Configuration/card revision: `f24f5047cfa44c4a2644f2bd7c1ddb566036c5c5`. Source permissions remain unknown, splits unassigned, audio approvals zero.
 
 Pinned streaming at `f24f5047cfa44c4a2644f2bd7c1ddb566036c5c5` returned exactly 982 rows, matching IDs, unchanged sentences and expected statuses (961 text-reviewed, 21 draft).
+
+### Filipino 5,671-clip export — publication pending
+
+The next immutable curation snapshot combines completed Filipino v4 with the prior 982-clip release and 100 completed Kimi reviews. It contains 5,671 unique clip IDs, 1,061 text-reviewed rows and 4,610 drafts, including 19 empty transcripts. Total padded duration is 25,099.226375 seconds (6.972007326 hours), not unique or verified speech. All overlapping IDs matched transcript/audio/ASR identities; all 5,671 exported PCM arrays and sentences matched local inputs exactly. No audio approvals or training permissions were granted.
+
+Tracked checkpoint: `curation/FIL_5671_EXPORT_CHECKPOINT.json`. Private artifacts: `outputs/collected-fil-5671-v1/`. Upload was started at `data/fil_collected_vad_5671_v1`; publication receipt, remote verification, card configuration and streaming verification are still pending. Inspect `publisher.json` and the actual process before recovery. This snapshot overlaps older Filipino configurations; never sum or concatenate them as independent data.

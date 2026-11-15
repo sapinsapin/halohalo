@@ -1,0 +1,35 @@
+{
+  "rows": 5671,
+  "source_inputs": [
+    {
+      "path": "curation/outputs/fil-persistent-batch-v4/asr/manifest.jsonl",
+      "sha256": "05af9616f5097280e3f46906b818871d1691f408b870e637d1737ae272d0439e"
+    },
+    {
+      "path": "curation/outputs/collected-fil-982-v1/manifest.jsonl",
+      "sha256": "e9b790b240a584c0c12874a200ceb907629e9830a486b420770eb466ce6b1772"
+    },
+    {
+      "path": "curation/outputs/fil-kimi-review-100-v1/reviewed-manifest.jsonl",
+      "sha256": "ccc824a1ed3ff6157f4da4cd7789638414d59b52a57f716dceafb06cd2da7082"
+    }
+  ],
+  "overlap_rows": 600,
+  "review_statuses": {
+    "text_reviewed": 1061,
+    "draft": 4610
+  },
+  "empty_transcripts": 19,
+  "padded_seconds": 25099.226374999973,
+  "transcript_changes": 0,
+  "audio_approvals": 0,
+  "manifest_sha256": "5c802488378df5bb1eced3bdf88728bbc53d7a9784af235a832291722d5823f7",
+  "audio_check": {
+    "rows": 5671,
+    "pcm_matches": 5671,
+    "sentences_unchanged": true
+  },
+  "publication_status": "started_not_verified",
+  "publication_prefix": "data/fil_collected_vad_5671_v1",
+  "card_status": "pending"
+}
