@@ -1,0 +1,71 @@
+{
+  "host": "dwnd-01",
+  "complete": {
+    "ceb": {
+      "worker": {
+        "pid": 1428200,
+        "status": "complete",
+        "stage": "complete",
+        "started_at": 1794715707.8585336,
+        "verified_windows": 3447,
+        "finished_at": 1794716501.823061
+      },
+      "audit": {
+        "rows": 9454,
+        "parents_checked": 3283,
+        "exact_pcm_samples": 1259583904,
+        "candidate_hours": 21.867776111111112,
+        "parent_manifest_sha256": "960384714951b098060a4a8d2b375d5e67987c9ac7327de1e986585c67df6f8f",
+        "candidate_manifest_sha256": "71044e49fc391dffa263bc094db15ca04dd1d2dbbc9d809349d867072adc03f6",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "summary": {
+        "input_windows": 3447,
+        "input_hours": 25.69192956597222,
+        "segments": 9454,
+        "candidate_hours": 21.867776111111088,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "71044e49fc391dffa263bc094db15ca04dd1d2dbbc9d809349d867072adc03f6",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      },
+      "manifest": "/home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v3/vad/manifest.jsonl"
+    },
+    "ilo": {
+      "worker": {
+        "pid": 1429087,
+        "status": "complete",
+        "stage": "complete",
+        "started_at": 1794715712.6543903,
+        "verified_windows": 3229,
+        "finished_at": 1794716430.1164644
+      },
+      "audit": {
+        "rows": 8775,
+        "parents_checked": 3153,
+        "exact_pcm_samples": 1176505549,
+        "candidate_hours": 20.42544355902778,
+        "parent_manifest_sha256": "b3e407644849555c5c15da17c30240a3e2438e6100f9a4acbd93f85ac403f251",
+        "candidate_manifest_sha256": "5a9f87e65d3a2b31451e41d3f98759dfa5a25a42522d5580c78e4fd8f35d9a13",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "summary": {
+        "input_windows": 3229,
+        "input_hours": 24.03646852430556,
+        "segments": 8775,
+        "candidate_hours": 20.42544355902784,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "5a9f87e65d3a2b31451e41d3f98759dfa5a25a42522d5580c78e4fd8f35d9a13",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      },
+      "manifest": "/home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v3/vad/manifest.jsonl"
+    }
+  },
+  "pending": {
+    "bik": "vad"
+  },
+  "scope": "Canonical schema, counts and audit manifest identities verified; no language or transcription approval"
+}

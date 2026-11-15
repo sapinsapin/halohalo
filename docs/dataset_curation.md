@@ -988,3 +988,7 @@ Started the existing exact-byte deduplication command over the concatenated thre
 ### Consolidated Filipino exact deduplication complete
 
 The 82,260-candidate worker completed a full audio rehash and retained 82,226 byte-unique canonical rows /101.690920938 padded candidate hours, preserving 34 duplicate rows in the alias manifest. Independently checked source/canonical/alias hashes, recomputed selection from the original manifest, and verified exact canonical/alias row equality and complete row accounting. `curation/DWND_FIL_VAD_DEDUP_COMPLETE.json` records the canonical path and evidence. No source row changed and no media was deleted. Use audio hashes, not only canonical IDs, when excluding existing ASR reservations because canonical selection can choose another alias. Acoustic near-duplicates, quality, rights and transcript approval remain separate work.
+
+### Regional processing v3: Cebuano and Ilocano verified
+
+Cebuano completed 9,454 VAD candidates /21.867776111 padded candidate hours; Ilocano completed 8,775 /20.425443559. Both chained workers finished exact-PCM auditing. Independently verified canonical schema, unique IDs, row counts and parent/candidate hashes against the audit reports. `curation/DWND_REGIONAL_V3_COMPLETION_CHECKPOINT.json` records the evidence and explicitly lists Bikolano as still in VAD at this observation. These durations overlap their previously reported raw/prepared hours and are not ASR or native-language approvals. Ongoing v3 acquisitions remain separate from the frozen first-50 processing snapshots.
