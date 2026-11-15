@@ -1,0 +1,2332 @@
+{
+  "pid": 493851,
+  "root": "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2",
+  "observed_at": "2026-11-15T03:11:12.741350+00:00",
+  "worker": {
+    "pid": 493851,
+    "status": "running",
+    "started_at": 1794712257.0709836,
+    "languages": {
+      "cebuano": {
+        "accepted": 11,
+        "rejected": 2,
+        "processed": 13
+      }
+    }
+  },
+  "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/regional-preflight-v2/run.py",
+  "recovery_code": "import json,subprocess,os,time,hashlib\nfrom pathlib import Path\nbase=Path('/home/iotim/chika-curation');root=Path(__file__).parent\nstate={'pid':os.getpid(),'status':'running','started_at':time.time(),'languages':{}}\ndef save():\n p=root/'worker.tmp';p.write_text(json.dumps(state,indent=2));p.replace(root/'worker.json')\nsave()\ntry:\n for lang,channel in [('cebuano','UCVoawkpW12kgtXgInbPCrhQ'),('bikolano','UCVoawkpW12kgtXgInbPCrhQ'),('ilocano','UCE2606prvXQc_noEqKxVJXA')]:\n  source=base/(lang+'.json');data=json.loads(source.read_text());accepted=[];rejected=[];dest=root/lang;dest.mkdir()\n  for item in data['items']:\n   ident=item['id']\n   try:\n    r=subprocess.run([str(Path.home()/'.local/bin/yt-dlp') if (Path.home()/'.local/bin/yt-dlp').exists() else str(base/'.venv/bin/yt-dlp'),'--skip-download','--dump-single-json','--no-playlist','--socket-timeout','20','--retries','1','https://www.youtube.com/watch?v='+ident],capture_output=True,text=True,timeout=90)\n    if r.returncode: raise ValueError('metadata extraction failed: '+r.stderr[-500:])\n    v=json.loads(r.stdout);(dest/(ident+'.info.json')).write_text(r.stdout)\n    if v.get('id')!=ident or v.get('channel_id')!=channel: raise ValueError('identity/channel mismatch')\n    if v.get('live_status') not in ('not_live','was_live') or not 300<=float(v.get('duration') or 0)<=7200: raise ValueError('live status/duration not eligible')\n    accepted.append({**item,'duration':v['duration'],'channel_id':channel,'live_status':v['live_status'],'metadata_sha256':hashlib.sha256(r.stdout.encode()).hexdigest()})\n   except Exception as e: rejected.append({'id':ident,'reason':str(e)})\n   state['languages'][lang]={'accepted':len(accepted),'rejected':len(rejected),'processed':len(accepted)+len(rejected)};save()\n   (dest/'result.json').write_text(json.dumps({'input_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'expected_channel':channel,'items':accepted,'rejected':rejected,'scope':'metadata preflight only; no audio acquired or language verified'},indent=2))\n state.update(status='complete',finished_at=time.time());save()\nexcept Exception as e:\n state.update(status='failed',error=str(e));save();raise\n",
+  "inputs": {
+    "cebuano": {
+      "source_id": "gma-balitang-bisdak",
+      "source_url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/",
+      "expected_channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "scope": "Remote metadata preflight only; remaining discovery candidates retained in tracked source inventory",
+      "language": "ceb",
+      "english_code_switching": "preserve",
+      "rights": {
+        "training": "unknown",
+        "commercial": "unknown",
+        "redistribution": "unknown"
+      },
+      "overlap_notes": "Existing IDs and parsed broadcast dates excluded; repeated story footage across broadcasts remains possible; not unique speech hours.",
+      "metadata_hours_estimate": null,
+      "metadata_hours_note": "Publisher grid has no durations; no measured or estimated hours claimed.",
+      "items": [
+        {
+          "id": "mzbd01agfPE",
+          "title": "Balitang Bisdak: March 5, 2025.",
+          "broadcast_date": "2025-03-05",
+          "published_date": "March 05,2025 07:47:43 PM",
+          "publisher_id": "130967",
+          "url": "https://www.youtube.com/watch?v=mzbd01agfPE",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "ZLQNhI-I14Q",
+          "title": "Balitang Bisdak: January 31, 2025",
+          "broadcast_date": "2025-01-31",
+          "published_date": "January 31,2025 08:06:45 PM",
+          "publisher_id": "129341",
+          "url": "https://www.youtube.com/watch?v=ZLQNhI-I14Q",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "U6rz9m_qmu8",
+          "title": "Balitang Bisdak: December 23, 2024",
+          "broadcast_date": "2024-12-23",
+          "published_date": "December 23,2024 09:46:24 PM",
+          "publisher_id": "127301",
+          "url": "https://www.youtube.com/watch?v=U6rz9m_qmu8",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "WMg0m6yz-9A",
+          "title": "Balitang Bisdak: December 20, 2024",
+          "broadcast_date": "2024-12-20",
+          "published_date": "December 20,2024 08:36:34 PM",
+          "publisher_id": "127234",
+          "url": "https://www.youtube.com/watch?v=WMg0m6yz-9A",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "FYg7cVAupbo",
+          "title": "Balitang Bisdak: September 12, 2024",
+          "broadcast_date": "2024-09-12",
+          "published_date": "September 12,2024 07:45:56 PM",
+          "publisher_id": "122192",
+          "url": "https://www.youtube.com/watch?v=FYg7cVAupbo",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "-2i2Ulh38z4",
+          "title": "Balitang Bisdak: September 10, 2024",
+          "broadcast_date": "2024-09-10",
+          "published_date": "September 10,2024 07:04:48 PM",
+          "publisher_id": "122007",
+          "url": "https://www.youtube.com/watch?v=-2i2Ulh38z4",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "hpm6NbpDfdA",
+          "title": "Balitang Bisdak: September 6, 2024",
+          "broadcast_date": "2024-09-06",
+          "published_date": "September 06,2024 07:42:36 PM",
+          "publisher_id": "121915",
+          "url": "https://www.youtube.com/watch?v=hpm6NbpDfdA",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "Px-swu0kZ08",
+          "title": "Balitang Bisdak: September 5, 2024",
+          "broadcast_date": "2024-09-05",
+          "published_date": "September 05,2024 07:28:29 PM",
+          "publisher_id": "121825",
+          "url": "https://www.youtube.com/watch?v=Px-swu0kZ08",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "gKGgYgTVS2c",
+          "title": "Balitang Bisdak: July 19, 2024",
+          "broadcast_date": "2024-07-19",
+          "published_date": "July 19,2024 09:28:09 PM",
+          "publisher_id": "118442",
+          "url": "https://www.youtube.com/watch?v=gKGgYgTVS2c",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "fOvKIEQ0nbM",
+          "title": "Balitang Bisdak: July 1, 2024",
+          "broadcast_date": "2024-07-01",
+          "published_date": "July 01,2024 08:37:23 PM",
+          "publisher_id": "117031",
+          "url": "https://www.youtube.com/watch?v=fOvKIEQ0nbM",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "IC8BTPf8gfs",
+          "title": "Balitang Bisdak: May 20, 2024",
+          "broadcast_date": "2024-05-20",
+          "published_date": "May 20,2024 09:39:34 PM",
+          "publisher_id": "113674",
+          "url": "https://www.youtube.com/watch?v=IC8BTPf8gfs",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "O38PmZ3nbCg",
+          "title": "Balitang Bisdak: April 12, 2024",
+          "broadcast_date": "2024-04-12",
+          "published_date": "April 12,2024 07:54:14 PM",
+          "publisher_id": "111261",
+          "url": "https://www.youtube.com/watch?v=O38PmZ3nbCg",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "s4IopytAhnM",
+          "title": "Balitang Bisdak: April 11, 2024",
+          "broadcast_date": "2024-04-11",
+          "published_date": "April 11,2024 08:31:58 PM",
+          "publisher_id": "111175",
+          "url": "https://www.youtube.com/watch?v=s4IopytAhnM",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "1GjTKtMP73Q",
+          "title": "Balitang Bisdak: February 29, 2024",
+          "broadcast_date": "2024-02-29",
+          "published_date": "February 29,2024 07:55:29 PM",
+          "publisher_id": "108510",
+          "url": "https://www.youtube.com/watch?v=1GjTKtMP73Q",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "V4--h5PSYaE",
+          "title": "Balitang Bisdak: February 6, 2024",
+          "broadcast_date": "2024-02-06",
+          "published_date": "February 06,2024 07:45:53 PM",
+          "publisher_id": "107050",
+          "url": "https://www.youtube.com/watch?v=V4--h5PSYaE",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "QXgr2NDXBk4",
+          "title": "Balitang Bisdak: February 5, 2024",
+          "broadcast_date": "2024-02-05",
+          "published_date": "February 05,2024 08:09:03 PM",
+          "publisher_id": "106969",
+          "url": "https://www.youtube.com/watch?v=QXgr2NDXBk4",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "MOkkwgj05sI",
+          "title": "Balitang Bisdak: February 2, 2024",
+          "broadcast_date": "2024-02-02",
+          "published_date": "February 02,2024 07:08:58 PM",
+          "publisher_id": "106844",
+          "url": "https://www.youtube.com/watch?v=MOkkwgj05sI",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "zWBIoDshKTc",
+          "title": "Balitang Bisdak: February 1, 2024",
+          "broadcast_date": "2024-02-01",
+          "published_date": "February 01,2024 07:25:16 PM",
+          "publisher_id": "106773",
+          "url": "https://www.youtube.com/watch?v=zWBIoDshKTc",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "s5sfF19uhVA",
+          "title": "Balitang Bisdak: January 31, 2024",
+          "broadcast_date": "2024-01-31",
+          "published_date": "January 31,2024 07:43:56 PM",
+          "publisher_id": "106696",
+          "url": "https://www.youtube.com/watch?v=s5sfF19uhVA",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "D6yuGgwVlZ8",
+          "title": "Balitang Bisdak: January 30, 2024",
+          "broadcast_date": "2024-01-30",
+          "published_date": "January 30,2024 07:14:21 PM",
+          "publisher_id": "106607",
+          "url": "https://www.youtube.com/watch?v=D6yuGgwVlZ8",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "-ylQ1trnSVk",
+          "title": "Balitang Bisdak: January 29, 2024",
+          "broadcast_date": "2024-01-29",
+          "published_date": "January 29,2024 07:36:02 PM",
+          "publisher_id": "106550",
+          "url": "https://www.youtube.com/watch?v=-ylQ1trnSVk",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "RRmTbyUpoYk",
+          "title": "Balitang Bisdak: January 26, 2024",
+          "broadcast_date": "2024-01-26",
+          "published_date": "January 26,2024 08:07:34 PM",
+          "publisher_id": "106520",
+          "url": "https://www.youtube.com/watch?v=RRmTbyUpoYk",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "osAABRScBDA",
+          "title": "Balitang Bisdak: January 25, 2024",
+          "broadcast_date": "2024-01-25",
+          "published_date": "January 25,2024 08:32:32 PM",
+          "publisher_id": "106414",
+          "url": "https://www.youtube.com/watch?v=osAABRScBDA",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "lejAINIDwAs",
+          "title": "Balitang Bisdak: January 24, 2024",
+          "broadcast_date": "2024-01-24",
+          "published_date": "January 24,2024 08:12:38 PM",
+          "publisher_id": "106312",
+          "url": "https://www.youtube.com/watch?v=lejAINIDwAs",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "nibGhluEUOw",
+          "title": "Balitang Bisdak: January 23, 2024",
+          "broadcast_date": "2024-01-23",
+          "published_date": "January 23,2024 08:13:52 PM",
+          "publisher_id": "106219",
+          "url": "https://www.youtube.com/watch?v=nibGhluEUOw",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "vLXh8t3tm-4",
+          "title": "Balitang Bisdak: January 22, 2024",
+          "broadcast_date": "2024-01-22",
+          "published_date": "January 22,2024 08:34:54 PM",
+          "publisher_id": "106121",
+          "url": "https://www.youtube.com/watch?v=vLXh8t3tm-4",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "GtGdZ7ADNbA",
+          "title": "Balitang Bisdak: January 19, 2024",
+          "broadcast_date": "2024-01-19",
+          "published_date": "January 19,2024 08:44:22 PM",
+          "publisher_id": "106025",
+          "url": "https://www.youtube.com/watch?v=GtGdZ7ADNbA",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "zyg4ZTzKh7U",
+          "title": "Balitang Bisdak: January 18, 2024",
+          "broadcast_date": "2024-01-18",
+          "published_date": "January 18,2024 08:17:59 PM",
+          "publisher_id": "105928",
+          "url": "https://www.youtube.com/watch?v=zyg4ZTzKh7U",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "_6SQrCdAsEo",
+          "title": "Balitang Bisdak: January 17, 2024",
+          "broadcast_date": "2024-01-17",
+          "published_date": "January 17,2024 08:32:33 PM",
+          "publisher_id": "105836",
+          "url": "https://www.youtube.com/watch?v=_6SQrCdAsEo",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "6ikLvbA5rCs",
+          "title": "Balitang Bisdak: January 16, 2024",
+          "broadcast_date": "2024-01-16",
+          "published_date": "January 16,2024 07:39:57 PM",
+          "publisher_id": "105707",
+          "url": "https://www.youtube.com/watch?v=6ikLvbA5rCs",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "zsT8zYClZqM",
+          "title": "Balitang Bisdak: January 15, 2024",
+          "broadcast_date": "2024-01-15",
+          "published_date": "January 15,2024 08:13:51 PM",
+          "publisher_id": "105627",
+          "url": "https://www.youtube.com/watch?v=zsT8zYClZqM",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "5nlGS1i-Vz0",
+          "title": "Balitang Bisdak: January 12, 2024",
+          "broadcast_date": "2024-01-12",
+          "published_date": "January 12,2024 08:18:26 PM",
+          "publisher_id": "105529",
+          "url": "https://www.youtube.com/watch?v=5nlGS1i-Vz0",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "V2pHDib_SyU",
+          "title": "Balitang Bisdak: January 11, 2024",
+          "broadcast_date": "2024-01-11",
+          "published_date": "January 11,2024 07:54:48 PM",
+          "publisher_id": "105414",
+          "url": "https://www.youtube.com/watch?v=V2pHDib_SyU",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "ecxX5YyQ8HE",
+          "title": "Balitang Bisdak: January 10, 2024",
+          "broadcast_date": "2024-01-10",
+          "published_date": "January 10,2024 08:10:32 PM",
+          "publisher_id": "105321",
+          "url": "https://www.youtube.com/watch?v=ecxX5YyQ8HE",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "GE1AZ4sb3o8",
+          "title": "Balitang Bisdak: January 9, 2024",
+          "broadcast_date": "2024-01-09",
+          "published_date": "January 10,2024 07:40:53 AM",
+          "publisher_id": "105245",
+          "url": "https://www.youtube.com/watch?v=GE1AZ4sb3o8",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "xz-MkE4uQOQ",
+          "title": "Balitang Bisdak: January 8, 2024",
+          "broadcast_date": "2024-01-08",
+          "published_date": "January 08,2024 08:20:11 PM",
+          "publisher_id": "105141",
+          "url": "https://www.youtube.com/watch?v=xz-MkE4uQOQ",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "k6pv0HcgXRE",
+          "title": "Balitang Bisdak: January 5, 2024",
+          "broadcast_date": "2024-01-05",
+          "published_date": "January 05,2024 07:54:00 PM",
+          "publisher_id": "105027",
+          "url": "https://www.youtube.com/watch?v=k6pv0HcgXRE",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "m2UgLbDN11c",
+          "title": "Balitang Bisdak: January 4, 2024",
+          "broadcast_date": "2024-01-04",
+          "published_date": "January 04,2024 08:03:19 PM",
+          "publisher_id": "104955",
+          "url": "https://www.youtube.com/watch?v=m2UgLbDN11c",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "lkegn1ILWNc",
+          "title": "Balitang Bisdak: January 3, 2024",
+          "broadcast_date": "2024-01-03",
+          "published_date": "January 03,2024 08:05:48 PM",
+          "publisher_id": "104859",
+          "url": "https://www.youtube.com/watch?v=lkegn1ILWNc",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "dSKSmiej8J8",
+          "title": "Balitang Bisdak: January 2, 2024",
+          "broadcast_date": "2024-01-02",
+          "published_date": "January 02,2024 08:20:57 PM",
+          "publisher_id": "104773",
+          "url": "https://www.youtube.com/watch?v=dSKSmiej8J8",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "iDR5k4Fb7Vk",
+          "title": "Balitang Bisdak: January 1, 2024",
+          "broadcast_date": "2024-01-01",
+          "published_date": "January 01,2024 08:51:04 PM",
+          "publisher_id": "104674",
+          "url": "https://www.youtube.com/watch?v=iDR5k4Fb7Vk",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "9BUEV8RCIiQ",
+          "title": "Balitang Bisdak: December 29, 2023",
+          "broadcast_date": "2023-12-29",
+          "published_date": "December 29,2023 07:57:51 PM",
+          "publisher_id": "104572",
+          "url": "https://www.youtube.com/watch?v=9BUEV8RCIiQ",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "s_08EKOpu0w",
+          "title": "Balitang Bisdak: December 28, 2023",
+          "broadcast_date": "2023-12-28",
+          "published_date": "December 28,2023 08:46:35 PM",
+          "publisher_id": "104471",
+          "url": "https://www.youtube.com/watch?v=s_08EKOpu0w",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "RCbIiQkS-rA",
+          "title": "Balitang Bisdak: December 27, 2023",
+          "broadcast_date": "2023-12-27",
+          "published_date": "December 27,2023 08:46:32 PM",
+          "publisher_id": "104380",
+          "url": "https://www.youtube.com/watch?v=RCbIiQkS-rA",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "BN2qaiKeTEk",
+          "title": "Balitang Bisdak: December 26, 2023",
+          "broadcast_date": "2023-12-26",
+          "published_date": "December 26,2023 08:34:29 PM",
+          "publisher_id": "104274",
+          "url": "https://www.youtube.com/watch?v=BN2qaiKeTEk",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "baZgoQJlnWg",
+          "title": "Balitang Bisdak: December 25, 2023",
+          "broadcast_date": "2023-12-25",
+          "published_date": "December 25,2023 09:51:46 PM",
+          "publisher_id": "104180",
+          "url": "https://www.youtube.com/watch?v=baZgoQJlnWg",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "nyAyA7OLo7g",
+          "title": "Balitang Bisdak: December 22, 2023",
+          "broadcast_date": "2023-12-22",
+          "published_date": "December 22,2023 08:39:23 PM",
+          "publisher_id": "104084",
+          "url": "https://www.youtube.com/watch?v=nyAyA7OLo7g",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "6MuRjDd_duc",
+          "title": "Balitang Bisdak: December 21, 2023",
+          "broadcast_date": "2023-12-21",
+          "published_date": "December 21,2023 07:41:08 PM",
+          "publisher_id": "103989",
+          "url": "https://www.youtube.com/watch?v=6MuRjDd_duc",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "wG9hscqba_o",
+          "title": "Balitang Bisdak: December 20, 2023",
+          "broadcast_date": "2023-12-20",
+          "published_date": "December 20,2023 08:28:56 PM",
+          "publisher_id": "103894",
+          "url": "https://www.youtube.com/watch?v=wG9hscqba_o",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        },
+        {
+          "id": "nl31GCU_m7w",
+          "title": "Balitang Bisdak: December 19, 2023",
+          "broadcast_date": "2023-12-19",
+          "published_date": "December 20,2023 07:43:35 AM",
+          "publisher_id": "103795",
+          "url": "https://www.youtube.com/watch?v=nl31GCU_m7w",
+          "recording_kind": "full_episode_candidate",
+          "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+          "language_status": "provisional; publisher Cebuano show, audio unverified"
+        }
+      ]
+    },
+    "bikolano": {
+      "status": "discovery_only_not_download_ready",
+      "raw_entries": 300,
+      "candidate_count": 203,
+      "metadata_estimated_hours": 110.91722222222222,
+      "downloaded_hours": 0,
+      "metadata_sha256": "ba469586753075a06d31364b04c1cd85ace621023d3b0dd4e1e58004a72b9397",
+      "excludes_prior_preflight_ids": true,
+      "items": [
+        {
+          "id": "Deb9d1cyJaQ",
+          "url": "https://www.youtube.com/watch?v=Deb9d1cyJaQ",
+          "title": "Balitang Bicolandia: February 1, 2021 | Pilot Episode",
+          "duration_metadata": 2515,
+          "broadcast_date": "2021-02-01",
+          "uploader_verified": false
+        },
+        {
+          "id": "Cg3RAi2iP5Y",
+          "url": "https://www.youtube.com/watch?v=Cg3RAi2iP5Y",
+          "title": "Balitang Bicolandia : November 17, 2022",
+          "duration_metadata": 2249,
+          "broadcast_date": "2022-11-17",
+          "uploader_verified": false
+        },
+        {
+          "id": "Jp4iPQ2yHrs",
+          "url": "https://www.youtube.com/watch?v=Jp4iPQ2yHrs",
+          "title": "Balitang Bicolandia: January 4, 2023",
+          "duration_metadata": 2181,
+          "broadcast_date": "2023-01-04",
+          "uploader_verified": false
+        },
+        {
+          "id": "jDBjf6hMKdQ",
+          "url": "https://www.youtube.com/watch?v=jDBjf6hMKdQ",
+          "title": "Balitang Bicolandia : September 28, 2022",
+          "duration_metadata": 2095,
+          "broadcast_date": "2022-09-28",
+          "uploader_verified": false
+        },
+        {
+          "id": "Hpzd18VNY-A",
+          "url": "https://www.youtube.com/watch?v=Hpzd18VNY-A",
+          "title": "Balitang Bicolandia: August 31, 2021",
+          "duration_metadata": 1774,
+          "broadcast_date": "2021-08-31",
+          "uploader_verified": false
+        },
+        {
+          "id": "FVB6q5jl95g",
+          "url": "https://www.youtube.com/watch?v=FVB6q5jl95g",
+          "title": "Balitang Bicolandia : October 29, 2021",
+          "duration_metadata": 1963,
+          "broadcast_date": "2021-10-29",
+          "uploader_verified": false
+        },
+        {
+          "id": "eB-POox3_mk",
+          "url": "https://www.youtube.com/watch?v=eB-POox3_mk",
+          "title": "Balitang Bicolandia: June 23, 2023",
+          "duration_metadata": 1829,
+          "broadcast_date": "2023-06-23",
+          "uploader_verified": false
+        },
+        {
+          "id": "fCTJVbMsdLw",
+          "url": "https://www.youtube.com/watch?v=fCTJVbMsdLw",
+          "title": "Balitang Bicolandia : December 3, 2021",
+          "duration_metadata": 1653,
+          "broadcast_date": "2021-12-03",
+          "uploader_verified": false
+        },
+        {
+          "id": "RvbUBDom3yg",
+          "url": "https://www.youtube.com/watch?v=RvbUBDom3yg",
+          "title": "Balitang Bicolandia: December 13, 2021",
+          "duration_metadata": 1716,
+          "broadcast_date": "2021-12-13",
+          "uploader_verified": false
+        },
+        {
+          "id": "ERW4uaQ_QBQ",
+          "url": "https://www.youtube.com/watch?v=ERW4uaQ_QBQ",
+          "title": "Balitang Bicolandia: February 5, 2021",
+          "duration_metadata": 2124,
+          "broadcast_date": "2021-02-05",
+          "uploader_verified": false
+        },
+        {
+          "id": "P7YkBj4TvPM",
+          "url": "https://www.youtube.com/watch?v=P7YkBj4TvPM",
+          "title": "Balitang Bicolandia: January 11, 2023",
+          "duration_metadata": 2213,
+          "broadcast_date": "2023-01-11",
+          "uploader_verified": false
+        },
+        {
+          "id": "OtNjtQ8yBi4",
+          "url": "https://www.youtube.com/watch?v=OtNjtQ8yBi4",
+          "title": "Balitang Bicolandia : January 31, 2022",
+          "duration_metadata": 2044,
+          "broadcast_date": "2022-01-31",
+          "uploader_verified": false
+        },
+        {
+          "id": "320isbuSL_c",
+          "url": "https://www.youtube.com/watch?v=320isbuSL_c",
+          "title": "Balitang Bicolandia : December 31, 2021",
+          "duration_metadata": 1615,
+          "broadcast_date": "2021-12-31",
+          "uploader_verified": false
+        },
+        {
+          "id": "GqVBR2umdZg",
+          "url": "https://www.youtube.com/watch?v=GqVBR2umdZg",
+          "title": "Balitang Bicolandia: January 6, 2022",
+          "duration_metadata": 1699,
+          "broadcast_date": "2022-01-06",
+          "uploader_verified": false
+        },
+        {
+          "id": "nrUT-8dMh7g",
+          "url": "https://www.youtube.com/watch?v=nrUT-8dMh7g",
+          "title": "Balitang Bicolandia : March 29, 2022",
+          "duration_metadata": 2428,
+          "broadcast_date": "2022-03-29",
+          "uploader_verified": false
+        },
+        {
+          "id": "7fxKQXpPsMI",
+          "url": "https://www.youtube.com/watch?v=7fxKQXpPsMI",
+          "title": "Balitang Bicolandia : October 26, 2022",
+          "duration_metadata": 2214,
+          "broadcast_date": "2022-10-26",
+          "uploader_verified": false
+        },
+        {
+          "id": "djGbDlDAPLE",
+          "url": "https://www.youtube.com/watch?v=djGbDlDAPLE",
+          "title": "Balitang Bicolandia: December 14, 2022",
+          "duration_metadata": 2304,
+          "broadcast_date": "2022-12-14",
+          "uploader_verified": false
+        },
+        {
+          "id": "SW5nBtTGM_A",
+          "url": "https://www.youtube.com/watch?v=SW5nBtTGM_A",
+          "title": "Balitang Bicolandia: January 26, 2023",
+          "duration_metadata": 1812,
+          "broadcast_date": "2023-01-26",
+          "uploader_verified": false
+        },
+        {
+          "id": "D3VTRj3a5Uo",
+          "url": "https://www.youtube.com/watch?v=D3VTRj3a5Uo",
+          "title": "Balitang Bicolandia: June 12, 2023",
+          "duration_metadata": 1999,
+          "broadcast_date": "2023-06-12",
+          "uploader_verified": false
+        },
+        {
+          "id": "nNeGm1sCMBM",
+          "url": "https://www.youtube.com/watch?v=nNeGm1sCMBM",
+          "title": "Balitang Bicolandia: June 21, 2021",
+          "duration_metadata": 1990,
+          "broadcast_date": "2021-06-21",
+          "uploader_verified": false
+        },
+        {
+          "id": "cQWj43BaSo0",
+          "url": "https://www.youtube.com/watch?v=cQWj43BaSo0",
+          "title": "Balitang Bicolandia: January 30, 2023",
+          "duration_metadata": 1833,
+          "broadcast_date": "2023-01-30",
+          "uploader_verified": false
+        },
+        {
+          "id": "XK8zonBewoQ",
+          "url": "https://www.youtube.com/watch?v=XK8zonBewoQ",
+          "title": "Balitang Bicolandia: January 31, 2023",
+          "duration_metadata": 1823,
+          "broadcast_date": "2023-01-31",
+          "uploader_verified": false
+        },
+        {
+          "id": "omP-746eiJ0",
+          "url": "https://www.youtube.com/watch?v=omP-746eiJ0",
+          "title": "Balitang Bicolandia: February 3, 2023",
+          "duration_metadata": 1683,
+          "broadcast_date": "2023-02-03",
+          "uploader_verified": false
+        },
+        {
+          "id": "0VAT0Ac0Sa4",
+          "url": "https://www.youtube.com/watch?v=0VAT0Ac0Sa4",
+          "title": "Balitang Bicolandia: January 17, 2021",
+          "duration_metadata": 1799,
+          "broadcast_date": "2021-01-17",
+          "uploader_verified": false
+        },
+        {
+          "id": "W0W-69UFLVw",
+          "url": "https://www.youtube.com/watch?v=W0W-69UFLVw",
+          "title": "Balitang Bicolandia: June 2, 2023",
+          "duration_metadata": 1794,
+          "broadcast_date": "2023-06-02",
+          "uploader_verified": false
+        },
+        {
+          "id": "o0rTlEgKIAo",
+          "url": "https://www.youtube.com/watch?v=o0rTlEgKIAo",
+          "title": "Balitang Bicolandia : November 7, 2022",
+          "duration_metadata": 2278,
+          "broadcast_date": "2022-11-07",
+          "uploader_verified": false
+        },
+        {
+          "id": "eLg0C10ieP8",
+          "url": "https://www.youtube.com/watch?v=eLg0C10ieP8",
+          "title": "Balitang Bicolandia: June 30, 2023",
+          "duration_metadata": 1768,
+          "broadcast_date": "2023-06-30",
+          "uploader_verified": false
+        },
+        {
+          "id": "2jBdIFCLhF0",
+          "url": "https://www.youtube.com/watch?v=2jBdIFCLhF0",
+          "title": "Balitang Bicolandia : October 20, 2022",
+          "duration_metadata": 2316,
+          "broadcast_date": "2022-10-20",
+          "uploader_verified": false
+        },
+        {
+          "id": "cEjWhM0b-rw",
+          "url": "https://www.youtube.com/watch?v=cEjWhM0b-rw",
+          "title": "Balitang Bicolandia: October 11, 2022",
+          "duration_metadata": 2301,
+          "broadcast_date": "2022-10-11",
+          "uploader_verified": false
+        },
+        {
+          "id": "EokJ1nMgXzs",
+          "url": "https://www.youtube.com/watch?v=EokJ1nMgXzs",
+          "title": "Balitang Bicolandia: December 28, 2022",
+          "duration_metadata": 2212,
+          "broadcast_date": "2022-12-28",
+          "uploader_verified": false
+        },
+        {
+          "id": "S8mbMkO6_q8",
+          "url": "https://www.youtube.com/watch?v=S8mbMkO6_q8",
+          "title": "Balitang Bicolandia: January 23, 2023",
+          "duration_metadata": 1785,
+          "broadcast_date": "2023-01-23",
+          "uploader_verified": false
+        },
+        {
+          "id": "4GRiqa856qw",
+          "url": "https://www.youtube.com/watch?v=4GRiqa856qw",
+          "title": "Balitang Bicolandia: November 10, 2022",
+          "duration_metadata": 2263,
+          "broadcast_date": "2022-11-10",
+          "uploader_verified": false
+        },
+        {
+          "id": "Xoe4_RIkOtw",
+          "url": "https://www.youtube.com/watch?v=Xoe4_RIkOtw",
+          "title": "Balitang Bicolandia : October 14, 2022",
+          "duration_metadata": 2340,
+          "broadcast_date": "2022-10-14",
+          "uploader_verified": false
+        },
+        {
+          "id": "Pa8TgAk6Xmg",
+          "url": "https://www.youtube.com/watch?v=Pa8TgAk6Xmg",
+          "title": "Balitang Bicolandia : November 9, 2022",
+          "duration_metadata": 2338,
+          "broadcast_date": "2022-11-09",
+          "uploader_verified": false
+        },
+        {
+          "id": "Y2MHxNMGImQ",
+          "url": "https://www.youtube.com/watch?v=Y2MHxNMGImQ",
+          "title": "Balitang Bicolandia: February 16, 2023",
+          "duration_metadata": 1914,
+          "broadcast_date": "2023-02-16",
+          "uploader_verified": false
+        },
+        {
+          "id": "Tq-jwuNdRVM",
+          "url": "https://www.youtube.com/watch?v=Tq-jwuNdRVM",
+          "title": "Balitang Bicolandia : December 12, 2022",
+          "duration_metadata": 2209,
+          "broadcast_date": "2022-12-12",
+          "uploader_verified": false
+        },
+        {
+          "id": "JVZyjy9PX8o",
+          "url": "https://www.youtube.com/watch?v=JVZyjy9PX8o",
+          "title": "Balitang Bicolandia: July 20, 2023",
+          "duration_metadata": 1788,
+          "broadcast_date": "2023-07-20",
+          "uploader_verified": false
+        },
+        {
+          "id": "f6PJGcicq8E",
+          "url": "https://www.youtube.com/watch?v=f6PJGcicq8E",
+          "title": "Balitang Bicolandia: January 16, 2023",
+          "duration_metadata": 2326,
+          "broadcast_date": "2023-01-16",
+          "uploader_verified": false
+        },
+        {
+          "id": "T-kuaP8z1Qw",
+          "url": "https://www.youtube.com/watch?v=T-kuaP8z1Qw",
+          "title": "Balitang Bicolandia: May 14, 2021",
+          "duration_metadata": 1987,
+          "broadcast_date": "2021-05-14",
+          "uploader_verified": false
+        },
+        {
+          "id": "GpjYtG3S7Gg",
+          "url": "https://www.youtube.com/watch?v=GpjYtG3S7Gg",
+          "title": "Balitang Bicolandia: February 10, 2022",
+          "duration_metadata": 1777,
+          "broadcast_date": "2022-02-10",
+          "uploader_verified": false
+        },
+        {
+          "id": "2Y70nZgLgoA",
+          "url": "https://www.youtube.com/watch?v=2Y70nZgLgoA",
+          "title": "Balitang Bicolandia : April 13, 2022",
+          "duration_metadata": 2384,
+          "broadcast_date": "2022-04-13",
+          "uploader_verified": false
+        },
+        {
+          "id": "HWRGQJmz-Yk",
+          "url": "https://www.youtube.com/watch?v=HWRGQJmz-Yk",
+          "title": "Balitang Bicolandia : June 6, 2022",
+          "duration_metadata": 2714,
+          "broadcast_date": "2022-06-06",
+          "uploader_verified": false
+        },
+        {
+          "id": "05hG9q7LjBE",
+          "url": "https://www.youtube.com/watch?v=05hG9q7LjBE",
+          "title": "Balitang Bicolandia : March 3, 2022",
+          "duration_metadata": 1843,
+          "broadcast_date": "2022-03-03",
+          "uploader_verified": false
+        },
+        {
+          "id": "FqLj-zNgyBM",
+          "url": "https://www.youtube.com/watch?v=FqLj-zNgyBM",
+          "title": "Balitang Bicolandia: November 11, 2022",
+          "duration_metadata": 2248,
+          "broadcast_date": "2022-11-11",
+          "uploader_verified": false
+        },
+        {
+          "id": "uQWZbCRtLKk",
+          "url": "https://www.youtube.com/watch?v=uQWZbCRtLKk",
+          "title": "Balitang Bicolandia : March 1, 2022",
+          "duration_metadata": 1892,
+          "broadcast_date": "2022-03-01",
+          "uploader_verified": false
+        },
+        {
+          "id": "uwXBtDaPT8U",
+          "url": "https://www.youtube.com/watch?v=uwXBtDaPT8U",
+          "title": "Balitang Bicolandia: October 13, 2022",
+          "duration_metadata": 2265,
+          "broadcast_date": "2022-10-13",
+          "uploader_verified": false
+        },
+        {
+          "id": "HP-HBD8WVN0",
+          "url": "https://www.youtube.com/watch?v=HP-HBD8WVN0",
+          "title": "Balitang Bicolandia: February 2, 2023",
+          "duration_metadata": 1899,
+          "broadcast_date": "2023-02-02",
+          "uploader_verified": false
+        },
+        {
+          "id": "_r0smRdp-Yg",
+          "url": "https://www.youtube.com/watch?v=_r0smRdp-Yg",
+          "title": "Balitang Bicolandia : October 1, 2021",
+          "duration_metadata": 1881,
+          "broadcast_date": "2021-10-01",
+          "uploader_verified": false
+        },
+        {
+          "id": "W1bVat4-0XE",
+          "url": "https://www.youtube.com/watch?v=W1bVat4-0XE",
+          "title": "Balitang Bicolandia: March 15, 2023",
+          "duration_metadata": 1752,
+          "broadcast_date": "2023-03-15",
+          "uploader_verified": false
+        },
+        {
+          "id": "MpUNQ6yRkMk",
+          "url": "https://www.youtube.com/watch?v=MpUNQ6yRkMk",
+          "title": "Balitang Bicolandia : November 29, 2022",
+          "duration_metadata": 2267,
+          "broadcast_date": "2022-11-29",
+          "uploader_verified": false
+        }
+      ],
+      "requirements": [
+        "Full per-video metadata and official channel identity",
+        "Current availability and completed status",
+        "Bounded media selection after45GiB floor",
+        "Language/variety and rights remain unverified"
+      ],
+      "scope": "Remote metadata preflight only; remaining discovery candidates retained in tracked source inventory"
+    },
+    "ilocano": {
+      "source_id": "abscbn-tvpatrol-ilocos",
+      "language": "ilo",
+      "language_verified": false,
+      "preserve_code_switching": true,
+      "scope": "Remote metadata preflight only; remaining discovery candidates retained in tracked source inventory",
+      "metadata_estimated_hours": 150.34222222222223,
+      "items": [
+        {
+          "id": "A8jiRNvwglQ",
+          "url": "https://www.youtube.com/watch?v=A8jiRNvwglQ",
+          "title": "TV Patrol Ilocos - October 28, 2014",
+          "broadcast_date": "2014-10-28",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1914,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "ApUttRolLSA",
+          "url": "https://www.youtube.com/watch?v=ApUttRolLSA",
+          "title": "TV Patrol Ilocos - October 30, 2014",
+          "broadcast_date": "2014-10-30",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 2057,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "y9Ot6MylGk0",
+          "url": "https://www.youtube.com/watch?v=y9Ot6MylGk0",
+          "title": "TV Patrol Ilocos - November 3, 2014",
+          "broadcast_date": "2014-11-03",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1570,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "8lSbtx3pITQ",
+          "url": "https://www.youtube.com/watch?v=8lSbtx3pITQ",
+          "title": "TV Patrol Ilocos - November 7, 2014",
+          "broadcast_date": "2014-11-07",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 2236,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "_1mL5_cy91k",
+          "url": "https://www.youtube.com/watch?v=_1mL5_cy91k",
+          "title": "TV Patrol Ilocos - November 11, 2014",
+          "broadcast_date": "2014-11-11",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1889,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "l-GrmyCPJo0",
+          "url": "https://www.youtube.com/watch?v=l-GrmyCPJo0",
+          "title": "TV Patrol Ilocos - November 13, 2014",
+          "broadcast_date": "2014-11-13",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1802,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202016"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "Y7PV8Hckdns",
+          "url": "https://www.youtube.com/watch?v=Y7PV8Hckdns",
+          "title": "TV Patrol Ilocos - November 14, 2014",
+          "broadcast_date": "2014-11-14",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1868,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "6tbyMTgE4lc",
+          "url": "https://www.youtube.com/watch?v=6tbyMTgE4lc",
+          "title": "TV Patrol Ilocos - November 21, 2014",
+          "broadcast_date": "2014-11-21",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1911,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "z1A9mByvzOA",
+          "url": "https://www.youtube.com/watch?v=z1A9mByvzOA",
+          "title": "TV Patrol Ilocos - December 1, 2014",
+          "broadcast_date": "2014-12-01",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1566,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202016"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "rejb81V9N1I",
+          "url": "https://www.youtube.com/watch?v=rejb81V9N1I",
+          "title": "TV Patrol Ilocos - December 2, 2014",
+          "broadcast_date": "2014-12-02",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1559,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202016"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "mwlJTM3wlcA",
+          "url": "https://www.youtube.com/watch?v=mwlJTM3wlcA",
+          "title": "TV Patrol Ilocos - December 4, 2014",
+          "broadcast_date": "2014-12-04",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1670,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "uJJQekQWjP0",
+          "url": "https://www.youtube.com/watch?v=uJJQekQWjP0",
+          "title": "TV Patrol Ilocos - December 11, 2014",
+          "broadcast_date": "2014-12-11",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 2024,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "jIxDw4vB1to",
+          "url": "https://www.youtube.com/watch?v=jIxDw4vB1to",
+          "title": "TV Patrol Ilocos - December 19, 2014",
+          "broadcast_date": "2014-12-19",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1972,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "eI0oKJUwwqA",
+          "url": "https://www.youtube.com/watch?v=eI0oKJUwwqA",
+          "title": "TV Patrol Ilocos - December 22, 2014",
+          "broadcast_date": "2014-12-22",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1569,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "KyzmYJ8jOKg",
+          "url": "https://www.youtube.com/watch?v=KyzmYJ8jOKg",
+          "title": "TV Patrol Ilocos - December 25, 2014",
+          "broadcast_date": "2014-12-25",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1943,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "ZT5WO9iTPC0",
+          "url": "https://www.youtube.com/watch?v=ZT5WO9iTPC0",
+          "title": "TV Patrol Ilocos - January 5, 2015",
+          "broadcast_date": "2015-01-05",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1926,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "MW_2qaPiVRc",
+          "url": "https://www.youtube.com/watch?v=MW_2qaPiVRc",
+          "title": "TV Patrol Ilocos - January 14, 2015",
+          "broadcast_date": "2015-01-14",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1802,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "BRgJ9QUa5ow",
+          "url": "https://www.youtube.com/watch?v=BRgJ9QUa5ow",
+          "title": "TV Patrol Ilocos - January 20, 2015",
+          "broadcast_date": "2015-01-20",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1938,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "M-f9uH0oCrM",
+          "url": "https://www.youtube.com/watch?v=M-f9uH0oCrM",
+          "title": "TV Patrol Ilocos - January 22, 2015",
+          "broadcast_date": "2015-01-22",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1587,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "JiFrqLLvILw",
+          "url": "https://www.youtube.com/watch?v=JiFrqLLvILw",
+          "title": "TV Patrol Ilocos - January 27, 2015",
+          "broadcast_date": "2015-01-27",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1944,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "9y7mjINlfI8",
+          "url": "https://www.youtube.com/watch?v=9y7mjINlfI8",
+          "title": "TV Patrol Ilocos - January 30, 2015",
+          "broadcast_date": "2015-01-30",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1659,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "nlIEZ7ujF3E",
+          "url": "https://www.youtube.com/watch?v=nlIEZ7ujF3E",
+          "title": "TV Patrol Ilocos  - February 4, 2015",
+          "broadcast_date": "2015-02-04",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1536,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "HbFW2vVQ9zg",
+          "url": "https://www.youtube.com/watch?v=HbFW2vVQ9zg",
+          "title": "TV Patrol Ilocos - February 12, 2015",
+          "broadcast_date": "2015-02-12",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1764,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "05Bj4Uff_04",
+          "url": "https://www.youtube.com/watch?v=05Bj4Uff_04",
+          "title": "TV Patrol Ilocos - February 16, 2015",
+          "broadcast_date": "2015-02-16",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1536,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "4vR0I3vwVk4",
+          "url": "https://www.youtube.com/watch?v=4vR0I3vwVk4",
+          "title": "TV Patrol Ilocos - March 3, 2015",
+          "broadcast_date": "2015-03-03",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1870,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "seiPxE4a3Ks",
+          "url": "https://www.youtube.com/watch?v=seiPxE4a3Ks",
+          "title": "TV Patrol Ilocos - March 6, 2015",
+          "broadcast_date": "2015-03-06",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1889,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "niyyAlFH8XQ",
+          "url": "https://www.youtube.com/watch?v=niyyAlFH8XQ",
+          "title": "TV Patrol Ilocos - March 17, 2015",
+          "broadcast_date": "2015-03-17",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1686,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "6RPL1O_rC7A",
+          "url": "https://www.youtube.com/watch?v=6RPL1O_rC7A",
+          "title": "TV Patrol Ilocos - March 19, 2015",
+          "broadcast_date": "2015-03-19",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1671,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "bBJZxWUvoFk",
+          "url": "https://www.youtube.com/watch?v=bBJZxWUvoFk",
+          "title": "TV Patrol Ilocos - March 25, 2015",
+          "broadcast_date": "2015-03-25",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1769,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "Ta5amlZQqvQ",
+          "url": "https://www.youtube.com/watch?v=Ta5amlZQqvQ",
+          "title": "TV Patrol Ilocos - March 26, 2015",
+          "broadcast_date": "2015-03-26",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1754,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "N73SlJ2osjc",
+          "url": "https://www.youtube.com/watch?v=N73SlJ2osjc",
+          "title": "TV Patrol Ilocos - April 8, 2015",
+          "broadcast_date": "2015-04-08",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1565,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202016"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "lGMLGSQD2FY",
+          "url": "https://www.youtube.com/watch?v=lGMLGSQD2FY",
+          "title": "TV Patrol Ilocos - April 13, 2015",
+          "broadcast_date": "2015-04-13",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1653,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "_j-m0vekIaw",
+          "url": "https://www.youtube.com/watch?v=_j-m0vekIaw",
+          "title": "TV Patrol Ilocos - April 16, 2015",
+          "broadcast_date": "2015-04-16",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1540,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "p7U06kGWknc",
+          "url": "https://www.youtube.com/watch?v=p7U06kGWknc",
+          "title": "TV Patrol Ilocos - April 22, 2015",
+          "broadcast_date": "2015-04-22",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1572,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "JpmOOYiEW80",
+          "url": "https://www.youtube.com/watch?v=JpmOOYiEW80",
+          "title": "TV Patrol Ilocos - May 14, 2015",
+          "broadcast_date": "2015-05-14",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1652,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "n7LSSjZshPc",
+          "url": "https://www.youtube.com/watch?v=n7LSSjZshPc",
+          "title": "TV Patrol Ilocos - May 18, 2015",
+          "broadcast_date": "2015-05-18",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1581,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "ybz4LoRalUs",
+          "url": "https://www.youtube.com/watch?v=ybz4LoRalUs",
+          "title": "TV Patrol Ilocos - May 21, 2015",
+          "broadcast_date": "2015-05-21",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1510,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "uwpCdOKzwwI",
+          "url": "https://www.youtube.com/watch?v=uwpCdOKzwwI",
+          "title": "TV Patrol Ilocos - May 25, 2015",
+          "broadcast_date": "2015-05-25",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1262,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "tVneYXh3Pl0",
+          "url": "https://www.youtube.com/watch?v=tVneYXh3Pl0",
+          "title": "TV Patrol Ilocos - May 27, 2015",
+          "broadcast_date": "2015-05-27",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1714,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "Hc82PZvN7UM",
+          "url": "https://www.youtube.com/watch?v=Hc82PZvN7UM",
+          "title": "TV Patrol Ilocos - May 29, 2015",
+          "broadcast_date": "2015-05-29",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1644,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "ZgbHS6aQyVs",
+          "url": "https://www.youtube.com/watch?v=ZgbHS6aQyVs",
+          "title": "TV Patrol Ilocos - June 2, 2015",
+          "broadcast_date": "2015-06-02",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1785,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202017",
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos%202016"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "cMM7Kl6G3pY",
+          "url": "https://www.youtube.com/watch?v=cMM7Kl6G3pY",
+          "title": "TV Patrol Ilocos - June 4, 2015",
+          "broadcast_date": "2015-06-04",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1692,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "jgRD7p7B4kI",
+          "url": "https://www.youtube.com/watch?v=jgRD7p7B4kI",
+          "title": "TV Patrol Ilocos - June 9, 2015",
+          "broadcast_date": "2015-06-09",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 2139,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "5bAgtmWiy4A",
+          "url": "https://www.youtube.com/watch?v=5bAgtmWiy4A",
+          "title": "TV Patrol Ilocos - June 15, 2015",
+          "broadcast_date": "2015-06-15",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1313,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "5EaguRjeIZw",
+          "url": "https://www.youtube.com/watch?v=5EaguRjeIZw",
+          "title": "TV Patrol Ilocos - June 16, 2015",
+          "broadcast_date": "2015-06-16",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1534,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "JTTg1FJYrY4",
+          "url": "https://www.youtube.com/watch?v=JTTg1FJYrY4",
+          "title": "TV Patrol Ilocos - June 23, 2015",
+          "broadcast_date": "2015-06-23",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1861,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "egCHxNMvirQ",
+          "url": "https://www.youtube.com/watch?v=egCHxNMvirQ",
+          "title": "TV Patrol Ilocos - June 25, 2015",
+          "broadcast_date": "2015-06-25",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1575,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "dNXzuXETw3o",
+          "url": "https://www.youtube.com/watch?v=dNXzuXETw3o",
+          "title": "TV Patrol Ilocos - July 2, 2015",
+          "broadcast_date": "2015-07-02",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1341,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "VVxWjueYyjg",
+          "url": "https://www.youtube.com/watch?v=VVxWjueYyjg",
+          "title": "TV Patrol Ilocos - July 3, 2015",
+          "broadcast_date": "2015-07-03",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1752,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        },
+        {
+          "id": "b0BXHMzae68",
+          "url": "https://www.youtube.com/watch?v=b0BXHMzae68",
+          "title": "TV Patrol Ilocos - July 7, 2015",
+          "broadcast_date": "2015-07-07",
+          "publisher": "ABS-CBN News",
+          "channel_id": "UCE2606prvXQc_noEqKxVJXA",
+          "channel_url": "https://www.youtube.com/channel/UCE2606prvXQc_noEqKxVJXA",
+          "channel_is_verified": true,
+          "metadata_duration_seconds": 1648,
+          "duration_status": "publisher/search metadata estimate; not media-probed",
+          "live_status": null,
+          "finite_status": "dated historical full-episode candidate; direct-video metadata must be rechecked before acquisition",
+          "language": "ilo",
+          "language_verified": false,
+          "rights": {
+            "training": "unknown",
+            "commercial": "unknown",
+            "redistribution": "unknown"
+          },
+          "discovery_queries": [
+            "https://www.youtube.com/@abscbnnews/search?query=TV%20Patrol%20Ilocos"
+          ],
+          "channel_evidence_kind": "official-channel-scoped flat search metadata",
+          "per_video_full_metadata_verified": false
+        }
+      ]
+    }
+  }
+}

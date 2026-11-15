@@ -788,3 +788,7 @@ At observation, Ratsada and Aksyon streams processes were confirmed live, with 3
 ### Remote Bikolano and Ilocano preparation (2026-11-15)
 
 Verified canonical imports now cover all 17 remote Bikolano recordings (9.729593611 raw hours) and 19 Ilocano recordings (9.772842486 raw hours). Independent persistent preparation workers run on dwnd-01, using 27-second transport windows and a 100 GiB free-space floor. `curation/DWND_BIK_ILO_PREPARATION_CHECKPOINT.json` preserves exact commands, input hashes, worker identities, live process observations and recovery scripts. These processes do not call ASR. Keep the provisional `bik` label; do not silently map it to a Central Bikol (`bcl`) model. Confirm terminal worker receipts and rehash generated audio before claiming preparation completion. Do not relaunch solely because a monitoring call times out.
+
+### Further regional source preflight on dwnd-01 (2026-11-15)
+
+A persistent metadata-only worker checks 50 additional candidates per language (Cebuano, Bikolano and Ilocano). Selection excludes IDs in the other tracked language inventories; source discovery inventories remain intact. Publisher channel and video ID must match, live status must be finite, and duration must be 5–120 minutes. Failed candidates are retained with reasons. `curation/DWND_REGIONAL_PREFLIGHT_V2_CHECKPOINT.json` preserves inputs, exact recovery code and a live process observation. Results remain candidates until terminal receipts and overlap checks are inspected; this worker does not download media or approve language/rights.
