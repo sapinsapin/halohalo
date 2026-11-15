@@ -712,3 +712,8 @@ Bikol RSS was independently observed idle, with no remaining downloaded rows hav
 ### Prevent duplicate review spending
 
 `curation.select_review` now excludes previously assigned content under alternate IDs using exact audio hash, exact transcript, primary language and language list, and selects only one matching input within a batch. Existing ID exclusions still apply, including failed assignments. Changed transcript/language inputs remain distinct. No reviews are transferred to another ID. The receipt reports `content_aliases_excluded`; callers must still enumerate every prior/running/prepared assignment and serialize selection. Six selector tests pass. `curation/FIL_REVIEW_ALIAS_AUDIT.json` records a read-only audit against enumerated Filipino review assignment inputs.
+
+
+### Kimi 1,000-row automatic completion
+
+A locked finalizer watches the existing review worker in `outputs/fil-kimi-review-next-1000-v1`. On successful terminal completion it validates the frozen input hash and full processed count, revalidates each accepted review against its raw response/config/text/audio bytes using `attach_reviews`, and writes an exclusive `reviewed-manifest.jsonl` plus `join-audit.json`. Rejected reviews remain unattached. It makes zero model requests, changes no transcripts and grants no audio approval. Missing/failed workers or validation failures stop it for inspection without replay. The tracked `curation/FIL_KIMI_1000_FINALIZER_CHECKPOINT.json` includes its exact script for recovery; inspect the actual process and finalizer lock before restoring or running it.
