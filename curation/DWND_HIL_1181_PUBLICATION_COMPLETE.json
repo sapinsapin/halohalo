@@ -34,7 +34,34 @@
     "rows": 1181,
     "local_shard_hash_check": "12/12 sha256 match after transfer"
   },
-  "publication": "pending: first attempt refused before any upload by the Hub commit rate limit (128/hour, consumed by the Mac storage supervisor archive commits); guarded retry loop dwnd-hil-1181-publish-v1/retry.py",
+  "publication": {
+    "hub_receipt": {
+      "parent_commit": "3e60f7dad14baabed523071a12e84658a0fe7c71",
+      "parent_conflicts": [],
+      "prefix": "data/hil_dwnd_asr_1181_v1",
+      "private": true,
+      "repo": "sapinsapin/chika",
+      "revision": "546895f63eecea86150df009e9c36b6728439d43",
+      "rows": 1181,
+      "verification_only": false,
+      "verified": true,
+      "files": 15
+    },
+    "card": {
+      "revision": "0f1da56d98911db0ac49404423a79b91ba46ad64",
+      "parent": "546895f63eecea86150df009e9c36b6728439d43",
+      "config": "hil_dwnd_asr_1181_v1"
+    },
+    "stream_check": {
+      "revision": "0f1da56d98911db0ac49404423a79b91ba46ad64",
+      "config": "hil_dwnd_asr_1181_v1",
+      "rows": 1181,
+      "exact_ids_text_provenance_audio_bytes": true,
+      "training_approved": false
+    },
+    "independent_remote_check": "Pinned data revision private; all 15 file sizes and 12 LFS sha256 match the receipt",
+    "attempts": "1-5 refused by the Hub commit rate limit before any upload; attempt 6 succeeded"
+  },
   "scripts": [
     "curation/job_scripts/2026-11-15/merge_export_queue.py",
     "curation/job_scripts/2026-11-15/publish_export.py"
