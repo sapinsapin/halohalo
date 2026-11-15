@@ -1,0 +1,68 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:13:44.717370+00:00",
+  "jobs": [
+    {
+      "language": "bik",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-bik-vad-full-v1",
+      "launch": {
+        "pid": 520953,
+        "args": [
+          "/home/iotim/chika-curation/.venv-compute/bin/python",
+          "-m",
+          "curation.vad",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1/prepared/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-bik-vad-full-v1/vad",
+          "--max-minutes",
+          "600",
+          "--max-rows",
+          "1308"
+        ]
+      },
+      "input_sha256": "fc61cbe5d6bb98d3868463ce84eceb7aa548539194a3b299c974f8f881da5c26",
+      "verified_input_windows": 1308,
+      "preparation_summary": {
+        "windows": 1308,
+        "window_hours": 9.729509322916666,
+        "transcribed_hours": 0,
+        "exact_decoded_duplicate_groups": [],
+        "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+      },
+      "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.vad', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-bik-preparation-v1/prepared/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-bik-vad-full-v1/vad', '--max-minutes', '600', '--max-rows', '1308'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+      "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-bik-vad-full-v1/run.py"
+    },
+    {
+      "language": "ilo",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ilo-vad-full-v1",
+      "launch": {
+        "pid": 520984,
+        "args": [
+          "/home/iotim/chika-curation/.venv-compute/bin/python",
+          "-m",
+          "curation.vad",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1/prepared/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-ilo-vad-full-v1/vad",
+          "--max-minutes",
+          "600",
+          "--max-rows",
+          "1312"
+        ]
+      },
+      "input_sha256": "74a77a5be13b1f70ea45c9cfacf6f2e9ce264ce9a89a8213709afe1f0959bb27",
+      "verified_input_windows": 1312,
+      "preparation_summary": {
+        "windows": 1312,
+        "window_hours": 9.77280170138889,
+        "transcribed_hours": 0,
+        "exact_decoded_duplicate_groups": [],
+        "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+      },
+      "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.vad', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-ilo-preparation-v1/prepared/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-ilo-vad-full-v1/vad', '--max-minutes', '600', '--max-rows', '1312'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+      "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-ilo-vad-full-v1/run.py"
+    }
+  ]
+}

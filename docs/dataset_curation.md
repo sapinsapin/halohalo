@@ -796,3 +796,7 @@ A persistent metadata-only worker checks 50 additional candidates per language (
 ### Remote Cebuano VAD (2026-11-15)
 
 Installed a separate Python 3.11 compute environment on dwnd-01 with ONNX Runtime, NumPy and SoundFile. The existing hash-pinned Silero model passed a four-window smoke run (15 candidate segments). A persistent CPU worker now processes all 1,233 prepared Cebuano windows, bounded to 600 minutes and 1,233 rows. The smoke output overlaps the full run and must not be added to its totals. `curation/DWND_CEB_VAD_CHECKPOINT.json` records commands, dependencies, recovery code and live process evidence. Outputs remain untranscribed speech candidates, with no language or training approval. The corrected alternate host `carrot@reth5et.tail36638e.ts.net` also timed out on SSH port 22 before authentication.
+
+### Verified Bikolano/Ilocano preparation and VAD launch (2026-11-15)
+
+Both remote preparation workers completed with return code zero. Revalidated every generated window against its audio SHA-256 and the canonical schema: Bikolano 1,308 windows / 9.729509323 hours; Ilocano 1,312 windows / 9.772801701 hours. Full-batch CPU Silero jobs are now running in separate output roots on dwnd-01, with the same pinned model and 600-minute bounds as Cebuano. `curation/DWND_REGIONAL_VAD_CHECKPOINT.json` records verified input manifest hashes, terminal preparation summaries, launch commands, recovery code and actual process observations. VAD output remains pending verification, and all these batches have zero transcribed/approved hours.
