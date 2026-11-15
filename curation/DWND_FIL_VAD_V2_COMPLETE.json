@@ -1,0 +1,33 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:42:25.323916+00:00",
+  "worker": {
+    "pid": 750568,
+    "status": "complete",
+    "started_at": 1794713758.6499398,
+    "returncode": 0,
+    "finished_at": 1794714076.096609
+  },
+  "summary": {
+    "input_windows": 4007,
+    "input_hours": 29.86666951388889,
+    "segments": 22150,
+    "candidate_hours": 27.354106406249812,
+    "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+    "transcribed_hours": 0,
+    "verified_hours": 0,
+    "manifest_sha256": "119c77c632a1d299a5ea70a989a7a94d77703aaddeb9ab29c1c8a7f55a413f67",
+    "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+  },
+  "pcm_audit": {
+    "rows": 22150,
+    "parents_checked": 3988,
+    "exact_pcm_samples": 1575596529,
+    "candidate_hours": 27.35410640625,
+    "parent_manifest_sha256": "aad0fb4764ff5ef77bdd8f70181b0d8a92e1d5c8d9019986815a2dac8881202a",
+    "candidate_manifest_sha256": "119c77c632a1d299a5ea70a989a7a94d77703aaddeb9ab29c1c8a7f55a413f67",
+    "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+  },
+  "manifest": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2/vad/manifest.jsonl",
+  "scope": "Automated exact-PCM audit completed; manifest identity independently rechecked. Speech/language/transcripts not approved."
+}

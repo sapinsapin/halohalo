@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:39:54.380348+00:00",
-  "free_gib": 1801.0653686523438,
+  "updated_at": "2026-11-15T03:42:06.452659+00:00",
+  "free_gib": 1797.5214805603027,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -139,10 +139,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "failed": 9,
-          "downloaded": 174
+          "failed": 10,
+          "downloaded": 185,
+          "downloading": 1
         },
-        "raw_hours": 89.15680944444445
+        "raw_hours": 95.06591805555558
       },
       "summaries": {
         "summary.json": {}
@@ -203,6 +204,17 @@
       },
       "process_present": false,
       "process_matches_root": false,
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/regional-preflight-v3",
+      "worker": {
+        "pid": 900582,
+        "status": "running",
+        "started_at": 1794714030.954837
+      },
+      "process_present": true,
+      "process_matches_root": true,
       "observation_errors": []
     },
     {
@@ -449,11 +461,23 @@
       "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2",
       "worker": {
         "pid": 750568,
-        "status": "running",
-        "started_at": 1794713758.6499398
+        "status": "complete",
+        "returncode": 0,
+        "started_at": 1794713758.6499398,
+        "finished_at": 1794714076.096609
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
+      "summaries": {
+        "vad/summary.json": {
+          "input_windows": 4007,
+          "input_hours": 29.86666951388889,
+          "segments": 22150,
+          "candidate_hours": 27.354106406249812,
+          "transcribed_hours": 0,
+          "verified_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {

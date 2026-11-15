@@ -884,3 +884,7 @@ Started a separate `us.kimi-k3` text-review worker for 259 nonempty transcripts 
 ### Remaining regional discovery inventory preflight
 
 Started metadata-only verification on dwnd-01 for the remaining 615 candidates in saved discovery inventories: 231 Cebuano, 153 Bikolano, 231 Ilocano. Excluded all IDs assigned to earlier tracked language inventories and the previous 50-per-language preflight, including its failures. The existing publisher-ID/finite-live-status/duration checks are reused. No audio acquisition or verified language hours are claimed by this job. `curation/DWND_REGIONAL_PREFLIGHT_V3_CHECKPOINT.json` records exact included IDs, input hashes, recovery code and live process observation. Original discovery lists remain intact for recovery; completed preflight results must be inspected before downstream downloading.
+
+### Second Filipino VAD batch completed and audited
+
+The 49-recording /29.866669514 prepared-hour snapshot produced 22,150 speech-candidate segments totaling 27.354106406 hours. The chained independent audit verified exact PCM slices, sample boundaries, inherited metadata and audio hashes. A separate read verified schema, row count and candidate-manifest identity against both summary and audit. `curation/DWND_FIL_VAD_V2_COMPLETE.json` pins the terminal receipt and audit. These are untranscribed, language-unverified candidate hours and overlap their raw/prepared source durations; do not add pipeline stages together.
