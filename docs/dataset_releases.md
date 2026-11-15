@@ -4,13 +4,14 @@ These configurations are in the private [sapinsapin/chika dataset](https://huggi
 
 | Configuration | Rows | Text-reviewed | Padded audio seconds |
 | --- | ---: | ---: | ---: |
+| `hil_collected_vad_718_v1` | 718 | 705 | 1,892.95 |
 | `hil_collected_vad_667_v2` | 667 | 654 | 1,596.56 |
 | `fil_collected_vad_482_v1` | 482 | 471 | 1,924.68 |
 | `hil_collected_vad_667_v1` | 667 | 531 | 1,596.56 |
 | `hil_collected_vad_200_reviewed_v2` | 200 | 194 | 489.686 |
 | `fil_collected_vad_100_v1` | 100 | 99 | 292.476 |
 
-The two 667-row Hiligaynon configurations contain the same audio and transcripts and include the entire 200-row set. The 482-row Filipino configuration includes the 100-row set. Both also overlap earlier collected pilots. Do not concatenate configurations or sum their durations as unique hours. All listed rows are unassigned, with source rights unknown and zero audio approvals. Text review preserves code-switching and does not prove fidelity to audio.
+The 718-row Hiligaynon configuration includes the 667-row snapshots plus 51 new segments from different original recordings. The two 667-row Hiligaynon configurations contain the same audio and transcripts and include the entire 200-row set. The 482-row Filipino configuration includes the 100-row set. Both also overlap earlier collected pilots. Do not concatenate configurations or sum their durations as unique hours. All listed rows are unassigned, with source rights unknown and zero audio approvals. Text review preserves code-switching and does not prove fidelity to audio.
 
 For the older 667-row v1 snapshot, 136 rows remain draft-only: eleven rejected reviews and 125 not attempted at snapshot time. Later reviews are tracked separately and do not mutate this release. Audio and transcripts were unchanged during attachment. All 667 embedded PCM arrays were compared against local source derivatives; all ten remote artifacts were hash-verified. Pinned Hugging Face streaming returned 667 rows with exactly 531 `text_reviewed` and 136 `draft` statuses.
 
@@ -34,3 +35,7 @@ rows = load_dataset(
 ```
 
 The existing PLD configurations and earlier pilots remain reproducible; see the dataset card for their schema migration and reserved-test restrictions. Operational steps, review failure policy, and source-interval accounting are in the [curation playbook](dataset_curation.md). The [preparation checkpoint](../curation/PREPARATION_CHECKPOINT.json) describes the separate five-language pending-ASR candidates; those are not these transcribed releases.
+
+The 718-row Hiligaynon release combines the previous 667-row snapshot with 51 new nonempty ASR drafts, all of which passed text-review validation. The persistent ASR batch then stopped on a server finalization timeout; the failed request is excluded. All 718 PCM arrays and sentences matched the local source manifest. Eleven remote artifacts were hash-verified at data revision `ab48197c220bf6cbc4c5ea99ae2891be0f4d1102`. It remains a private unassigned draft with unknown rights and zero audio approvals.
+
+The 718-row configuration was read back at card revision `40a461007fee00cf77169f51eea21f537d86535f`: exact ID set, sentences, and review statuses matched (705 text-reviewed, 13 draft).

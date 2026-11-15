@@ -51,3 +51,10 @@ A ten-segment pilot on previously unattempted original recordings completed succ
 The follow-on `curation/outputs/hil-persistent-new-batch-v1/` freezes 1,380 VAD candidates (2.331931111 padded hours), including the ten successful pilot segments. All ten caches were validated with network exchange forbidden before launch; the maximum new-request count is 1,370. Input SHA256: `1ecbeb6ec2444b24a3282906ab48082620dda2541354acc08c336e5dd33da733`. Inspect `selection.json`, `worker.json`, actual process, and `asr/summary.json` before recovery. One persistent session, no request retries, stop on first error, combined-manifest checkpoints every 25 completions. Per-item evidence is durable between checkpoints.
 
 The pilot root is `curation/outputs/hil-persistent-new-10-v1/`; its ten rows overlap the larger batch and must not be summed twice. These remain source-labeled machine drafts, not audio-verified transcripts.
+
+
+### Follow-on Hiligaynon session stopped on recurring server deadline
+
+The bounded continuation stopped after 51 completed, nonempty segments (0.082330556 padded hours), with one failed request. The server explicitly returned `finalize_timeout`: its engine did not finish finalization within 3,000 ms. The failed row ID is `e96017e8026cf02fac594c0c93eb64c9e3abd8d7757d4c2258d67a0c196e044c`; the raw attempt remains in `hil-persistent-new-batch-v1/asr/`. The process is terminal, `stopped_early=true`, and the combined manifest contains exactly the 51 successes. The initial ten-row pilot is included in those 51.
+
+This confirms the earlier successful pilot did not establish that the server deadline issue was resolved. No retry was issued for the failed request and the remaining candidates stay unattempted. Acquisition remains the priority. The successful drafts alone were selected for a bounded text-review job under `curation/outputs/collected-hil-new-51-review-v1/`; it cannot approve audio or recover a missing ASR transcript. Filipino's separate active route and queued stages are unaffected.

@@ -65,7 +65,7 @@ def snapshot():
         radio.append({k:r.get(k) for k in ['station','candidate_language','state','duration','duration_seconds','runner_pid','ffmpeg_pid','started_at','ended_at','bytes','exclude_from_dataset'] if k in r})
     from .account import account
     inputs=[]
-    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl','collected-hil-667-v1/manifest.jsonl','collected-hil-667-v2/manifest.jsonl','hil-persistent-new-10-v1/asr/manifest.jsonl','hil-persistent-new-batch-v1/asr/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl','fil-persistent-batch-v4/asr/manifest.jsonl','fil-persistent-batch-v5/asr/manifest.jsonl','fil-persistent-batch-v6/asr/manifest.jsonl','collected-fil-482-v1/manifest.jsonl'])]:
+    for language,directories in [('hil',['review-new-hil/joined-manifest.jsonl','vad-asr-batch-v1/hil/asr/manifest.jsonl','collected-hil-vad-200-reviewed-v2/manifest.jsonl','collected-hil-667-v1/manifest.jsonl','collected-hil-667-v2/manifest.jsonl','collected-hil-718-v1/manifest.jsonl','hil-persistent-new-10-v1/asr/manifest.jsonl','hil-persistent-new-batch-v1/asr/manifest.jsonl']),('fil_taglish',['asr-client-fil/manifest.jsonl','vad-asr-batch-v1/fil/asr/manifest.jsonl','fil-persistent-batch-v1/asr/manifest.jsonl','fil-reconciled-14-v1/manifest.jsonl','fil-persistent-batch-v2/asr/manifest.jsonl','fil-persistent-batch-v3/asr/manifest.jsonl','fil-persistent-batch-v4/asr/manifest.jsonl','fil-persistent-batch-v5/asr/manifest.jsonl','fil-persistent-batch-v6/asr/manifest.jsonl','collected-fil-482-v1/manifest.jsonl','collected-fil-982-v1/manifest.jsonl'])]:
         for relative in directories:
             path=ROOT/'outputs'/relative
             if path.exists(): inputs.append((language,path))
@@ -108,7 +108,7 @@ def snapshot():
                         for pattern in ('fil-persistent-batch-v*/worker.json','hil-persistent-new-*/worker.json')
                         for path in sorted((ROOT/'outputs').glob(pattern))]
     review_batches=[job_observation(path,path.parent/'reviews/summary.json')
-                    for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json')
+                    for pattern in ('fil-review-*/worker.json','collected-hil-remaining-*/worker.json','collected-hil-new-*-review-*/worker.json')
                     for path in sorted((ROOT/'outputs').glob(pattern))]
     asr_queues=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-asr-queue-*/worker.json'))]
     preparation_batches=[job_observation(path) for path in sorted((ROOT/'outputs').glob('*-preparation-next-*/worker.json'))]

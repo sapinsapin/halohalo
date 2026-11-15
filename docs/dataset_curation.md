@@ -468,3 +468,14 @@ The supervised queue `curation/outputs/fil-asr-queue-v1/` waits for `fil-persist
 Five distinct dated TV Patrol Ilocos broadcasts from the verified ABS-CBN News channel were downloaded and imported: 2.670427352 raw hours, 133,950,519 bytes. All five hashes were independently rechecked against canonical snapshot `fce4019a7f2ffed23cf19cc8f42e5f6eb20beb879028d5a07de804daed2920d9` under `curation/outputs/ilocano/archive-expansion/canonical/snapshots/`. Receipt: `curation/outputs/ilocano/archive-expansion/receipt.json`; public source evidence: `curation/ilocano_archive_inventory.json`.
 
 Publisher titles and Ilocano descriptions support provisional source selection; language and speech remain unverified, permissions unknown, and no ASR hours are claimed. Regional coverage alone was insufficient evidence to label GMA Balitang Amianan recordings Ilocano, so those were excluded from this pilot. The status report now includes the separately stored Ilocano archive.
+
+
+### Review continuation after Hiligaynon timeout (15 November)
+
+All 51 successful Hiligaynon continuation drafts received validated text-only reviews; the failed ASR item was excluded. They join the prior 667 rows in `collected-hil-718-v1`, giving 705 text-reviewed and 13 draft-only rows. Audio and sentences remain unchanged. See [release evidence](dataset_releases.md) for verified publication revisions.
+
+The next Filipino 500-item review batch completed with 490 validated reviews and ten rejected responses. Its local join with the earlier 482 rows is `curation/outputs/collected-fil-982-v1/`: 982 rows, 961 text-reviewed, 21 draft-only, 3,730.272 padded seconds. Every embedded PCM array and sentence matched its source manifest. Upload completion is established only by its Hub receipt, not by export existence.
+
+`curation/outputs/fil-review-next-1000-v1/` freezes the next 1,000 completed nonempty Filipino drafts, excluding all 982 IDs in previous review inputs. This does not retry rejected reviews. The same one-attempt/two-consecutive-failure policy applies; retain all raw responses and attach only content-bound validated results.
+
+Ilocano acquisition is continuing through a separate 16-recording inventory (8.062 metadata-estimated hours), with a 45 GiB floor. `outputs/ilocano/archive-expansion/expansion_inventory.json` and `expansion_download.log` preserve the selection and attempts; a separate finalizer waits for actual acquisition-process termination before verifying media and creating a canonical union/partial receipt. Inspect both workers before recovery, and do not count pending metadata estimates as measured hours.
