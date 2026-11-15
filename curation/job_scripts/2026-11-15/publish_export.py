@@ -1,6 +1,6 @@
 """Publish an export privately, register its card config, then stream-verify every row.
 
-Usage (Mac, repo root, PYTHONPATH=.): python publish_export.py WORKDIR CONFIG ROWS PARAGRAPH_FILE
+Usage (Mac, repo root, PYTHONPATH=.): python publish_export.py WORKDIR CONFIG ROWS PARAGRAPH_FILE [MAX_FILES=100]
 WORKDIR holds export/ (copied and re-hashed beforehand); receipts are written beside it.
 Same three stages as dwnd-fil-2000-publish-v1 (publish -> card -> stream check), in one worker.
 """
@@ -14,6 +14,7 @@ from curation.publish import publish
 root = Path(sys.argv[1]).resolve()
 repo, config, rows_expected = 'sapinsapin/chika', sys.argv[2], int(sys.argv[3])
 paragraph = Path(sys.argv[4]).read_text().strip() + '\n\n'
+max_files = int(sys.argv[5]) if len(sys.argv) > 5 else 100  # 100 shards + README, summary, manifest needs 110
 assert config in paragraph
 s = {'pid': os.getpid(), 'status': 'running', 'stage': 'publish', 'started_at': time.time()}
 
@@ -26,7 +27,7 @@ def save():
 
 save()
 try:
-    r = publish(root / 'export', 'data/' + config, root / 'hub-receipt.json')
+    r = publish(root / 'export', 'data/' + config, root / 'hub-receipt.json', max_files=max_files)
     receipt = json.loads((root / 'hub-receipt.json').read_text())
     assert receipt['verified'] and receipt['private'] and receipt['rows'] == rows_expected and receipt['prefix'] == 'data/' + config
     s.update(stage='registering_card', data_revision=r['revision'])

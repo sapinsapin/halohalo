@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-15",
+  "module": "curation/asr_batch.py",
+  "script": "curation/job_scripts/2026-11-15/bench_batch_asr.py",
+  "inputs": {
+    "fil": "1,000 rows from remote Filipino queue v6 batches 091-100 (4,362.1 s audio)",
+    "hil": "725 rows from the 29 complete Hiligaynon queue v3 batches (3,226.5 s audio)",
+    "reference": "the streaming route transcripts of the same rows (not ground truth)"
+  },
+  "models": {
+    "fil": "sapinsapin/whisper-large-v3-pld-fil-norm@ee5b4f0cd1af616b38f742ae05b644d6783b52fe (streaming serves a CTranslate2 float16 conversion)",
+    "hil": "sapinsapin/whisper-large-v3-pld-hil-norm@7a695b0f737b3e7cec482c29f0d12c2126cb4f4c (streaming serves int8_float16)",
+    "licence": "cc-by-nc-4.0 model cards (same family as the ceb/bcl/ilo candidates)"
+  },
+  "streaming_same_rows_realtime": {
+    "fil": 5.67,
+    "hil": 5.25
+  },
+  "gb10": {
+    "gpu": "NVIDIA GB10",
+    "torch": "2.13.0+cu130",
+    "peak_gpu_gib": {
+      "fil": 12.64,
+      "hil": 7.78
+    },
+    "greedy_realtime": {
+      "fil-bs1": 11.7,
+      "fil-bs8": 21.3,
+      "fil-bs16": 21.6,
+      "fil-bs32": 14.6,
+      "hil-bs16": 14.5
+    },
+    "greedy_bs16_vs_streaming": {
+      "fil": {
+        "wer": 0.2493,
+        "cer": 0.2128,
+        "exact": 0.699,
+        "rows_cer_le_5pct": 0.774,
+        "loops_cr_gt_2.4": 9
+      },
+      "hil": {
+        "wer": 0.3681,
+        "cer": 0.3378,
+        "exact": 0.541,
+        "rows_cer_le_5pct": 0.701,
+        "loops_cr_gt_2.4": 13
+      }
+    },
+    "beam5_bs8_vs_streaming": {
+      "fil": {
+        "wer": 0.3046,
+        "loops": 19
+      },
+      "hil": {
+        "wer": 0.7003,
+        "loops": 47,
+        "realtime": 1.2
+      },
+      "verdict": "rejected: slower and loops more"
+    },
+    "greedy_plus_temperature_fallback_bs16": {
+      "fil": {
+        "realtime": 18.1,
+        "wer": 0.1942,
+        "cer": 0.1684,
+        "exact": 0.7,
+        "loops": 0,
+        "fallbacks": 9
+      },
+      "hil": {
+        "realtime": 10.5,
+        "wer": 0.1621,
+        "cer": 0.1192,
+        "exact": 0.542,
+        "loops": 1,
+        "fallbacks": 12
+      },
+      "verdict": "default (config version 2)"
+    },
+    "streaming_loops_same_rows": {
+      "fil": 10,
+      "hil": 0
+    }
+  },
+  "rtx3070_reth5et": {
+    "gpu": "NVIDIA GeForce RTX 3070 8 GB (WSL2)",
+    "greedy_realtime_fil": {
+      "bs1": 5.5,
+      "bs8": 13.0,
+      "bs16": 7.3,
+      "bs32": 1.8
+    },
+    "note": "bs16 and above exceed VRAM and spill to shared memory under WSL; use bs8",
+    "agreement_with_gb10_same_config": "995/1000 identical transcripts; cache keys identical (rows interchangeable)"
+  },
+  "not_established": [
+    "which of streaming or batch text is more accurate (no ground truth on these rows)",
+    "effect of batch load on live GB10 serving latency"
+  ]
+}

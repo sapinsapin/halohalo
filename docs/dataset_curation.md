@@ -1030,3 +1030,25 @@ Advanced in this session:
 - **Cebuano, Bikolano, Ilocano:** about 410 raw hours downloaded (Cebuano 147, Bikolano 118, Ilocano 149 across the `*-next` roots) and about 132 padded candidate hours segmented and audited in processing v3-v4 alone, but **no ASR route is deployed** for them (`ASR_DEPLOYED_ROUTES_CHECKPOINT.json`). Bulk transcription is blocked on serving work and an owner decision (candidate checkpoints are `cc-by-nc-4.0`). The regional download jobs `*-next-v3` exited 0 after exhausting their inventories (for example Cebuano 219 recordings / 113.9 h under a 150 h cap); more acquisition needs fresh discovery.
 
 Distance to the target (about 250 retained transcribed hours per language): Filipino about 7.1 transcribed padded hours in the remote snapshots plus the Mac-collected releases, with about 90 hours still untranscribed in the pool; Hiligaynon about 0.5 h published plus whatever v3 completes; the three regional languages 0 h. Do not add overlapping configurations. Next steps in order: publish v6 output in 2,000-row snapshots as plans finish; run Hiligaynon in bounded quarantine queues over both pools and ask the serving owner for a longer Hiligaynon finalize deadline; decide on regional ASR deployment; run discovery for more regional and Taglish sources.
+
+## Offline batch ASR (15 November evening, Claude Code)
+
+`curation/asr_batch.py` transcribes frozen manifests on a local GPU with the same fine-tuned checkpoints the streaming route serves, loaded from pinned Hugging Face revisions with transformers. It sends no network requests, so there is no finalize deadline and no replay hazard: a stopped run resumes from its finished chunks and recomputes the rest. Output rows keep the streaming contract (sentence, num_words, `asr_status` transcribed/empty, draft review state, `asr_config`/`asr_config_sha256`/`asr_cache_key`/`asr_audio_sha256`) with `asr_config.engine = local-batch`, so batch and streaming transcripts are never confused. Decoding is greedy; a clip whose text compresses above ratio 2.4 (a repetition loop) is re-decoded with seeded sampling at temperatures 0.2-1.0, the fallback faster-whisper uses, and the choice is recorded in `provenance.asr_decode`. Clips longer than 30 s are listed as not attempted. Every clip's sha256, format and duration are checked before any GPU work; the shared GPU lock `/tmp/sapinsapin-gpu.lock` is taken per chunk. `--audit` re-checks a finished output against its frozen plan and the audio.
+
+```bash
+# dwnd-01, cwd /home/iotim/chika-curation (venv .venv-batchasr: torch 2.13.0+cu130, transformers 5.19.0)
+HF_HUB_OFFLINE=1 PYTHONPATH=. .venv-batchasr/bin/python -m curation.asr_batch \
+  --manifest IN.jsonl --output OUT --batch-size 16 \
+  --model sapinsapin/whisper-large-v3-pld-fil-norm --revision ee5b4f0cd1af616b38f742ae05b644d6783b52fe --language fil
+# Hiligaynon: sapinsapin/whisper-large-v3-pld-hil-norm --revision 7a695b0f737b3e7cec482c29f0d12c2126cb4f4c --language hil
+# reth5et (RTX 3070, ~/chika-batchasr/.venv): add --batch-size 8 --min-mem-gib 8 \
+#   --audio-path-map /home/iotim/chika-curation/curation/outputs/=/home/carrot/chika-mirror/
+```
+
+Benchmark (`curation/BATCH_ASR_BENCHMARK_2026-11-15.json`) on rows the streaming route had already transcribed: on the GB10, batch with fallback ran at 18.1x real time for Filipino and 10.5x for Hiligaynon, against 5.7x and 5.3x for streaming on the same rows. The RTX 3070 runs Filipino at 13.0x at batch size 8 (batch 16 and above exceed its 8 GB and spill under WSL). The two GPUs agree on 995 of 1,000 transcripts. Against streaming text the batch output has median CER 0 and 77% (Filipino) / 70% (Hiligaynon) of rows within 5% CER; aggregate WER 0.19 / 0.16, driven by a tail of differing clips. Streaming text is not ground truth, so which is more accurate is not established. Beam search (5) was slower and looped more and is not used.
+
+Both the deployed fine-tunes and the Cebuano/Bikol/Ilocano candidates carry `cc-by-nc-4.0` model cards (PLD-trained). Every published transcript so far already depends on non-commercial weights.
+
+reth5et: `nyo-asr-fw@flipvox` and `nyo-tts@orpheus-fil` were stopped (not disabled) at the owner's request to free the RTX 3070; the two gateways still run. Restore with `systemctl --user start nyo-asr-fw@flipvox nyo-tts@orpheus-fil`. A reboot or new login starts them again, so check `/usr/lib/wsl/lib/nvidia-smi` (not `torch.cuda.mem_get_info`, which misreports under WSL) before launching batch work there.
+
+Filipino `fil_dwnd_asr_9927_v1` (queue v6) is published and verified; the Filipino 4,000 text review is complete and attached on dwnd-01 (`remote-fil-4000-text-review-v1/reviewed-manifest.jsonl`, 3,929 text-reviewed, not yet published). Records: `curation/DWND_FIL_9927_PUBLICATION_COMPLETE.json`, `curation/DWND_FIL_4000_TEXT_REVIEW_COMPLETE.json`.
