@@ -707,3 +707,8 @@ The deduplicated manifest, full alias rows and audit are backed up as determinis
 ### Next storage recovery pass queued (2026-11-15)
 
 Bikol RSS was independently observed idle, with no remaining downloaded rows having Hub backup proof. A second preemptive pass is queued behind the existing supervisor lock (`outputs/bikolano-preemptive-backup-v2`, PID 78938), bounded to 100 backups and 8 GiB of verified eviction. It uses the existing remote checkpoint and eviction verifier, preserves active downloaders, and stops on errors. The launch checkpoint is `curation/BIKOL_BACKUP_V2_CHECKPOINT.json`; launch is not evidence of successful backup or reclaimed space. Inspect the actual process, worker/step receipts and ledger before claiming recovery.
+
+
+### Prevent duplicate review spending
+
+`curation.select_review` now excludes previously assigned content under alternate IDs using exact audio hash, exact transcript, primary language and language list, and selects only one matching input within a batch. Existing ID exclusions still apply, including failed assignments. Changed transcript/language inputs remain distinct. No reviews are transferred to another ID. The receipt reports `content_aliases_excluded`; callers must still enumerate every prior/running/prepared assignment and serialize selection. Six selector tests pass. `curation/FIL_REVIEW_ALIAS_AUDIT.json` records a read-only audit against enumerated Filipino review assignment inputs.

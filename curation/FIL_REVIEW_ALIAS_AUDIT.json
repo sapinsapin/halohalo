@@ -1,0 +1,46 @@
+{
+  "source": {
+    "path": "curation/outputs/collected-fil-7460-v1/manifest.jsonl",
+    "sha256": "aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73",
+    "rows": 7460
+  },
+  "assignment_manifests": [
+    {
+      "path": "curation/outputs/fil-kimi-review-100-v1/input.jsonl",
+      "sha256": "5e948c91aae75718fe1ccd3a9afe4b75da494369a2957d5be6fe634505006057",
+      "rows": 100
+    },
+    {
+      "path": "curation/outputs/fil-kimi-review-next-1000-v1/input.jsonl",
+      "sha256": "4dc8710e647d9b3b6a41efbea2b0e3223f339303101c0e27351b9c6bc0663ee1",
+      "rows": 1000
+    },
+    {
+      "path": "curation/outputs/fil-kimi-review-next-500-v1/input.jsonl",
+      "sha256": "94e99fcd3475a0efbc067236ceffae73760dac5d070ec2c9584156b3a4fb65e8",
+      "rows": 500
+    },
+    {
+      "path": "curation/outputs/fil-review-100-v1/input.jsonl",
+      "sha256": "5c7efff0a28dc74b1d87ea71ac8d9a7803393a0eb0ec2f38ed56ca47e25e11c4",
+      "rows": 100
+    },
+    {
+      "path": "curation/outputs/fil-review-382-v1/input.jsonl",
+      "sha256": "853c67fa5818b9465999b5e4bca77be9c661e94ebb3a00bf0f70c637695901b5",
+      "rows": 382
+    },
+    {
+      "path": "curation/outputs/fil-review-next-1000-v1/input.jsonl",
+      "sha256": "fa5f7e35983536f81a2a885ff02fe4f8002905a971d68206cdde5bd378c9bfb1",
+      "rows": 1000
+    },
+    {
+      "path": "curation/outputs/fil-review-next-500-v1/input.jsonl",
+      "sha256": "c6b3c4b4ef6d77bf78976fe38a154a6ffe4dce060cdf8098b171d08835a854f3",
+      "rows": 500
+    }
+  ],
+  "additional_aliases_excluded": 1,
+  "note": "Read-only audit against enumerated fil-review and fil-kimi-review assignment inputs; not a claim that other assignment locations are absent. No requests or reservations made."
+}

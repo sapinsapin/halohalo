@@ -48,6 +48,12 @@ def _encode(rows):
     ).encode('utf-8')
 
 
+def content_key(row):
+    """Same review input under another ID; never include source questions."""
+    return (row['audio_sha256'], row['sentence'], row['language'],
+            tuple(row['languages']))
+
+
 def select(manifest, exclude_manifests, output, limit=100):
     if limit < 1:
         raise ValueError('limit must be positive')
@@ -55,14 +61,17 @@ def select(manifest, exclude_manifests, output, limit=100):
         raise ValueError('at least one explicit exclusion manifest is required')
 
     rows, source = _read(manifest)
-    exclusions, assigned = [], set()
+    exclusions, assigned, assigned_content = [], set(), set()
     for path in exclude_manifests:
         excluded_rows, info = _read(path)
         exclusions.append(info)
         assigned.update(row['id'] for row in excluded_rows)
+        assigned_content.update(content_key(row) for row in excluded_rows)
 
     chosen = []
     counts = {'excluded': 0, 'ineligible': 0, 'candidates': 0}
+    content_excluded = 0
+    seen_content = set()
     for row in rows:  # Validate the whole input above, but never reorder it.
         if row['id'] in assigned:
             counts['excluded'] += 1
@@ -70,6 +79,12 @@ def select(manifest, exclude_manifests, output, limit=100):
         if not eligible(row):
             counts['ineligible'] += 1
             continue
+        key = content_key(row)
+        if key in assigned_content or key in seen_content:
+            counts['excluded'] += 1
+            content_excluded += 1
+            continue
+        seen_content.add(key)
         counts['candidates'] += 1
         if len(chosen) < limit:
             chosen.append(row)
@@ -93,6 +108,7 @@ def select(manifest, exclude_manifests, output, limit=100):
         },
         'limit': limit,
         'counts': counts,
+        'content_aliases_excluded': content_excluded,
     }
     (output / 'selection.json').write_text(
         json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + '\n',

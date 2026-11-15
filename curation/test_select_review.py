@@ -110,6 +110,21 @@ class SelectReviewTest(unittest.TestCase):
             self.run_select()
         self.assertFalse(self.output.exists())
 
+    def test_content_aliases_excluded_across_and_within_assignments(self):
+        prior = make_row('prior')
+        alias = make_row('alias'); alias['audio_sha256'] = prior['audio_sha256']
+        fresh = make_row('fresh')
+        duplicate = make_row('duplicate'); duplicate['audio_sha256'] = fresh['audio_sha256']
+        changed = make_row('changed', 'Different transcript')
+        changed['audio_sha256'] = prior['audio_sha256']
+        self.write(self.exclusion, [prior])
+        self.write(self.manifest, [alias, fresh, duplicate, changed])
+        result = self.run_select()
+        selected = [json.loads(line)['id'] for line in
+                    (self.output/'input.jsonl').read_text().splitlines()]
+        self.assertEqual(selected, ['fresh', 'changed'])
+        self.assertEqual(result['content_aliases_excluded'], 2)
+
     def test_existing_output_and_contents_are_preserved(self):
         self.write(self.manifest, [make_row('a')])
         self.output.mkdir()
