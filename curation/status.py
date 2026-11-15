@@ -45,6 +45,55 @@ def publication_observation(path):
     return report
 
 
+def rss_retention(db):
+    """Summarize raw ledger hours without revalidating remotes or deduplicating speech."""
+    local = db.execute(
+        "SELECT coalesce(sum(duration), 0) FROM items WHERE status='downloaded'"
+    ).fetchone()[0]
+    backed = unbacked = 0
+
+    has_backups = db.execute(
+        "SELECT 1 FROM sqlite_master "
+        "WHERE type='table' AND name='hub_backups'"
+    ).fetchone()
+
+    if has_backups:
+        rows = db.execute("""
+            SELECT i.duration, EXISTS (
+                SELECT 1 FROM hub_backups AS b
+                WHERE b.sha256 = i.sha256
+                  AND nullif(trim(b.repo), '') IS NOT NULL
+                  AND nullif(trim(b.path), '') IS NOT NULL
+                  AND nullif(trim(b.revision), '') IS NOT NULL
+                  AND nullif(trim(b.verified_at), '') IS NOT NULL
+                  AND b.bytes > 0
+            )
+            FROM items AS i
+            WHERE i.status = 'remote'
+        """)
+        for duration, is_backed in rows:
+            if is_backed:
+                backed += duration or 0
+            else:
+                unbacked += duration or 0
+    else:
+        unbacked = db.execute(
+            "SELECT coalesce(sum(duration), 0) FROM items WHERE status='remote'"
+        ).fetchone()[0]
+
+    local_hours = local / 3600.0
+    backed_hours = backed / 3600.0
+    return {
+        'local_raw_hours': local_hours,
+        'backed_up_remote_raw_hours': backed_hours,
+        'unbacked_remote_raw_hours': unbacked / 3600.0,
+        'retained_raw_hours': local_hours + backed_hours,
+        'retention_note': (
+            'Ledger-derived raw hours; not fresh remote verification or unique speech.'
+        ),
+    }
+
+
 def snapshot():
     targets=json.loads((ROOT/'targets.json').read_text())['targets']
     reports=[]
@@ -56,6 +105,7 @@ def snapshot():
         report={'name':label,'root':str(root.relative_to(ROOT.parent)),
                 'groups':[dict(r) for r in db.execute('SELECT source_id,status,count(*) AS files,sum(duration)/3600 AS measured_file_hours,sum(estimated_seconds)/3600 AS feed_estimated_hours FROM items GROUP BY source_id,status')],
                 'measured_downloaded_hours':db.execute("SELECT coalesce(sum(duration),0)/3600 FROM items WHERE status='downloaded'").fetchone()[0]}
+        report.update(rss_retention(db))
         wp=next((p for p in [root/'worker.json',root.parent/'worker.json',root.parent/'process.json'] if p.exists()),root/'worker.json')
         if wp.exists():
             worker=json.loads(wp.read_text());pid=worker.get('pid')

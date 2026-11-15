@@ -660,3 +660,9 @@ The bounded preemptive job completed after backing up and checkpointing twenty B
 Recovery checkpoint: `checkpoints/bikolano-rss/3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c.sqlite` at private Chika revision `aaa52bab7b224da5d6cab4398893552832da836d`. Tracked evidence: `curation/BIKOL_BACKUP_EVICTION_CHECKPOINT.json`; detailed eviction journal/receipts remain in the source and job output roots.
 
 The existing global supervisor subsequently entered Taglish checkpointing. It retains the supervisor lock during uploads, so do not run competing backup/eviction work against the same roots or restart the supervisor solely for latency. Active downloader roots may be backed up but are not evicted until idle. Storage floors remain unchanged; this 0.78 GiB nominal offload does not establish sufficient space for new archive work.
+
+### Retained totals after offloading
+
+RSS status now distinguishes `local_raw_hours`, `backed_up_remote_raw_hours`, `unbacked_remote_raw_hours`, and `retained_raw_hours` (local plus backed remote). Remote rows count as backed only when their audio hash has a backup record with nonempty repo/path/revision/verification timestamp and positive bytes. `EXISTS` avoids multiplying item hours from duplicate backup entries. Legacy databases without a backup table classify remote rows as unbacked. The existing `measured_downloaded_hours` field remains local-only for compatibility.
+
+These are ledger-derived raw runtimes, not fresh remote availability checks or unique speech totals. Offloading a verified original therefore does not erase retained acquisition progress. Kimi drafted the helper/tests; local integration and all three status tests passed, including incomplete receipts, duplicate backup records and missing-table behavior.

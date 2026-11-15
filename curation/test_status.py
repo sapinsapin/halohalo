@@ -1,4 +1,5 @@
 import json
+import sqlite3
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -40,6 +41,63 @@ class JobObservationTests(unittest.TestCase):
                 result=status.publication_observation(worker)
             self.assertEqual(result['recorded_receipts']['card-receipt.json']['revision'],'card')
             self.assertEqual(result['recorded_receipts']['stream-check.json']['revision'],'stream')
+
+
+class RssRetentionTests(unittest.TestCase):
+    def test_ledger_accounting_and_missing_backup_table(self):
+        db = sqlite3.connect(':memory:')
+        self.addCleanup(db.close)
+        db.execute(
+            'CREATE TABLE items (status TEXT, duration REAL, sha256 TEXT)'
+        )
+        db.executemany('INSERT INTO items VALUES (?, ?, ?)', [
+            ('downloaded', 3600, 'local-1'),
+            ('downloaded', 3600, 'local-2'),
+            ('remote', 1800, 'remote-backed'),
+            ('remote', 1800, 'remote-unbacked'),
+            ('pending', 32400, 'pending'),
+        ])
+        db.execute("""
+            CREATE TABLE hub_backups (
+                sha256 TEXT, repo TEXT, path TEXT, revision TEXT,
+                verified_at TEXT, bytes INTEGER
+            )
+        """)
+        valid = (
+            'remote-backed', 'repo', 'audio/item', 'revision',
+            '2025-01-01T00:00:00Z', 1800,
+        )
+        incomplete = (
+            'remote-unbacked', 'repo', 'audio/other', '',
+            '2025-01-01T00:00:00Z', 1800,
+        )
+        db.executemany(
+            'INSERT INTO hub_backups VALUES (?, ?, ?, ?, ?, ?)',
+            [valid, valid, incomplete],
+        )
+
+        result = status.rss_retention(db)
+        expected = {
+            'local_raw_hours': 2.0,
+            'backed_up_remote_raw_hours': 0.5,
+            'unbacked_remote_raw_hours': 0.5,
+            'retained_raw_hours': 2.5,
+        }
+        for key, value in expected.items():
+            self.assertAlmostEqual(result[key], value)
+        self.assertIn('not fresh remote verification', result['retention_note'])
+
+        db.execute('DROP TABLE hub_backups')
+        legacy = status.rss_retention(db)
+        self.assertEqual(
+            {key: legacy[key] for key in expected},
+            {
+                'local_raw_hours': 2.0,
+                'backed_up_remote_raw_hours': 0.0,
+                'unbacked_remote_raw_hours': 1.0,
+                'retained_raw_hours': 2.0,
+            },
+        )
 
 
 if __name__=='__main__':unittest.main()
