@@ -717,3 +717,9 @@ Bikol RSS was independently observed idle, with no remaining downloaded rows hav
 ### Kimi 1,000-row automatic completion
 
 A locked finalizer watches the existing review worker in `outputs/fil-kimi-review-next-1000-v1`. On successful terminal completion it validates the frozen input hash and full processed count, revalidates each accepted review against its raw response/config/text/audio bytes using `attach_reviews`, and writes an exclusive `reviewed-manifest.jsonl` plus `join-audit.json`. Rejected reviews remain unattached. It makes zero model requests, changes no transcripts and grants no audio approval. Missing/failed workers or validation failures stop it for inspection without replay. The tracked `curation/FIL_KIMI_1000_FINALIZER_CHECKPOINT.json` includes its exact script for recovery; inspect the actual process and finalizer lock before restoring or running it.
+
+### Archive backup coverage and eviction gap (2026-11-15)
+
+`curation/HIL_ARCHIVE_BACKUP_COVERAGE.json` reconciles local backup receipts against the fixed 152-row Hiligaynon snapshot. At observation, 43 audio hashes (2,788,509,587 bytes) had matching-size receipts and 109 (5,228,252,983 bytes) did not. Repeated receipts are counted once per audio hash. This is a local receipt inventory during a live backup, not fresh remote verification; newer acquisitions are outside this denominator.
+
+Archive receipts retain `local_deletion_authorized=false`. The archive pipeline still needs a durable remote/evicted lifecycle, acquisition logic that does not redownload evicted media, cooperative reader/writer locks, preserved acquisition provenance and a verified restore path before archive originals can be removed. RSS eviction cannot be applied unchanged to these files. NYO requested `us.kimi-k3` and returned `global.moonshotai.kimi-k3.1` for a review of these lifecycle gaps. No archive media was deleted; existing RSS backup/eviction remains the current space-recovery path.
