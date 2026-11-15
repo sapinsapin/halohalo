@@ -792,3 +792,7 @@ Verified canonical imports now cover all 17 remote Bikolano recordings (9.729593
 ### Further regional source preflight on dwnd-01 (2026-11-15)
 
 A persistent metadata-only worker checks 50 additional candidates per language (Cebuano, Bikolano and Ilocano). Selection excludes IDs in the other tracked language inventories; source discovery inventories remain intact. Publisher channel and video ID must match, live status must be finite, and duration must be 5–120 minutes. Failed candidates are retained with reasons. `curation/DWND_REGIONAL_PREFLIGHT_V2_CHECKPOINT.json` preserves inputs, exact recovery code and a live process observation. Results remain candidates until terminal receipts and overlap checks are inspected; this worker does not download media or approve language/rights.
+
+### Remote Cebuano VAD (2026-11-15)
+
+Installed a separate Python 3.11 compute environment on dwnd-01 with ONNX Runtime, NumPy and SoundFile. The existing hash-pinned Silero model passed a four-window smoke run (15 candidate segments). A persistent CPU worker now processes all 1,233 prepared Cebuano windows, bounded to 600 minutes and 1,233 rows. The smoke output overlaps the full run and must not be added to its totals. `curation/DWND_CEB_VAD_CHECKPOINT.json` records commands, dependencies, recovery code and live process evidence. Outputs remain untranscribed speech candidates, with no language or training approval. The corrected alternate host `carrot@reth5et.tail36638e.ts.net` also timed out on SSH port 22 before authentication.
