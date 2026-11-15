@@ -858,3 +858,9 @@ The 160-row draft ASR manifest and terminal stop summary are backed up as determ
 ### Bounded Filipino ASR continuation after timeout inspection
 
 The first remote stop was a service `finalize_timeout`. A new 100-row batch contains only never-attempted audio, excludes the timed-out ID/hash, and preserves the 160 validated prior results separately. Its single-row canary passed before launch. See the continuation selection/launch checkpoints and `docs/asr_incidents.md`; do not combine stages or replay quarantine entries. NYO us.kimi-k3 supplied the recovery review.
+
+### Remote Filipino continuation verified and second VAD batch launched (2026-11-15)
+
+The bounded 100-row ASR continuation completed without failures. All row IDs match its frozen input; saved raw response protocol, resulting transcript equality and audio hashes were independently checked. `curation/DWND_FIL_ASR_100_COMPLETE.json` pins the result. It is disjoint from the earlier 160-row batch by attempt fingerprint/audio selection; the timed-out segment remains quarantined.
+
+The second Filipino preparation snapshot completed with 4,007 windows / 29.866669514 hours. Every input audio hash was checked before starting full VAD followed automatically by exact-PCM auditing. `curation/DWND_FIL_VAD_V2_CHECKPOINT.json` records launch/recovery details. The latest remote status also shows regional v2 downloads terminal: Cebuano 47 recordings /23.639785278 raw hours, Bikolano 48 /27.314391111 with one failed item, and Ilocano 50 /23.939346569. These last acquisition counts are receipt observations, not a fresh full-file rehash.

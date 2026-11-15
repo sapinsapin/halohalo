@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:29:05.009557+00:00",
-  "free_gib": 1813.8549613952637,
+  "updated_at": "2026-11-15T03:35:34.910995+00:00",
+  "free_gib": 1806.5460357666016,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -29,18 +29,19 @@
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next-v2",
       "worker": {
         "pid": 589103,
-        "status": "running",
-        "started_at": 1794712834.2416332
+        "status": "process_exited",
+        "returncode": 0,
+        "started_at": 1794712834.2416332,
+        "finished_at": 1794713629.8207848
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "acquisition": {
         "statuses": {
-          "downloaded": 31,
-          "failed": 17,
-          "downloading": 1
+          "downloaded": 48,
+          "failed": 1
         },
-        "raw_hours": 17.220608611111118
+        "raw_hours": 27.31439111111111
       },
       "summaries": {
         "summary.json": {}
@@ -73,18 +74,18 @@
       "root": "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2",
       "worker": {
         "pid": 589096,
-        "status": "running",
-        "started_at": 1794712834.2186155
+        "status": "process_exited",
+        "returncode": 0,
+        "started_at": 1794712834.2186155,
+        "finished_at": 1794713483.6513367
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "acquisition": {
         "statuses": {
-          "downloaded": 37,
-          "failed": 9,
-          "downloading": 1
+          "downloaded": 47
         },
-        "raw_hours": 18.5733325
+        "raw_hours": 23.639785277777783
       },
       "summaries": {
         "summary.json": {}
@@ -96,15 +97,14 @@
       "worker": {
         "pid": 440398
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "acquisition": {
         "statuses": {
-          "downloaded": 48,
-          "failed": 1,
-          "downloading": 1
+          "downloaded": 53,
+          "failed": 1
         },
-        "raw_hours": 90.68638000000003
+        "raw_hours": 100.04207583333337
       },
       "summaries": {
         "summary.json": {}
@@ -140,10 +140,10 @@
       "acquisition": {
         "statuses": {
           "failed": 9,
-          "downloaded": 126,
+          "downloaded": 153,
           "downloading": 1
         },
-        "raw_hours": 63.936362777777774
+        "raw_hours": 77.87823694444448
       },
       "summaries": {
         "summary.json": {}
@@ -176,18 +176,18 @@
       "root": "/home/iotim/chika-curation/curation/outputs/ilocano-next-v2",
       "worker": {
         "pid": 589107,
-        "status": "running",
-        "started_at": 1794712834.2483523
+        "status": "process_exited",
+        "returncode": 0,
+        "started_at": 1794712834.2483523,
+        "finished_at": 1794713551.9718697
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "acquisition": {
         "statuses": {
-          "failed": 14,
-          "downloaded": 35,
-          "downloading": 1
+          "downloaded": 50
         },
-        "raw_hours": 17.178339167777782
+        "raw_hours": 23.93934656916667
       },
       "summaries": {
         "summary.json": {}
@@ -321,6 +321,19 @@
       "observation_errors": []
     },
     {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2",
+      "worker": {
+        "pid": 715516,
+        "status": "complete",
+        "returncode": 0,
+        "started_at": 1794713543.5431,
+        "finished_at": 1794713654.8800912
+      },
+      "process_present": false,
+      "process_matches_root": false,
+      "observation_errors": []
+    },
+    {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-smoke-v1",
       "worker": {},
       "summaries": {
@@ -361,11 +374,20 @@
       "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v2",
       "worker": {
         "pid": 595797,
-        "status": "running",
-        "started_at": 1794713100.6790137
+        "status": "complete",
+        "returncode": 0,
+        "started_at": 1794713100.6790137,
+        "finished_at": 1794713540.6486876
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
+      "summaries": {
+        "prepared/summary.json": {
+          "windows": 4007,
+          "window_hours": 29.86666951388889,
+          "transcribed_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {
@@ -457,17 +479,12 @@
       "rss": [
         {
           "status": "downloaded",
-          "items": 84,
-          "raw_hours": 60.01359873222222
-        },
-        {
-          "status": "downloading",
-          "items": 1,
-          "raw_hours": 0
+          "items": 128,
+          "raw_hours": 105.87042614138889
         },
         {
           "status": "pending",
-          "items": 47,
+          "items": 4,
           "raw_hours": 0
         }
       ],
