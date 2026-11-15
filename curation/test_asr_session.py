@@ -12,6 +12,32 @@ from .schema import digest
 
 
 class PersistentTest(ASRTest):
+    async def test_offline_batch_audit_rejects_tampering_without_requests(self):
+        from .audit_asr import audit
+        from .asr import apply_result
+        from .cli import write_jsonl
+        result = await self.session.transcribe_one(self.row)
+        source, output = self.root/'input.jsonl', self.root/'output.jsonl'
+        write_jsonl(source, [self.row])
+        row = apply_result(self.row, result)
+        write_jsonl(output, [row])
+        before = len(self.requests)
+        report = audit(source, output, self.session.root)
+        self.assertEqual(report['rows'], 1)
+        self.assertEqual(len(self.requests), before)
+        row['sentence'] = 'Different text'
+        row['num_words'] = 2
+        write_jsonl(output, [row])
+        with self.assertRaisesRegex(ValueError, 'result differs'):
+            audit(source, output, self.session.root)
+        write_jsonl(output, [apply_result(self.row, result)])
+        raw_path = self.session.root/(result['cache_key']+'.response.json')
+        raw = json.loads(raw_path.read_text());raw['pcm_samples'] += 1
+        raw_path.write_text(json.dumps(raw))
+        with self.assertRaisesRegex(ValueError, 'checksum'):
+            audit(source, output, self.session.root)
+        self.assertEqual(len(self.requests), before)
+
     # Reuse only the fixture, not the single-window test cases.
     async def asyncSetUp(self):
         await super().asyncSetUp()

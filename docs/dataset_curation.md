@@ -922,3 +922,15 @@ Regional preflight v3 accepted 221 Cebuano, 150 Bikolano and 229 Ilocano candida
 For reviews of remote audio, transfer only the input manifest, review config and accepted cache/response pairs to the audio host, then run `python -m curation.attach_reviews`. The command revalidates raw responses, content bindings and actual audio hashes. Do not bypass audio checks merely because the review ran elsewhere. The first remote Filipino review batch attached 253 reviews to 259 rows; six rejected responses remain unattached, with no transcript changes or audio approvals. The resulting manifest and attachment audit are backed up in private `sapinsapin/chika` at revision `ed0fd605d1106c6db1be482b16a734153e9a5d20`, verified by fresh download and exact decompressed bytes. Recovery details: `curation/DWND_FIL_TEXT_REVIEW_REMOTE_CHECKPOINT.json`. This metadata backup does not back up the underlying audio.
 
 Filipino preparation v3 completed 9,957 windows /74.399322326 hours. Every window was rehashed before launching VAD and its chained PCM audit; see `curation/DWND_FIL_VAD_V3_CHECKPOINT.json`. Completion of the preparation stage does not imply completion of VAD, ASR or review.
+
+### Offline persistent-ASR batch audit
+
+Before promoting a completed session to review, run on the audio host:
+
+```sh
+python -m curation.audit_asr --inputs /path/batch/input.jsonl \
+  --manifest /path/batch/asr/manifest.jsonl --cache /path/batch/asr \
+  --report /path/new-audit.json
+```
+
+This read-only command requires no key and makes no server requests. It requires exact input/output ID coverage, validates persistent protocol responses and cached result bindings, reconstructs output rows from their original inputs, and decodes hash-verified audio to compare the exact PCM sample count with the server receipt. It rejects modified transcripts, stale caches and incomplete batches. The report path must be new. These checks establish transport/data integrity, not linguistic or acoustic transcription accuracy. The first ten remote Filipino queue-v3 batches (1,000 clips) passed; see `curation/DWND_FIL_ASR_FIRST1000_OFFLINE_AUDIT.json`. Their 994 nonempty transcripts are undergoing a separate NYO `us.kimi-k3` text review.
