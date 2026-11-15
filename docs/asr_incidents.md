@@ -93,3 +93,7 @@ After v8 completed, v9 processed 495/500 rows and stopped before the next reques
 ### Live route discovery: remaining language deployment gap (2026-11-15)
 
 Authenticated GET `/v1/models` on the production CloudFront endpoint returned HTTP 200 and advertised ASR routes only for `fil` and `hil`. The local nyo-serve registry includes `ceb`, `bcl` and `ilo`, but those entries do not establish deployed availability. See `curation/ASR_DEPLOYED_ROUTES_CHECKPOINT.json`. Acquisition continues for all five target languages; bulk ASR for the remaining three requires deployed routes and a bounded validation before queueing. Do not silently send their recordings to the Filipino/Hiligaynon routes. Bikol source variety remains to be established before treating `bcl` as applicable. No serving changes or ASR charges were initiated by this read-only discovery.
+
+## Remote Filipino batch v1 — 2026-11-15
+
+Terminal `stopped_for_inspection`, return code 1, PID 595271 absent. Completed 160 rows, one empty; failed ID `c6506e60e8131953927fe7598cc9035ff979c740e9b8aef414b947aa49c83f3b`. Attempt `760b0a12eb5b32c77f5f54ed4e5378ebb49cfefb43c04245b94e6a5cef806bec.attempt-be20a7d736e2474982146afee642d68a.json` in `/home/iotim/chika-curation/curation/outputs/remote-fil-asr-smoke-v1` has status failed, error_kind ValueError. Cause not yet established; do not replay. Saved manifest and per-item receipts preserve completed work. Future continuation must exclude uncertain attempts and preserve validated caches.
