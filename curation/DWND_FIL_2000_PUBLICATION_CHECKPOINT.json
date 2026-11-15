@@ -1,7 +1,9 @@
 {
-  "pid": 91954,
+  "pid": 92038,
   "root": "/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-2000-publish-v1",
   "prefix": "data/fil_dwnd_asr_2000_v1",
   "scope": "Publish validated curation export to private chika; verify fresh downloads before receipt; config registration remains separate",
-  "recovery_code": "import json,os,time\nfrom pathlib import Path\nfrom curation.publish import publish\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\ntry:\n r=publish(root/'export','data/fil_dwnd_asr_2000_v1',root/'hub-receipt.json')\n s.update(status='complete',revision=r['revision'],rows=r['rows'],finished_at=time.time())\nexcept BaseException as e:\n s.update(status='stopped_for_inspection',error_type=type(e).__name__,finished_at=time.time());raise\nfinally:\n (root/'worker.json').write_text(json.dumps(s))\n"
+  "recovery_code": "import json,os,time\nfrom pathlib import Path\nfrom curation.publish import publish\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\ntry:\n r=publish(root/'export','data/fil_dwnd_asr_2000_v1',root/'hub-receipt.json')\n s.update(status='complete',revision=r['revision'],rows=r['rows'],finished_at=time.time())\nexcept BaseException as e:\n s.update(status='stopped_for_inspection',error_type=type(e).__name__,finished_at=time.time());raise\nfinally:\n (root/'worker.json').write_text(json.dumps(s))\n",
+  "initial_pid": 91954,
+  "recovery": "Initial missing huggingface_hub import occurred before any network call; preserve venv interpreter path rather than resolving its symlink"
 }
