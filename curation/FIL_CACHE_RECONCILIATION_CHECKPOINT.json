@@ -1,0 +1,39 @@
+{
+  "rows": 4,
+  "network_requests": 0,
+  "network_methods_disabled": true,
+  "statuses": [
+    "transcribed",
+    "transcribed",
+    "transcribed",
+    "transcribed"
+  ],
+  "manifest_sha256": "b899b554bb702cda55a1f95e4e4d2fc39998de91d50cd1af549fd29dbe02d4f3",
+  "evidence": [
+    {
+      "id": "2910bf0c50c810e1cd68a68c0479fded4ec04051c668a2e64513990716587593",
+      "source_response": "curation/outputs/fil-persistent-batch-v5/asr/657dce2630ffa6de6d8111e3e46e74b792e2bddeeb68282e95cd8b24eb769a98.response.json",
+      "source_response_sha256": "4102e92e2b7860d1c0c1780bd664bafdd2f9158971f18f071bd269ec35fe1258",
+      "audio_sha256": "d030b9f02fb98a0089afdffea6a30e8398005794aedfc28c0d6b0d1ba8d27357"
+    },
+    {
+      "id": "e4f5491fef4a04b858a7d942576b030e8aaa76c2188fcd2831766de4bed3604f",
+      "source_response": "curation/outputs/fil-persistent-batch-v5/asr/ca5f23a26671357740d37832ded82967e97d53f52f414c1134ae3e4bbabea3b7.response.json",
+      "source_response_sha256": "992d8543ca73566f4cd54f5d79bfb9537bba6d01797c67704ac9dab16e622720",
+      "audio_sha256": "c1eaa76cbebe487613a927d6899a5eab1388b5a9e35677dc3a9430a898bacfbb"
+    },
+    {
+      "id": "8f7079537041497959a04028745fc2391ade644f02b016433c9d301f5e55d638",
+      "source_response": "curation/outputs/fil-persistent-batch-v5/asr/b12b874b212edcaea8763419dcf283af4156f0876e673742a30f2f78399acdb3.response.json",
+      "source_response_sha256": "975b813081b63c365e423518014540e880b8bef6ab975f1477dcfc48079bebf7",
+      "audio_sha256": "bb1e6a73d4cb597a1d993676b5d45dff9ba1e0c04867ae4becf0dfcc7a62e163"
+    },
+    {
+      "id": "e28d95741ed9aea930724beb5c27783e68ad9dd75779381870098c91029b5e6b",
+      "source_response": "curation/outputs/fil-persistent-batch-v5/asr/8ae1139b97c2fce0d4ef641e276004f9bc33a0296c68866b992227b672b56c33.response.json",
+      "source_response_sha256": "aab4045da5adaa0685332aad29085a39981ab5fe91145377b84348f24bf2dedd",
+      "audio_sha256": "6c446d48fc9b0592c8477c0865b415d801b55c8a8f81586a41196cb38ba3e6a6"
+    }
+  ],
+  "uncertain_failed_request_replayed": false
+}
