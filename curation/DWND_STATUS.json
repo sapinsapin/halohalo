@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:35:34.910995+00:00",
-  "free_gib": 1806.5460357666016,
+  "updated_at": "2026-11-15T03:37:45.269618+00:00",
+  "free_gib": 1804.4073181152344,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -140,10 +140,10 @@
       "acquisition": {
         "statuses": {
           "failed": 9,
-          "downloaded": 153,
+          "downloaded": 163,
           "downloading": 1
         },
-        "raw_hours": 77.87823694444448
+        "raw_hours": 83.06033416666669
       },
       "summaries": {
         "summary.json": {}
@@ -227,6 +227,17 @@
       "observation_errors": []
     },
     {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-bik-processing-v2",
+      "worker": {
+        "pid": 763123,
+        "status": "running",
+        "started_at": 1794713830.872178
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "observation_errors": []
+    },
+    {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-bik-vad-full-v1",
       "worker": {
         "pid": 520953,
@@ -267,6 +278,17 @@
           "transcribed_hours": 0
         }
       },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v2",
+      "worker": {
+        "pid": 763121,
+        "status": "running",
+        "started_at": 1794713830.862062
+      },
+      "process_present": true,
+      "process_matches_root": true,
       "observation_errors": []
     },
     {
@@ -414,6 +436,17 @@
       "observation_errors": []
     },
     {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2",
+      "worker": {
+        "pid": 750568,
+        "status": "running",
+        "started_at": 1794713758.6499398
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "observation_errors": []
+    },
+    {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-hil-preparation-v1",
       "worker": {
         "pid": 614220,
@@ -445,6 +478,17 @@
       "observation_errors": []
     },
     {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v2",
+      "worker": {
+        "pid": 763143,
+        "status": "running",
+        "started_at": 1794713830.8721144
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "observation_errors": []
+    },
+    {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-ilo-vad-full-v1",
       "worker": {
         "pid": 520984,
@@ -471,21 +515,18 @@
       "root": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1",
       "worker": {
         "pid": 570576,
-        "status": "running",
-        "started_at": 1794712675.7895827
+        "status": "process_exited",
+        "returncode": 0,
+        "started_at": 1794712675.7895827,
+        "finished_at": 1794713773.505674
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "rss": [
         {
           "status": "downloaded",
-          "items": 128,
-          "raw_hours": 105.87042614138889
-        },
-        {
-          "status": "pending",
-          "items": 4,
-          "raw_hours": 0
+          "items": 132,
+          "raw_hours": 111.8615060286111
         }
       ],
       "observation_errors": []

@@ -870,3 +870,9 @@ The second Filipino preparation snapshot completed with 4,007 windows / 29.86666
 All 145 completed v2 regional downloads were rehashed, size/duration-probed and imported into frozen canonical manifests: Cebuano 47 /23.639785278 raw hours, Bikolano 48 /27.314391111, Ilocano 50 /23.939346569. Each snapshot has zero internal exact-byte duplicates. Noncompleted/metadata-only entries remain excluded, including the one failed Bikolano item.
 
 Three persistent workers now chain preparation, generated-window hash validation, VAD and independent exact-PCM/offset/metadata auditing. Stage status is written atomically; an exception stops that language worker. Preparation and the VAD transition enforce the 100 GiB floor. No ASR calls or approval changes are included. `curation/DWND_REGIONAL_PROCESSING_V2_CHECKPOINT.json` preserves frozen manifest hashes, import reports, commands, complete recovery code and launch observations. Inspect worker.json plus terminal audit before claiming completion; do not restart on observation timeouts.
+
+### Filipino remote acquisition complete and remaining preparation launched
+
+All 132 delegated Filipino RSS episodes completed: 111.861506029 raw hours. Independently rechecked every downloaded file size and SHA-256 against the remote ledger. `curation/DWND_FIL_DOWNLOAD_COMPLETE_PREP_V3.json` preserves all recording identities, hashes and remote paths. The local ledger remains delegated rather than pretending these files exist locally or are backed up to Hugging Face.
+
+A third frozen preparation snapshot selects the remaining 75 recordings / 74.395227855 raw hours, excluding all 57 IDs from the prior two batches. The worker is live on dwnd-01 with 27-second windows and a 100 GiB floor. All 132 recordings are now assigned exactly once across preparation snapshots; this does not mean all preparation or transcription is complete. No local files were deleted.
