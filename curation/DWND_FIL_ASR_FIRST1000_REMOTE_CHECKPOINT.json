@@ -1,0 +1,12 @@
+{
+  "repo": "sapinsapin/chika",
+  "private_verified": true,
+  "revision": "91833e351dd22cc56bf374079b700d90e467d998",
+  "path": "checkpoints/dwnd-fil-asr-first1000/131d8f5b0cc0cf6aec4cc812e6e8ca71110a17c0fd39be8212459751555e03d9-receipts.tar.gz",
+  "bytes": 986166,
+  "sha256": "131d8f5b0cc0cf6aec4cc812e6e8ca71110a17c0fd39be8212459751555e03d9",
+  "archive_members": 2040,
+  "rows": 1000,
+  "verification": "Remote/local checksum plus fresh HF download exact-byte comparison; archive member paths and completed response statuses checked",
+  "scope": "Inputs, outputs, worker summaries and cache/result receipts only; no audio or credentials"
+}
