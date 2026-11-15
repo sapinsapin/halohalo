@@ -1,0 +1,67 @@
+{
+  "models": {
+    "whisper-large-v3-pld-ceb-norm": {
+      "source": {
+        "repo": "sapinsapin/whisper-large-v3-pld-ceb-norm",
+        "revision": "109c7f42e40bfa071d53270115734dc2d88fb521"
+      },
+      "quants": [
+        "float16"
+      ],
+      "serve_quant": "float16",
+      "languages": {
+        "ceb": "tl"
+      },
+      "n_mels": 128,
+      "beam": 1,
+      "interim": {
+        "enabled": false,
+        "hop_ms": 1500,
+        "model": null
+      },
+      "gate": null
+    },
+    "whisper-large-v3-pld-bcl-norm": {
+      "source": {
+        "repo": "sapinsapin/whisper-large-v3-pld-bcl-norm",
+        "revision": "a35847d1db75e5c72409be4cc7f8b03775b45fb7"
+      },
+      "quants": [
+        "float16"
+      ],
+      "serve_quant": "float16",
+      "languages": {
+        "bcl": "tl"
+      },
+      "n_mels": 128,
+      "beam": 1,
+      "interim": {
+        "enabled": false,
+        "hop_ms": 1500,
+        "model": null
+      },
+      "gate": null
+    },
+    "whisper-large-v3-pld-ilo-norm": {
+      "source": {
+        "repo": "sapinsapin/whisper-large-v3-pld-ilo-norm",
+        "revision": "00f3c4812849d7abfc0bb3519741b466457368ab"
+      },
+      "quants": [
+        "float16"
+      ],
+      "serve_quant": "float16",
+      "languages": {
+        "ilo": "tl"
+      },
+      "n_mels": 128,
+      "beam": 1,
+      "interim": {
+        "enabled": false,
+        "hop_ms": 1500,
+        "model": null
+      },
+      "gate": null
+    }
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "models": [
+    {
+      "language": "ceb",
+      "repository": "sapinsapin/whisper-large-v3-pld-ceb-norm",
+      "revision": "109c7f42e40bfa071d53270115734dc2d88fb521",
+      "files": {
+        "config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm/resolve/109c7f42e40bfa071d53270115734dc2d88fb521/config.json",
+          "sha256": "74a1f7f2748c5e22b91ab663c31cdca90f800c5c394c558ac2a933c1f031e098",
+          "fields": {
+            "decoder_start_token_id": 50258,
+            "num_mel_bins": 128,
+            "vocab_size": 51866
+          }
+        },
+        "generation_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm/resolve/109c7f42e40bfa071d53270115734dc2d88fb521/generation_config.json",
+          "sha256": "ee324eb0f545bb9f0d6fa5bc39f9a072c1765755aadc6f49eac5deac3ff0df2b",
+          "fields": {
+            "language": "tagalog",
+            "task": "transcribe",
+            "forced_decoder_ids": null,
+            "decoder_start_token_id": 50258
+          }
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm/resolve/109c7f42e40bfa071d53270115734dc2d88fb521/tokenizer_config.json",
+          "sha256": "ca4b00aa99fc93835c391649269fdf9e4c2779e4f220e1fdf62840f22b6935d4",
+          "fields": {
+            "language": "tagalog",
+            "task": "transcribe"
+          }
+        },
+        "preprocessor_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm/resolve/109c7f42e40bfa071d53270115734dc2d88fb521/preprocessor_config.json",
+          "error": "HTTPError"
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm/resolve/109c7f42e40bfa071d53270115734dc2d88fb521/tokenizer.json",
+          "sha256": "ef5df3c85c5b78d31519b2e2c802a02425fc0fd9a80dcb69c9e6ff87588a8cc6"
+        },
+        "processor_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm/resolve/109c7f42e40bfa071d53270115734dc2d88fb521/processor_config.json",
+          "sha256": "8efb801da889b24fc64a28d0af16d376852508aefb97d497a4c6d2200b114a33"
+        }
+      },
+      "decoder_evidence": {
+        "token": "<|tl|>",
+        "id": 50348,
+        "basis": "matching pinned generation config and tokenizer vocabulary",
+        "runtime_verified": false
+      }
+    },
+    {
+      "language": "bcl",
+      "repository": "sapinsapin/whisper-large-v3-pld-bcl-norm",
+      "revision": "a35847d1db75e5c72409be4cc7f8b03775b45fb7",
+      "files": {
+        "config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm/resolve/a35847d1db75e5c72409be4cc7f8b03775b45fb7/config.json",
+          "sha256": "74a1f7f2748c5e22b91ab663c31cdca90f800c5c394c558ac2a933c1f031e098",
+          "fields": {
+            "decoder_start_token_id": 50258,
+            "num_mel_bins": 128,
+            "vocab_size": 51866
+          }
+        },
+        "generation_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm/resolve/a35847d1db75e5c72409be4cc7f8b03775b45fb7/generation_config.json",
+          "sha256": "ee324eb0f545bb9f0d6fa5bc39f9a072c1765755aadc6f49eac5deac3ff0df2b",
+          "fields": {
+            "language": "tagalog",
+            "task": "transcribe",
+            "forced_decoder_ids": null,
+            "decoder_start_token_id": 50258
+          }
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm/resolve/a35847d1db75e5c72409be4cc7f8b03775b45fb7/tokenizer_config.json",
+          "sha256": "ca4b00aa99fc93835c391649269fdf9e4c2779e4f220e1fdf62840f22b6935d4",
+          "fields": {
+            "language": "tagalog",
+            "task": "transcribe"
+          }
+        },
+        "preprocessor_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm/resolve/a35847d1db75e5c72409be4cc7f8b03775b45fb7/preprocessor_config.json",
+          "error": "HTTPError"
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm/resolve/a35847d1db75e5c72409be4cc7f8b03775b45fb7/tokenizer.json",
+          "sha256": "ef5df3c85c5b78d31519b2e2c802a02425fc0fd9a80dcb69c9e6ff87588a8cc6"
+        },
+        "processor_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm/resolve/a35847d1db75e5c72409be4cc7f8b03775b45fb7/processor_config.json",
+          "sha256": "8efb801da889b24fc64a28d0af16d376852508aefb97d497a4c6d2200b114a33"
+        }
+      },
+      "decoder_evidence": {
+        "token": "<|tl|>",
+        "id": 50348,
+        "basis": "matching pinned generation config and tokenizer vocabulary",
+        "runtime_verified": false
+      }
+    },
+    {
+      "language": "ilo",
+      "repository": "sapinsapin/whisper-large-v3-pld-ilo-norm",
+      "revision": "00f3c4812849d7abfc0bb3519741b466457368ab",
+      "files": {
+        "config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm/resolve/00f3c4812849d7abfc0bb3519741b466457368ab/config.json",
+          "sha256": "74a1f7f2748c5e22b91ab663c31cdca90f800c5c394c558ac2a933c1f031e098",
+          "fields": {
+            "decoder_start_token_id": 50258,
+            "num_mel_bins": 128,
+            "vocab_size": 51866
+          }
+        },
+        "generation_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm/resolve/00f3c4812849d7abfc0bb3519741b466457368ab/generation_config.json",
+          "sha256": "ee324eb0f545bb9f0d6fa5bc39f9a072c1765755aadc6f49eac5deac3ff0df2b",
+          "fields": {
+            "language": "tagalog",
+            "task": "transcribe",
+            "forced_decoder_ids": null,
+            "decoder_start_token_id": 50258
+          }
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm/resolve/00f3c4812849d7abfc0bb3519741b466457368ab/tokenizer_config.json",
+          "sha256": "ca4b00aa99fc93835c391649269fdf9e4c2779e4f220e1fdf62840f22b6935d4",
+          "fields": {
+            "language": "tagalog",
+            "task": "transcribe"
+          }
+        },
+        "preprocessor_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm/resolve/00f3c4812849d7abfc0bb3519741b466457368ab/preprocessor_config.json",
+          "error": "HTTPError"
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm/resolve/00f3c4812849d7abfc0bb3519741b466457368ab/tokenizer.json",
+          "sha256": "ef5df3c85c5b78d31519b2e2c802a02425fc0fd9a80dcb69c9e6ff87588a8cc6"
+        },
+        "processor_config.json": {
+          "url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm/resolve/00f3c4812849d7abfc0bb3519741b466457368ab/processor_config.json",
+          "sha256": "8efb801da889b24fc64a28d0af16d376852508aefb97d497a4c6d2200b114a33"
+        }
+      },
+      "decoder_evidence": {
+        "token": "<|tl|>",
+        "id": 50348,
+        "basis": "matching pinned generation config and tokenizer vocabulary",
+        "runtime_verified": false
+      }
+    }
+  ],
+  "status": "artifact metadata only; decoder mapping not yet validated in serving",
+  "nyo_design_review": {
+    "model": "us.kimi-k3",
+    "credits": 0.091
+  },
+  "staging_registry_validation": {
+    "validator": "/Users/timsan/nyo-serve/modules/asr_fw/registry.py",
+    "accepted_models": [
+      "whisper-large-v3-pld-ceb-norm",
+      "whisper-large-v3-pld-bcl-norm",
+      "whisper-large-v3-pld-ilo-norm"
+    ],
+    "deployed": false
+  }
+}
