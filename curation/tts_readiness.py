@@ -2,6 +2,7 @@
 import argparse
 from collections import Counter, defaultdict
 import json
+import unicodedata
 from pathlib import Path
 from .schema import load_manifest, check_splits, digest
 
@@ -29,6 +30,13 @@ def audit(manifest, recipe):
     if len({r["audio_sha256"] for r in eligible}) != len(eligible):
         raise ValueError("duplicate eligible audio would inflate training hours")
     check_splits(eligible)
+    texts = {}
+    for row in eligible:
+        key = " ".join(unicodedata.normalize("NFKC", row["sentence"]).casefold().split())
+        split = "test" if row["split"] == "reserved_test" else row["split"]
+        if key in texts and texts[key] != split:
+            raise ValueError("cross-split transcript leakage")
+        texts[key] = split
     hours = defaultdict(float)
     for row in eligible:
         hours['test' if row['split'] == 'reserved_test' else row['split']] += row['duration'] / 3600
