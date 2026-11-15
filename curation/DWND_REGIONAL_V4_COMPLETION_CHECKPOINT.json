@@ -1,0 +1,96 @@
+{
+  "host": "dwnd-01",
+  "complete": {
+    "ceb": {
+      "worker": {
+        "pid": 1857398,
+        "status": "complete",
+        "stage": "complete",
+        "started_at": 1794717329.6323538,
+        "verified_windows": 3489,
+        "finished_at": 1794718118.0440788
+      },
+      "audit": {
+        "rows": 9807,
+        "parents_checked": 3327,
+        "exact_pcm_samples": 1271610400,
+        "candidate_hours": 22.07656944444444,
+        "parent_manifest_sha256": "95da3ea7a772e9bb8dbd6d2a143731c4d6cba7454f658112dbf38eb06791cf5d",
+        "candidate_manifest_sha256": "83c886942c0a3122b6ea9e89c3289916ef623604df9897e00184f4babe477406",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "summary": {
+        "input_windows": 3489,
+        "input_hours": 25.981416875,
+        "segments": 9807,
+        "candidate_hours": 22.07656944444441,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "83c886942c0a3122b6ea9e89c3289916ef623604df9897e00184f4babe477406",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      }
+    },
+    "bik": {
+      "worker": {
+        "pid": 1857490,
+        "status": "complete",
+        "stage": "complete",
+        "started_at": 1794717332.383873,
+        "verified_windows": 3580,
+        "finished_at": 1794718153.4084787
+      },
+      "audit": {
+        "rows": 11649,
+        "parents_checked": 3390,
+        "exact_pcm_samples": 1299506624,
+        "candidate_hours": 22.56087888888889,
+        "parent_manifest_sha256": "eda275e3661e84c99d5cb823b31cf74ecc727418796ef6e8b16cab4f6843e372",
+        "candidate_manifest_sha256": "ff1f03af7dd8863e4979c45836e6ce3486b33a4763c010b2fb09b4413ec519c4",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "summary": {
+        "input_windows": 3580,
+        "input_hours": 26.65815282986111,
+        "segments": 11649,
+        "candidate_hours": 22.56087888888894,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "ff1f03af7dd8863e4979c45836e6ce3486b33a4763c010b2fb09b4413ec519c4",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      }
+    },
+    "ilo": {
+      "worker": {
+        "pid": 1857586,
+        "status": "complete",
+        "stage": "complete",
+        "started_at": 1794717334.8228502,
+        "verified_windows": 3330,
+        "finished_at": 1794718073.0870845
+      },
+      "audit": {
+        "rows": 8622,
+        "parents_checked": 3280,
+        "exact_pcm_samples": 1244566359,
+        "candidate_hours": 21.60705484375,
+        "parent_manifest_sha256": "82bc6d4897e7dd8fd6ed2554e21f856cc9e16353f174b96df80f1aa0e0309e51",
+        "candidate_manifest_sha256": "2962f4273856e18e83c9ef168ac18c8c72b7dd5f935403edab689fe9c74846eb",
+        "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+      },
+      "summary": {
+        "input_windows": 3330,
+        "input_hours": 24.765728211805556,
+        "segments": 8622,
+        "candidate_hours": 21.607054843750063,
+        "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+        "transcribed_hours": 0,
+        "verified_hours": 0,
+        "manifest_sha256": "2962f4273856e18e83c9ef168ac18c8c72b7dd5f935403edab689fe9c74846eb",
+        "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+      }
+    }
+  },
+  "scope": "Processing (prepare, VAD, exact-PCM audit) only. No ASR route for ceb/bcl/ilo is deployed; not transcribed or language-approved."
+}

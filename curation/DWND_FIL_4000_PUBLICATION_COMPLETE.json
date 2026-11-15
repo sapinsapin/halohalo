@@ -1,0 +1,49 @@
+{
+  "host": "dwnd-01 (export) / TakBookPro (publish)",
+  "config": "fil_dwnd_asr_4000_v1",
+  "source": {
+    "queues": [
+      "remote-fil-asr-queue-v4",
+      "remote-fil-asr-queue-v5"
+    ],
+    "rows": 4000,
+    "nonempty": 3985,
+    "padded_seconds": 17245.148,
+    "nonempty_hours": 4.787930000000004,
+    "manifest_sha256": "5ea756c565fb6d1d64e0bab564753777294f34bcd0bb3405cbea51393bb0b335",
+    "no_overlap_with": "fil_dwnd_asr_2000_v1 (remote-fil-asr-2000-v3) by id and audio_sha256",
+    "offline_audits": 40,
+    "merge_export_script": "curation/job_scripts/2026-11-15/merge_export_fil_4000.py"
+  },
+  "export": {
+    "shards": 40,
+    "local_shard_hash_check": "40/40 sha256 match after transfer"
+  },
+  "hub_receipt": {
+    "parent_commit": "d9951e4e040f9fc3abd9abfbb022023ed154affc",
+    "parent_conflicts": [],
+    "prefix": "data/fil_dwnd_asr_4000_v1",
+    "private": true,
+    "repo": "sapinsapin/chika",
+    "revision": "6b502458b733670e02619f2ef4f06812752ef763",
+    "rows": 4000,
+    "verification_only": false,
+    "verified": true,
+    "files": 43
+  },
+  "card": {
+    "revision": "186e68d52dbea3f5aef3bc2060857e1ac9264f62",
+    "parent": "6b502458b733670e02619f2ef4f06812752ef763",
+    "config": "fil_dwnd_asr_4000_v1"
+  },
+  "stream_check": {
+    "revision": "186e68d52dbea3f5aef3bc2060857e1ac9264f62",
+    "config": "fil_dwnd_asr_4000_v1",
+    "rows": 4000,
+    "exact_ids_text_provenance_audio_bytes": true,
+    "training_approved": false
+  },
+  "independent_remote_check": "Pinned data revision private; all 43 file sizes and 41 LFS sha256 match the receipt",
+  "publish_script": "curation/job_scripts/2026-11-15/publish_fil_4000.py",
+  "scope": "Draft ASR text, unassigned splits, rights unknown, no audio approvals; not training data."
+}
