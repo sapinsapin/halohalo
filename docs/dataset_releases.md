@@ -56,3 +56,7 @@ A one-shot finalizer now waits for this publisher's verified private receipt, th
 ### Filipino 5,671 v2 manifest staged only
 
 Completed GLM952 and Kimi491 reviews were joined into the existing 5,671-clip manifest, producing 2,504 text-reviewed rows and 3,167 drafts. Every incoming row matched the prior audio/transcript/ASR identity; transcripts are unchanged. `curation/FIL_5671_V2_MANIFEST_CHECKPOINT.json` freezes source and output hashes. This is only a staged manifest under `outputs/collected-fil-5671-v2/`: no Parquet export or upload has started, and it does not alter v1's in-flight publication.
+
+### Filipino 5,671 v1 data and card verified; stream audit running
+
+All sixty remote export artifacts were freshly downloaded and hash/size verified at data revision `d1daed197a5ea2fbaae3eb25e2b52802f356a418`. The private dataset card now registers `fil_collected_vad_5671_v1`; exact README readback passed at `e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3`. The finalizer is still streaming all rows at the card revision; full release verification is not yet claimed. The tracked export checkpoint now separates these completed data/card stages from the pending stream audit.

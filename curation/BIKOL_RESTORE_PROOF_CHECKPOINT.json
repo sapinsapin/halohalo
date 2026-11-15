@@ -1,0 +1,17 @@
+{
+  "restored_files": 1,
+  "fresh_remote_download": true,
+  "audio_sha256": "8ae55369ec39b6b55a3b592ebb84d97d2b4a7e4a2ba608294fb05c8facdfc199",
+  "bytes": 33977796,
+  "duration": 2100.870998,
+  "sqlite_integrity": "ok",
+  "source_ledger_unchanged": true,
+  "checkpoint": {
+    "repo": "sapinsapin/chika",
+    "revision": "aaa52bab7b224da5d6cab4398893552832da836d",
+    "checkpoint": "checkpoints/bikolano-rss/3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c.sqlite",
+    "checkpoint_sha256": "3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c"
+  },
+  "root": "curation/outputs/bikolano-restore-proof-v1",
+  "note": "Isolated recovery proof; not new acquisition or unique hours"
+}

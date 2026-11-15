@@ -680,3 +680,9 @@ The finite Hiligaynon sources remain in scope: Deditos11, IlonggaTalks1, RMNBaco
 The refreshed Hiligaynon and Bikolano manifests/reports (four files, 319,666 bytes) are saved under `checkpoints/canonical-archives/{snapshot}/` in private `sapinsapin/chika`, revision `dc6fcae14ce8d6dfff0739f589538f1f422cd18c`. All four were freshly downloaded at that immutable revision and compared byte-for-byte. `curation/ARCHIVE_CANONICAL_REMOTE_CHECKPOINT.json` records exact remote paths and hashes.
 
 This is **metadata-only recovery evidence**. It uploads no audio and grants no eviction eligibility for referenced originals. Full media backup proofs/checkpoints remain separately required.
+
+### Offloaded Bikol audio restored and independently checked
+
+An isolated recovery test freshly downloaded the immutable Bikolano SQLite checkpoint and one backed original, with a one-file/64 MiB cap and 25 GiB floor. It recovered 33,977,796 bytes / 2,100.870998 seconds. Independent SHA256, size, ffprobe audio/duration and SQLite integrity checks passed. The original source ledger still marks the item remote and was not altered.
+
+Tracked proof: `curation/BIKOL_RESTORE_PROOF_CHECKPOINT.json`; isolated restored root: `outputs/bikolano-restore-proof-v1/`. The isolated ledger correctly marks one recording local, nineteen backed-but-not-restored recordings remote and 249 unbacked recordings pending. This is a recovery test, not new acquisition or unique audio hours; do not add the test root to production accounting.

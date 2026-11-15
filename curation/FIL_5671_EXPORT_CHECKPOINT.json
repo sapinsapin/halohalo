@@ -29,9 +29,9 @@
     "pcm_matches": 5671,
     "sentences_unchanged": true
   },
-  "publication_status": "started_not_verified",
+  "publication_status": "remote_artifacts_verified",
   "publication_prefix": "data/fil_collected_vad_5671_v1",
-  "card_status": "pending",
+  "card_status": "registered_and_readback_verified",
   "finalizer": {
     "pid": 74118,
     "root": "curation/outputs/collected-fil-5671-v1",
@@ -46,5 +46,9 @@
     "prefix": "data/fil_collected_vad_5671_v1/",
     "remote_files": 60,
     "note": "Presence only; does not replace publisher hash verification or streaming audit"
-  }
+  },
+  "data_revision": "d1daed197a5ea2fbaae3eb25e2b52802f356a418",
+  "remote_verified_artifacts": 60,
+  "card_revision": "e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3",
+  "stream_status": "verification_running"
 }
