@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:37:45.269618+00:00",
-  "free_gib": 1804.4073181152344,
+  "updated_at": "2026-11-15T03:38:55.490458+00:00",
+  "free_gib": 1802.502212524414,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -140,10 +140,10 @@
       "acquisition": {
         "statuses": {
           "failed": 9,
-          "downloaded": 163,
+          "downloaded": 169,
           "downloading": 1
         },
-        "raw_hours": 83.06033416666669
+        "raw_hours": 86.2370691666667
       },
       "summaries": {
         "summary.json": {}
@@ -410,6 +410,17 @@
           "transcribed_hours": 0
         }
       },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3",
+      "worker": {
+        "pid": 803554,
+        "status": "running",
+        "started_at": 1794713903.7575502
+      },
+      "process_present": true,
+      "process_matches_root": true,
       "observation_errors": []
     },
     {
