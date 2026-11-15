@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T04:14:19.107825+00:00",
-  "free_gib": 1757.3253479003906,
+  "updated_at": "2026-11-15T04:16:41.545272+00:00",
+  "free_gib": 1752.176670074463,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -59,10 +59,10 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 80,
+          "downloaded": 85,
           "downloading": 1
         },
-        "raw_hours": 44.80602222222223
+        "raw_hours": 47.71537916666668
       },
       "summaries": {
         "summary.json": {}
@@ -124,10 +124,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 86,
-          "downloading": 1
+          "downloaded": 92,
+          "downloading": 1,
+          "failed": 1
         },
-        "raw_hours": 44.25741833333333
+        "raw_hours": 47.39029222222221
       },
       "summaries": {
         "summary.json": {}
@@ -162,11 +163,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 70,
+          "downloaded": 76,
           "failed": 3,
           "downloading": 1
         },
-        "raw_hours": 38.359058333333344
+        "raw_hours": 41.330626666666674
       },
       "summaries": {
         "summary.json": {}
@@ -285,10 +286,11 @@
       "process_matches_root": true,
       "acquisition": {
         "statuses": {
-          "downloaded": 98,
-          "downloading": 1
+          "downloaded": 104,
+          "downloading": 1,
+          "failed": 1
         },
-        "raw_hours": 47.47152599194443
+        "raw_hours": 50.02879988083332
       },
       "summaries": {
         "summary.json": {}
@@ -469,11 +471,19 @@
       "worker": {
         "pid": 1428200,
         "status": "running",
-        "stage": "preparation",
+        "stage": "vad",
+        "verified_windows": 3447,
         "started_at": 1794715707.8585336
       },
       "process_present": true,
       "process_matches_root": true,
+      "summaries": {
+        "prepared/summary.json": {
+          "windows": 3447,
+          "window_hours": 25.691929565972224,
+          "transcribed_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {
@@ -1141,20 +1151,22 @@
       "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v4/batch-03",
       "worker": {
         "pid": 1585319,
-        "status": "running",
-        "started_at": 1794716035.6918368
+        "status": "complete",
+        "returncode": 0,
+        "started_at": 1794716035.6918368,
+        "finished_at": 1794716112.735665
       },
-      "process_present": true,
-      "process_matches_root": true,
+      "process_present": false,
+      "process_matches_root": false,
       "summaries": {
         "asr/summary.json": {
           "selected": 100,
-          "completed": 28,
+          "completed": 100,
           "failed": 0,
-          "manifest_rows": 25,
+          "manifest_rows": 100,
           "stopped_early": false,
           "stop_reason": null,
-          "transcribed_hours": 0.04005444444444444,
+          "transcribed_hours": 0.11142277777777773,
           "empty": 0
         }
       },
@@ -1163,14 +1175,48 @@
     {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v4/batch-04",
       "worker": {
-        "status": "queued"
+        "pid": 1630272,
+        "status": "complete",
+        "returncode": 0,
+        "started_at": 1794716112.7540743,
+        "finished_at": 1794716191.7628255
+      },
+      "process_present": false,
+      "process_matches_root": false,
+      "summaries": {
+        "asr/summary.json": {
+          "selected": 100,
+          "completed": 100,
+          "failed": 0,
+          "manifest_rows": 100,
+          "stopped_early": false,
+          "stop_reason": null,
+          "transcribed_hours": 0.11459388888888887,
+          "empty": 0
+        }
       },
       "observation_errors": []
     },
     {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v4/batch-05",
       "worker": {
-        "status": "queued"
+        "pid": 1692228,
+        "status": "running",
+        "started_at": 1794716191.7805438
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "summaries": {
+        "asr/summary.json": {
+          "selected": 100,
+          "completed": 11,
+          "failed": 0,
+          "manifest_rows": 0,
+          "stopped_early": false,
+          "stop_reason": null,
+          "transcribed_hours": 0.014283333333333334,
+          "empty": 0
+        }
       },
       "observation_errors": []
     },
@@ -1284,8 +1330,8 @@
       "worker": {
         "pid": 1521832,
         "status": "running",
-        "completed_batches": 2,
-        "batch": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v4/batch-03",
+        "completed_batches": 4,
+        "batch": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v4/batch-05",
         "started_at": 1794715886.7650506
       },
       "process_present": true,
@@ -1460,6 +1506,18 @@
       "observation_errors": []
     },
     {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-hil-processing-v2",
+      "worker": {
+        "pid": 1684665,
+        "status": "running",
+        "stage": "preparation",
+        "started_at": 1794716164.9819212
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "observation_errors": []
+    },
+    {
       "root": "/home/iotim/chika-curation/curation/outputs/remote-hil-vad-v1",
       "worker": {
         "pid": 1390564,
@@ -1526,11 +1584,19 @@
       "worker": {
         "pid": 1429087,
         "status": "running",
-        "stage": "preparation",
+        "stage": "vad",
+        "verified_windows": 3229,
         "started_at": 1794715712.6543903
       },
       "process_present": true,
       "process_matches_root": true,
+      "summaries": {
+        "prepared/summary.json": {
+          "windows": 3229,
+          "window_hours": 24.03646852430556,
+          "transcribed_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {

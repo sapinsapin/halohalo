@@ -1,0 +1,10 @@
+{
+  "pid": 90921,
+  "selected": 996,
+  "root": "/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v3",
+  "input_sha256": "b876106c835eed71dc406e2081e9094cd278bd5412390c47f13dacca6485eb9d",
+  "model": "us.kimi-k3",
+  "dependency_pid": 89553,
+  "recovery_code": "import json,subprocess,os,time\nfrom pathlib import Path\nroot=Path(__file__).parent;previous=root.parent/'dwnd-fil-review-v2'\ns={'pid':os.getpid(),'status':'running','stage':'waiting_for_previous_review','started_at':time.time()}\ndef save():\n p=root/'worker.tmp';p.write_text(json.dumps(s));p.replace(root/'worker.json')\nsave()\ntry:\n while True:\n  w=json.loads((previous/'worker.json').read_text())\n  if w['pid']!=89553:raise RuntimeError('dependency identity changed')\n  if w['status']=='process_exited':\n   summary=json.loads((previous/'reviews/summary.json').read_text())\n   if summary['stopped_early'] or summary['selected']!=994 or len(summary['completed'])+len(summary['failed'])!=994:raise RuntimeError('previous review incomplete')\n   if w['returncode'] not in (0,1):raise RuntimeError('previous review failed unexpectedly')\n   break\n  if w['status']!='running':raise RuntimeError('dependency stopped')\n  p=subprocess.run(['ps','-p','89553','-o','args='],capture_output=True,text=True)\n  if p.returncode or str(previous/'run.py') not in p.stdout:raise RuntimeError('dependency process absent or changed')\n  time.sleep(30)\n s['stage']='text_review';save()\n args=['/Users/timsan/halohalo/repo/curation/.venv/bin/python','-m','curation.review','--manifest',str(root/'input.jsonl'),'--output',str(root/'reviews'),'--model','us.kimi-k3','--max-attempts','1','--timeout','60','--max-consecutive-failures','2','--max-tokens','2500']\n result=subprocess.run(args)\n s.update(status='process_exited',returncode=result.returncode,finished_at=time.time());save()\nexcept BaseException as e:\n s.update(status='stopped_for_inspection',error=str(e),finished_at=time.time());save();raise\n",
+  "scope": "Only remaining nonempty input identities from completed 2000-row ASR snapshot; waits for full previous review coverage; no audio approval"
+}
