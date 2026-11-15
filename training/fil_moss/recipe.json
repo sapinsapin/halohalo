@@ -9,5 +9,74 @@
   "baseline": {"optimizer": "AdamW8bit", "weights_dtype": "float32", "gradient_dtype": "float32", "autocast_dtype": "bfloat16", "batch_size": 1, "learning_rate": 0.00001, "seed": 42, "codec_precomputed": true, "text_tokenizer": "unchanged pretrained", "start_from": "pinned pretrained model; not Hiligaynon-adapted checkpoint"},
   "pilot_data_gate": {"min_train_hours": 1.0, "min_validation_hours": 0.1, "min_test_hours": 0.1, "min_clip_seconds": 2, "max_clip_seconds": 15, "audio_review": "content-bound audio_verified", "training_rights": "allowed with evidence", "speaker_id": "required", "splits": "frozen; recording, audio and known speaker disjoint"},
   "tokenizer_experiment": {"requested_name": "tokeniser morphormer", "status": "awaiting_exact_method", "baseline_blocked_by_clarification": false, "preserve_pretrained_token_ids": true, "acoustic_codec_changes": false},
-  "execution": {"gpu_lock": "/tmp/sapinsapin-gpu.lock", "min_available_host_gib": 25, "overwrite_existing_run": false, "launch_state": "not_launched", "next": "curate eligible manifest, run readiness on host, encode/reconstruct, one-step save/reload smoke, bounded baseline, held-out evaluation"}
+  "execution": {"gpu_lock": "/tmp/sapinsapin-gpu.lock", "min_available_host_gib": 25, "overwrite_existing_run": false, "launch_state": "not_launched", "next": "curate eligible manifest, run readiness on host, encode/reconstruct, stage 1 verify, stage 1 train, stage 2 arms"},
+  "encode": {"n_vq": 16, "sample_rate": 24000, "reference_conditioning": "same_speaker_other_clip_same_split", "reconstruction_check_clips_per_split": 8, "reconstruction_duration_tolerance_seconds": 0.1},
+  "judges": {
+    "fil": {
+      "whisper": {"model": "sapinsapin/whisper-large-v3-pld-fil-norm", "revision": "ee5b4f0cd1af616b38f742ae05b644d6783b52fe", "language_token": "tl", "family": "in-family: trained on PLD"},
+      "mms": {"model": "facebook/mms-1b-all", "revision": "3d33597edbdaaba14a8e858e2c8caa76e3cec0cd", "target_lang": "tgl", "family": "independent"},
+      "omni": {"port_dir": "~/work/hil-tts/eval/judges/omniASR-CTC-1B-hf", "port_code": "~/work/hil-tts/code/nyo/bench/hil_tts/eval", "family": "independent"}
+    },
+    "eng": {
+      "mms": {"model": "facebook/mms-1b-all", "revision": "3d33597edbdaaba14a8e858e2c8caa76e3cec0cd", "target_lang": "eng", "family": "independent"},
+      "omni": {"port_dir": "~/work/hil-tts/eval/judges/omniASR-CTC-1B-hf", "port_code": "~/work/hil-tts/code/nyo/bench/hil_tts/eval", "family": "independent"}
+    },
+    "speaker": {"model": "speechbrain/spkrec-ecapa-voxceleb", "revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286", "savedir": "~/work/hil-tts/eval/judges/sb-ecapa"},
+    "fallback": "if a judge fails to load, worst-judge CER is taken over the remaining families and the report names the missing one; RL does not halt"
+  },
+  "generation": {"temperature": 0.8, "top_p": 0.6, "top_k": 30, "repetition_penalty": 1.1, "repetition_window": 50, "frames_per_second": 12.5, "max_frames_per_reference_second": 2.0, "min_max_frames": 75},
+  "stage1": {
+    "source": "docs/qwen_tts_sota_plan.md section 4, applied to MOSS-TTS-Realtime",
+    "verify": {
+      "parity_rtol": 0.001,
+      "overfit_clips": 32,
+      "overfit_steps": 200,
+      "overfit_learning_rate": 0.0001,
+      "overfit_max_final_loss": 0.5,
+      "overfit_duration_tolerance": 0.05,
+      "note": "overfit learning rate and loss ceiling are engineering choices; the Hiligaynon pilot reached 1.54 train loss on 32 clips at 1e-5 in 640 updates, so 1e-4 for 200 steps is chosen to force memorisation. Revisit after the first run."
+    },
+    "train": {
+      "epochs": 2,
+      "learning_rate": 0.00001,
+      "warmup_steps": 20,
+      "schedule": "linear",
+      "betas": [0.9, 0.95],
+      "eps": 1e-8,
+      "weight_decay": 0.1,
+      "grad_clip": 1.0,
+      "frozen": ["language_model.embed_tokens"],
+      "eval_every_updates": 256,
+      "eval_generation_clips": 64,
+      "eval_seeds": [1],
+      "success": {"primary_judge": "mms", "primary_judge_cer_max": 0.075, "spk_sim_min": 0.76, "duration_ratio_range": [0.93, 1.07], "english_cer_max_relative_regression": 0.05},
+      "kill": {"duration_ratio_max": 1.3, "worse_than_zero_shot_after_epochs": 2},
+      "max_stage_seconds": 14400
+    }
+  },
+  "stage2": {
+    "source": "docs/qwen_tts_sota_plan.md section 5, applied to MOSS-TTS-Realtime",
+    "requires": "stage 1 report with verification and success both pass",
+    "rollouts_per_prompt": 8,
+    "learning_rate": 0.000001,
+    "kl_beta": 0.04,
+    "clip_epsilon": 0.2,
+    "ppo_epochs": 1,
+    "max_steps": 1000,
+    "eval_every_steps": 100,
+    "eval_generation_clips": 64,
+    "reward_weights": {"intelligibility": 0.6, "speaker": 0.3, "duration": 0.1},
+    "reward_weights_note": "engineering choice; the plan fixes only arm d's 0.15 conditioning + 0.15 CLVI split of the speaker weight",
+    "arms": {
+      "a": {"intelligibility": "single:whisper", "speaker": "conditioning", "role": "Align2Speak-style baseline"},
+      "b": {"intelligibility": "mean", "speaker": "conditioning"},
+      "c": {"intelligibility": "min", "speaker": "conditioning"},
+      "d": {"intelligibility": "min", "speaker": "conditioning+clvi", "clvi_batch_fraction": 0.25}
+    },
+    "clvi": {"min_consented_bilingual_speakers": 50, "ecapa_ceiling_min": 0.6, "speaker_split": {"conditioning": 0.15, "clvi": 0.15}},
+    "tripwires": {"window_steps": 50, "silence_fraction_rise_max": 0.1, "token_entropy_drop_max": 0.2},
+    "kill": {"spk_sim_min": 0.75, "no_gain_step": 300, "no_separation_step": 1000, "max_tripwire_aborts": 2},
+    "adoption": {"c_over_b_min_relative_gain": 0.05, "equal_sim_tolerance": 0.01, "d_xling_sim_min": 0.7, "d_same_language_sim_max_drop": 0.02, "d_xling_sim_min_gain_over_c": 0.05},
+    "max_stage_seconds": 14400
+  }
 }
