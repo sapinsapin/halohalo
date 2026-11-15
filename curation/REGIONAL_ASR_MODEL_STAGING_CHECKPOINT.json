@@ -1,0 +1,161 @@
+{
+  "pid": 1582678,
+  "root": "/home/iotim/chika-curation/curation/outputs/regional-asr-models-v1",
+  "plan": {
+    "models": [
+      {
+        "language": "ceb",
+        "repository": "sapinsapin/whisper-large-v3-pld-ceb-norm",
+        "http_status": 200,
+        "available": true,
+        "revision": "109c7f42e40bfa071d53270115734dc2d88fb521",
+        "pipeline_tag": "automatic-speech-recognition",
+        "model_card_license": "cc-by-nc-4.0",
+        "deployed_route_verified": false,
+        "model_url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm",
+        "local_serving_registry_present": false,
+        "use_status": "candidate only; not deployed or evaluated by this workflow",
+        "files": [
+          {
+            "name": "README.md",
+            "bytes": 4478,
+            "sha256": null
+          },
+          {
+            "name": "config.json",
+            "bytes": 1226,
+            "sha256": null
+          },
+          {
+            "name": "generation_config.json",
+            "bytes": 4615,
+            "sha256": null
+          },
+          {
+            "name": "model.safetensors",
+            "bytes": 6174112552,
+            "sha256": "bc351a962fd60a8f789061e2d176e49185f8148d66a007b81cd73d7780d58d94"
+          },
+          {
+            "name": "processor_config.json",
+            "bytes": 410,
+            "sha256": null
+          },
+          {
+            "name": "tokenizer.json",
+            "bytes": 3931381,
+            "sha256": null
+          },
+          {
+            "name": "tokenizer_config.json",
+            "bytes": 2111,
+            "sha256": null
+          }
+        ]
+      },
+      {
+        "language": "bcl",
+        "repository": "sapinsapin/whisper-large-v3-pld-bcl-norm",
+        "http_status": 200,
+        "available": true,
+        "revision": "a35847d1db75e5c72409be4cc7f8b03775b45fb7",
+        "pipeline_tag": "automatic-speech-recognition",
+        "model_card_license": "cc-by-nc-4.0",
+        "deployed_route_verified": false,
+        "model_url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm",
+        "local_serving_registry_present": false,
+        "use_status": "candidate only; not deployed or evaluated by this workflow",
+        "scope_note": "Central Bikol candidate only; do not assume coverage of other Bikol varieties",
+        "files": [
+          {
+            "name": "README.md",
+            "bytes": 4465,
+            "sha256": null
+          },
+          {
+            "name": "config.json",
+            "bytes": 1226,
+            "sha256": null
+          },
+          {
+            "name": "generation_config.json",
+            "bytes": 4615,
+            "sha256": null
+          },
+          {
+            "name": "model.safetensors",
+            "bytes": 6174112552,
+            "sha256": "015cf08dd187938baac25052beb112e09e5b75485c91089822aae9b553671fce"
+          },
+          {
+            "name": "processor_config.json",
+            "bytes": 410,
+            "sha256": null
+          },
+          {
+            "name": "tokenizer.json",
+            "bytes": 3931381,
+            "sha256": null
+          },
+          {
+            "name": "tokenizer_config.json",
+            "bytes": 2111,
+            "sha256": null
+          }
+        ]
+      },
+      {
+        "language": "ilo",
+        "repository": "sapinsapin/whisper-large-v3-pld-ilo-norm",
+        "http_status": 200,
+        "available": true,
+        "revision": "00f3c4812849d7abfc0bb3519741b466457368ab",
+        "pipeline_tag": "automatic-speech-recognition",
+        "model_card_license": "cc-by-nc-4.0",
+        "deployed_route_verified": false,
+        "model_url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm",
+        "local_serving_registry_present": false,
+        "use_status": "candidate only; not deployed or evaluated by this workflow",
+        "files": [
+          {
+            "name": "README.md",
+            "bytes": 4447,
+            "sha256": null
+          },
+          {
+            "name": "config.json",
+            "bytes": 1226,
+            "sha256": null
+          },
+          {
+            "name": "generation_config.json",
+            "bytes": 4615,
+            "sha256": null
+          },
+          {
+            "name": "model.safetensors",
+            "bytes": 6174112552,
+            "sha256": "f3111e28316e654118db41f6c7f91dfa250ad48dc9a6e6197dc07671dd92859a"
+          },
+          {
+            "name": "processor_config.json",
+            "bytes": 410,
+            "sha256": null
+          },
+          {
+            "name": "tokenizer.json",
+            "bytes": 3931381,
+            "sha256": null
+          },
+          {
+            "name": "tokenizer_config.json",
+            "bytes": 2111,
+            "sha256": null
+          }
+        ]
+      }
+    ]
+  },
+  "recovery_code": "import os,json,time,hashlib,shutil,urllib.request\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','stage':'download','started_at':time.time(),'completed_files':[]}\ndef save():\n p=root/'worker.tmp';p.write_text(json.dumps(s,indent=2));p.replace(root/'worker.json')\nsave()\ntry:\n for m in json.loads((root/'plan.json').read_text())['models']:\n  dest=root/m['language'];dest.mkdir(exist_ok=True)\n  for f in m['files']:\n   if shutil.disk_usage(root).free<100*1024**3+f['bytes']:raise RuntimeError('100 GiB reserve')\n   path=dest/f['name'];part=path.with_suffix(path.suffix+'.part');assert not path.exists() and not part.exists()\n   s.update(language=m['language'],file=f['name'],downloaded_bytes=0);save()\n   url=f\"https://huggingface.co/{m['repository']}/resolve/{m['revision']}/{f['name']}\";h=hashlib.sha256();n=0;last=time.monotonic()\n   with urllib.request.urlopen(url,timeout=120) as response,part.open('xb') as stream:\n    while True:\n     chunk=response.read(8*1024**2)\n     if not chunk:break\n     n+=len(chunk)\n     if n>f['bytes']:raise ValueError('download exceeds expected size')\n     stream.write(chunk);h.update(chunk)\n     if time.monotonic()-last>10:s['downloaded_bytes']=n;save();last=time.monotonic()\n   if n!=f['bytes'] or (f['sha256'] and h.hexdigest()!=f['sha256']):raise ValueError('download size/checksum mismatch')\n   part.rename(path);s['completed_files'].append({'language':m['language'],'name':f['name'],'bytes':n,'sha256':h.hexdigest(),'revision':m['revision']});save()\n s.update(status='complete',stage='complete',finished_at=time.time());save()\nexcept BaseException as e:\n s.update(status='stopped_for_inspection',error_type=type(e).__name__,error=str(e),finished_at=time.time());save();raise\n",
+  "scope": "Pinned checkpoint download and LFS checksum verification only; no inference or serving changes"
+}
