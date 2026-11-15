@@ -938,3 +938,9 @@ This read-only command requires no key and makes no server requests. It requires
 ### Hiligaynon preparation follow-on
 
 `curation/DWND_HIL_VAD_FOLLOWON_CHECKPOINT.json` records a live dwnd-01 worker waiting for the specific Hiligaynon preparation process (PID 614220). It checks both worker identity and actual process arguments every 30 seconds. Only a successful terminal preparation receipt allows it to rehash every prepared window and start VAD, followed by exact-PCM auditing. It checks a 100 GiB free-space floor before beginning segmentation. A failed/missing/replaced preparer stops the follow-on for inspection; it never restarts preparation or sends ASR requests. The checkpoint contains the exact script for recovery, but must not be blindly relaunched while its process is live or after partial execution. Observe `remote-hil-vad-v1/worker.json` and the actual process before any recovery decision.
+
+### Filipino ASR queue v4 follow-on
+
+Frozen the next 2,000 unique audio hashes from audited Filipino VAD v2 into twenty 100-row sessions, excluding all VAD-v1 audio and previously reserved queue inputs. Rehashed selected audio and validated the frozen queue plan before launching the follow-on. `curation/DWND_FIL_ASR_QUEUE_V4_CHECKPOINT.json` records all reservations, plan hashes and recovery script. These rows must be excluded from other assignments even while waiting.
+
+The follow-on checks queue-v3 process identity and waits for successful completion. It then verifies every prior batch with both completion receipts and the offline raw-response/decoded-sample audit before starting v4. It stops for inspection on any dependency failure or missing process, and retains the 100 GiB floor and no-uncertain-retry behavior. A live waiting worker does not mean v4 audio has been sent. Inspect its actual process and stage before recovery; never relaunch a partly executed frozen plan.
