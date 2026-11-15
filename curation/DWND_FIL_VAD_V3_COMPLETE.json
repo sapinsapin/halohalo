@@ -1,0 +1,54 @@
+{
+  "host": "dwnd-01",
+  "worker": {
+    "pid": 1327524,
+    "status": "complete",
+    "started_at": 1794715033.2124517,
+    "returncode": 0,
+    "finished_at": 1794716025.360371
+  },
+  "audit": {
+    "rows": 54710,
+    "parents_checked": 9838,
+    "exact_pcm_samples": 3881202437,
+    "candidate_hours": 67.38198675347222,
+    "parent_manifest_sha256": "6589d49aa6dbb58c3055c94c7b1bdf4f8dc9ef39fe0c98211058bd30b3a59e43",
+    "candidate_manifest_sha256": "3fbc0bdebc554e555e774ec2d1cb67595098c888c8ad0285c7dc80a3b41a91d1",
+    "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+  },
+  "summary": {
+    "input_windows": 9957,
+    "input_hours": 74.39932232638888,
+    "segments": 54710,
+    "candidate_hours": 67.38198675347142,
+    "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+    "transcribed_hours": 0,
+    "verified_hours": 0,
+    "manifest_sha256": "3fbc0bdebc554e555e774ec2d1cb67595098c888c8ad0285c7dc80a3b41a91d1",
+    "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+  },
+  "manifest": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v3/vad/manifest.jsonl",
+  "combined_batches": [
+    {
+      "batch": 1,
+      "segments": 5400,
+      "candidate_hours": 7.0015744444444445,
+      "manifest_sha256": "f35e800023145819cc65659b71c45125f6fd05b5326046c229e5173065318ccd"
+    },
+    {
+      "batch": 2,
+      "segments": 22150,
+      "candidate_hours": 27.35410640625,
+      "manifest_sha256": "119c77c632a1d299a5ea70a989a7a94d77703aaddeb9ab29c1c8a7f55a413f67"
+    },
+    {
+      "batch": 3,
+      "segments": 54710,
+      "candidate_hours": 67.38198675347222,
+      "manifest_sha256": "3fbc0bdebc554e555e774ec2d1cb67595098c888c8ad0285c7dc80a3b41a91d1"
+    }
+  ],
+  "combined_segments": 82260,
+  "combined_candidate_hours": 101.73766760416666,
+  "scope": "PCM derivative audit and manifest integrity passed; recording-disjoint batches; padded candidate hours, not verified speech or transcripts; cross-recording acoustic dedup still outstanding"
+}
