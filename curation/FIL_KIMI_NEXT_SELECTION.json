@@ -43,7 +43,8 @@
     "rows": 5189,
     "sha256": "05af9616f5097280e3f46906b818871d1691f408b870e637d1737ae272d0439e"
   },
-  "status": "prepared_not_launched",
+  "status": "launched",
   "model_requested": "us.kimi-k3",
-  "prerequisite": "Inspect terminal fil-kimi-review-100-v1 results before launching; never retry invalid reviews automatically"
+  "prerequisite": "100-item prior batch complete and all 100 content-bound reviews independently attached",
+  "pid": 72144
 }
