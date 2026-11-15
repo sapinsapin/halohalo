@@ -1,7 +1,7 @@
 {
   "host_scope": "/home/iotim/chika-curation/curation/outputs",
-  "updated_at": "2026-11-15T03:45:14.640242+00:00",
-  "free_gib": 1793.1974334716797,
+  "updated_at": "2026-11-15T03:46:32.224739+00:00",
+  "free_gib": 1790.9988594055176,
   "jobs": [
     {
       "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
@@ -241,11 +241,19 @@
       "worker": {
         "pid": 763123,
         "status": "running",
-        "stage": "preparation",
+        "stage": "vad",
+        "verified_windows": 3663,
         "started_at": 1794713830.872178
       },
       "process_present": true,
       "process_matches_root": true,
+      "summaries": {
+        "prepared/summary.json": {
+          "windows": 3663,
+          "window_hours": 27.314168125000002,
+          "transcribed_hours": 0
+        }
+      },
       "observation_errors": []
     },
     {
@@ -385,6 +393,170 @@
           "empty": 0
         }
       },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3",
+      "worker": {
+        "pid": 1117334
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-01",
+      "worker": {
+        "pid": 1117376,
+        "status": "running",
+        "started_at": 1794714366.7321212
+      },
+      "process_present": true,
+      "process_matches_root": true,
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-02",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-03",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-04",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-05",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-06",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-07",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-08",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-09",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-10",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-11",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-12",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-13",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-14",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-15",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-16",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-17",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-18",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-19",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/batch-20",
+      "worker": {
+        "status": "queued"
+      },
+      "observation_errors": []
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-queue-v3/state",
+      "worker": {
+        "pid": 1117334,
+        "status": "running",
+        "started_at": 1794714366.7309859
+      },
+      "process_present": true,
+      "process_matches_root": true,
       "observation_errors": []
     },
     {
