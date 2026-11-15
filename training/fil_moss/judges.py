@@ -246,14 +246,15 @@ class JudgePool:
 
 
 class Speaker:
-    """ECAPA (speechbrain/spkrec-ecapa-voxceleb, pinned) embeddings and cosine similarity. Needs speechbrain in
-    the MOSS environment: ``pip install speechbrain==1.1.2`` (the bake-off's eval environment version)."""
+    """ECAPA (speechbrain/spkrec-ecapa-voxceleb, pinned) embeddings and cosine similarity. speechbrain 1.1.2 (the
+    bake-off's version) is installed in the MOSS environment on dwnd-01 with ``uv pip --no-deps`` (2026-11-15,
+    logged in ``environment-additions.jsonl``); 3.1 ms per 3.6 s clip on the GB10."""
 
     def __init__(self, cfg, device="cuda"):
         from speechbrain.inference.speaker import EncoderClassifier
         src = _snapshot(cfg["model"], cfg["revision"])
         self.enc = EncoderClassifier.from_hparams(source=src, savedir=str(Path(cfg["savedir"]).expanduser()),
-                                                  run_opts={"device": device})
+                                                  run_opts={"device": "cuda:0" if device == "cuda" else device})
         self.device = device
 
     def embed(self, wav16):

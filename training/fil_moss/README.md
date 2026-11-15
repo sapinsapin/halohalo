@@ -113,7 +113,7 @@ cd ~/fil-moss-judges/repo && HF_HUB_OFFLINE=1 ~/nyo-serve/.venv-tts/bin/python -
 
 `bench.py` measures every component on the GB10, and the remote judges if the server answers. `timing.py` turns those measurements into a wall-clock estimate for a given dataset size and batch size.
 
-**Not yet verified:** no stage has run on real weights. Judges use greedy Whisper, not the bake-off's temperature fallback. Omnilingual loads the bake-off's port from `~/work/hil-tts`. ECAPA needs `pip install speechbrain==1.1.2` in the MOSS venv, which is not yet installed. The latency harness follows `app.py` but has not been run. Stage 3 needs a prompt file that does not exist yet.
+**Not yet verified:** no stage has run on real weights. Judges use greedy Whisper, not the bake-off's temperature fallback. Omnilingual loads the bake-off's port from `~/work/hil-tts`. ECAPA (speechbrain 1.1.2) is installed in the MOSS venv and measured at 3.1 ms per clip. The latency harness follows `app.py` but has not been run. Stage 3 needs a prompt file that does not exist yet.
 
 Tests: `python -m unittest training.fil_moss.test_scoring training.fil_moss.test_gates training.fil_moss.test_stage3 training.fil_moss.test_timing training.fil_moss.test_guard training.fil_moss.test_objective` (the objective tests need torch).
 
