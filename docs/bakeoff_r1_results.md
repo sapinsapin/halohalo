@@ -142,5 +142,7 @@ and that path had never been exercised with `--normalise`. Undiagnosed.
 
 ## Next
 
-Moved to docs/status_2026-09-25.md, which keeps one list of everything open
+Moved to docs/status_2026-11-16.md, which keeps one list of everything open
 across ASR and TTS and says which of it runs on the workstation's 8 GB card.
+(Its predecessor, docs/status_2026-09-25.md, defines the queue items L1-L9 and
+C1-C8 that the newer status carries forward.)

@@ -334,7 +334,8 @@ tiling we added to upstream's collate; the speaker embedding written into
 position 6 after batching; that upstream's loop was only ever validated with
 one fixed speaker. The bisect runs upstream's single-speaker path unmodified,
 then swaps in our collate, then our save, and sees which step breaks it — on
-the 0.6B model it fits the workstation's 8 GB card (docs/status_2026-09-25.md).
+the 0.6B model it fits the workstation's 8 GB card (docs/status_2026-11-16.md,
+which revises how much of that card is actually free).
 
 The zero-shot base, never trained on a Philippine language, is the best voice
 match measured on anything here (0.77 against Orpheus's 0.36) and matches or
