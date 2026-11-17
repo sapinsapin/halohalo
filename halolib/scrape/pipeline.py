@@ -43,7 +43,23 @@ EXCLUDED_HOSTS = ("genius.com", "azlyrics.com", "lyrics.com", "musixmatch.com",
 # host" — it had produced accepted Filipino pages).
 ADULT_HOST_FRAGMENTS = ("sexstories", "porn", "xxx", "hentai", "xvideo", "xnxx", "sextape",
                         "escort", "nsfw", "camgirl", "onlyfans", "adultfriend", "kantutan",
-                        "sex-stories", "sexstory", "erotic")
+                        "sex-stories", "sexstory", "erotic",
+                        # an audit of the shards on 2026-09-26 found these past
+                        # the list above ("sex" alone would catch essex)
+                        "sexgame", "sex-game", "sexspiel", "sexyhot", "incest", "kalibugan")
+
+# Gambling: betting promotion is not corpus text, and online sabong
+# (cockfight betting) was banned in the Philippines in 2022. The crawl found
+# these by amplifying hosts FineWeb-2 had given us: todosabongga.blogspot.com
+# went from 13 pages to 59 in two rounds.
+GAMBLING_HOST_FRAGMENTS = ("casino", "sabong", "togel", "jackpot", "betting", "slots")
+# Machine-translated game portals on a ph. subdomain: every page is a game
+# blurb in template Filipino ("Maglaro nang Libre Online"); the crawl took
+# ph.sgames.org from 12 pages to 71.
+SPAM_HOSTS = ("sgames.org", "playgame24.com", "zxcgames.com", "igames7.com", "wsgames.ru",
+              # a Dutch law firm machine-translated into Cebuano without a
+              # language code in the URL (676 pages on Dutch administrative law)
+              "lawandmore.services")
 
 
 def excluded_host(url: str) -> bool:
@@ -51,9 +67,9 @@ def excluded_host(url: str) -> bool:
         host = url.split("/")[2].lower()
     except IndexError:
         return False
-    if any(frag in host for frag in ADULT_HOST_FRAGMENTS):
+    if any(frag in host for frag in ADULT_HOST_FRAGMENTS + GAMBLING_HOST_FRAGMENTS):
         return True
-    return any(host == h or host.endswith("." + h) for h in EXCLUDED_HOSTS)
+    return any(host == h or host.endswith("." + h) for h in EXCLUDED_HOSTS + SPAM_HOSTS)
 
 
 # Machine-translation farms put the language code in the URL *path* —
@@ -141,16 +157,52 @@ class ShardWriter:
         if not self.buf:
             return
         import pyarrow as pa
-        import pyarrow.parquet as pq
-        table = pa.Table.from_pylist(self.buf, schema=pa.schema(
-            [(c, pa.string()) if c not in ("word_count", "token_count") else (c, pa.int64())
-             for c in COLUMNS if c not in ("lid_score", "lid_agreement", "lid_models_agree")]
-            + [("lid_score", pa.float64()), ("lid_agreement", pa.float64()),
-               ("lid_models_agree", pa.bool_())]))
-        path = self.dir / f"shard-{self.n_shards:05d}.parquet"
-        pq.write_table(table, path)
+        table = pa.Table.from_pylist(self.buf, schema=shard_schema())
+        write_shard_durably(table, self.dir / f"shard-{self.n_shards:05d}.parquet")
         self.n_shards += 1
         self.buf = []
+
+
+def shard_schema():
+    import pyarrow as pa
+    return pa.schema(
+        [(c, pa.string()) if c not in ("word_count", "token_count") else (c, pa.int64())
+         for c in COLUMNS if c not in ("lid_score", "lid_agreement", "lid_models_agree")]
+        + [("lid_score", pa.float64()), ("lid_agreement", pa.float64()),
+           ("lid_models_agree", pa.bool_())])
+
+
+def write_shard_durably(table, path: Path) -> None:
+    """Write to a temp file, fsync, then rename. A WSL VM killed after a plain
+    write (OOM or a kernel panic) left ceb/shard-00033 with a valid footer and
+    garbage pages: its data had not reached the Windows disk."""
+    import pyarrow.parquet as pq
+    tmp = path.with_suffix(".tmp")
+    pq.write_table(table, tmp)
+    with open(tmp, "rb+") as fh:
+        os.fsync(fh.fileno())
+    os.replace(tmp, path)
+
+
+def quarantine_corrupt_shards(text_dir: Path) -> list[Path]:
+    """Move unreadable shards to {lang}/quarantine/ and leave an empty, valid
+    shard in their place: shard numbering counts files, so the slot must stay
+    filled. Their rows are then missing from the shards while their URLs stay
+    `accepted` in the manifest, so Manifest.forget_unsaved re-fetches them.
+    One bad shard otherwise stops every reader (seeds, dedup, LID training)."""
+    import pyarrow.parquet as pq
+    bad = []
+    for shard in sorted(text_dir.glob("*/shard-*.parquet")):
+        try:
+            pq.read_table(shard)
+        except Exception as exc:                  # OSError, ArrowInvalid: any unreadable file
+            qdir = shard.parent / "quarantine"
+            qdir.mkdir(exist_ok=True)
+            os.replace(shard, qdir / f"{shard.stem}.{int(time.time())}.parquet")
+            write_shard_durably(shard_schema().empty_table(), shard)
+            print(f"  quarantined {shard.parent.name}/{shard.name}: {type(exc).__name__}: {str(exc)[:60]}")
+            bad.append(shard)
+    return bad
 
 
 class Manifest:
@@ -160,13 +212,31 @@ class Manifest:
         self.path = path
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.seen: set[str] = set()
+        self.accepted: dict[str, str] = {}      # url -> content_hash, last record wins
         if path.exists():
             for ln in path.read_text(encoding="utf-8").splitlines():
                 try:
-                    self.seen.add(json.loads(ln)["url"])
+                    r = json.loads(ln)
+                    self.seen.add(r["url"])
                 except (json.JSONDecodeError, KeyError):
-                    pass
+                    continue
+                if r.get("status") == "accepted" and r.get("hash"):
+                    self.accepted[r["url"]] = r["hash"]
+                else:
+                    self.accepted.pop(r["url"], None)
         self._fh = open(path, "a", encoding="utf-8")
+
+    def forget_unsaved(self, saved_hashes: set[str]) -> int:
+        """Accepted rows wait in memory until the language's pass flushes
+        them, but their manifest line is written at once. A process that dies
+        in between (round 1 during the LID retrain, round 11 when WSL was
+        restarted) leaves URLs marked accepted whose text was never saved;
+        un-see them so this run fetches them again."""
+        lost = [u for u, h in self.accepted.items() if h not in saved_hashes]
+        for u in lost:
+            self.seen.discard(u)
+            del self.accepted[u]
+        return len(lost)
 
     def record(self, url: str, status: str, **extra) -> None:
         self.seen.add(url)
@@ -223,16 +293,24 @@ def run_text(cfg: ScrapeConfig, lid: Ensemble | None = None) -> dict[str, dict]:
         manifest = Manifest(lang_dir / "manifest.jsonl")
         dedup = DedupIndex()
         seeded = dedup.seed_from_parquet(writer.existing_shards())
+        unsaved = manifest.forget_unsaved(dedup.hashes)
         stats = {"queries": 0, "hits": 0, "skipped_seen": 0, "fetched": 0,
                  "raw_fallback": 0, "fetch_fail": 0, "too_short": 0, "too_long": 0,
                  "lid_reject": 0, "dup": 0, "host_excluded": 0, "host_capped": 0,
                  "accepted": 0, "resumed_rows": seeded}
         per_host: dict[str, int] = {}
         print(f"\n[{lang}] backend={backend.name} resumed={seeded} rows, "
-              f"{len(manifest.seen)} urls in manifest")
+              f"{len(manifest.seen)} urls in manifest"
+              + (f", {unsaved} accepted but never saved (will refetch)" if unsaved else ""))
         t0 = time.time()
 
-        for query in seeds[lang]["queries"]:
+        # The seed cache can hold more queries than this pass may spend (the
+        # flywheel's expansion pass reuses the seed pass's cache): slice, or
+        # an "expand 3 queries" pass silently runs all six.
+        queries = seeds[lang]["queries"][:cfg.queries_per_lang]
+        if getattr(backend, "ignores_query", False):
+            queries = ["(direct)"]
+        for query in queries:
             if stats["accepted"] >= cfg.max_docs_per_lang:
                 break
             stats["queries"] += 1

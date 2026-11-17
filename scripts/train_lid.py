@@ -29,16 +29,21 @@ with its page label (confident English moves to `eng`). See consensus_web.
 Evaluation reports two held-out sets separately:
   pld  — human-labelled prompts; the number to trust
   web  — page-labelled sentences; noisier labels, closer to scrape conditions
+Held-out membership is a hash of the sentence (SPLIT), so the PLD test set is
+the same in every run, and --baseline scores a previous model on it in the
+same run: the only comparison the flywheel's promotion gate trusts.
 
   python scripts/train_lid.py                 # train + eval -> $FINETUNE_DIR/lid/
   python scripts/train_lid.py --push          # also publish sapinsapin/halo-lid
   python scripts/train_lid.py --eval-only     # re-score the existing model
+  python scripts/train_lid.py --baseline old/model.ftz --out /tmp/cand
 
 Improves as the scrape grows: --extra-parquet finetune_runs/scrape/text folds
 accepted, undisputed, high-confidence scraped pages back into training.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import random
@@ -61,7 +66,9 @@ NEG_CONFIGS = {"ind_Latn": 4000, "zsm_Latn": 3000}
 ENG_RELABEL_SCORE = 0.8
 
 
-def gather(token: str | None, extra_parquet: Path | None) -> list[tuple[str, str, str]]:
+def gather(token: str | None, extra_parquet: Path | None,
+           extra_before: str | None = None,
+           negatives: Path | None = None) -> list[tuple[str, str, str]]:
     """Return unique (lang, text, src) triples; src in {pld, web, neg}."""
     rows: list[tuple[str, str, str]] = []
     seen: set[str] = set()
@@ -100,9 +107,12 @@ def gather(token: str | None, extra_parquet: Path | None) -> list[tuple[str, str
         import pyarrow.parquet as pq
         n0 = len(rows)
         for p in sorted(extra_parquet.glob("*/shard-*.parquet")):
-            t = pq.read_table(p, columns=["language", "text", "lid_models_agree", "lid_score"])
-            cols = [t.column(c).to_pylist() for c in ("language", "text", "lid_models_agree", "lid_score")]
-            for lang, text, agree, score in zip(*cols):
+            names = ("language", "text", "lid_models_agree", "lid_score", "crawled_at")
+            t = pq.read_table(p, columns=list(names))
+            cols = [t.column(c).to_pylist() for c in names]
+            for lang, text, agree, score, crawled in zip(*cols):
+                if extra_before and (crawled or "") >= extra_before:
+                    continue                     # reproduce an earlier round's data
                 if agree and score >= 0.9:       # only confident, undisputed pages
                     for s in split_sentences(text)[:40]:
                         add(lang, s, "web")
@@ -122,6 +132,16 @@ def gather(token: str | None, extra_parquet: Path | None) -> list[tuple[str, str
             print(f"  fineweb-2 {cfg}: +{k} -> other")
         except Exception as exc:
             print(f"  skip fineweb-2 {cfg}: {type(exc).__name__}: {str(exc)[:80]}")
+
+    # The broad `other` class (scripts/build_lid_negatives.py): ~180 languages
+    # instead of two, so text in a language we do not cover has somewhere to go
+    if negatives and negatives.exists():
+        n0, langs = len(rows), set()
+        for ln in open(negatives, encoding="utf-8"):
+            r = json.loads(ln)
+            add(OTHER, r["text"], "neg")
+            langs.add(r["lang"])
+        print(f"  negatives: +{len(rows) - n0} -> other, from {len(langs)} languages")
     return rows
 
 
@@ -141,7 +161,17 @@ def consensus_web(rows, glot: GlotLID) -> list[tuple[str, str, str]]:
     war) — which is fine, because PLD covers those and their web data is tiny.
     """
     out, moved, dropped, kept = [], Counter(), Counter(), Counter()
+    neg_dropped = Counter()
     for lang, text, src in rows:
+        if src == "neg":
+            # `other` sentences come from FineWeb-2 configs of ~180 languages,
+            # and the small ones carry English boilerplate and stray Tagalog.
+            # A negative that GlotLID calls one of our ten teaches the model
+            # that English can be `other`: drop it.
+            p = glot.predict(text)
+            if p.lang in LANGS:
+                neg_dropped[p.lang] += 1
+                continue
         if src == "web":
             p = glot.predict(text)
             if p.lang == "eng" and p.score >= ENG_RELABEL_SCORE:
@@ -157,14 +187,35 @@ def consensus_web(rows, glot: GlotLID) -> list[tuple[str, str, str]]:
     print(f"  web consensus: kept {sum(kept.values())} {dict(kept)}")
     print(f"  web -> eng:    {sum(moved.values())} {dict(moved)}")
     print(f"  web dropped:   {sum(dropped.values())} {dict(dropped)}")
+    print(f"  neg dropped:   {sum(neg_dropped.values())} {dict(neg_dropped)} (GlotLID: one of ours)")
     return out
 
 
-def cap_and_split(rows, max_per_lang: int, test_frac: float = 0.1, seed: int = 42):
-    """Per language: shuffle, cap, then hold out test_frac *per source*, so
-    both the pld and the web test sets exist for every language that has
-    both. Capping is PLD-first: human labels are kept before page labels."""
+SPLIT = "hash-v1"
+
+
+def _h(text: str) -> int:
+    return int(hashlib.sha1(text.encode("utf-8")).hexdigest()[:12], 16)
+
+
+def cap_and_split(rows, max_per_lang: int, test_frac: float = 0.1, seed: int = 42,
+                  other_max: int | None = None):
+    """Hold out test_frac of every language *per source* by a hash of the
+    sentence, then cap. Capping is PLD-first: human labels are kept before
+    page labels.
+
+    The split is a function of the text alone. It used to be a seeded
+    shuffle over all languages in turn, so each new scrape page changed how
+    much randomness the web lists consumed and therefore which PLD sentences
+    were held out: the flywheel's promotion gate compared a new model on one
+    test set with the old model on another (GlotLID, which never changes,
+    moved 0.004 macro F1 between the r4 and round-2 runs — the size of the
+    "regression" that got the round-2 model rejected), and sentences the old
+    model trained on could land in the new test set. Hashing fixes both: a
+    sentence is test or train forever, so the PLD test set is identical in
+    every run and no model has ever trained on any test sentence."""
     rng = random.Random(seed)
+    cut = int(test_frac * 2 ** 48)
     by: dict[str, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
     for lang, text, src in rows:
         by[lang][src].append(text)
@@ -172,16 +223,20 @@ def cap_and_split(rows, max_per_lang: int, test_frac: float = 0.1, seed: int = 4
     train, test = [], []
     kept = {}
     for lang, srcs in by.items():
-        budget = max_per_lang
+        cap = other_max if (lang == OTHER and other_max) else max_per_lang
+        tr_budget = cap - int(cap * test_frac)
+        te_budget = int(cap * test_frac)
         for src in ("pld", "web", "neg"):
             items = srcs.get(src, [])
-            rng.shuffle(items)
-            items = items[:budget]
-            budget -= len(items)
-            k = max(1, int(len(items) * test_frac)) if items else 0
-            test += [(lang, x, src) for x in items[:k]]
-            train += [(lang, x, src) for x in items[k:]]
-        kept[lang] = max_per_lang - budget
+            te = sorted((x for x in items if _h(x) < cut), key=_h)[:te_budget]
+            tr = [x for x in items if _h(x) >= cut]
+            rng.shuffle(tr)
+            tr = tr[:tr_budget]
+            tr_budget -= len(tr)
+            te_budget -= len(te)
+            test += [(lang, x, src) for x in te]
+            train += [(lang, x, src) for x in tr]
+        kept[lang] = cap - tr_budget - te_budget
     rng.shuffle(train)
     return train, test, kept
 
@@ -245,54 +300,70 @@ def print_table(results):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--max-per-lang", type=int, default=20000)
+    ap.add_argument("--negatives", type=Path, default=OUT / "negatives.jsonl",
+                    help="broad other-class sentences (scripts/build_lid_negatives.py); used if present")
+    ap.add_argument("--other-max", type=int, default=60000,
+                    help="cap for the other class, which spans ~180 languages")
     ap.add_argument("--epochs", type=int, default=25)
     ap.add_argument("--dim", type=int, default=64)
     ap.add_argument("--extra-parquet", type=Path, help="scrape text dir to fold in")
+    ap.add_argument("--extra-before", help="only fold in scrape rows crawled before this ISO "
+                    "timestamp (retrain an earlier round's model on today's split)")
+    ap.add_argument("--baseline", type=Path, help="a previous model.ftz, scored on the same "
+                    "test set in the same run (rows with model='baseline'): the promotion gate")
+    ap.add_argument("--out", type=Path, default=OUT)
     ap.add_argument("--eval-only", action="store_true")
     ap.add_argument("--no-glotlid", action="store_true",
                     help="skip GlotLID (no English relabelling, no comparison row)")
     ap.add_argument("--push", action="store_true")
     args = ap.parse_args()
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    out = args.out
+    out.mkdir(parents=True, exist_ok=True)
     token = os.environ.get("HF_TOKEN")
     glot = None if args.no_glotlid else GlotLID()
+    # load now: the baseline is often the model.ftz this run is about to overwrite
+    base = HaloLID(args.baseline) if args.baseline else None
 
     print("gathering ...")
-    rows = gather(token, args.extra_parquet)
+    rows = gather(token, args.extra_parquet, args.extra_before, args.negatives)
     if glot:
         rows = consensus_web(rows, glot)
-    train, test, kept = cap_and_split(rows, args.max_per_lang)
+    train, test, kept = cap_and_split(rows, args.max_per_lang, other_max=args.other_max)
     print("  kept: " + "  ".join(f"{l}={n}" for l, n in sorted(kept.items())))
-    write_ft(train, OUT / "train.txt")
-    write_ft(test, OUT / "test.txt")
+    write_ft(train, out / "train.txt")
+    write_ft(test, out / "test.txt")
     print(f"train={len(train)} test={len(test)}")
 
     if not args.eval_only:
         import fasttext
         t0 = time.time()
         model = fasttext.train_supervised(
-            input=str(OUT / "train.txt"), lr=0.5, epoch=args.epochs, dim=args.dim,
+            input=str(out / "train.txt"), lr=0.5, epoch=args.epochs, dim=args.dim,
             wordNgrams=2, minn=2, maxn=5, minCount=2, loss="softmax",
             thread=os.cpu_count() or 4)
         print(f"trained in {time.time() - t0:.0f}s; {len(model.words)} words")
-        model.save_model(str(OUT / "model.bin"))
-        model.quantize(input=str(OUT / "train.txt"), qnorm=True, retrain=True, cutoff=200000)
-        model.save_model(str(OUT / "model.ftz"))
-        print(f"saved {OUT/'model.ftz'} ({(OUT/'model.ftz').stat().st_size/1e6:.1f} MB)")
+        model.save_model(str(out / "model.bin"))
+        model.quantize(input=str(out / "train.txt"), qnorm=True, retrain=True, cutoff=200000)
+        model.save_model(str(out / "model.ftz"))
+        print(f"saved {out/'model.ftz'} ({(out/'model.ftz').stat().st_size/1e6:.1f} MB)")
 
-    halo = HaloLID(OUT / "model.ftz")
+    halo = HaloLID(out / "model.ftz")
     results = []
     for subset in ("pld", "web"):
         sub = [r for r in test if r[2] in (subset, "neg")] if subset == "web" else \
               [r for r in test if r[2] == subset]
         results.append(evaluate(halo, sub, "halolid", subset))
+        if base is not None:
+            results.append(evaluate(base, sub, "baseline", subset))
         if glot:
             results.append(evaluate(glot, sub, "glotlid", subset))
     print_table(results)
 
-    (OUT / "results.json").write_text(json.dumps(
-        {"train_size": len(train), "test_size": len(test), "kept_per_lang": kept,
+    (out / "results.json").write_text(json.dumps(
+        {"split": SPLIT, "extra_before": args.extra_before,
+         "baseline": str(args.baseline) if args.baseline else None,
+         "train_size": len(train), "test_size": len(test), "kept_per_lang": kept,
          "results": results}, indent=1))
 
     if args.push:
@@ -309,7 +380,7 @@ def main():
         table = "\n".join(filter(None, [row(m, s) for s in ("pld", "web")
                                          for m in ("halolid", "glotlid")]))
         card = f"""---
-language: [tl, ceb, hil, ilo, bcl, war, pam, pag, tsg, en]
+language: [bcl, ceb, eng, fil, tl, hil, ilo, pag, pam, tsg, war]
 license: mit
 library_name: fasttext
 tags: [language-identification, fasttext, filipino, philippine-languages]
@@ -338,9 +409,9 @@ from halolib.lid import HaloLID
 HaloLID().predict("Maayong buntag sa inyong tanan")   # -> ceb
 ```
 """
-        (OUT / "README.md").write_text(card)
+        (out / "README.md").write_text(card)
         for f in ("model.ftz", "README.md", "results.json"):
-            api.upload_file(path_or_fileobj=str(OUT / f), path_in_repo=f, repo_id=repo)
+            api.upload_file(path_or_fileobj=str(out / f), path_in_repo=f, repo_id=repo)
         print(f"pushed -> https://huggingface.co/{repo}")
 
 

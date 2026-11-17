@@ -208,6 +208,21 @@ only test set whose labels don't come from a model:
 | **r4** | + flywheel round 1 (Tavily + expansion pages folded in) | **0.894** | **0.879** | **0.764** | **0.930** | **0.804** | **0.822** |
 | GlotLID v3 | reference | 0.705 | 0.752 | 0.428 | 0.878 | 0.598 | 0.439 |
 
+From 2026-09-23 the PLD test set is a fixed hash split (4,035 sentences) and
+the rows above are **not comparable** with the rows below; within the table
+below, every row is scored on the same sentences.
+
+| model | data | acc | macro F1 | ≤5 words | fil | war | tsg |
+|---|---|---|---|---|---|---|---|
+| r4 recipe (control) | scrape rows before flywheel round 2 | 0.889 | 0.869 | 0.764 | 0.920 | 0.707 | 0.807 |
+| **r5** | + flywheel round 2 | **0.895** | **0.875** | **0.772** | **0.927** | 0.693 | **0.842** |
+| r6 | + rounds 3–4 (1,267 pages) | 0.892 | 0.873 | 0.768 | 0.920 | 0.693 | 0.825 |
+| **r7** | + round 5 (1,407 pages) | **0.896** | **0.878** | **0.777** | **0.929** | **0.744** | **0.842** |
+| GlotLID v3 | reference | 0.710 | 0.748 | 0.433 | 0.901 | 0.470 | 0.465 |
+
+On a fair test Waray is the weak language (0.69–0.71, next lowest 0.83);
+r4's 0.804 was an artefact of the shifting split.
+
 - **r3 → r4.** The flywheel's first round added 622 web pages, and the
   retrain recovered exactly the two languages r3 had lost: Waray 0.714 →
   0.804, Tausug 0.794 → 0.822. The mechanism is the one predicted above —
@@ -240,6 +255,107 @@ models agreed with score ≥ 0.9 are folded back in with
 *disagreed* (`lid_models_agree = false` in the shards) are the hard examples
 worth a human look before the next round. Retrain, re-score against the same
 held-out set, publish only if it did not regress.
+
+### Language codes
+
+The labels are ISO 639-3 individual-language codes, the convention of
+FineWeb-2, GlotLID and the LID leaderboard (which append the script:
+`ceb_Latn`): `bcl` Central Bikol, `ceb` Cebuano, `eng` English, `fil`
+Filipino, `hil` Hiligaynon, `ilo` Iloko, `pag` Pangasinan, `pam`
+Kapampangan, `tsg` Tausug, `war` Waray. Two merges to keep in mind when
+comparing with other benchmarks:
+
+- **`fil` covers Tagalog (`tgl`)** too. FLORES+, FineWeb-2 and Gherbal use
+  `fil_Latn`; WiLI-2018 and Bouquet use `tgl_Latn`; CommonLID has both as
+  separate gold labels.
+- **`bcl` is Central Bikol.** The PLD's raw code is `BIK`, the Bikol
+  *macrolanguage* (`halolib/pld.py` maps it to `bcl`); CommonLID carries
+  both `bcl` and `bik`. Our Bikol web sources (Naga and Legazpi radio,
+  Bicol Mail) are Central Bikol, so the mapping holds for the corpus.
+
+`other` is internal, not an ISO code. The HaloLID model card declared
+`[tl, …, en]` (2-letter codes, and no `fil` although `fil` is its class); it
+now uses the same 639-3 list as the dataset cards, plus `tl`.
+
+### Benchmarks against the public LID leaderboard (2026-10-02)
+
+`scripts/bench_lid.py` compares HaloLID (r8) with the 18 models of Omneity
+Labs' [LID leaderboard](https://huggingface.co/spaces/omneity-labs/lid-benchmark),
+which publishes per-language results but does not run submissions. Of its
+eight benchmarks, our languages appear in FLORES+ (ceb, eng, fil, ilo, pag,
+war), WiLI-2018 (bcl, ceb, eng, ilo, pag, pam, tgl, war), CommonLID (bcl,
+bik, eng, fil, tgl) and Bouquet (ceb, eng, ilo, tgl, tsg, war). **None has
+Hiligaynon.** FLORES+, CommonLID and Bouquet are gated on the Hub (accept
+the terms once per account); WiLI-2018 is open.
+
+**WiLI-2018, full test set (117,500 paragraphs, 235 languages).** HaloLID
+ranks 13th of 19 by mean per-language F1 over our eight (0.214; GlotLID
+0.721, Gherbal-v4 0.497). Recall is 0.96–1.00 for seven of the eight, but
+precision is 0.01–0.22: HaloLID's `other` class was trained only on
+Indonesian and Malay, so text in the other ~225 languages has nowhere to
+go. English absorbs Europe (44,701 false positives: Scots, French, Dutch,
+German…), and scripts it has never seen (Thai, Hebrew, Malayalam, Burmese)
+land on Philippine classes. Only 41 % of non-Philippine text reaches
+`other`. In the scraper this is masked (pages come from target-language
+queries and must also pass GlotLID), but **HaloLID is not an open-set
+identifier**. The fix is a broad `other` class (FineWeb-2 text from ~100+
+languages, Latin and non-Latin) plus a script check.
+
+**Our PLD held-out set (4,035 human-labelled sentences, all ten
+languages)**, with Gherbal-v4 queried through the Sawalni API
+(`/v1/language/identify`):
+
+| model | macro F1, all 10 | macro F1, Gherbal's 6 | accuracy |
+|---|---|---|---|
+| **HaloLID r8** | **0.878** | **0.864** | **0.895** |
+| GlotLID | 0.748 | 0.747 | 0.710 |
+| Gherbal-v4 | 0.380 | 0.634 | 0.426 |
+
+Gherbal-v4 supports six of our ten (not bcl, hil, pam, tsg). HaloLID's lead
+here is real but partly home advantage: it trains on other PLD sentences in
+the same style, and as a closed set it cannot confuse Cebuano with Javanese.
+The two results together said what r8 was: the best identifier *among*
+our ten languages, and not a general one.
+
+### r9: an open-set `other` class (2026-10-03)
+
+Three changes, each tested on its own:
+
+1. **Broad negatives.** `scripts/build_lid_negatives.py` samples one row
+   group per language from FineWeb-2 (a different source from every
+   benchmark): the 150 largest Latin-script languages, the neighbours and
+   the *other* Philippine languages weighted ×4 (Kinaray-a, Chavacano,
+   Maranao, Javanese, Sundanese, Malay…), and 15 non-Latin languages:
+   38,610 sentences from 186 languages in `lid/negatives.jsonl`, which
+   `train_lid.py` now uses for `other` (capped at 60,000 rather than 20,000).
+2. **A Latin-script rule.** All ten languages are written in Latin script, so
+   `HaloLID.predict` returns `other` when under half of a text's letters are
+   Latin. Alone it lifts WiLI mean F1 from 0.214 to 0.369.
+3. **Cleaned negatives.** The first broad model cost 0.004 PLD macro F1,
+   English worst (0.972 → 0.954): FineWeb-2's small configs carry English
+   boilerplate, so `other` was being taught English. `consensus_web` now
+   drops any negative GlotLID calls one of our ten (1,359: 1,134 English,
+   89 Hiligaynon…), and the loss disappeared.
+
+Trained on r8's exact data (`--extra-before`, so the comparison isolates the
+`other` class), scored against r8 on the same sentences:
+
+| | WiLI-2018 mean F1 (our 8) | PLD macro F1 | web macro F1 |
+|---|---|---|---|
+| r8 | 0.214 | 0.8781 | 0.9344 |
+| r8 + script rule | 0.369 | — | — |
+| **r9** | **0.813** | **0.8788** | **0.9881** |
+
+WiLI precision went from 0.01–0.22 to 0.72–0.998 for seven of the eight
+languages, with recall unchanged, and r9 now has the best mean of the 19
+models on our languages (GlotLID 0.721, which lacks a Tagalog score
+because it answers `fil`; on the seven shared languages GlotLID 0.824 and
+r9 0.803 are level). Still weak: **English** (F1 0.33; WiLI's English
+class is hard for every model, 0.21–0.38) and **Kapampangan** (recall 0.34:
+WiLI's `pam` paragraphs go to English for every model, GlotLID 0.51).
+On the PLD set r9 scores 0.879 macro F1 against GlotLID's 0.748 and
+Gherbal-v4's 0.380. Promoted locally as r9 through the flywheel gate; r8 is
+kept in `lid_bench/r8_backup/`.
 
 ## Voice
 
@@ -289,13 +405,15 @@ round is seeded by the rounds before it:
 ```
         ┌──────────────────────────────────────────────────────────┐
         │                                                          │
-  PLD + halohalo + accepted pages ──► seeds ──► scrape ──► expand ─┤
-        (keywords re-mined each round,   (Tavily,   (same sites,   │
-         new query combinations,          advanced)  basic depth)  │
-         spent queries never reused)                               │
-                                                                   ▼
-                          rounds.jsonl ◄── LID retrain, promote only if
-                                            PLD macro-F1 does not regress
+  PLD + halohalo + accepted pages ──► seeds ──► scrape ──► expand ──► crawl ─┤
+        (keywords re-mined each round,   (Tavily,   (same sites,  (their      │
+         new query combinations,          advanced)  basic depth)  sitemaps,  │
+         spent queries never reused)                               free)      │
+                                                                              ▼
+            rounds.jsonl, lid_events.jsonl ◄── every ~1,000 new docs: retrain LID,
+            host_stats.json                    score it against the incumbent on
+                                               the same test set, promote only if
+                                               neither PLD nor web F1 regresses
 ```
 
 - **Seeds from what we found.** `load_seed_texts(scrape_dir=…)` folds in every
@@ -306,25 +424,68 @@ round is seeded by the rounds before it:
   query is never issued twice.
 - **Expansion inside known-good hosts.** The hosts that produced accepted
   pages become `include_domains` for a second pass at basic depth (1 credit
-  a query instead of 2). Scripture mirrors, bot encyclopedias and generic
-  platforms are excluded from expansion, so the loop does not amplify the
-  sources that already dominate the small languages.
-- **LID never regresses.** After each round HaloLID is retrained with the
-  accumulated shards and promoted only if macro F1 on the human-labelled PLD
-  set holds (within 0.002); otherwise the previous model is restored. The
-  gate for round *n+1* is at least as good as the gate for round *n*.
+  a query instead of 2). Scripture mirrors, bot encyclopedias and the bare
+  blog platforms are excluded from expansion, so the loop does not amplify
+  the sources that already dominate the small languages. A single blog on a
+  platform (`tausugblog.blogspot.com`) is a site and is eligible.
+- **A free crawl of the same hosts.** `SitemapBackend` reads each known-good
+  host's sitemap (robots.txt `Sitemap:` lines, then the WordPress/Blogger
+  locations, then the home page's links) and serves a sample of pages no
+  manifest has seen yet, `--crawl-per-host` per host per round. It costs no
+  credits, so the loop keeps growing after the search allowance is spent.
+- **Hosts that stop paying are retired**, per pass type: two passes in a row
+  with no new accepted page, or ≥ 20 pages tried at < 10 % acceptance
+  (multilingual sites whose pages are mostly another language).
+  `host_stats.json` holds the per-host counts.
+- **LID never regresses, measured fairly.** Once `--retrain-every` (1,000)
+  new documents have accumulated since the last gate, HaloLID is retrained
+  and the candidate and the incumbent are scored on the *same* held-out
+  sentences in the same run (`train_lid.py --baseline`). The candidate is
+  promoted only if neither PLD nor web macro F1 drops by more than 0.002
+  against the incumbent, and PLD stays within 0.002 of the best score any
+  promoted model has had, so small tolerated drops cannot accumulate.
 - **Credit-aware.** Each round reads Tavily's usage endpoint and scales its
-  query counts to what the plan has left rather than overrunning it.
+  query counts to what is left of the plan and of `--credit-budget` (a total
+  for the invocation), and records the credits actually spent.
 
 ```bash
-python scripts/flywheel.py --rounds 1                          # ~240 credits at defaults
+python scripts/flywheel.py --rounds 1                          # ~220 credits at defaults, 9 langs
 python scripts/flywheel.py --rounds 2 --queries-per-lang 6 --expand-queries 4
+python scripts/flywheel.py --rounds 3 --queries-per-lang 0 --expand-queries 0   # crawl only, free
 python scripts/flywheel.py --rounds 1 --langs tsg,war --no-lid
+python scripts/flywheel.py --lid-only                          # run the LID gate now
 ```
 
 Everything accumulates in place: shards, manifests, `used_queries.json`, and
 one JSON line per round in `finetune_runs/flywheel/rounds.jsonl` with credits
-before/after, documents and words gained per language, and the LID decision.
+spent, documents and words gained per language, the hosts each pass used,
+and the LID decision (or why it was deferred).
+
+### The held-out split is a function of the sentence
+
+Until round 2, `train_lid.py` chose its test set with one seeded shuffle
+that walked every language's lists in turn. More web text for one language
+changed how much randomness the shuffle consumed and therefore *which PLD
+sentences* the next language held out. Two consequences:
+
+- the gate compared the new model's F1 on one test set with the old model's
+  F1 (read from its `results.json`) on another. GlotLID, which never
+  changes, scored 0.7524 in the r4 run and 0.7483 in the round-2 run: a
+  0.004 swing from the test set alone, the size of the "regression" that got
+  the round-2 model rejected;
+- sentences the old model had trained on could land in the new test set.
+
+The split is now `sha1(sentence) < 10 %` (`SPLIT = "hash-v1"`): a sentence
+is test or train forever, the PLD test set is identical in every run, and no
+model has trained on any test sentence. An incumbent trained before the
+change cannot be scored fairly on the new split, so `--lid-rebase CUTOFF`
+retrains the incumbent's recipe (scrape rows crawled before `CUTOFF`) on
+the new split as a control, trains a candidate with everything, and
+promotes whichever wins.
+
+A second bug inflated spending: `run_text` iterated every query in the seed
+cache, not `queries_per_lang` of them, so round 2's "3 expansion queries"
+ran 6 per language (60 hits = 6 × 10). It now slices.
 
 ### Round 1 (2026-09-23): 10 seed + 4 expansion queries per language
 
@@ -351,7 +512,7 @@ The round also surfaced the two exclusions above (MT farms by path,
 adult hosts) and cost one lesson in robustness: the process died silently
 during the LID retrain, so the record is now written before that step.
 
-### Round 2: 6 seed + 3 expansion queries, nine Philippine languages, ~135 credits
+### Round 2: 6 seed + 6 expansion queries (3 intended), nine Philippine languages, ~160 credits
 
 312 documents / 236k words: ilo 68, hil 53, bcl 42, fil 34, ceb 32, pag 26,
 pam 26, war 22, tsg 9. Expansion inside known-good hosts now out-yields the
@@ -360,13 +521,213 @@ the flywheel working: the hosts found in round 1 are the best places to look
 in round 2.
 
 **The LID retrain was rejected** — macro F1 0.8792 → 0.8754 on the PLD set —
-and r4 was restored. That is the promotion gate doing what it is for. More
-web text does not automatically make a better identifier; the PLD test set
-is read prompts, and each round tilts the training mix further toward web
-prose. Two consequences worth acting on later: retrain less often than every
-round (every ~1,000 new documents, say), and build the human-labelled *web*
-test set the CPT plan already calls for, so the gate measures the domain the
-gate is used in.
+and r4 was restored. In hindsight that verdict was noise: the two numbers
+came from different test sets (see *The held-out split is a function of the
+sentence* above). The fixes that followed: a hash split, the candidate and
+the incumbent scored in the same run, retraining every ~1,000 new documents
+rather than every round.
+
+Tausug's expansion found 30 hits and 0 new pages, because its only
+"eligible" host was `bibles.org` (277 of its 387 pages), whose pages were
+all already in the manifest, while its genuinely Tausug blogs were
+excluded by the `blogspot.com` platform rule. Both are fixed above.
+
+The rebase (`--lid-rebase 2026-09-23T18:05:13+00:00`) reproduced r4's data
+exactly (Tausug 5,465 training rows, as in r4) on the new split, and the
+candidate with round 2's pages beat it on the same sentences: PLD macro F1
+0.8687 → 0.8746, web 0.9914 → 0.9910 (within tolerance). Promoted as r5.
+The round-2 pages the old gate rejected improve the model.
+
+### Round 3: 2 seed + 4 expansion queries, plus the sitemap crawl, 72 credits
+
+595 documents / 244k words: ceb 108, ilo 106, pam 90, hil 79, war 60,
+fil 58, bcl 57, pag 28, tsg 9. By pass:
+
+| pass | credits | accepted |
+|---|---|---|
+| seed | 36 | 50 |
+| expansion | 36 | 139 |
+| **crawl** | **0** | **404** |
+
+The free crawl brought in twice what both paid passes did. Most of it came
+from single blogs the platform rule used to exclude (Cebuano's three
+Blogspot news blogs: 73 pages; Kapampangan's WordPress blogs). Tausug
+remains the exception: its hosts' sitemaps are small or gone
+(`ahmadiyyaphilippines.org` 404s, `tausugonline.com` does not answer), and
+expansion returned only pages already held: 9 new documents in total.
+
+Two further findings:
+
+- **Scripture blogs.** With single blogs eligible, `anlibronimormon.blogspot.com`
+  (the Book of Mormon in Bikol) supplied 23 of Bikol's 33 crawled pages.
+  Hosts whose names contain `bible`, `biblia`, `mormon` or `scriptur` are
+  now excluded from expansion and crawling by name; parish blogs (local
+  news) stay eligible.
+- **isumat.com**, the source of 555 Waray documents, is now a gambling site.
+  Those documents came from FineWeb-2's CommonCrawl snapshots (2021–2024)
+  and are genuine Waray news; the crawler finds no same-host URLs and the
+  host is retired.
+
+Hosts retired after round 3 for low acceptance on the crawl (multilingual
+sites whose pages are mostly another language) include `bomboradyo.com`
+for bcl/hil/pag, `punto.com.ph` for pam and `sufihub.com`/`islamhouse.com`
+for tsg.
+
+### Round 4: crawl only, 0 credits
+
+With 12 credits left on the plan, round 4 ran the crawl alone (10 hosts ×
+40 pages per language) with scripture blogs and round 3's retired hosts
+excluded: 672 documents / 201k words — ceb 137, ilo 116, hil 107, pam 98,
+bcl 59, war 57, fil 51, pag 39, tsg 8. Retiring low-acceptance hosts showed
+at once: Hiligaynon's LID rejections fell from 80 of 150 crawled pages to 32
+of 160.
+
+About 1,070 documents had accumulated since the rebase, so the round
+retrained. The candidate scored PLD macro F1 0.8734 against r5's 0.8746
+(−0.0012, inside the 0.002 tolerance) and web 0.9913 against 0.9905, and
+was promoted as r6: a tie, not an improvement. It exposed a flaw in a
+per-step tolerance: a run of within-tolerance promotions can drift downhill
+indefinitely. Because the PLD test set is now fixed, scores are comparable
+across runs, and the gate also requires PLD macro F1 within the tolerance
+of the **best** score any promoted model has had (`best_pld_f1`, from
+`lid_events.jsonl`).
+
+**Corpus after four rounds: 23,570 documents / 12.41M words** (from
+22,303 / 11.96M after round 2).
+
+### Round 5: crawl only, 0 credits, 12 hosts × 60 pages
+
+1,407 documents / 400k words: ilo 300, ceb 284, fil 277, hil 213, pam 112,
+bcl 97, tsg 47, pag 36, war 41. Tausug's 47 is more than rounds 1–4 of
+the flywheel found for it together, nearly all from two Mindanao blogs
+(`mowa-mindanaoans.blogspot.com` 39, `minsupala.blogspot.com` 7) that
+earlier crawls had surfaced as accepted hosts and this wider crawl reached.
+
+The retrain (r7) is the first real gain on the fixed split: PLD macro F1
+0.8734 → **0.8778** (new best; accuracy 0.896), web 0.9910 → 0.9912, and
+Waray, the weak language, 0.693 → 0.744. Bikol (0.882 → 0.871) and English
+(0.967 → 0.944) slipped.
+
+**Corpus after five rounds: 24,977 documents / 12.81M words**; Tausug 451.
+
+### Audit, 2026-09-26: exclusions were never applied retroactively
+
+Host exclusions run at scrape time, so each new rule left what it would have
+caught in the shards. The adult rule of 2026-09-23 had not removed
+`filipinosexstories.com`, the site its own comment names (63 Filipino rows),
+nor `pserotica.com`, which its `erotic` fragment matches. An audit also found
+adult hosts the fragments miss (`…sexgames.com`), gambling (online sabong,
+casinos) and machine-translated game portals on `ph.` subdomains. The
+crawl was amplifying the last two: `ph.sgames.org` went from 12 pages to
+71 and `todosabongga.blogspot.com` from 13 to 59 in two rounds.
+
+The fix: new adult fragments, `GAMBLING_HOST_FRAGMENTS` and `SPAM_HOSTS` in
+`excluded_host`, and `scripts/purge_excluded.py`, which applies every current
+exclusion to the shards and marks the URLs `host_excluded` in the
+manifests. The audit counted 283 such documents; by the time the purge ran
+(after rounds 6–8, which still used the old rules) the crawl had taken
+`ph.sgames.org` to 240 pages and `todosabongga.blogspot.com` to 202, and
+the purge removed **595 documents / 285k words** (566 of them Filipino).
+None of it had been published: the `sapinsapin/halo-{lang}` scrape
+datasets do not exist on the Hub. Run the purge after adding any exclusion
+rule (`--shards-only` while the flywheel runs).
+
+### Rounds 6–8: new Tavily key (Growth plan), 10 seed + 6 expansion queries, crawl 12 × 60
+
+6,040 documents / ~2.6M words for 702 credits (234 a round), before the
+purge above; Tausug +277. Search is cheap at this scale: each round's
+paid passes found ~500 documents, the crawl ~1,500.
+
+**All three LID retrains were rejected** (PLD macro F1 −0.006 to −0.0085
+against r7; web +0.0003 to +0.0016); r7 remains the incumbent. The drop is
+mostly Waray (0.744 → 0.684 in round 6), whose 215-sentence test set makes
+it volatile. Three rejections in a row point at the recipe, not the data:
+`train_lid.py` caps every class at 20,000 sentences, PLD first, so for
+capped languages more pages do not add web text, they change *which* web
+sentences fill the cap, increasingly blog-crawl prose.
+
+That hypothesis was tested and **rejected**. Doubling the cap to 40,000
+(`finetune_runs/lid_exp_cap40k`, scored against r7 on the same sentences)
+gives PLD macro F1 0.8705 (−0.0073, the same drop as the rejected
+retrains) and web 0.9940 (+0.0034; ≤5-word web accuracy 0.952 → 0.966).
+More web text makes the identifier better on web prose and worse on read
+prompts (Bikol −0.018, Waray −0.033). The rejections are a **domain
+trade-off**, not a broken recipe: the gate privileges PLD, while the
+model's job is gating web pages. Deciding it needs the human-labelled web
+test set: the current web labels are GlotLID consensus, so part of any
+web gain is agreement with GlotLID.
+
+### Rounds 9–10: 20 seed + 10 expansion queries, 450 credits a round
+
+4,349 documents / 2.2M words (2,198 and 2,151), Tausug +240, with the
+gambling/spam rules in force (the purge afterwards found nothing new).
+Both LID retrains rejected the same way (PLD −0.0052 and −0.0087, web up),
+so the flywheel now retrains every 4,000 documents until the web-vs-PLD
+question is settled.
+
+Round 11 died twice, three hours and then 30 minutes in, each time with
+the WSL instance: CPU machine-check kernel panics on the host
+(`%LOCALAPPDATA%\Temp\wsl-crashes\kernel-panic-*.txt`), a hardware fault
+that kills every WSL job at once. Long runs are now relaunched from a
+Windows-side supervisor after each panic. Rows
+accepted in memory but not yet flushed were lost while their URLs stayed
+`accepted` in the manifest, so no later run would fetch them again; round
+1 had lost rows the same way. `Manifest.forget_unsaved` now un-sees any
+accepted URL whose content hash is not in the shards, at the start of every
+pass, so an interrupted run heals on the next one.
+
+**Corpus after ten rounds (and the purge): 34,978 documents / 17.58M
+words**; Tausug 968, from 387 before the flywheel's fixes.
+
+Further hardening after round 11 was interrupted six times more that
+afternoon (a second panic, then an out-of-memory condition in another
+session's WSL job that killed every WSL process every ~90 s):
+
+- **Rounds resume instead of restarting.** `round_NNN.progress.json` records
+  each finished (pass, language) and that the seed queries were drawn; a
+  relaunched round skips both. Before this, each relaunch drew and paid for
+  a new seed pass: round 11 consumed 1,312 credits over four attempts
+  without completing.
+- **Shards are written durably** (temp file, fsync, rename). A VM killed
+  after an ordinary write left `ceb/shard-00033` with a valid footer and
+  garbage pages, which made every shard reader fail.
+  `quarantine_corrupt_shards` runs at the start of every round, moves
+  unreadable shards to `{lang}/quarantine/` and leaves an empty shard in the
+  slot; the lost rows are re-fetched through `forget_unsaved`.
+- The launcher never guesses a credit budget: if Tavily's usage endpoint
+  does not answer, the round only crawls.
+
+### Rounds 11–24: the rest of the 5,000 credits, then crawl only
+
+A Windows-side supervisor carried the run through **11 WSL panics**
+overnight (01:38–05:42, one every ~20 minutes); resumable rounds, durable
+shards and the re-fetch of unsaved rows meant each cost minutes, not a
+round. All 466 shards read cleanly afterwards.
+
+- Paid search spent 4,832 of the 5,000-credit cap across rounds 6–15
+  (rounds 11–15: 1,918 recorded, plus the interrupted attempts). Rounds
+  16–24 were crawl-only and free, declining from ~1,500 to ~1,290
+  documents a round as the known hosts' sitemaps are used up.
+- Rounds 11–24 added 22,387 documents / 9.35M words. Tausug's yield dried up
+  (0 in every crawl-only round: its hosts are exhausted); it ends at 1,257.
+- Host concentration grew: Bombo Radyo's regional stations supplied about
+  30 % of the documents accepted since round 11. Worth a per-host cap in the
+  CPT mix, not in the scrape.
+- LID: r8 promoted in round 15 at +0.0003 PLD macro F1 (a tie); four
+  retrains rejected (−0.0043 to −0.0105), the same web-vs-PLD trade-off.
+- An audit of the new top hosts found one more machine-translation farm,
+  `lawandmore.services` (a Dutch law firm "in Cebuano": 676 pages, 1.51M
+  words, ~6 % of Cebuano), now in `SPAM_HOSTS` and purged. The rest of the
+  top 25 by words are blogs, regional news, *Bannawag* editorials, radio
+  commentary and homilies.
+
+**Corpus after 24 rounds and purges: 56,689 documents / 25.42M words**
+(from 22,303 / 11.96M after round 2).
+
+Still open: the human-labelled *web* test set the CPT plan calls for. The
+web test set the gate uses has GlotLID-consensus labels, so it can catch a
+model that forgets web prose but cannot say which of two good models is
+better on it.
 
 ## What "AI-ready" means here, concretely
 

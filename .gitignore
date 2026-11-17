@@ -20,3 +20,6 @@ splits/
 venv_*/
 third_party/
 node_modules/
+
+# API keys kept as files
+salwanikey

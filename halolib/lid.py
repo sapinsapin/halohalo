@@ -146,6 +146,30 @@ class HaloLID(_FastTextLID):
     def _map(self, label: str) -> str:
         return label if label in LANGS else OTHER
 
+    def predict(self, text: str, k: int = 3) -> Prediction:
+        # All ten languages are written in Latin script. A character n-gram
+        # model asked about Thai or Hebrew has no features to go on and falls
+        # back on its priors: on WiLI-2018 such text landed on Philippine
+        # classes. Decide it by script instead.
+        if latin_share(text) < 0.5:
+            return Prediction(OTHER, 1.0, "script")
+        return super().predict(text, k)
+
+
+def _is_latin(ch: str) -> bool:
+    o = ord(ch)
+    return (0x41 <= o <= 0x5A or 0x61 <= o <= 0x7A or 0xC0 <= o <= 0x24F
+            or 0x1E00 <= o <= 0x1EFF)
+
+
+def latin_share(text: str) -> float:
+    """Share of letters that are Latin; 1.0 for text without letters, so
+    numbers and punctuation fall through to the model."""
+    letters = [c for c in text if c.isalpha()]
+    if not letters:
+        return 1.0
+    return sum(_is_latin(c) for c in letters) / len(letters)
+
 
 @dataclass(frozen=True)
 class Verdict:

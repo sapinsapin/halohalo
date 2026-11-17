@@ -12,6 +12,11 @@ where a page came from, only that it records which backend and query found it.
               were built from, kept here so the same LID gate, cleaner and
               dedup apply to it as to fresh scrapes. Applies ingest_fineweb2's
               bot-Wikipedia and MT-content-farm exclusions.
+  sitemap   — no search: reads the sitemaps of hosts that already produced
+              accepted pages in a language (robots.txt Sitemap: lines, then
+              the usual WordPress/Blogger locations) and serves a sample of
+              their URLs. Free; what the flywheel uses to expand once search
+              credits run out.
 """
 
 from __future__ import annotations
@@ -121,6 +126,7 @@ class TavilyBackend:
 
 class DirectBackend:
     name = "direct"
+    ignores_query = True
 
     def __init__(self, urls_file: str | None = None, urls: list[str] | None = None):
         if urls is None:
@@ -138,6 +144,113 @@ class DirectBackend:
             return []
         self._served.add(lang)
         return [Hit(url=u, backend=self.name, query="(direct)") for u in self.urls]
+
+
+# ----------------------------------------------------------------------------
+# Sitemaps of known-good hosts
+# ----------------------------------------------------------------------------
+
+SITEMAP_PATHS = ("/sitemap.xml", "/sitemap_index.xml", "/wp-sitemap.xml", "/post-sitemap.xml")
+# listing and asset URLs: never a document, always a fetch
+NOT_ARTICLE = re.compile(r"/(tag|tags|category|categories|author|page|feed|search|label|wp-content"
+                         r"|wp-json|attachment|comment-page-\d+)(/|$)|[?&](replytocom|share)="
+                         r"|\.(jpe?g|png|gif|webp|svg|pdf|mp3|mp4|zip|css|js)$", re.I)
+_LOC = re.compile(r"<loc>\s*(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?\s*</loc>", re.I | re.S)
+
+
+class SitemapBackend:
+    """Serve URLs from the sitemaps of the given hosts, once per language.
+
+    hosts_by_lang maps a language to the hosts to read; exclude is every URL
+    already examined (the manifests), so the per-host budget is spent on
+    pages we have not seen. A host without a sitemap falls back to the links
+    on its home page. Nested sitemap indexes are followed up to
+    max_sitemaps per host, post and news sitemaps first."""
+
+    name = "sitemap"
+    ignores_query = True
+
+    def __init__(self, hosts_by_lang: dict[str, list[str]], per_host: int = 40,
+                 exclude: set[str] | None = None, max_sitemaps: int = 6, seed: int = 0,
+                 fetcher=None):
+        from .fetch import Fetcher
+        self.hosts_by_lang = hosts_by_lang
+        self.per_host = per_host
+        self.exclude = exclude or set()
+        self.max_sitemaps = max_sitemaps
+        self.seed = seed
+        self.fetcher = fetcher or Fetcher()
+        self._served: set[str] = set()
+        self._cache: dict[str, list[str]] = {}
+
+    def _get(self, url: str) -> str | None:
+        html, status = self.fetcher.fetch_html(url)
+        return html if status == 200 else None
+
+    def _sitemap_roots(self, host: str) -> list[str]:
+        roots = []
+        robots = self._get(f"https://{host}/robots.txt") or ""
+        for ln in robots.splitlines():
+            if ln.lower().startswith("sitemap:"):
+                roots.append(ln.split(":", 1)[1].strip())
+        return roots or [f"https://{host}{p}" for p in SITEMAP_PATHS]
+
+    def host_urls(self, host: str) -> list[str]:
+        """Every same-host page URL we can enumerate cheaply, cached."""
+        if host in self._cache:
+            return self._cache[host]
+        urls: list[str] = []
+        queue, fetched = self._sitemap_roots(host), 0
+        while queue and fetched < self.max_sitemaps:
+            sm = queue.pop(0)
+            if sm.endswith(".gz"):
+                continue
+            body = self._get(sm)
+            fetched += 1
+            if not body:
+                continue
+            locs = [u.strip() for u in _LOC.findall(body)]
+            if "<sitemapindex" in body[:2000].lower():
+                # post/news sitemaps before page/tag/category ones
+                kids = sorted(locs, key=lambda u: (not re.search(r"post|blog|news|article|\d", u), u))
+                queue = [k for k in kids if k not in queue] + queue
+            else:
+                urls += locs
+            if urls and len(urls) >= 20 * self.per_host:
+                break
+        if not urls:                                  # no sitemap: one hop from the home page
+            from urllib.parse import urljoin
+            home = self._get(f"https://{host}/") or ""
+            urls = [urljoin(f"https://{host}/", u) for u in re.findall(r'href=["\']([^"\'#]+)', home)
+                    if not u.startswith(("mailto:", "javascript:", "tel:"))]
+        same = []
+        for u in dict.fromkeys(urls):
+            h = _host(u)
+            if (h == host or h == "www." + host or "www." + h == host) and not NOT_ARTICLE.search(u) \
+                    and u.rstrip("/") != f"https://{h}" and u.rstrip("/") != f"http://{h}":
+                same.append(u)
+        self._cache[host] = same
+        return same
+
+    def search(self, query: str, lang: str, max_results: int = 10) -> list[Hit]:
+        import random
+        if lang in self._served:
+            return []
+        self._served.add(lang)
+        rng = random.Random(f"{self.seed}:{lang}")
+        hits = []
+        for host in self.hosts_by_lang.get(lang, []):
+            try:
+                fresh = [u for u in self.host_urls(host) if u not in self.exclude]
+            except Exception as exc:                  # one bad host must not end the pass
+                print(f"  sitemap {host}: {type(exc).__name__}: {exc}")
+                continue
+            rng.shuffle(fresh)
+            picked = fresh[:self.per_host]
+            print(f"  sitemap {host}: {len(self._cache.get(host, []))} urls, {len(fresh)} unseen, "
+                  f"serving {len(picked)}")
+            hits += [Hit(url=u, backend=self.name, query=f"(sitemap:{host})") for u in picked]
+        return hits
 
 
 # ----------------------------------------------------------------------------
@@ -235,7 +348,8 @@ class FineWeb2Backend:
         return hits
 
 
-BACKENDS = {"tavily": TavilyBackend, "direct": DirectBackend, "fineweb2": FineWeb2Backend}
+BACKENDS = {"tavily": TavilyBackend, "direct": DirectBackend, "fineweb2": FineWeb2Backend,
+            "sitemap": SitemapBackend}
 
 
 def get_backend(name: str = DEFAULT_BACKEND, **kwargs):
