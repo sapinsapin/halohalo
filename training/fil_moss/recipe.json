@@ -3,11 +3,226 @@
   "host": "dwnd-01",
   "language": "fil",
   "preserve_code_switching": true,
-  "model": {"repo": "OpenMOSS-Team/MOSS-TTS-Realtime", "revision": "75682787d8e2fcc73faca37ba2931453ca9c4022"},
-  "codec": {"repo": "OpenMOSS-Team/MOSS-Audio-Tokenizer", "revision": "3cd226ba2947efa357ef453bcad111b6eafba782"},
+  "model": {
+    "repo": "OpenMOSS-Team/MOSS-TTS-Realtime",
+    "revision": "75682787d8e2fcc73faca37ba2931453ca9c4022"
+  },
+  "codec": {
+    "repo": "OpenMOSS-Team/MOSS-Audio-Tokenizer",
+    "revision": "3cd226ba2947efa357ef453bcad111b6eafba782"
+  },
   "upstream_revision": "934d6826b084c46a0d033402174d5f8ac4ed2519",
-  "baseline": {"optimizer": "AdamW8bit", "weights_dtype": "float32", "gradient_dtype": "float32", "autocast_dtype": "bfloat16", "batch_size": 1, "learning_rate": 0.00001, "seed": 42, "codec_precomputed": true, "text_tokenizer": "unchanged pretrained", "start_from": "pinned pretrained model; not Hiligaynon-adapted checkpoint"},
-  "pilot_data_gate": {"min_train_hours": 1.0, "min_validation_hours": 0.1, "min_test_hours": 0.1, "min_clip_seconds": 2, "max_clip_seconds": 15, "audio_review": "content-bound audio_verified", "training_rights": "allowed with evidence", "speaker_id": "required", "splits": "frozen; recording, audio and known speaker disjoint"},
-  "tokenizer_experiment": {"requested_name": "tokeniser morphormer", "status": "awaiting_exact_method", "baseline_blocked_by_clarification": false, "preserve_pretrained_token_ids": true, "acoustic_codec_changes": false},
-  "execution": {"gpu_lock": "/tmp/sapinsapin-gpu.lock", "min_available_host_gib": 25, "overwrite_existing_run": false, "launch_state": "not_launched", "next": "curate eligible manifest, run readiness on host, encode/reconstruct, one-step save/reload smoke, bounded baseline, held-out evaluation"}
+  "baseline": {
+    "optimizer": "AdamW8bit",
+    "weights_dtype": "float32",
+    "gradient_dtype": "float32",
+    "autocast_dtype": "bfloat16",
+    "batch_size": 1,
+    "learning_rate": 1e-05,
+    "seed": 42,
+    "codec_precomputed": true,
+    "text_tokenizer": "unchanged pretrained",
+    "start_from": "pinned pretrained model; not Hiligaynon-adapted checkpoint"
+  },
+  "pilot_data_gate": {
+    "min_train_hours": 1.0,
+    "min_validation_hours": 0.1,
+    "min_test_hours": 0.1,
+    "min_clip_seconds": 2,
+    "max_clip_seconds": 15,
+    "audio_review": "content-bound audio_verified",
+    "training_rights": "allowed with evidence",
+    "speaker_id": "required",
+    "splits": "frozen; recording, audio and known speaker disjoint"
+  },
+  "tokenizer_experiment": {
+    "requested_name": "tokeniser morphormer",
+    "status": "awaiting_exact_method",
+    "baseline_blocked_by_clarification": false,
+    "preserve_pretrained_token_ids": true,
+    "acoustic_codec_changes": false
+  },
+  "execution": {
+    "gpu_lock": "/tmp/sapinsapin-gpu.lock",
+    "min_available_host_gib": 25,
+    "overwrite_existing_run": false,
+    "launch_state": "not_launched",
+    "next": "curate eligible manifest, run readiness on host, export, encode/reconstruct, stage 1 smoke, stage 2 baseline and held-out evaluation, streaming latency, native listening, stage 3 GRPO arms"
+  },
+  "encode": {
+    "n_vq": 16,
+    "sample_rate": 24000,
+    "reference_conditioning": "same_speaker_other_clip_same_split; used only by the reference-conditioned experiment",
+    "reconstruction_check_clips_per_split": 8,
+    "reconstruction_duration_tolerance_seconds": 0.1,
+    "domain_key": "source_id"
+  },
+  "judges": {
+    "fil": {
+      "whisper": {
+        "model": "sapinsapin/whisper-large-v3-pld-fil-norm",
+        "revision": "ee5b4f0cd1af616b38f742ae05b644d6783b52fe",
+        "language_token": "tl",
+        "family": "in-family: trained on PLD"
+      },
+      "mms": {
+        "model": "facebook/mms-1b-all",
+        "revision": "3d33597edbdaaba14a8e858e2c8caa76e3cec0cd",
+        "target_lang": "tgl",
+        "family": "independent"
+      },
+      "omni": {
+        "port_dir": "~/work/hil-tts/eval/judges/omniASR-CTC-1B-hf",
+        "port_code": "~/work/hil-tts/code/nyo/bench/hil_tts/eval",
+        "family": "independent"
+      }
+    },
+    "speaker": {
+      "model": "speechbrain/spkrec-ecapa-voxceleb",
+      "revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+      "savedir": "~/work/hil-tts/eval/judges/sb-ecapa"
+    },
+    "placement": {
+      "whisper": "remote",
+      "omni": "local",
+      "mms": "local"
+    },
+    "placement_note": "measured 2026-11-15: on the GB10, Whisper takes 0.25 s per clip (autoregressive) and Omnilingual 0.023 s (CTC), so only Whisper moves to reth5et's RTX 3070, in BF16 with batches of 8. Free VRAM there is ~5.9 GiB after stopping its nyo-tts and nyo-asr-fw engines (torch.cuda.mem_get_info over-reports under WSL2; nvidia-smi is authoritative), too tight for Whisper plus Omnilingual. MMS (FP32, as validated) and Omnilingual stay on the GB10. Real recordings and speaker embeddings never leave the GB10.",
+    "remote": {
+      "url": "http://desktop-reth5et:9310",
+      "token_file": "~/.config/fil-moss/judge-token",
+      "timeout_seconds": 120
+    },
+    "fallback": "if a judge fails to load, worst-judge CER is taken over the remaining families and every report names the judges that scored it"
+  },
+  "generation": {
+    "temperature": 0.8,
+    "top_p": 0.6,
+    "top_k": 30,
+    "repetition_penalty": 1.1,
+    "repetition_window": 50,
+    "frames_per_second": 12.5,
+    "max_frames_per_reference_second": 2.0,
+    "min_max_frames": 75
+  },
+  "stage1": {
+    "source": "training/fil_moss/README.md execution step 4 and the Hiligaynon GB10 pilot (hiligaynon_tts/moss/README.md)",
+    "probe_clips": 4,
+    "sample_texts": 2,
+    "parity_rtol": 0.001,
+    "batch_parity_atol": 0.02,
+    "max_stage_seconds": 1800
+  },
+  "stage2": {
+    "source": "training/fil_moss/README.md execution steps 5-6; optimiser and schedule from the Hiligaynon GB10 pilot",
+    "start_from": "pinned pretrained MOSS-TTS-Realtime",
+    "conditioning": "none",
+    "conditioning_note": "none = the pilot's unconditioned baseline; reference = the separate same-speaker reference-conditioned experiment",
+    "epochs": 2,
+    "batch_size": 1,
+    "batch_size_note": "1 is the pilot's measured configuration. GB10 benchmark 2026-11-15: 0.75 s/step at batch 1, 0.77 s at 4, 1.28 s at 8 (peak 20-24 GiB), so batch 4 is ~3.9x the throughput; it also means 4x fewer updates, so set it deliberately",
+    "learning_rate": 1e-05,
+    "warmup_steps": 20,
+    "schedule": "linear",
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.1,
+    "grad_clip": 1.0,
+    "frozen": [
+      "language_model.embed_tokens"
+    ],
+    "eval_every_updates": 128,
+    "eval_batch_size": 8,
+    "gen_batch": 8,
+    "eval_generation_clips": 64,
+    "samples_per_eval": 6,
+    "selection": "lowest equally weighted mean of per-domain validation losses",
+    "max_stage_seconds": 14400
+  },
+  "latency": {
+    "source": "upstream moss_tts_realtime/app.py run_stream defaults",
+    "sentences": 10,
+    "text_chunk_tokens": 12,
+    "decode_chunk_frames": 6,
+    "decode_overlap_frames": 0,
+    "chunk_duration": 0.96,
+    "max_length": 2000,
+    "user_text": ""
+  },
+  "stage3": {
+    "source": "GRPO on the stage 2 MOSS baseline; arms and reward design adopted into the MOSS plan 2026-11-15",
+    "requires": "completed stage 2 report whose selected checkpoint is finetuned; same codes; keeps stage 2's conditioning",
+    "rollouts_per_prompt": 8,
+    "pipeline": true,
+    "logprob_microbatch": 4,
+    "gen_batch": 8,
+    "learning_rate": 1e-06,
+    "kl_beta": 0.04,
+    "clip_epsilon": 0.2,
+    "max_steps": 1000,
+    "eval_every_steps": 100,
+    "eval_generation_clips": 64,
+    "samples_per_eval": 6,
+    "anchor_clips": 32,
+    "reward_weights": {
+      "intelligibility": 0.6,
+      "speaker": 0.3,
+      "duration": 0.1
+    },
+    "reward_weights_note": "engineering choice; ranks within each group, so no term needs a hand-set scale",
+    "arms": {
+      "a": {
+        "intelligibility": "single:whisper",
+        "speaker": "voice",
+        "role": "single in-family ASR reward baseline"
+      },
+      "b": {
+        "intelligibility": "mean",
+        "speaker": "voice"
+      },
+      "c": {
+        "intelligibility": "min",
+        "speaker": "voice"
+      },
+      "d": {
+        "intelligibility": "min",
+        "speaker": "conditioning+clvi",
+        "clvi_batch_fraction": 0.25,
+        "requires": "stage2.conditioning = reference"
+      }
+    },
+    "speaker_note": "voice = anchor (similarity to the stage 2 checkpoint's own voice) for an unconditioned stage 2, conditioning-clip similarity for a reference-conditioned one",
+    "clvi": {
+      "min_consented_bilingual_speakers": 50,
+      "ecapa_ceiling_min": 0.6,
+      "speaker_split": {
+        "conditioning": 0.15,
+        "clvi": 0.15
+      }
+    },
+    "tripwires": {
+      "window_steps": 50,
+      "silence_fraction_rise_max": 0.1,
+      "token_entropy_drop_max": 0.2
+    },
+    "kill": {
+      "voice_drop_max": 0.02,
+      "validation_loss_rise_max": 0.1,
+      "no_gain_step": 300,
+      "no_separation_step": 1000,
+      "max_tripwire_aborts": 2
+    },
+    "kill_note": "all relative to the arm's own step-0 evaluation of the stage 2 checkpoint",
+    "adoption": {
+      "c_over_b_min_relative_gain": 0.05,
+      "equal_voice_tolerance": 0.01,
+      "d_same_language_voice_max_drop": 0.02,
+      "d_xling_sim_min_gain_over_start": 0.05,
+      "d_xling_sim_min_gain_over_c": 0.05
+    },
+    "max_stage_seconds": 21600
+  }
 }
