@@ -1,0 +1,25 @@
+{
+  "status": "manifest_staged_not_exported_or_published",
+  "rows": 5671,
+  "review_statuses": {
+    "text_reviewed": 2504,
+    "draft": 3167
+  },
+  "transcript_changes": 0,
+  "audio_approvals": 0,
+  "manifest_sha256": "73cc6d95f4a0aaa61e128ffe5aff1a54974362c412cd4290ec8c9f8677a95a7b",
+  "sources": [
+    {
+      "path": "curation/outputs/collected-fil-5671-v1/manifest.jsonl",
+      "sha256": "5c802488378df5bb1eced3bdf88728bbc53d7a9784af235a832291722d5823f7"
+    },
+    {
+      "path": "curation/outputs/fil-review-next-1000-v1/reviewed-manifest.jsonl",
+      "sha256": "01fa93702c12633c89f6cf607ac9b9147c61eb4ba2937cc1c01bf36aee8c03a6"
+    },
+    {
+      "path": "curation/outputs/fil-kimi-review-next-500-v1/reviewed-manifest.jsonl",
+      "sha256": "857895a311e595928bc7aca0b6f2012e44236be492d26a099aa83d0ec04aa5d3"
+    }
+  ]
+}

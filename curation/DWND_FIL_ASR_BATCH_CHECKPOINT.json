@@ -1,0 +1,56 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:23:53.499826+00:00",
+  "launch": {
+    "pid": 595271,
+    "args": [
+      "/home/iotim/chika-curation/.venv-compute/bin/python",
+      "-m",
+      "curation.asr_session",
+      "--manifest",
+      "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v1/vad/manifest.jsonl",
+      "--output",
+      "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-smoke-v1",
+      "--key-file",
+      "/home/iotim/chika-curation/.credentials/boses.key",
+      "--model",
+      "fw/whisper-large-v3-pld-fil-norm",
+      "--language",
+      "fil",
+      "--max-items",
+      "5400",
+      "--checkpoint-every",
+      "25",
+      "--min-free-gib",
+      "100",
+      "--timeout",
+      "60"
+    ]
+  },
+  "vad_audit": {
+    "rows": 5400,
+    "parents_checked": 1013,
+    "exact_pcm_samples": 403290688,
+    "candidate_hours": 7.0015744444444445,
+    "parent_manifest_sha256": "abe30288c37741e16f1440da14e3e0047fd4979b6a87e8892fc7cb54d8bdc136",
+    "candidate_manifest_sha256": "f35e800023145819cc65659b71c45125f6fd05b5326046c229e5173065318ccd",
+    "scope": "Derivative PCM, offsets and inherited metadata only; no speech, language or transcript verification."
+  },
+  "smoke_summary": {
+    "selected": 2,
+    "completed": 2,
+    "failed": [],
+    "manifest_rows": 2,
+    "checkpoint_every": 1,
+    "min_free_gib": 100.0,
+    "stopped_early": false,
+    "stop_reason": null,
+    "review_status": "draft",
+    "transcribed_hours": 0.0051444444444444445,
+    "empty": 0
+  },
+  "cache_root": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-smoke-v1",
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.asr_session', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v1/vad/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-fil-asr-smoke-v1', '--key-file', '/home/iotim/chika-curation/.credentials/boses.key', '--model', 'fw/whisper-large-v3-pld-fil-norm', '--language', 'fil', '--max-items', '5400', '--checkpoint-every', '25', '--min-free-gib', '100', '--timeout', '60'])\ns.update(status='complete' if r.returncode==0 else 'stopped_for_inspection',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-fil-asr-batch-v1/run.py",
+  "scope": "Draft ASR only; no audio approval; reuse smoke cache, never replay uncertain attempts"
+}

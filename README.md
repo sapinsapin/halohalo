@@ -1,6 +1,15 @@
 # halohalo
 Pre-training dataset pipeline for Philippine Languages
 
+## Chika: multilingual speech curation
+
+A resumable workflow for Filipino/Taglish, Hiligaynon, Cebuano, Bikolano and Ilocano: collect source audio, prepare speech candidates, transcribe, review and publish traceable private datasets. The target is **250 retained, transcribed hours per group**, not a claim of current completion.
+
+![Chika workflow from public audio and PLD inputs to private curated datasets, with separate contributor and training-promotion paths.](docs/diagrams/chika-workflow.svg)
+
+[Draft dataset releases](docs/dataset_releases.md) · [Architecture and boundaries](docs/workflow_architecture.md) · [Run the workflow](docs/dataset_curation.md) · [Download infographic](docs/diagrams/chika-workflow.png) · [Progress tracking](https://github.com/sapinsapin/halohalo/issues/8)
+
+
 ## Setup
 
 ```bash

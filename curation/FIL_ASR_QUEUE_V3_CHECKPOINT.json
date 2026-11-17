@@ -1,0 +1,14 @@
+{
+  "status": "launched_not_complete",
+  "rows": 8833,
+  "batches": 19,
+  "max_rows_per_session": 500,
+  "excluded_prior_attempts": 1281,
+  "held_matching_audio_rows": 4,
+  "plan_sha256": "662b9981338b51bff6cf5c905d4375009506c3693475f2703df36ac95459afaf",
+  "min_free_gib": 30,
+  "completed_v7_rows": 500,
+  "completed_v7_audio_rehashed": 500,
+  "old_queue_v2": "stopped_do_not_restart",
+  "pid": 74936
+}

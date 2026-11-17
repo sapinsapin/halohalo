@@ -1,0 +1,14 @@
+{
+  "root": "curation/outputs/fil-kimi-review-next-1000-v1",
+  "status": "all_rows_processed_with_rejections",
+  "rows": 1000,
+  "attached": 988,
+  "missing": 12,
+  "ineligible": 0,
+  "rejected": 12,
+  "manifest_sha256": "9df6cf5fa8a8fd5ba9c22c0e9785e490394d0c58e493e2e7adae07e2bdad8aec",
+  "input_sha256": "4dc8710e647d9b3b6a41efbea2b0e3223f339303101c0e27351b9c6bc0663ee1",
+  "transcript_changes": 0,
+  "audio_approvals": 0,
+  "model_requests_by_finalizer": 0
+}

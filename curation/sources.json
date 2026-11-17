@@ -1,0 +1,51 @@
+[
+  {
+    "id": "wala-ko-kabalo",
+    "url": "https://anchor.fm/s/26dcaf48/podcast/rss",
+    "language": "hil",
+    "description": "Hiligaynon, English and Filipino conversation; karaoke/music episodes require filtering"
+  },
+  {
+    "id": "pause-pod",
+    "url": "https://anchor.fm/s/7c5f400c/podcast/rss",
+    "language": "hil",
+    "description": "Hiligaynon candidate podcast; verify language per segment"
+  },
+  {
+    "id": "chill-men-say",
+    "url": "https://anchor.fm/s/36ceed30/podcast/rss",
+    "language": "hil",
+    "description": "Hiligaynon/Bisaya conversational candidate"
+  },
+  {
+    "id": "ilonggo-preacher",
+    "url": "https://anchor.fm/s/e41658e8/podcast/rss",
+    "language": "hil",
+    "description": "Jeremy Guarizo; intended Hiligaynon audience; English code-switching expected"
+  },
+  {
+    "id": "awr-hiligaynon",
+    "url": "https://feeds.feedburner.com/HILCC_VOH",
+    "language": "hil",
+    "description": "Hiligaynon candidate; directory evidence; verify per-recording language"
+  },
+  {
+    "id": "ikk-podcast",
+    "url": "https://anchor.fm/s/4a0b6fcc/podcast/rss",
+    "language": "hil",
+    "description": "Hiligaynon candidate; directory evidence; verify per-recording language"
+  },
+  {
+    "id": "ikk-podcast-2",
+    "url": "https://anchor.fm/s/88df9020/podcast/rss",
+    "language": "hil",
+    "description": "Hiligaynon candidate; directory evidence; verify per-recording language"
+  },
+  {
+    "id": "esturya-practikal",
+    "url": "https://anchor.fm/s/485a10d4/podcast/rss",
+    "language": "hil",
+    "description": "Esturya PracTIKAL; Hiligaynon-English candidate",
+    "evidence_url": "https://podcasts.apple.com/us/podcast/esturya-practikal/id1549593882?uo=4"
+  }
+]

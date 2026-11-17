@@ -1,0 +1,24 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:22:49.516766+00:00",
+  "websockets": "16.1.1",
+  "endpoint": "wss://d1ve4x2dfkyese.cloudfront.net/v1/asr",
+  "model": "fw/whisper-large-v3-pld-fil-norm",
+  "credential_path": "/home/iotim/chika-curation/.credentials/boses.key",
+  "credential_mode": "0o600",
+  "client_hashes": {
+    "asr.py": "9b84e631793a81f227ed68a0c9053fa0ab9887c5dd63b3cd3f1d4f2b151ce323",
+    "asr_session.py": "0711cd5556d982ced4520550006db13f3af56181075c89a4ae1852497ea84e4f",
+    "review.py": "49d102f78046492c08d697e3749ed3d9b8b4286a9e18987624cafbf5803aeb8f"
+  },
+  "vad_worker": {
+    "pid": 592970,
+    "status": "complete",
+    "started_at": 1794712887.7787561,
+    "returncode": 0,
+    "finished_at": 1794712969.433337
+  },
+  "vad_process": "",
+  "requests_sent": 0,
+  "next_step": "Require terminal successful VAD and exact-PCM audit, then bounded two-item ASR smoke; never replay uncertain requests."
+}

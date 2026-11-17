@@ -1,0 +1,27 @@
+{
+  "repo": "sapinsapin/chika",
+  "private_verified": true,
+  "revision": "4034cf08b6555e376ac4fe1cda07a2079704faa7",
+  "files": [
+    {
+      "local_path": "curation/outputs/collected-fil-7460-v3/manifest.jsonl",
+      "path": "checkpoints/fil-7460-v3/42ba12b6a92e09b35a680e52698fc75ec71eaf2115d3ab02128a2ee9288f3b4a-manifest.jsonl.gz",
+      "compressed_sha256": "42ba12b6a92e09b35a680e52698fc75ec71eaf2115d3ab02128a2ee9288f3b4a",
+      "raw_sha256": "f43ac089b7e2b60767dbafaa64db34cb5c32ca4f15e205d5307c12ebacedeea9"
+    },
+    {
+      "local_path": "curation/outputs/collected-fil-7460-v3/join-audit.json",
+      "path": "checkpoints/fil-7460-v3/c69221b3d67d1aab5695268ab0a293533c3b7f5d10e19725ff4a6373619c4a24-join-audit.json.gz",
+      "compressed_sha256": "c69221b3d67d1aab5695268ab0a293533c3b7f5d10e19725ff4a6373619c4a24",
+      "raw_sha256": "7c9ab7359e0c4cd7c965a26716ee5edbbaf90716ab7ddcafb24e3ba0fb21bafa"
+    },
+    {
+      "local_path": "curation/outputs/fil-kimi-review-next-1000-v2/reviewed-manifest.jsonl",
+      "path": "checkpoints/fil-7460-v3/b9c7c3af3065d466fda3117c9e8a569871f4b1e35e3bec8671c916e55e903b11-reviewed-manifest.jsonl.gz",
+      "compressed_sha256": "b9c7c3af3065d466fda3117c9e8a569871f4b1e35e3bec8671c916e55e903b11",
+      "raw_sha256": "e7cae817c2907b61a7f55f524e59cfde58a2013006a23af2a29cd7d78b4694c2"
+    }
+  ],
+  "verification": "fresh download, compressed hash and exact original decompressed bytes",
+  "scope": "Metadata backup only; no new audio upload or dataset configuration"
+}

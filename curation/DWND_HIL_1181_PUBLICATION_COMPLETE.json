@@ -1,0 +1,70 @@
+{
+  "host": "dwnd-01 (merge/export) / TakBookPro (publish)",
+  "config": "hil_dwnd_asr_1181_v1",
+  "source": {
+    "rows": 1181,
+    "nonempty": 1180,
+    "languages": [
+      "hil"
+    ],
+    "padded_seconds": 5313.585,
+    "nonempty_hours": 1.475734704861111,
+    "manifest_sha256": "7ac9143d326e3755f6bd0409d78164274a7e1935a7ef88b5099affa25c30c7f6",
+    "queues": [
+      "curation/outputs/remote-hil-asr-queue-v1",
+      "curation/outputs/remote-hil-asr-queue-v2",
+      "curation/outputs/remote-hil-asr-queue-v3"
+    ]
+  },
+  "audits": {
+    "complete_batches": 29,
+    "partial_batches_prefix_before_quarantined_row": 40,
+    "skipped": 51
+  },
+  "quarantined_never_replay": {
+    "v1": 1,
+    "v2": 1,
+    "v3": 40,
+    "v3_list": "remote-hil-asr-queue-v3/state/quarantine.jsonl"
+  },
+  "queue_v3_terminal": "stopped_after_error: quarantine budget reached (29 complete batches, 40 quarantined)",
+  "overlap_check": "0 audio hashes and 0 source_ids shared with all Mac-collected Hiligaynon manifests (718 unique audio; RSS podcast sources)",
+  "export": {
+    "shards": 12,
+    "rows": 1181,
+    "local_shard_hash_check": "12/12 sha256 match after transfer"
+  },
+  "publication": {
+    "hub_receipt": {
+      "parent_commit": "3e60f7dad14baabed523071a12e84658a0fe7c71",
+      "parent_conflicts": [],
+      "prefix": "data/hil_dwnd_asr_1181_v1",
+      "private": true,
+      "repo": "sapinsapin/chika",
+      "revision": "546895f63eecea86150df009e9c36b6728439d43",
+      "rows": 1181,
+      "verification_only": false,
+      "verified": true,
+      "files": 15
+    },
+    "card": {
+      "revision": "0f1da56d98911db0ac49404423a79b91ba46ad64",
+      "parent": "546895f63eecea86150df009e9c36b6728439d43",
+      "config": "hil_dwnd_asr_1181_v1"
+    },
+    "stream_check": {
+      "revision": "0f1da56d98911db0ac49404423a79b91ba46ad64",
+      "config": "hil_dwnd_asr_1181_v1",
+      "rows": 1181,
+      "exact_ids_text_provenance_audio_bytes": true,
+      "training_approved": false
+    },
+    "independent_remote_check": "Pinned data revision private; all 15 file sizes and 12 LFS sha256 match the receipt",
+    "attempts": "1-5 refused by the Hub commit rate limit before any upload; attempt 6 succeeded"
+  },
+  "scripts": [
+    "curation/job_scripts/2026-11-15/merge_export_queue.py",
+    "curation/job_scripts/2026-11-15/publish_export.py"
+  ],
+  "scope": "Draft ASR text, unassigned splits, rights unknown, no audio approvals; not training data."
+}

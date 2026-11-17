@@ -1,0 +1,16 @@
+{
+  "host": "dwnd-01",
+  "pid": 1327524,
+  "verified_windows": 9957,
+  "manifest": "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/prepared/manifest.jsonl",
+  "manifest_sha256": "6589d49aa6dbb58c3055c94c7b1bdf4f8dc9ef39fe0c98211058bd30b3a59e43",
+  "prepared_summary": {
+    "windows": 9957,
+    "window_hours": 74.39932232638888,
+    "transcribed_hours": 0,
+    "exact_decoded_duplicate_groups": [],
+    "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+  },
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.vad', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/prepared/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v3/vad', '--max-minutes', '4500', '--max-rows', '9957'])\nif r.returncode==0:\n from curation.audit_vad import audit\n try:\n  report=audit('/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/prepared/manifest.jsonl',root/'vad/manifest.jsonl')\n  (root/'pcm-audit.json').write_text(json.dumps(report,indent=2))\n except Exception as e:\n  s.update(status='audit_failed',error=str(e),finished_at=time.time());(root/'worker.json').write_text(json.dumps(s));raise\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "status": "launched_not_complete"
+}

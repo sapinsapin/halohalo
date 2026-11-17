@@ -1,0 +1,44 @@
+{
+  "scope": "text review of fil_dwnd_asr_4000_v1 (3,985 nonempty rows of 4,000)",
+  "model": "us.kimi-k3 via NYO API, text only, --max-attempts 1, --timeout 60, --max-tokens 2500",
+  "source_manifest_sha256": "5ea756c565fb6d1d64e0bab564753777294f34bcd0bb3405cbea51393bb0b335",
+  "runs": {
+    "v1": {
+      "dir": "curation/outputs/dwnd-fil-4000-review-v1",
+      "selected": 2413,
+      "accepted": 2375,
+      "invalid_review": 37,
+      "http_error": 1,
+      "stop": "max-consecutive-failures 2 reached at row 2413 (two invalid_review in a row)"
+    },
+    "v2": {
+      "dir": "curation/outputs/dwnd-fil-4000-review-v2",
+      "input": "rows 2414-3985 of v1 input (never attempted by v1; 0 overlap)",
+      "selected": 1572,
+      "accepted": 1554,
+      "invalid_review": 18,
+      "max_consecutive_failures": 3,
+      "stop": "complete"
+    }
+  },
+  "failed_requests_replayed": 0,
+  "review_config_identical_across_runs": true,
+  "combined_reviews": "curation/outputs/dwnd-fil-4000-text-review-combined-v1/reviews (3,929 accepted review + raw response pairs)",
+  "attach": {
+    "host": "dwnd-01",
+    "output": "curation/outputs/remote-fil-4000-text-review-v1/reviewed-manifest.jsonl",
+    "reviewed_manifest_sha256": "97d81fea0f7024510dcbb269fb2afb45a3d31574ea194d8e52ddfe498ef32ca8",
+    "rows": 4000,
+    "attached": 3929,
+    "missing_invalid": 56,
+    "ineligible_empty": 15,
+    "transcript_changes": 0,
+    "audio_verifications_granted": 0
+  },
+  "triage": {
+    "no_obvious_text_issue": 2866,
+    "needs_audio_review": 977,
+    "unintelligible_text": 86
+  },
+  "status": "text_reviewed is not audio verification or training approval; not yet published"
+}

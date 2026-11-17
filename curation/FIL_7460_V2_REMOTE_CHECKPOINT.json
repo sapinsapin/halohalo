@@ -1,0 +1,31 @@
+{
+  "repo": "sapinsapin/chika",
+  "revision": "6c5d5a5af848effc0b3d0d667925613354302494",
+  "private": true,
+  "metadata_only": true,
+  "audio_uploaded": false,
+  "files": [
+    {
+      "source": "curation/outputs/collected-fil-7460-v2/manifest.jsonl",
+      "local": "curation/outputs/collected-fil-7460-v2/metadata-backup/manifest.jsonl.gz",
+      "path": "checkpoints/fil-reviewed/0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf/manifest.jsonl.gz",
+      "sha256": "a7d298af87b4d2644a06632ffd0346c67114fa8a97cf05a4c3f4769cf046c2fa",
+      "original_sha256": "0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf"
+    },
+    {
+      "source": "curation/outputs/collected-fil-7460-v2/join-audit.json",
+      "local": "curation/outputs/collected-fil-7460-v2/metadata-backup/join-audit.json.gz",
+      "path": "checkpoints/fil-reviewed/0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf/join-audit.json.gz",
+      "sha256": "b09ad9039186e412b6028eedf424666bb9a5e26e10a8a65b13af1fb2ac99fec4",
+      "original_sha256": "23fbc178dcef9a3269a6ff99aa45e5e2f7501515a0e791c9f648b4ccf137cf05"
+    },
+    {
+      "source": "curation/outputs/fil-kimi-review-next-1000-v1/reviewed-manifest.jsonl",
+      "local": "curation/outputs/collected-fil-7460-v2/metadata-backup/completed-review-manifest.jsonl.gz",
+      "path": "checkpoints/fil-reviewed/0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf/completed-review-manifest.jsonl.gz",
+      "sha256": "7d6ddeaf72cabc12d15200fc9f066406a0560faff103ab541ff5d6175b504be4",
+      "original_sha256": "9df6cf5fa8a8fd5ba9c22c0e9785e490394d0c58e493e2e7adae07e2bdad8aec"
+    }
+  ],
+  "verified": true
+}

@@ -1,0 +1,20 @@
+{
+  "rows": 100,
+  "attached": 100,
+  "transcript_changes": 0,
+  "audio_verifications_granted": 0,
+  "input_sha256": "5e948c91aae75718fe1ccd3a9afe4b75da494369a2957d5be6fe634505006057",
+  "reviewed_manifest_sha256": "ccc824a1ed3ff6157f4da4cd7789638414d59b52a57f716dceafb06cd2da7082",
+  "triage": {
+    "no_obvious_text_issue": 55,
+    "needs_audio_review": 41,
+    "unintelligible_text": 4
+  },
+  "requested_models": [
+    "us.kimi-k3"
+  ],
+  "returned_models": [
+    "global.moonshotai.kimi-k3.1"
+  ],
+  "batch_complete": true
+}

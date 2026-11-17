@@ -1,0 +1,40 @@
+{
+  "launched": "2026-11-15T18:20Z (GB10) / 19:18Z (RTX 3070)",
+  "module": "curation/asr_batch.py (config version 2: greedy + temperature fallback)",
+  "selector": "curation/job_scripts/2026-11-15/select_batch_v1.py",
+  "jobs": {
+    "hil": {
+      "host": "dwnd-01 GB10",
+      "dir": "curation/outputs/remote-hil-asr-local-v1",
+      "rows": 60399,
+      "hours": 105.01,
+      "input_sha256_prefix": "b348cf387caec02f",
+      "model": "sapinsapin/whisper-large-v3-pld-hil-norm@7a695b0f737b3e7cec482c29f0d12c2126cb4f4c",
+      "batch_size": 16,
+      "chunks": 236,
+      "observed_realtime": 9.8,
+      "expected_hours": 10.7,
+      "run": "remote-hil-asr-local-v1/run.sh (audit.json written at the end)"
+    },
+    "fil": {
+      "host": "reth5et RTX 3070",
+      "dir": "~/chika-batchasr/prod-fil-local-v1 (input mirrored at ~/chika-mirror/remote-fil-asr-local-v1)",
+      "rows": 62826,
+      "hours": 77.52,
+      "input_sha256_prefix": "eade257eb345208d",
+      "model": "sapinsapin/whisper-large-v3-pld-fil-norm@ee5b4f0cd1af616b38f742ae05b644d6783b52fe",
+      "batch_size": 8,
+      "chunks": 246,
+      "expected_hours": "~7 at ~11x",
+      "run": "prod-fil-local-v1/run.sh (refuses to start if the 3070 has >3000 MiB in use)"
+    }
+  },
+  "exclusions": "every audio hash in any remote-<lang>-asr-* JSONL (incl. quarantined streaming requests) and the benchmark; Filipino also VAD v1 candidates; none over 30 s",
+  "resume": "rerun the same run.sh: finished chunks are kept, the plan is frozen, nothing is sent over the network",
+  "after": [
+    "copy reth5et prod-fil-local-v1/asr back to dwnd-01 (rows keep original audio_path)",
+    "merge_export_batch.py OUTPUT --input remote-<lang>-asr-local-v1/input.jsonl --asr <asr dir> --published <all published manifests>",
+    "publish_export.py WORKDIR CONFIG ROWS PARAGRAPH 110+ as several snapshots (100 shards per 10,000 rows)"
+  ],
+  "reth5et_services": "nyo-asr-fw@flipvox and nyo-tts@orpheus-fil stopped (not disabled) 2026-11-15 ~16:47Z to free the GPU; gateways running"
+}

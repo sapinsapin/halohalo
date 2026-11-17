@@ -1,0 +1,15 @@
+{
+  "repo": "sapinsapin/chika",
+  "revision": "dc6fcae14ce8d6dfff0739f589538f1f422cd18c",
+  "private": true,
+  "metadata_only": true,
+  "audio_uploaded": false,
+  "verified_files": {
+    "checkpoints/canonical-archives/78ad3d5453bcc1e866437e3bac3d2d7f92c9c772ffae82eae085ed85995b2b92/manifest.jsonl": "1834130edf864c9c9963b2b86bcf105af17b7d31014c71ed4da75a08c40d013e",
+    "checkpoints/canonical-archives/78ad3d5453bcc1e866437e3bac3d2d7f92c9c772ffae82eae085ed85995b2b92/report.json": "440b187a404c1d5a11d3174ab129200511399914ae290d88de8d2d22d6efb4cd",
+    "checkpoints/canonical-archives/ac4b92475205cb8476b226b77684120303215c309acdbffeea5ad5f21213ed59/manifest.jsonl": "18f16222aecf8a3d859d3a24b41733bbe68558b1ef4a8606e8903c8fc8f67083",
+    "checkpoints/canonical-archives/ac4b92475205cb8476b226b77684120303215c309acdbffeea5ad5f21213ed59/report.json": "9c28f3af05c79bba00cdef94ab41a2d2c56b1e07274a0d3c90e68f91a7d12209"
+  },
+  "bytes": 319666,
+  "parent_conflicts": []
+}

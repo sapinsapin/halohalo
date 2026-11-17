@@ -1,0 +1,12 @@
+{
+  "pid": 78938,
+  "status": "waiting_for_supervisor_lock",
+  "started_at": 1794708703.063402,
+  "max_files": 100,
+  "max_evict_bytes": 8589934592,
+  "threshold_gib": 50,
+  "target_gib": 50,
+  "root": "curation/outputs/bikolano-preemptive-backup-v2",
+  "reason": "27 GiB free; Bikol RSS download lock independently observed idle, remaining local originals have no backup proof",
+  "safety": "Serializes on existing supervisor lock; verified immutable checkpoint and remote proof required before eviction; no downloader stopped; no completed backup or freed bytes claimed"
+}

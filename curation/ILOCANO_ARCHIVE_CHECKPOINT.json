@@ -1,0 +1,21 @@
+{
+  "source_id": "abscbn-tvpatrol-ilocos",
+  "recordings": 21,
+  "new_recordings": 16,
+  "raw_hours": 10.730411045277776,
+  "new_raw_hours": 8.059983693333333,
+  "bytes": 540045718,
+  "canonical_snapshot": "b72a802054b0ac9cc5c16d31b2921e8955c70fd47e9992f2137ed78214415fa3",
+  "canonical_manifest_sha256": "d0338bc347a21951cd35d374e4c9fb9d97debccf29e848ce0b1c817b86dd4366",
+  "independently_rehashed_files": 21,
+  "verified_language_hours": 0,
+  "transcribed_hours": 0,
+  "source_inventory": "curation/ilocano_archive_inventory.json",
+  "limitations": [
+    "Provisional Ilocano source selection supported by official Ilocano headlines, not listening-based verification.",
+    "Preserve possible Filipino-English code-switching; music, advertisements, interview language and repeated segments require later QC.",
+    "No training/commercial/redistribution permission inferred.",
+    "GMA Balitang Amianan/One North Central Luzon not labeled Ilocano or downloaded for this pilot.",
+    "Canonical exact-byte checks do not prove unique speech or absence of segment overlap."
+  ]
+}

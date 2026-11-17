@@ -1,0 +1,74 @@
+{
+  "host": "dwnd-01 (merge/export) / TakBookPro (publish)",
+  "config": "fil_dwnd_asr_9927_v1",
+  "source": {
+    "rows": 9927,
+    "nonempty": 9881,
+    "languages": [
+      "fil"
+    ],
+    "padded_seconds": 44233.244,
+    "nonempty_hours": 12.279462777777768,
+    "manifest_sha256": "56e9ba5a9b78708820d3f10409f966fa6e5456e35bbaf0fe41efe1f5aa871f1c",
+    "queues": [
+      "curation/outputs/remote-fil-asr-queue-v6"
+    ],
+    "published_checked": [
+      "curation/outputs/remote-fil-asr-2000-v3/manifest.jsonl",
+      "curation/outputs/remote-fil-asr-4000-v1/manifest.jsonl",
+      "curation/outputs/remote-fil-asr-first1000-v3/manifest.jsonl",
+      "curation/outputs/remote-fil-asr-smoke-v1/manifest.jsonl"
+    ]
+  },
+  "audits": {
+    "complete_batches": 99,
+    "partial_batches_prefix_before_quarantined_row": 1,
+    "skipped": 0
+  },
+  "quarantined_never_replay": {
+    "v6": 1,
+    "batch": "remote-fil-asr-queue-v6/batch-013",
+    "completed_before": 27,
+    "unattempted_after": 72
+  },
+  "queue_v6_terminal": "complete: batches 001-012 under asr_queue, 013 quarantined, 014-100 under asr_quarantine_queue (87 complete, 0 quarantined)",
+  "export": {
+    "shards": 100,
+    "files": 103,
+    "rows": 9927,
+    "local_check": "103/103 files sha256-identical to dwnd-01 export"
+  },
+  "publication": {
+    "first_attempt": "stopped before upload: curation.publish default max_files=100 < 103 files; rerun with max_files=110 (attempt-0-file-bound.json)",
+    "hub_receipt": {
+      "parent_commit": "f2276a27dac3b4982a5a7584ba222744b97fc300",
+      "prefix": "data/fil_dwnd_asr_9927_v1",
+      "private": true,
+      "repo": "sapinsapin/chika",
+      "revision": "4fd3e512670aa2145067cdabdbcd9fe7928ced0e",
+      "rows": 9927,
+      "verified": true
+    },
+    "card": {
+      "revision": "401cae1c237dacb1b9c735d3fccbd2130c3f6e50",
+      "parent": "4fd3e512670aa2145067cdabdbcd9fe7928ced0e",
+      "config": "fil_dwnd_asr_9927_v1"
+    },
+    "stream_check": {
+      "revision": "401cae1c237dacb1b9c735d3fccbd2130c3f6e50",
+      "config": "fil_dwnd_asr_9927_v1",
+      "rows": 9927,
+      "exact_ids_text_provenance_audio_bytes": true,
+      "training_approved": false
+    },
+    "remote_file_check": {
+      "private": true,
+      "remote_files": 103,
+      "local_files": 103,
+      "sizes_match": 103,
+      "lfs_files": 101,
+      "lfs_sha_match": 101
+    }
+  },
+  "status": "draft, unassigned, rights unknown, zero audio approvals"
+}

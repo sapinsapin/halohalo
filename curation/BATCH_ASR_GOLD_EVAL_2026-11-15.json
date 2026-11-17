@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-15",
+  "script": "curation/job_scripts/2026-11-15/eval_batch_asr_gold.py",
+  "host": "dwnd-01 GB10 (shared with the Hiligaynon production run, under the GPU lock)",
+  "gold_sets": {
+    "fil": "nyo-serve data/asr_pld/fil.npz sha256 689c44b991f962e2...",
+    "hil": "nyo-serve data/asr_pld_hil_all/hil.npz sha256 30e4a0adbb309622... (the T4 registry gate sets, 50 PLD read-speech clips each)"
+  },
+  "normaliser": "nyo-serve modules/asr_fw/textnorm.normalise_text",
+  "batch": {
+    "fil_greedy": {
+      "n": 50,
+      "audio_s": 208.02,
+      "wall_s": 8.81,
+      "wer_pct": 7.586,
+      "cer_pct": 2.147,
+      "fallbacks": 0,
+      "unresolved": 0,
+      "npz_sha256": "689c44b991f962e2b439649558a73d17d3fea6e7284eaec0c259d1b8a757c138"
+    },
+    "fil_batch_fallback": {
+      "n": 50,
+      "audio_s": 208.02,
+      "wall_s": 8.18,
+      "wer_pct": 7.586,
+      "cer_pct": 2.147,
+      "fallbacks": 0,
+      "unresolved": 0,
+      "npz_sha256": "689c44b991f962e2b439649558a73d17d3fea6e7284eaec0c259d1b8a757c138"
+    },
+    "hil_greedy": {
+      "n": 50,
+      "audio_s": 243.35,
+      "wall_s": 13.53,
+      "wer_pct": 39.663,
+      "cer_pct": 28.475,
+      "fallbacks": 0,
+      "unresolved": 0,
+      "npz_sha256": "30e4a0adbb3096228bc543f8f60e7ac5afd3aeba05473929c6c4b2abe0d358ad"
+    },
+    "hil_batch_fallback": {
+      "n": 50,
+      "audio_s": 243.35,
+      "wall_s": 31.56,
+      "wer_pct": 15.865,
+      "cer_pct": 6.78,
+      "fallbacks": 1,
+      "unresolved": 0,
+      "npz_sha256": "30e4a0adbb3096228bc543f8f60e7ac5afd3aeba05473929c6c4b2abe0d358ad"
+    }
+  },
+  "aws_t4_served_voice_aws_t4_6": {
+    "fil_large_v3_float16_ct2": {
+      "wer_pct": 7.586,
+      "cer_pct": 2.11
+    },
+    "hil_large_v3_int8_ct2_with_fallback": {
+      "wer_pct": 15.625,
+      "cer_pct": 7.076
+    },
+    "hil_hf_fp16_greedy_reference": {
+      "wer_pct": 39.663,
+      "cer_pct": 28.475
+    }
+  },
+  "finding": "batch reproduces the served Filipino WER exactly and the Hiligaynon HF greedy reference exactly; the compression-ratio fallback alone recovers the served Hiligaynon accuracy (15.9 vs 15.6 WER, 6.8 vs 7.1 CER, within one clip on 416 words). The 39.7 -> 15.9 swing is one clip's repetition loop.",
+  "not_established": "accuracy on conversational/broadcast audio (the curation domain): no gold set exists for it"
+}

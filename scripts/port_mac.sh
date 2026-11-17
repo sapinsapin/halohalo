@@ -19,7 +19,8 @@
 # A prebuilt bundle (halohalo-mac.tar, from `bash scripts/port_bundle_mac.sh`)
 # also works: `build` then only fills in what is missing.
 #
-# Needs the Xcode command line tools (xcode-select --install) and Homebrew's
+# Needs the Xcode command line tools (xcode-select --install; full Xcode not
+# required, coremltools compiles the .mlmodelc when coremlc is absent) and Homebrew's
 # Python and cmake (brew install python@3.12 cmake). Every step skips what is
 # done and keeps going past a failure; the log is finetune_runs/port/mac.log.
 set -uo pipefail
@@ -38,7 +39,10 @@ A=finetune_runs/port/artefacts
 G=$A/whisper-small-pld-ceb
 mkdir -p finetune_runs/port
 say() { echo "$(date '+%F %T') $*" | tee -a "$LOG"; }
-run() { say "$*"; "$@" >> "$LOG" 2>&1 && tail -1 "$LOG" | cut -c1-160 || say "  failed (see $LOG)"; }
+# caffeinate -i: an idle Mac sleeps mid-export (the CTC Core ML conversion
+# once "took" 55 h of wall-clock, nearly all of it asleep)
+KEEP=$(command -v caffeinate > /dev/null && echo "caffeinate -i")
+run() { say "$*"; $KEEP "$@" >> "$LOG" 2>&1 && tail -1 "$LOG" | cut -c1-160 || say "  failed (see $LOG)"; }
 need_eval() {
   [ -f finetune_runs/port/evalpack/ceb.npz ] && return 0
   echo "missing finetune_runs/port/evalpack/ceb.npz: untar halohalo-mac-eval.tar in the repo root first"
@@ -82,7 +86,13 @@ build() {
   [ -f $R/gguf/model-q4_k_m.gguf ] || run $P -m porting.export_orpheus $O --steps merge gguf
   # whisper.cpp's Core ML mode loads <model>-encoder.mlmodelc beside <model>.bin
   if [ -d $G/coreml/encoder.mlpackage ] && [ ! -d $G/ggml/ggml-model-f16-coreml-encoder.mlmodelc ]; then
-    run xcrun coremlc compile $G/coreml/encoder.mlpackage $G/coreml/
+    # coremlc ships with full Xcode only; the Core ML framework's own compiler
+    # (via coremltools) gives the same .mlmodelc with just the command line tools
+    if xcrun --find coremlc > /dev/null 2>&1; then
+      run xcrun coremlc compile $G/coreml/encoder.mlpackage $G/coreml/
+    else
+      run $P -c "import coremltools as ct; ct.models.utils.compile_model('$G/coreml/encoder.mlpackage', '$G/coreml/encoder.mlmodelc')"
+    fi
     ln -sf ggml-model-f16.bin $G/ggml/ggml-model-f16-coreml.bin
     cp -R $G/coreml/encoder.mlmodelc $G/ggml/ggml-model-f16-coreml-encoder.mlmodelc
   fi
@@ -123,7 +133,8 @@ executorch() {
   $VE/bin/pip install -q optimum-executorch coremltools snac soundfile jiwer huggingface_hub numpy
   for m in $W $C; do
     n=$(basename $m)
-    [ -d $A/$n/executorch/coreml ] || run $VE/bin/python3 -m porting.export_executorch $m --backend coreml
+    # a failed export leaves the directory behind, so look for the program itself
+    ls $A/$n/executorch/coreml/*.pte > /dev/null 2>&1 || run $VE/bin/python3 -m porting.export_executorch $m --backend coreml
     run $VE/bin/python3 -m porting.validate $m --runtime executorch --variant coreml --n 20
   done
 }

@@ -1,0 +1,242 @@
+{
+  "observed_at": "2026-11-15T03:20:34.185813+00:00",
+  "cause": "Noninteractive PATH omitted venv yt-dlp; executable fallback now searches sys.executable directory",
+  "smoke": {
+    "id": "ZLQNhI-I14Q",
+    "source_id": "gma-balitang-bisdak",
+    "language": "ceb",
+    "language_status": "source candidate; audio and regional variety unverified",
+    "page_url": "https://www.youtube.com/watch?v=ZLQNhI-I14Q",
+    "title": "Balitang Bisdak: January 31, 2025",
+    "source_kind": "youtube",
+    "discovered": {
+      "id": "ZLQNhI-I14Q",
+      "title": "Balitang Bisdak: January 31, 2025",
+      "broadcast_date": "2025-01-31",
+      "published_date": "January 31,2025 08:06:45 PM",
+      "publisher_id": "129341",
+      "url": "https://www.youtube.com/watch?v=ZLQNhI-I14Q",
+      "recording_kind": "full_episode_candidate",
+      "availability_status": "unverified; must check channel, live/upcoming and duration before acquiring",
+      "language_status": "provisional; publisher Cebuano show, audio unverified",
+      "duration": 2108,
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "live_status": "not_live",
+      "metadata_sha256": "b2ac5da9dd3b27c582118a561bcba0a2c0365fcc2fd38c9d5896a6da85715552"
+    },
+    "provenance": {
+      "input_sha256": "b9f59921f24ecd2e65e073616f73111f36e9b6fc1115ec76d8c81bae1d3324e1",
+      "expected_channel": "UCVoawkpW12kgtXgInbPCrhQ",
+      "rejected": [
+        {
+          "id": "mzbd01agfPE",
+          "reason": "metadata extraction failed:  See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one\nERROR: [youtube] mzbd01agfPE: Sign in to confirm your age. This video may be inappropriate for some users. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+        },
+        {
+          "id": "fOvKIEQ0nbM",
+          "reason": "metadata extraction failed:  See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one\nERROR: [youtube] fOvKIEQ0nbM: Sign in to confirm your age. This video may be inappropriate for some users. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+        },
+        {
+          "id": "5nlGS1i-Vz0",
+          "reason": "metadata extraction failed:  See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one\nERROR: [youtube] 5nlGS1i-Vz0: Sign in to confirm your age. This video may be inappropriate for some users. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+        }
+      ],
+      "scope": "metadata preflight only; no audio acquired or language verified",
+      "inventory_path": "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/cebuano/result.json",
+      "inventory_sha256": "75f51834e26d6e3776975c04f6197244dc6a1f0097ee234faf7fdde71d58fc8d"
+    },
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "asr_status": "pending",
+    "review_status": "pending",
+    "attempts": 2,
+    "status": "downloaded",
+    "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2/ZLQNhI-I14Q.webm",
+    "audio_sha256": "b566203affecba992f1274d030ef63b377968f1e0abc8da6cd59deeacc6bc2b8",
+    "bytes": 28876142,
+    "duration": 2108.321,
+    "sample_rate": 48000,
+    "metadata_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2/ZLQNhI-I14Q.info.json",
+    "uploader": "GMA Regional TV",
+    "channel_url": "https://www.youtube.com/channel/UCVoawkpW12kgtXgInbPCrhQ",
+    "language_reported": "fil",
+    "license": null,
+    "updated_at": "2026-11-15T03:20:15Z"
+  },
+  "jobs": [
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2",
+      "previous_launch": {
+        "pid": 546658,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/cebuano/result.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2",
+          "--language",
+          "ceb",
+          "--source-id",
+          "gma-balitang-bisdak",
+          "--max-hours",
+          "35",
+          "--max-items",
+          "47",
+          "--max-attempts",
+          "1",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ]
+      },
+      "launch": {
+        "pid": 589096,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/cebuano/result.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/cebuano-next-v2",
+          "--language",
+          "ceb",
+          "--source-id",
+          "gma-balitang-bisdak",
+          "--max-hours",
+          "35",
+          "--max-items",
+          "47",
+          "--max-attempts",
+          "2",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ]
+      },
+      "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv/bin/python', '-m', 'curation.acquire_inventory', '--inventory', '/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/cebuano/result.json', '--root', '/home/iotim/chika-curation/curation/outputs/cebuano-next-v2', '--language', 'ceb', '--source-id', 'gma-balitang-bisdak', '--max-hours', '35', '--max-items', '47', '--max-attempts', '2', '--min-free-gib', '100', '--max-transfer-bytes', '1073741824'])\ns.update(status='process_exited',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/cebuano-next-v2/run-after-path-fix.py"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next-v2",
+      "previous_launch": {
+        "pid": 546682,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/bikolano/result.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/bikolano-next-v2",
+          "--language",
+          "bik",
+          "--source-id",
+          "gma-balitang-bicolandia",
+          "--max-hours",
+          "35",
+          "--max-items",
+          "49",
+          "--max-attempts",
+          "1",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ]
+      },
+      "launch": {
+        "pid": 589103,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/bikolano/result.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/bikolano-next-v2",
+          "--language",
+          "bik",
+          "--source-id",
+          "gma-balitang-bicolandia",
+          "--max-hours",
+          "35",
+          "--max-items",
+          "49",
+          "--max-attempts",
+          "2",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ]
+      },
+      "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv/bin/python', '-m', 'curation.acquire_inventory', '--inventory', '/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/bikolano/result.json', '--root', '/home/iotim/chika-curation/curation/outputs/bikolano-next-v2', '--language', 'bik', '--source-id', 'gma-balitang-bicolandia', '--max-hours', '35', '--max-items', '49', '--max-attempts', '2', '--min-free-gib', '100', '--max-transfer-bytes', '1073741824'])\ns.update(status='process_exited',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/bikolano-next-v2/run-after-path-fix.py"
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/ilocano-next-v2",
+      "previous_launch": {
+        "pid": 546689,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/ilocano/result.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/ilocano-next-v2",
+          "--language",
+          "ilo",
+          "--source-id",
+          "abscbn-tvpatrol-ilocos",
+          "--max-hours",
+          "35",
+          "--max-items",
+          "50",
+          "--max-attempts",
+          "1",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ]
+      },
+      "launch": {
+        "pid": 589107,
+        "args": [
+          "/home/iotim/chika-curation/.venv/bin/python",
+          "-m",
+          "curation.acquire_inventory",
+          "--inventory",
+          "/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/ilocano/result.json",
+          "--root",
+          "/home/iotim/chika-curation/curation/outputs/ilocano-next-v2",
+          "--language",
+          "ilo",
+          "--source-id",
+          "abscbn-tvpatrol-ilocos",
+          "--max-hours",
+          "35",
+          "--max-items",
+          "50",
+          "--max-attempts",
+          "2",
+          "--min-free-gib",
+          "100",
+          "--max-transfer-bytes",
+          "1073741824"
+        ]
+      },
+      "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv/bin/python', '-m', 'curation.acquire_inventory', '--inventory', '/home/iotim/chika-curation/curation/outputs/regional-preflight-v2/ilocano/result.json', '--root', '/home/iotim/chika-curation/curation/outputs/ilocano-next-v2', '--language', 'ilo', '--source-id', 'abscbn-tvpatrol-ilocos', '--max-hours', '35', '--max-items', '50', '--max-attempts', '2', '--min-free-gib', '100', '--max-transfer-bytes', '1073741824'])\ns.update(status='process_exited',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+      "process": "/home/iotim/chika-curation/.venv/bin/python /home/iotim/chika-curation/curation/outputs/ilocano-next-v2/run-after-path-fix.py"
+    }
+  ]
+}

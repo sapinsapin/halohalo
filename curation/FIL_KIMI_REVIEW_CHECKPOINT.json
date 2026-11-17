@@ -1,0 +1,23 @@
+{
+  "rows": 100,
+  "model_requested": "us.kimi-k3",
+  "source": "curation/outputs/fil-persistent-batch-v4/asr/manifest.jsonl",
+  "source_sha256": "05af9616f5097280e3f46906b818871d1691f408b870e637d1737ae272d0439e",
+  "input_sha256": "5e948c91aae75718fe1ccd3a9afe4b75da494369a2957d5be6fe634505006057",
+  "excluded_review_inputs": [
+    "curation/outputs/fil-review-100-v1/input.jsonl",
+    "curation/outputs/fil-review-382-v1/input.jsonl",
+    "curation/outputs/fil-review-next-1000-v1/input.jsonl",
+    "curation/outputs/fil-review-next-500-v1/input.jsonl"
+  ],
+  "excluded_ids": 1982,
+  "synthetic": false,
+  "output": "curation/outputs/fil-kimi-review-100-v1",
+  "max_attempts": 1,
+  "max_consecutive_failures": 2,
+  "timeout_seconds": 60,
+  "max_tokens": 2500,
+  "review_status": "text_review_only",
+  "audio_verified": false,
+  "completion_claimed": false
+}

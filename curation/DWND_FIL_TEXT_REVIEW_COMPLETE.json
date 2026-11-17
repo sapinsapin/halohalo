@@ -1,0 +1,15 @@
+{
+  "host": "dwnd-01",
+  "attachment": {
+    "rows": 259,
+    "attached": 253,
+    "missing": 6,
+    "ineligible": 0,
+    "transcript_changes": 0,
+    "audio_verifications_granted": 0
+  },
+  "manifest": "/home/iotim/chika-curation/curation/outputs/dwnd-fil-review-v1/reviewed.jsonl",
+  "manifest_sha256": "516dd22db7509ded164cdd1153f56f5258c4533618b75716a55d54d3b5862448",
+  "input_sha256": "bbb8d6ec0fbd1efdf6a1c61520ba194a308951f936c15ed3178f4b2f5588c177",
+  "scope": "253 validated text reviews only; 6 rejected responses not attached; no transcript changes or audio approvals"
+}

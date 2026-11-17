@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-11-15T02:24:08.981030+00:00",
+  "free_bytes": 26567614464,
+  "rss": [
+    {
+      "namespace": "taglish-rss",
+      "download_lock_free": true
+    },
+    {
+      "namespace": "hiligaynon-rss",
+      "download_lock_free": true
+    },
+    {
+      "namespace": "cebuano-rss",
+      "download_lock_free": true
+    },
+    {
+      "namespace": "bikolano-rss",
+      "download_lock_free": true
+    },
+    {
+      "namespace": "ilocano-rss",
+      "download_lock_free": true
+    }
+  ],
+  "action": "No workers restarted. Await live supervisor checkpoint verification and verified eviction; ASR remains below 30 GiB floor."
+}

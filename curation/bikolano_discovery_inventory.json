@@ -1,0 +1,1641 @@
+{
+  "status": "discovery_only_not_download_ready",
+  "raw_entries": 300,
+  "candidate_count": 203,
+  "metadata_estimated_hours": 110.91722222222222,
+  "downloaded_hours": 0,
+  "metadata_sha256": "ba469586753075a06d31364b04c1cd85ace621023d3b0dd4e1e58004a72b9397",
+  "excludes_prior_preflight_ids": true,
+  "items": [
+    {
+      "id": "Deb9d1cyJaQ",
+      "url": "https://www.youtube.com/watch?v=Deb9d1cyJaQ",
+      "title": "Balitang Bicolandia: February 1, 2021 | Pilot Episode",
+      "duration_metadata": 2515,
+      "broadcast_date": "2021-02-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "Cg3RAi2iP5Y",
+      "url": "https://www.youtube.com/watch?v=Cg3RAi2iP5Y",
+      "title": "Balitang Bicolandia : November 17, 2022",
+      "duration_metadata": 2249,
+      "broadcast_date": "2022-11-17",
+      "uploader_verified": false
+    },
+    {
+      "id": "Jp4iPQ2yHrs",
+      "url": "https://www.youtube.com/watch?v=Jp4iPQ2yHrs",
+      "title": "Balitang Bicolandia: January 4, 2023",
+      "duration_metadata": 2181,
+      "broadcast_date": "2023-01-04",
+      "uploader_verified": false
+    },
+    {
+      "id": "jDBjf6hMKdQ",
+      "url": "https://www.youtube.com/watch?v=jDBjf6hMKdQ",
+      "title": "Balitang Bicolandia : September 28, 2022",
+      "duration_metadata": 2095,
+      "broadcast_date": "2022-09-28",
+      "uploader_verified": false
+    },
+    {
+      "id": "Hpzd18VNY-A",
+      "url": "https://www.youtube.com/watch?v=Hpzd18VNY-A",
+      "title": "Balitang Bicolandia: August 31, 2021",
+      "duration_metadata": 1774,
+      "broadcast_date": "2021-08-31",
+      "uploader_verified": false
+    },
+    {
+      "id": "FVB6q5jl95g",
+      "url": "https://www.youtube.com/watch?v=FVB6q5jl95g",
+      "title": "Balitang Bicolandia : October 29, 2021",
+      "duration_metadata": 1963,
+      "broadcast_date": "2021-10-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "eB-POox3_mk",
+      "url": "https://www.youtube.com/watch?v=eB-POox3_mk",
+      "title": "Balitang Bicolandia: June 23, 2023",
+      "duration_metadata": 1829,
+      "broadcast_date": "2023-06-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "fCTJVbMsdLw",
+      "url": "https://www.youtube.com/watch?v=fCTJVbMsdLw",
+      "title": "Balitang Bicolandia : December 3, 2021",
+      "duration_metadata": 1653,
+      "broadcast_date": "2021-12-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "RvbUBDom3yg",
+      "url": "https://www.youtube.com/watch?v=RvbUBDom3yg",
+      "title": "Balitang Bicolandia: December 13, 2021",
+      "duration_metadata": 1716,
+      "broadcast_date": "2021-12-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "ERW4uaQ_QBQ",
+      "url": "https://www.youtube.com/watch?v=ERW4uaQ_QBQ",
+      "title": "Balitang Bicolandia: February 5, 2021",
+      "duration_metadata": 2124,
+      "broadcast_date": "2021-02-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "P7YkBj4TvPM",
+      "url": "https://www.youtube.com/watch?v=P7YkBj4TvPM",
+      "title": "Balitang Bicolandia: January 11, 2023",
+      "duration_metadata": 2213,
+      "broadcast_date": "2023-01-11",
+      "uploader_verified": false
+    },
+    {
+      "id": "OtNjtQ8yBi4",
+      "url": "https://www.youtube.com/watch?v=OtNjtQ8yBi4",
+      "title": "Balitang Bicolandia : January 31, 2022",
+      "duration_metadata": 2044,
+      "broadcast_date": "2022-01-31",
+      "uploader_verified": false
+    },
+    {
+      "id": "320isbuSL_c",
+      "url": "https://www.youtube.com/watch?v=320isbuSL_c",
+      "title": "Balitang Bicolandia : December 31, 2021",
+      "duration_metadata": 1615,
+      "broadcast_date": "2021-12-31",
+      "uploader_verified": false
+    },
+    {
+      "id": "GqVBR2umdZg",
+      "url": "https://www.youtube.com/watch?v=GqVBR2umdZg",
+      "title": "Balitang Bicolandia: January 6, 2022",
+      "duration_metadata": 1699,
+      "broadcast_date": "2022-01-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "nrUT-8dMh7g",
+      "url": "https://www.youtube.com/watch?v=nrUT-8dMh7g",
+      "title": "Balitang Bicolandia : March 29, 2022",
+      "duration_metadata": 2428,
+      "broadcast_date": "2022-03-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "7fxKQXpPsMI",
+      "url": "https://www.youtube.com/watch?v=7fxKQXpPsMI",
+      "title": "Balitang Bicolandia : October 26, 2022",
+      "duration_metadata": 2214,
+      "broadcast_date": "2022-10-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "djGbDlDAPLE",
+      "url": "https://www.youtube.com/watch?v=djGbDlDAPLE",
+      "title": "Balitang Bicolandia: December 14, 2022",
+      "duration_metadata": 2304,
+      "broadcast_date": "2022-12-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "SW5nBtTGM_A",
+      "url": "https://www.youtube.com/watch?v=SW5nBtTGM_A",
+      "title": "Balitang Bicolandia: January 26, 2023",
+      "duration_metadata": 1812,
+      "broadcast_date": "2023-01-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "D3VTRj3a5Uo",
+      "url": "https://www.youtube.com/watch?v=D3VTRj3a5Uo",
+      "title": "Balitang Bicolandia: June 12, 2023",
+      "duration_metadata": 1999,
+      "broadcast_date": "2023-06-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "nNeGm1sCMBM",
+      "url": "https://www.youtube.com/watch?v=nNeGm1sCMBM",
+      "title": "Balitang Bicolandia: June 21, 2021",
+      "duration_metadata": 1990,
+      "broadcast_date": "2021-06-21",
+      "uploader_verified": false
+    },
+    {
+      "id": "cQWj43BaSo0",
+      "url": "https://www.youtube.com/watch?v=cQWj43BaSo0",
+      "title": "Balitang Bicolandia: January 30, 2023",
+      "duration_metadata": 1833,
+      "broadcast_date": "2023-01-30",
+      "uploader_verified": false
+    },
+    {
+      "id": "XK8zonBewoQ",
+      "url": "https://www.youtube.com/watch?v=XK8zonBewoQ",
+      "title": "Balitang Bicolandia: January 31, 2023",
+      "duration_metadata": 1823,
+      "broadcast_date": "2023-01-31",
+      "uploader_verified": false
+    },
+    {
+      "id": "omP-746eiJ0",
+      "url": "https://www.youtube.com/watch?v=omP-746eiJ0",
+      "title": "Balitang Bicolandia: February 3, 2023",
+      "duration_metadata": 1683,
+      "broadcast_date": "2023-02-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "0VAT0Ac0Sa4",
+      "url": "https://www.youtube.com/watch?v=0VAT0Ac0Sa4",
+      "title": "Balitang Bicolandia: January 17, 2021",
+      "duration_metadata": 1799,
+      "broadcast_date": "2021-01-17",
+      "uploader_verified": false
+    },
+    {
+      "id": "W0W-69UFLVw",
+      "url": "https://www.youtube.com/watch?v=W0W-69UFLVw",
+      "title": "Balitang Bicolandia: June 2, 2023",
+      "duration_metadata": 1794,
+      "broadcast_date": "2023-06-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "o0rTlEgKIAo",
+      "url": "https://www.youtube.com/watch?v=o0rTlEgKIAo",
+      "title": "Balitang Bicolandia : November 7, 2022",
+      "duration_metadata": 2278,
+      "broadcast_date": "2022-11-07",
+      "uploader_verified": false
+    },
+    {
+      "id": "eLg0C10ieP8",
+      "url": "https://www.youtube.com/watch?v=eLg0C10ieP8",
+      "title": "Balitang Bicolandia: June 30, 2023",
+      "duration_metadata": 1768,
+      "broadcast_date": "2023-06-30",
+      "uploader_verified": false
+    },
+    {
+      "id": "2jBdIFCLhF0",
+      "url": "https://www.youtube.com/watch?v=2jBdIFCLhF0",
+      "title": "Balitang Bicolandia : October 20, 2022",
+      "duration_metadata": 2316,
+      "broadcast_date": "2022-10-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "cEjWhM0b-rw",
+      "url": "https://www.youtube.com/watch?v=cEjWhM0b-rw",
+      "title": "Balitang Bicolandia: October 11, 2022",
+      "duration_metadata": 2301,
+      "broadcast_date": "2022-10-11",
+      "uploader_verified": false
+    },
+    {
+      "id": "EokJ1nMgXzs",
+      "url": "https://www.youtube.com/watch?v=EokJ1nMgXzs",
+      "title": "Balitang Bicolandia: December 28, 2022",
+      "duration_metadata": 2212,
+      "broadcast_date": "2022-12-28",
+      "uploader_verified": false
+    },
+    {
+      "id": "S8mbMkO6_q8",
+      "url": "https://www.youtube.com/watch?v=S8mbMkO6_q8",
+      "title": "Balitang Bicolandia: January 23, 2023",
+      "duration_metadata": 1785,
+      "broadcast_date": "2023-01-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "4GRiqa856qw",
+      "url": "https://www.youtube.com/watch?v=4GRiqa856qw",
+      "title": "Balitang Bicolandia: November 10, 2022",
+      "duration_metadata": 2263,
+      "broadcast_date": "2022-11-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "Xoe4_RIkOtw",
+      "url": "https://www.youtube.com/watch?v=Xoe4_RIkOtw",
+      "title": "Balitang Bicolandia : October 14, 2022",
+      "duration_metadata": 2340,
+      "broadcast_date": "2022-10-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "Pa8TgAk6Xmg",
+      "url": "https://www.youtube.com/watch?v=Pa8TgAk6Xmg",
+      "title": "Balitang Bicolandia : November 9, 2022",
+      "duration_metadata": 2338,
+      "broadcast_date": "2022-11-09",
+      "uploader_verified": false
+    },
+    {
+      "id": "Y2MHxNMGImQ",
+      "url": "https://www.youtube.com/watch?v=Y2MHxNMGImQ",
+      "title": "Balitang Bicolandia: February 16, 2023",
+      "duration_metadata": 1914,
+      "broadcast_date": "2023-02-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "Tq-jwuNdRVM",
+      "url": "https://www.youtube.com/watch?v=Tq-jwuNdRVM",
+      "title": "Balitang Bicolandia : December 12, 2022",
+      "duration_metadata": 2209,
+      "broadcast_date": "2022-12-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "JVZyjy9PX8o",
+      "url": "https://www.youtube.com/watch?v=JVZyjy9PX8o",
+      "title": "Balitang Bicolandia: July 20, 2023",
+      "duration_metadata": 1788,
+      "broadcast_date": "2023-07-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "f6PJGcicq8E",
+      "url": "https://www.youtube.com/watch?v=f6PJGcicq8E",
+      "title": "Balitang Bicolandia: January 16, 2023",
+      "duration_metadata": 2326,
+      "broadcast_date": "2023-01-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "T-kuaP8z1Qw",
+      "url": "https://www.youtube.com/watch?v=T-kuaP8z1Qw",
+      "title": "Balitang Bicolandia: May 14, 2021",
+      "duration_metadata": 1987,
+      "broadcast_date": "2021-05-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "GpjYtG3S7Gg",
+      "url": "https://www.youtube.com/watch?v=GpjYtG3S7Gg",
+      "title": "Balitang Bicolandia: February 10, 2022",
+      "duration_metadata": 1777,
+      "broadcast_date": "2022-02-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "2Y70nZgLgoA",
+      "url": "https://www.youtube.com/watch?v=2Y70nZgLgoA",
+      "title": "Balitang Bicolandia : April 13, 2022",
+      "duration_metadata": 2384,
+      "broadcast_date": "2022-04-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "HWRGQJmz-Yk",
+      "url": "https://www.youtube.com/watch?v=HWRGQJmz-Yk",
+      "title": "Balitang Bicolandia : June 6, 2022",
+      "duration_metadata": 2714,
+      "broadcast_date": "2022-06-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "05hG9q7LjBE",
+      "url": "https://www.youtube.com/watch?v=05hG9q7LjBE",
+      "title": "Balitang Bicolandia : March 3, 2022",
+      "duration_metadata": 1843,
+      "broadcast_date": "2022-03-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "FqLj-zNgyBM",
+      "url": "https://www.youtube.com/watch?v=FqLj-zNgyBM",
+      "title": "Balitang Bicolandia: November 11, 2022",
+      "duration_metadata": 2248,
+      "broadcast_date": "2022-11-11",
+      "uploader_verified": false
+    },
+    {
+      "id": "uQWZbCRtLKk",
+      "url": "https://www.youtube.com/watch?v=uQWZbCRtLKk",
+      "title": "Balitang Bicolandia : March 1, 2022",
+      "duration_metadata": 1892,
+      "broadcast_date": "2022-03-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "uwXBtDaPT8U",
+      "url": "https://www.youtube.com/watch?v=uwXBtDaPT8U",
+      "title": "Balitang Bicolandia: October 13, 2022",
+      "duration_metadata": 2265,
+      "broadcast_date": "2022-10-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "HP-HBD8WVN0",
+      "url": "https://www.youtube.com/watch?v=HP-HBD8WVN0",
+      "title": "Balitang Bicolandia: February 2, 2023",
+      "duration_metadata": 1899,
+      "broadcast_date": "2023-02-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "_r0smRdp-Yg",
+      "url": "https://www.youtube.com/watch?v=_r0smRdp-Yg",
+      "title": "Balitang Bicolandia : October 1, 2021",
+      "duration_metadata": 1881,
+      "broadcast_date": "2021-10-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "W1bVat4-0XE",
+      "url": "https://www.youtube.com/watch?v=W1bVat4-0XE",
+      "title": "Balitang Bicolandia: March 15, 2023",
+      "duration_metadata": 1752,
+      "broadcast_date": "2023-03-15",
+      "uploader_verified": false
+    },
+    {
+      "id": "MpUNQ6yRkMk",
+      "url": "https://www.youtube.com/watch?v=MpUNQ6yRkMk",
+      "title": "Balitang Bicolandia : November 29, 2022",
+      "duration_metadata": 2267,
+      "broadcast_date": "2022-11-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "gvZ_ft_heRI",
+      "url": "https://www.youtube.com/watch?v=gvZ_ft_heRI",
+      "title": "Balitang Bicolandia: December 7, 2022",
+      "duration_metadata": 2249,
+      "broadcast_date": "2022-12-07",
+      "uploader_verified": false
+    },
+    {
+      "id": "5XkcVhZkNRI",
+      "url": "https://www.youtube.com/watch?v=5XkcVhZkNRI",
+      "title": "Balitang Bicolandia: April 5, 2023",
+      "duration_metadata": 1793,
+      "broadcast_date": "2023-04-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "-t8D3xo80QM",
+      "url": "https://www.youtube.com/watch?v=-t8D3xo80QM",
+      "title": "Balitang Bicolandia: February 22, 2023",
+      "duration_metadata": 1789,
+      "broadcast_date": "2023-02-22",
+      "uploader_verified": false
+    },
+    {
+      "id": "zx6PGJRRgG4",
+      "url": "https://www.youtube.com/watch?v=zx6PGJRRgG4",
+      "title": "Balitang Bicolandia: February 13, 2023",
+      "duration_metadata": 1929,
+      "broadcast_date": "2023-02-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "Wid9f_8sNNE",
+      "url": "https://www.youtube.com/watch?v=Wid9f_8sNNE",
+      "title": "Balitang Bicolandia: January 27, 2022",
+      "duration_metadata": 1870,
+      "broadcast_date": "2022-01-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "5zxPPLpm_MQ",
+      "url": "https://www.youtube.com/watch?v=5zxPPLpm_MQ",
+      "title": "Balitang Bicolandia: May 1, 2023",
+      "duration_metadata": 1916,
+      "broadcast_date": "2023-05-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "HaQra9UQMxA",
+      "url": "https://www.youtube.com/watch?v=HaQra9UQMxA",
+      "title": "Balitang Bicolandia : June 2, 2022",
+      "duration_metadata": 2594,
+      "broadcast_date": "2022-06-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "oEvvFoN0uRs",
+      "url": "https://www.youtube.com/watch?v=oEvvFoN0uRs",
+      "title": "Balitang Bicolandia : November 24, 2022",
+      "duration_metadata": 2385,
+      "broadcast_date": "2022-11-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "LD-lG00lhBg",
+      "url": "https://www.youtube.com/watch?v=LD-lG00lhBg",
+      "title": "Balitang Bicolandia : March 21, 2022",
+      "duration_metadata": 2440,
+      "broadcast_date": "2022-03-21",
+      "uploader_verified": false
+    },
+    {
+      "id": "f6QePL2rSN8",
+      "url": "https://www.youtube.com/watch?v=f6QePL2rSN8",
+      "title": "Balitang Bicolandia: January 26, 2022",
+      "duration_metadata": 1880,
+      "broadcast_date": "2022-01-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "ArKdHmKkG7g",
+      "url": "https://www.youtube.com/watch?v=ArKdHmKkG7g",
+      "title": "Balitang Bicolandia : July 27, 2022",
+      "duration_metadata": 2313,
+      "broadcast_date": "2022-07-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "eU--4m5tunw",
+      "url": "https://www.youtube.com/watch?v=eU--4m5tunw",
+      "title": "Balitang Bicolandia: January 13, 2023",
+      "duration_metadata": 2314,
+      "broadcast_date": "2023-01-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "vhjMRZnvvsY",
+      "url": "https://www.youtube.com/watch?v=vhjMRZnvvsY",
+      "title": "Balitang Bicolandia : April 22, 2022",
+      "duration_metadata": 2126,
+      "broadcast_date": "2022-04-22",
+      "uploader_verified": false
+    },
+    {
+      "id": "DtyKLXFn4t4",
+      "url": "https://www.youtube.com/watch?v=DtyKLXFn4t4",
+      "title": "Balitang Bicolandia : September 12, 2022",
+      "duration_metadata": 2150,
+      "broadcast_date": "2022-09-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "S0_83OzpwHM",
+      "url": "https://www.youtube.com/watch?v=S0_83OzpwHM",
+      "title": "Balitang Bicolandia: December 26, 2022",
+      "duration_metadata": 2293,
+      "broadcast_date": "2022-12-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "qa0Wszj2_Fk",
+      "url": "https://www.youtube.com/watch?v=qa0Wszj2_Fk",
+      "title": "Balitang Bicolandia: December 16, 2022",
+      "duration_metadata": 2314,
+      "broadcast_date": "2022-12-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "BfoJ0BjcqP4",
+      "url": "https://www.youtube.com/watch?v=BfoJ0BjcqP4",
+      "title": "Balitang Bicolandia : November 28, 2022",
+      "duration_metadata": 2284,
+      "broadcast_date": "2022-11-28",
+      "uploader_verified": false
+    },
+    {
+      "id": "-J6OD8_8x6I",
+      "url": "https://www.youtube.com/watch?v=-J6OD8_8x6I",
+      "title": "Balitang Bicolandia: February 2, 2021",
+      "duration_metadata": 1656,
+      "broadcast_date": "2021-02-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "Q9jF5_ukSgw",
+      "url": "https://www.youtube.com/watch?v=Q9jF5_ukSgw",
+      "title": "Balitang Bicolandia: October 24, 2022",
+      "duration_metadata": 2209,
+      "broadcast_date": "2022-10-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "8592QdK894A",
+      "url": "https://www.youtube.com/watch?v=8592QdK894A",
+      "title": "Balitang Bicolandia: May 3, 2021",
+      "duration_metadata": 1935,
+      "broadcast_date": "2021-05-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "hp2W8NGBN7I",
+      "url": "https://www.youtube.com/watch?v=hp2W8NGBN7I",
+      "title": "Balitang Bicolandia: June 13, 2023",
+      "duration_metadata": 1806,
+      "broadcast_date": "2023-06-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "_beMi-bDs4Y",
+      "url": "https://www.youtube.com/watch?v=_beMi-bDs4Y",
+      "title": "Balitang Bicolandia: December 23, 2022",
+      "duration_metadata": 2209,
+      "broadcast_date": "2022-12-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "agaNvoEawxE",
+      "url": "https://www.youtube.com/watch?v=agaNvoEawxE",
+      "title": "Balitang Bicolandia: November 2, 2021",
+      "duration_metadata": 1850,
+      "broadcast_date": "2021-11-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "dib3EK6lFYE",
+      "url": "https://www.youtube.com/watch?v=dib3EK6lFYE",
+      "title": "Balitang Bicolandia: July 18, 2023",
+      "duration_metadata": 1789,
+      "broadcast_date": "2023-07-18",
+      "uploader_verified": false
+    },
+    {
+      "id": "5pe6sOusaEY",
+      "url": "https://www.youtube.com/watch?v=5pe6sOusaEY",
+      "title": "Balitang Bicolandia: April 23, 2021",
+      "duration_metadata": 1800,
+      "broadcast_date": "2021-04-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "XlRqZRWxIJ4",
+      "url": "https://www.youtube.com/watch?v=XlRqZRWxIJ4",
+      "title": "Balitang Bicolandia: February 4, 2021",
+      "duration_metadata": 1897,
+      "broadcast_date": "2021-02-04",
+      "uploader_verified": false
+    },
+    {
+      "id": "001SB4Y_Cus",
+      "url": "https://www.youtube.com/watch?v=001SB4Y_Cus",
+      "title": "Balitang Bicolandia: June 23, 2021",
+      "duration_metadata": 2126,
+      "broadcast_date": "2021-06-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "SOWLGCW873A",
+      "url": "https://www.youtube.com/watch?v=SOWLGCW873A",
+      "title": "Balitang Bicolandia: July 10, 2023",
+      "duration_metadata": 1619,
+      "broadcast_date": "2023-07-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "iHJTTtFS9-k",
+      "url": "https://www.youtube.com/watch?v=iHJTTtFS9-k",
+      "title": "Balitang Bicolandia: September 15, 2023",
+      "duration_metadata": 1909,
+      "broadcast_date": "2023-09-15",
+      "uploader_verified": false
+    },
+    {
+      "id": "N2B8_UKysp4",
+      "url": "https://www.youtube.com/watch?v=N2B8_UKysp4",
+      "title": "Balitang Bicolandia: March 30, 2023",
+      "duration_metadata": 1945,
+      "broadcast_date": "2023-03-30",
+      "uploader_verified": false
+    },
+    {
+      "id": "rizLXrnuC60",
+      "url": "https://www.youtube.com/watch?v=rizLXrnuC60",
+      "title": "Balitang Bicolandia: April 19, 2024",
+      "duration_metadata": 1764,
+      "broadcast_date": "2024-04-19",
+      "uploader_verified": false
+    },
+    {
+      "id": "NAn_HWhz4l8",
+      "url": "https://www.youtube.com/watch?v=NAn_HWhz4l8",
+      "title": "Balitang Bicolandia: May 24, 2023",
+      "duration_metadata": 1773,
+      "broadcast_date": "2023-05-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "cxhYt0_Uhtc",
+      "url": "https://www.youtube.com/watch?v=cxhYt0_Uhtc",
+      "title": "Balitang Bicolandia: March 9, 2023",
+      "duration_metadata": 1949,
+      "broadcast_date": "2023-03-09",
+      "uploader_verified": false
+    },
+    {
+      "id": "uhMRWvn7hf0",
+      "url": "https://www.youtube.com/watch?v=uhMRWvn7hf0",
+      "title": "Balitang Bicolandia : August 10, 2022",
+      "duration_metadata": 2218,
+      "broadcast_date": "2022-08-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "bhVJs-XiE4I",
+      "url": "https://www.youtube.com/watch?v=bhVJs-XiE4I",
+      "title": "Balitang Bicolandia: February 14, 2023",
+      "duration_metadata": 1890,
+      "broadcast_date": "2023-02-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "E0xJakuxmxc",
+      "url": "https://www.youtube.com/watch?v=E0xJakuxmxc",
+      "title": "Balitang Bicolandia: February 10, 2021",
+      "duration_metadata": 1892,
+      "broadcast_date": "2021-02-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "7wlMhDgk8n0",
+      "url": "https://www.youtube.com/watch?v=7wlMhDgk8n0",
+      "title": "Balitang Bicolandia: August 23, 2023",
+      "duration_metadata": 1708,
+      "broadcast_date": "2023-08-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "g5iM6yMatqA",
+      "url": "https://www.youtube.com/watch?v=g5iM6yMatqA",
+      "title": "Balitang Bicolandia : November 21, 2022",
+      "duration_metadata": 2427,
+      "broadcast_date": "2022-11-21",
+      "uploader_verified": false
+    },
+    {
+      "id": "wycKQZxlvBw",
+      "url": "https://www.youtube.com/watch?v=wycKQZxlvBw",
+      "title": "Balitang Bicolandia: March 16, 2023",
+      "duration_metadata": 1941,
+      "broadcast_date": "2023-03-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "c9quIH9WGkw",
+      "url": "https://www.youtube.com/watch?v=c9quIH9WGkw",
+      "title": "Balitang Bicolandia: July 26, 2023",
+      "duration_metadata": 1513,
+      "broadcast_date": "2023-07-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "AvmgXa0TNQc",
+      "url": "https://www.youtube.com/watch?v=AvmgXa0TNQc",
+      "title": "Balitang Bicolandia: February 12, 2024",
+      "duration_metadata": 1722,
+      "broadcast_date": "2024-02-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "xRM_u9g6pnk",
+      "url": "https://www.youtube.com/watch?v=xRM_u9g6pnk",
+      "title": "Balitang Bicolandia: July 27, 2023",
+      "duration_metadata": 1814,
+      "broadcast_date": "2023-07-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "r3AVGKKh4Tg",
+      "url": "https://www.youtube.com/watch?v=r3AVGKKh4Tg",
+      "title": "Balitang Bicolandia: July 4, 2023",
+      "duration_metadata": 1828,
+      "broadcast_date": "2023-07-04",
+      "uploader_verified": false
+    },
+    {
+      "id": "G9RR0Epvu9E",
+      "url": "https://www.youtube.com/watch?v=G9RR0Epvu9E",
+      "title": "Balitang Bicolandia: June 27, 2023",
+      "duration_metadata": 1812,
+      "broadcast_date": "2023-06-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "MZf4MkThg0Q",
+      "url": "https://www.youtube.com/watch?v=MZf4MkThg0Q",
+      "title": "Balitang Bicolandia : August 8, 2022",
+      "duration_metadata": 2293,
+      "broadcast_date": "2022-08-08",
+      "uploader_verified": false
+    },
+    {
+      "id": "frIC4buJevQ",
+      "url": "https://www.youtube.com/watch?v=frIC4buJevQ",
+      "title": "Balitang Bicolandia: May 29, 2023",
+      "duration_metadata": 1840,
+      "broadcast_date": "2023-05-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "CUnbwpTxa_0",
+      "url": "https://www.youtube.com/watch?v=CUnbwpTxa_0",
+      "title": "Balitang Bicolandia: December 29, 2022",
+      "duration_metadata": 2284,
+      "broadcast_date": "2022-12-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "BbMpsR6_tc8",
+      "url": "https://www.youtube.com/watch?v=BbMpsR6_tc8",
+      "title": "Balitang Bicolandia: December 6, 2021",
+      "duration_metadata": 1711,
+      "broadcast_date": "2021-12-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "ZTWchgN7VO4",
+      "url": "https://www.youtube.com/watch?v=ZTWchgN7VO4",
+      "title": "Balitang Bicolandia : August 23, 2022",
+      "duration_metadata": 2234,
+      "broadcast_date": "2022-08-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "5qCX0RImgyo",
+      "url": "https://www.youtube.com/watch?v=5qCX0RImgyo",
+      "title": "Balitang Bicolandia: June 22, 2021",
+      "duration_metadata": 2074,
+      "broadcast_date": "2021-06-22",
+      "uploader_verified": false
+    },
+    {
+      "id": "JOmo17WM9b4",
+      "url": "https://www.youtube.com/watch?v=JOmo17WM9b4",
+      "title": "Balitang Bicolandia: August 1, 2023",
+      "duration_metadata": 1634,
+      "broadcast_date": "2023-08-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "CEuyPWF5R0s",
+      "url": "https://www.youtube.com/watch?v=CEuyPWF5R0s",
+      "title": "Balitang Bicolandia: August 24, 2021",
+      "duration_metadata": 1711,
+      "broadcast_date": "2021-08-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "E3P1z-zZlFg",
+      "url": "https://www.youtube.com/watch?v=E3P1z-zZlFg",
+      "title": "Balitang Bicolandia: October 17, 2022",
+      "duration_metadata": 2310,
+      "broadcast_date": "2022-10-17",
+      "uploader_verified": false
+    },
+    {
+      "id": "Km5eRs10yQU",
+      "url": "https://www.youtube.com/watch?v=Km5eRs10yQU",
+      "title": "Balitang Bicolandia: January 19, 2023",
+      "duration_metadata": 2252,
+      "broadcast_date": "2023-01-19",
+      "uploader_verified": false
+    },
+    {
+      "id": "2pO8WR0PfxY",
+      "url": "https://www.youtube.com/watch?v=2pO8WR0PfxY",
+      "title": "Balitang Bicolandia : January 3, 2023",
+      "duration_metadata": 2279,
+      "broadcast_date": "2023-01-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "SrG3Y7oauNE",
+      "url": "https://www.youtube.com/watch?v=SrG3Y7oauNE",
+      "title": "Balitang Bicolandia: February 20, 2023",
+      "duration_metadata": 1788,
+      "broadcast_date": "2023-02-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "qflo2O_J6NM",
+      "url": "https://www.youtube.com/watch?v=qflo2O_J6NM",
+      "title": "Balitang Bicolandia: January 9, 2023",
+      "duration_metadata": 2321,
+      "broadcast_date": "2023-01-09",
+      "uploader_verified": false
+    },
+    {
+      "id": "HWdRBo-3nZ4",
+      "url": "https://www.youtube.com/watch?v=HWdRBo-3nZ4",
+      "title": "Balitang Bicolandia: September 28, 2021",
+      "duration_metadata": 1827,
+      "broadcast_date": "2021-09-28",
+      "uploader_verified": false
+    },
+    {
+      "id": "_yZ0WnVNDbQ",
+      "url": "https://www.youtube.com/watch?v=_yZ0WnVNDbQ",
+      "title": "Balitang Bicolandia: March 29, 2023",
+      "duration_metadata": 1656,
+      "broadcast_date": "2023-03-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "ixIh6P2iX7c",
+      "url": "https://www.youtube.com/watch?v=ixIh6P2iX7c",
+      "title": "Balitang Bicolandia: December 6, 2022",
+      "duration_metadata": 2347,
+      "broadcast_date": "2022-12-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "T4pBNssKKW4",
+      "url": "https://www.youtube.com/watch?v=T4pBNssKKW4",
+      "title": "Balitang Bicolandia: March 2, 2023",
+      "duration_metadata": 1809,
+      "broadcast_date": "2023-03-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "2tjZgbkMGDg",
+      "url": "https://www.youtube.com/watch?v=2tjZgbkMGDg",
+      "title": "Balitang Bicolandia : August 24, 2022",
+      "duration_metadata": 2329,
+      "broadcast_date": "2022-08-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "Hlrj8RRD3dM",
+      "url": "https://www.youtube.com/watch?v=Hlrj8RRD3dM",
+      "title": "Balitang Bicolandia: March 25, 2021",
+      "duration_metadata": 1930,
+      "broadcast_date": "2021-03-25",
+      "uploader_verified": false
+    },
+    {
+      "id": "0GDHEan_WaU",
+      "url": "https://www.youtube.com/watch?v=0GDHEan_WaU",
+      "title": "Balitang Bicolandia: February 6, 2023",
+      "duration_metadata": 1914,
+      "broadcast_date": "2023-02-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "MCBzf0dhIzo",
+      "url": "https://www.youtube.com/watch?v=MCBzf0dhIzo",
+      "title": "Balitang Bicolandia: May 5, 2023",
+      "duration_metadata": 1859,
+      "broadcast_date": "2023-05-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "A4URIbfRaPc",
+      "url": "https://www.youtube.com/watch?v=A4URIbfRaPc",
+      "title": "Balitang Bicolandia: December 8, 2022",
+      "duration_metadata": 2259,
+      "broadcast_date": "2022-12-08",
+      "uploader_verified": false
+    },
+    {
+      "id": "QnFVomFjIlc",
+      "url": "https://www.youtube.com/watch?v=QnFVomFjIlc",
+      "title": "Balitang Bicolandia : December 2, 2022",
+      "duration_metadata": 2303,
+      "broadcast_date": "2022-12-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "OrmFEs3t7do",
+      "url": "https://www.youtube.com/watch?v=OrmFEs3t7do",
+      "title": "Balitang Bicolandia: March 26, 2021",
+      "duration_metadata": 1866,
+      "broadcast_date": "2021-03-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "uNZO2TH81yY",
+      "url": "https://www.youtube.com/watch?v=uNZO2TH81yY",
+      "title": "Balitang Bicolandia : November 2, 2022",
+      "duration_metadata": 2426,
+      "broadcast_date": "2022-11-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "L9sF8EdnE7g",
+      "url": "https://www.youtube.com/watch?v=L9sF8EdnE7g",
+      "title": "Balitang Bicolandia : February 14, 2022",
+      "duration_metadata": 1774,
+      "broadcast_date": "2022-02-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "Z6jBPOqtPGs",
+      "url": "https://www.youtube.com/watch?v=Z6jBPOqtPGs",
+      "title": "Balitang Bicolandia : November 25, 2022",
+      "duration_metadata": 2172,
+      "broadcast_date": "2022-11-25",
+      "uploader_verified": false
+    },
+    {
+      "id": "5Vsnptb4Sd4",
+      "url": "https://www.youtube.com/watch?v=5Vsnptb4Sd4",
+      "title": "Balitang Bicolandia: February 23, 2023",
+      "duration_metadata": 1850,
+      "broadcast_date": "2023-02-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "7LFgvM5Utg4",
+      "url": "https://www.youtube.com/watch?v=7LFgvM5Utg4",
+      "title": "Balitang Bicolandia: November 1, 2022",
+      "duration_metadata": 2395,
+      "broadcast_date": "2022-11-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "wPMDd2C4Jqs",
+      "url": "https://www.youtube.com/watch?v=wPMDd2C4Jqs",
+      "title": "Balitang Bicolandia: September 30, 2021",
+      "duration_metadata": 1905,
+      "broadcast_date": "2021-09-30",
+      "uploader_verified": false
+    },
+    {
+      "id": "R9Ou8ePrzrU",
+      "url": "https://www.youtube.com/watch?v=R9Ou8ePrzrU",
+      "title": "Balitang Bicolandia: June 5, 2023",
+      "duration_metadata": 1759,
+      "broadcast_date": "2023-06-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "AZ2UJfJTEIM",
+      "url": "https://www.youtube.com/watch?v=AZ2UJfJTEIM",
+      "title": "Balitang Bicolandia: May 10, 2023",
+      "duration_metadata": 1724,
+      "broadcast_date": "2023-05-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "5PApKMeD8Eg",
+      "url": "https://www.youtube.com/watch?v=5PApKMeD8Eg",
+      "title": "Balitang Bicolandia : June 27, 2022",
+      "duration_metadata": 2552,
+      "broadcast_date": "2022-06-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "SFvL4AGismo",
+      "url": "https://www.youtube.com/watch?v=SFvL4AGismo",
+      "title": "Balitang Bicolandia: June 20, 2023",
+      "duration_metadata": 1794,
+      "broadcast_date": "2023-06-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "pYBl4eFnBmI",
+      "url": "https://www.youtube.com/watch?v=pYBl4eFnBmI",
+      "title": "Balitang Bicolandia: September 26, 2023",
+      "duration_metadata": 1801,
+      "broadcast_date": "2023-09-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "etiIWCS3sF4",
+      "url": "https://www.youtube.com/watch?v=etiIWCS3sF4",
+      "title": "Balitang Bicolandia : November 14, 2022",
+      "duration_metadata": 2427,
+      "broadcast_date": "2022-11-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "ErmQdsDSiJE",
+      "url": "https://www.youtube.com/watch?v=ErmQdsDSiJE",
+      "title": "Balitang Bicolandia: January 18, 2022",
+      "duration_metadata": 1767,
+      "broadcast_date": "2022-01-18",
+      "uploader_verified": false
+    },
+    {
+      "id": "hj0QfKIG-vA",
+      "url": "https://www.youtube.com/watch?v=hj0QfKIG-vA",
+      "title": "Balitang Bicolandia : February 12, 2021",
+      "duration_metadata": 2008,
+      "broadcast_date": "2021-02-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "4yIM2ObY2Ac",
+      "url": "https://www.youtube.com/watch?v=4yIM2ObY2Ac",
+      "title": "Balitang Bicolandia : April 6, 2022",
+      "duration_metadata": 2543,
+      "broadcast_date": "2022-04-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "-E8rDB7L-uA",
+      "url": "https://www.youtube.com/watch?v=-E8rDB7L-uA",
+      "title": "Balitang Bicolandia : May 2, 2022",
+      "duration_metadata": 1532,
+      "broadcast_date": "2022-05-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "wR9omPrpvg4",
+      "url": "https://www.youtube.com/watch?v=wR9omPrpvg4",
+      "title": "Balitang Bicolandia: June 1, 2023",
+      "duration_metadata": 1745,
+      "broadcast_date": "2023-06-01",
+      "uploader_verified": false
+    },
+    {
+      "id": "fd26q8QbFDo",
+      "url": "https://www.youtube.com/watch?v=fd26q8QbFDo",
+      "title": "Balitang Bicolandia : July 22, 2022",
+      "duration_metadata": 2430,
+      "broadcast_date": "2022-07-22",
+      "uploader_verified": false
+    },
+    {
+      "id": "J1V3JIUWENY",
+      "url": "https://www.youtube.com/watch?v=J1V3JIUWENY",
+      "title": "Balitang Bicolandia : September 30, 2022",
+      "duration_metadata": 2227,
+      "broadcast_date": "2022-09-30",
+      "uploader_verified": false
+    },
+    {
+      "id": "chgTcn1ZwCw",
+      "url": "https://www.youtube.com/watch?v=chgTcn1ZwCw",
+      "title": "Balitang Bicolandia: February 8, 2023",
+      "duration_metadata": 1751,
+      "broadcast_date": "2023-02-08",
+      "uploader_verified": false
+    },
+    {
+      "id": "4ecOzhxfWY4",
+      "url": "https://www.youtube.com/watch?v=4ecOzhxfWY4",
+      "title": "Balitang Bicolandia : January 14, 2022",
+      "duration_metadata": 1743,
+      "broadcast_date": "2022-01-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "rc_wHOopF04",
+      "url": "https://www.youtube.com/watch?v=rc_wHOopF04",
+      "title": "Balitang Bicolandia: January 5, 2023",
+      "duration_metadata": 2312,
+      "broadcast_date": "2023-01-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "Ba_qG3z35Po",
+      "url": "https://www.youtube.com/watch?v=Ba_qG3z35Po",
+      "title": "Balitang Bicolandia: July 19, 2023",
+      "duration_metadata": 1925,
+      "broadcast_date": "2023-07-19",
+      "uploader_verified": false
+    },
+    {
+      "id": "gvRtTxb9vBw",
+      "url": "https://www.youtube.com/watch?v=gvRtTxb9vBw",
+      "title": "Balitang Bicolandia : July 13, 2022",
+      "duration_metadata": 2441,
+      "broadcast_date": "2022-07-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "074muE7lVVE",
+      "url": "https://www.youtube.com/watch?v=074muE7lVVE",
+      "title": "Balitang Bicolandia: September 16, 2021",
+      "duration_metadata": 1776,
+      "broadcast_date": "2021-09-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "fpFb9IhPers",
+      "url": "https://www.youtube.com/watch?v=fpFb9IhPers",
+      "title": "Balitang Bicolandia: April 25, 2023",
+      "duration_metadata": 1733,
+      "broadcast_date": "2023-04-25",
+      "uploader_verified": false
+    },
+    {
+      "id": "a_JO_Lwvh-M",
+      "url": "https://www.youtube.com/watch?v=a_JO_Lwvh-M",
+      "title": "Balitang Bicolandia : June 20, 2022",
+      "duration_metadata": 2677,
+      "broadcast_date": "2022-06-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "dNt7XmuTfeU",
+      "url": "https://www.youtube.com/watch?v=dNt7XmuTfeU",
+      "title": "Balitang Bicolandia: March 22, 2023",
+      "duration_metadata": 1920,
+      "broadcast_date": "2023-03-22",
+      "uploader_verified": false
+    },
+    {
+      "id": "_camvZU7rsU",
+      "url": "https://www.youtube.com/watch?v=_camvZU7rsU",
+      "title": "Balitang Bicolandia: October 12, 2022",
+      "duration_metadata": 2191,
+      "broadcast_date": "2022-10-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "UohiPg2Cgh8",
+      "url": "https://www.youtube.com/watch?v=UohiPg2Cgh8",
+      "title": "Balitang Bicolandia : October 19, 2022",
+      "duration_metadata": 2337,
+      "broadcast_date": "2022-10-19",
+      "uploader_verified": false
+    },
+    {
+      "id": "T-d62NFaVOQ",
+      "url": "https://www.youtube.com/watch?v=T-d62NFaVOQ",
+      "title": "Balitang Bicolandia: July 13, 2023",
+      "duration_metadata": 1741,
+      "broadcast_date": "2023-07-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "AJzQoZkPdVE",
+      "url": "https://www.youtube.com/watch?v=AJzQoZkPdVE",
+      "title": "Balitang Bicolandia: April 5, 2024",
+      "duration_metadata": 1947,
+      "broadcast_date": "2024-04-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "fWydcNJzIZ8",
+      "url": "https://www.youtube.com/watch?v=fWydcNJzIZ8",
+      "title": "Balitang Bicolandia: June 9, 2023",
+      "duration_metadata": 1730,
+      "broadcast_date": "2023-06-09",
+      "uploader_verified": false
+    },
+    {
+      "id": "44bt-6d_9Wo",
+      "url": "https://www.youtube.com/watch?v=44bt-6d_9Wo",
+      "title": "Balitang Bicolandia: July 21, 2023",
+      "duration_metadata": 1661,
+      "broadcast_date": "2023-07-21",
+      "uploader_verified": false
+    },
+    {
+      "id": "rYqKScSBWWM",
+      "url": "https://www.youtube.com/watch?v=rYqKScSBWWM",
+      "title": "Balitang Bicolandia: August 24, 2023",
+      "duration_metadata": 1668,
+      "broadcast_date": "2023-08-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "98KLkUgVu4k",
+      "url": "https://www.youtube.com/watch?v=98KLkUgVu4k",
+      "title": "Balitang Bicolandia: February 14, 2024",
+      "duration_metadata": 1948,
+      "broadcast_date": "2024-02-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "5_zEthC4_f8",
+      "url": "https://www.youtube.com/watch?v=5_zEthC4_f8",
+      "title": "Balitang Bicolandia: April 28, 2023",
+      "duration_metadata": 1854,
+      "broadcast_date": "2023-04-28",
+      "uploader_verified": false
+    },
+    {
+      "id": "E2bmoPsl5M4",
+      "url": "https://www.youtube.com/watch?v=E2bmoPsl5M4",
+      "title": "Balitang Bicolandia: April 2, 2024",
+      "duration_metadata": 1759,
+      "broadcast_date": "2024-04-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "-aEYKkV6x0A",
+      "url": "https://www.youtube.com/watch?v=-aEYKkV6x0A",
+      "title": "Balitang Bicolandia: April 24, 2024",
+      "duration_metadata": 1728,
+      "broadcast_date": "2024-04-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "G8jQfaH-WaI",
+      "url": "https://www.youtube.com/watch?v=G8jQfaH-WaI",
+      "title": "Balitang Bicolandia: April 4, 2024",
+      "duration_metadata": 1930,
+      "broadcast_date": "2024-04-04",
+      "uploader_verified": false
+    },
+    {
+      "id": "4Vkbe_A3uoc",
+      "url": "https://www.youtube.com/watch?v=4Vkbe_A3uoc",
+      "title": "Balitang Bicolandia: September 4, 2023",
+      "duration_metadata": 1733,
+      "broadcast_date": "2023-09-04",
+      "uploader_verified": false
+    },
+    {
+      "id": "2PHxPA87Mh0",
+      "url": "https://www.youtube.com/watch?v=2PHxPA87Mh0",
+      "title": "Balitang Bicolandia: July 10, 2024",
+      "duration_metadata": 1808,
+      "broadcast_date": "2024-07-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "Bui0RwEk91Q",
+      "url": "https://www.youtube.com/watch?v=Bui0RwEk91Q",
+      "title": "Balitang Bicolandia: February 8, 2024",
+      "duration_metadata": 1762,
+      "broadcast_date": "2024-02-08",
+      "uploader_verified": false
+    },
+    {
+      "id": "cjzL5bMsybk",
+      "url": "https://www.youtube.com/watch?v=cjzL5bMsybk",
+      "title": "Balitang Bicolandia: October 16, 2023",
+      "duration_metadata": 1749,
+      "broadcast_date": "2023-10-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "1-pAjcDBXCk",
+      "url": "https://www.youtube.com/watch?v=1-pAjcDBXCk",
+      "title": "Balitang Bicolandia: October 18, 2023",
+      "duration_metadata": 1675,
+      "broadcast_date": "2023-10-18",
+      "uploader_verified": false
+    },
+    {
+      "id": "d12oY4rdN64",
+      "url": "https://www.youtube.com/watch?v=d12oY4rdN64",
+      "title": "Balitang Bicolandia: March 6, 2024",
+      "duration_metadata": 1701,
+      "broadcast_date": "2024-03-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "5hCW0qkD35c",
+      "url": "https://www.youtube.com/watch?v=5hCW0qkD35c",
+      "title": "Balitang Bicolandia: November 11, 2021",
+      "duration_metadata": 1675,
+      "broadcast_date": "2021-11-11",
+      "uploader_verified": false
+    },
+    {
+      "id": "epQmdBy9Hpk",
+      "url": "https://www.youtube.com/watch?v=epQmdBy9Hpk",
+      "title": "Balitang Bicolandia: October 10, 2023",
+      "duration_metadata": 1828,
+      "broadcast_date": "2023-10-10",
+      "uploader_verified": false
+    },
+    {
+      "id": "bpE3wdOVmKk",
+      "url": "https://www.youtube.com/watch?v=bpE3wdOVmKk",
+      "title": "Balitang Bicolandia: April 16, 2024",
+      "duration_metadata": 1658,
+      "broadcast_date": "2024-04-16",
+      "uploader_verified": false
+    },
+    {
+      "id": "Mcum0rrnZD0",
+      "url": "https://www.youtube.com/watch?v=Mcum0rrnZD0",
+      "title": "Balitang Bicolandia: October 24, 2023",
+      "duration_metadata": 1710,
+      "broadcast_date": "2023-10-24",
+      "uploader_verified": false
+    },
+    {
+      "id": "Pt_ieur1xOI",
+      "url": "https://www.youtube.com/watch?v=Pt_ieur1xOI",
+      "title": "Balitang Bicolandia: May 6, 2024",
+      "duration_metadata": 2071,
+      "broadcast_date": "2024-05-06",
+      "uploader_verified": false
+    },
+    {
+      "id": "E09ljvCeDLU",
+      "url": "https://www.youtube.com/watch?v=E09ljvCeDLU",
+      "title": "Balitang Bicolandia: April 25, 2024",
+      "duration_metadata": 1877,
+      "broadcast_date": "2024-04-25",
+      "uploader_verified": false
+    },
+    {
+      "id": "uy-5ysS7GpU",
+      "url": "https://www.youtube.com/watch?v=uy-5ysS7GpU",
+      "title": "Balitang Bicolandia: November 2, 2023",
+      "duration_metadata": 1786,
+      "broadcast_date": "2023-11-02",
+      "uploader_verified": false
+    },
+    {
+      "id": "9iLoulPBnxQ",
+      "url": "https://www.youtube.com/watch?v=9iLoulPBnxQ",
+      "title": "Balitang Bicolandia: August 12, 2024",
+      "duration_metadata": 1883,
+      "broadcast_date": "2024-08-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "o6xnIoj9oV8",
+      "url": "https://www.youtube.com/watch?v=o6xnIoj9oV8",
+      "title": "Balitang Bicolandia: October 31, 2022",
+      "duration_metadata": 2338,
+      "broadcast_date": "2022-10-31",
+      "uploader_verified": false
+    },
+    {
+      "id": "fE85AV7ujCI",
+      "url": "https://www.youtube.com/watch?v=fE85AV7ujCI",
+      "title": "Balitang Bicolandia: October 17, 2023",
+      "duration_metadata": 1734,
+      "broadcast_date": "2023-10-17",
+      "uploader_verified": false
+    },
+    {
+      "id": "Gf7wVQaTOl0",
+      "url": "https://www.youtube.com/watch?v=Gf7wVQaTOl0",
+      "title": "Balitang Bicolandia: March 15, 2024",
+      "duration_metadata": 1914,
+      "broadcast_date": "2024-03-15",
+      "uploader_verified": false
+    },
+    {
+      "id": "0KFP69zGLT0",
+      "url": "https://www.youtube.com/watch?v=0KFP69zGLT0",
+      "title": "Balitang Bicolandia: July 9, 2024",
+      "duration_metadata": 1825,
+      "broadcast_date": "2024-07-09",
+      "uploader_verified": false
+    },
+    {
+      "id": "jh1IWqinq5A",
+      "url": "https://www.youtube.com/watch?v=jh1IWqinq5A",
+      "title": "Balitang Bicolandia: February 20, 2024",
+      "duration_metadata": 1756,
+      "broadcast_date": "2024-02-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "3hq9YzVYONk",
+      "url": "https://www.youtube.com/watch?v=3hq9YzVYONk",
+      "title": "Balitang Bicolandia: March 11, 2024",
+      "duration_metadata": 1786,
+      "broadcast_date": "2024-03-11",
+      "uploader_verified": false
+    },
+    {
+      "id": "ubcxX35hom0",
+      "url": "https://www.youtube.com/watch?v=ubcxX35hom0",
+      "title": "Balitang Bicolandia: July 17, 2024",
+      "duration_metadata": 1955,
+      "broadcast_date": "2024-07-17",
+      "uploader_verified": false
+    },
+    {
+      "id": "8fcEdrb6fmc",
+      "url": "https://www.youtube.com/watch?v=8fcEdrb6fmc",
+      "title": "Balitang Bicolandia: October 3, 2023",
+      "duration_metadata": 1755,
+      "broadcast_date": "2023-10-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "ulWLhBwUuMM",
+      "url": "https://www.youtube.com/watch?v=ulWLhBwUuMM",
+      "title": "Balitang Bicolandia: October 20, 2023",
+      "duration_metadata": 1676,
+      "broadcast_date": "2023-10-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "3nu3oUW_bd4",
+      "url": "https://www.youtube.com/watch?v=3nu3oUW_bd4",
+      "title": "Balitang Bicolandia: May 7, 2021",
+      "duration_metadata": 1884,
+      "broadcast_date": "2021-05-07",
+      "uploader_verified": false
+    },
+    {
+      "id": "53fYtfQ1P6Y",
+      "url": "https://www.youtube.com/watch?v=53fYtfQ1P6Y",
+      "title": "Balitang Bicolandia: April 12, 2024",
+      "duration_metadata": 1757,
+      "broadcast_date": "2024-04-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "m1GPk6slq-M",
+      "url": "https://www.youtube.com/watch?v=m1GPk6slq-M",
+      "title": "Balitang Bicolandia: March 14, 2024",
+      "duration_metadata": 1830,
+      "broadcast_date": "2024-03-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "1PAzIFcwDmc",
+      "url": "https://www.youtube.com/watch?v=1PAzIFcwDmc",
+      "title": "Balitang Bicolandia: May 3, 2024",
+      "duration_metadata": 1863,
+      "broadcast_date": "2024-05-03",
+      "uploader_verified": false
+    },
+    {
+      "id": "f6qaKSxAwbQ",
+      "url": "https://www.youtube.com/watch?v=f6qaKSxAwbQ",
+      "title": "Balitang Bicolandia: February 13, 2024",
+      "duration_metadata": 1801,
+      "broadcast_date": "2024-02-13",
+      "uploader_verified": false
+    },
+    {
+      "id": "o-_7AAfby9E",
+      "url": "https://www.youtube.com/watch?v=o-_7AAfby9E",
+      "title": "Balitang Bicolandia: February 27, 2024",
+      "duration_metadata": 1756,
+      "broadcast_date": "2024-02-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "DvRmpLKopXI",
+      "url": "https://www.youtube.com/watch?v=DvRmpLKopXI",
+      "title": "Balitang Bicolandia: August 21, 2024",
+      "duration_metadata": 1744,
+      "broadcast_date": "2024-08-21",
+      "uploader_verified": false
+    },
+    {
+      "id": "-sVzc8ePNbo",
+      "url": "https://www.youtube.com/watch?v=-sVzc8ePNbo",
+      "title": "Balitang Bicolandia: October 5, 2023",
+      "duration_metadata": 1818,
+      "broadcast_date": "2023-10-05",
+      "uploader_verified": false
+    },
+    {
+      "id": "HnO6nypIeo0",
+      "url": "https://www.youtube.com/watch?v=HnO6nypIeo0",
+      "title": "Balitang Bicolandia: August 20, 2024",
+      "duration_metadata": 1717,
+      "broadcast_date": "2024-08-20",
+      "uploader_verified": false
+    },
+    {
+      "id": "5wBxnIeuIiU",
+      "url": "https://www.youtube.com/watch?v=5wBxnIeuIiU",
+      "title": "Balitang Bicolandia: April 23, 2024",
+      "duration_metadata": 1752,
+      "broadcast_date": "2024-04-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "FhsrOJKdzYU",
+      "url": "https://www.youtube.com/watch?v=FhsrOJKdzYU",
+      "title": "Balitang Bicolandia: March 25, 2024",
+      "duration_metadata": 1913,
+      "broadcast_date": "2024-03-25",
+      "uploader_verified": false
+    },
+    {
+      "id": "fjxeIm8gBus",
+      "url": "https://www.youtube.com/watch?v=fjxeIm8gBus",
+      "title": "Balitang Bicolandia: February 23, 2024",
+      "duration_metadata": 1708,
+      "broadcast_date": "2024-02-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "ryLPPwhiXLQ",
+      "url": "https://www.youtube.com/watch?v=ryLPPwhiXLQ",
+      "title": "Balitang Bicolandia: August 15, 2024",
+      "duration_metadata": 1837,
+      "broadcast_date": "2024-08-15",
+      "uploader_verified": false
+    },
+    {
+      "id": "szmZA_xLWR4",
+      "url": "https://www.youtube.com/watch?v=szmZA_xLWR4",
+      "title": "Balitang Bicolandia: April 26, 2024",
+      "duration_metadata": 1684,
+      "broadcast_date": "2024-04-26",
+      "uploader_verified": false
+    },
+    {
+      "id": "sFRb3HEOxDA",
+      "url": "https://www.youtube.com/watch?v=sFRb3HEOxDA",
+      "title": "Balitang Bicolandia: July 12, 2023",
+      "duration_metadata": 1683,
+      "broadcast_date": "2023-07-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "GUjRn-xfzTY",
+      "url": "https://www.youtube.com/watch?v=GUjRn-xfzTY",
+      "title": "Balitang Bicolandia: May 29, 2024",
+      "duration_metadata": 1934,
+      "broadcast_date": "2024-05-29",
+      "uploader_verified": false
+    },
+    {
+      "id": "BPZZqniUFuc",
+      "url": "https://www.youtube.com/watch?v=BPZZqniUFuc",
+      "title": "Balitang Bicolandia: July 14, 2023",
+      "duration_metadata": 1686,
+      "broadcast_date": "2023-07-14",
+      "uploader_verified": false
+    },
+    {
+      "id": "QV1n3VU_BW4",
+      "url": "https://www.youtube.com/watch?v=QV1n3VU_BW4",
+      "title": "Balitang Bicolandia: May 27, 2024",
+      "duration_metadata": 1894,
+      "broadcast_date": "2024-05-27",
+      "uploader_verified": false
+    },
+    {
+      "id": "SvC_hsA6ZY8",
+      "url": "https://www.youtube.com/watch?v=SvC_hsA6ZY8",
+      "title": "Balitang Bicolandia: October 23, 2023",
+      "duration_metadata": 1747,
+      "broadcast_date": "2023-10-23",
+      "uploader_verified": false
+    },
+    {
+      "id": "TuIG4vHKmos",
+      "url": "https://www.youtube.com/watch?v=TuIG4vHKmos",
+      "title": "Balitang Bicolandia: March 12, 2024",
+      "duration_metadata": 1776,
+      "broadcast_date": "2024-03-12",
+      "uploader_verified": false
+    },
+    {
+      "id": "CMByWBHE8MM",
+      "url": "https://www.youtube.com/watch?v=CMByWBHE8MM",
+      "title": "Balitang Bicolandia: June 25, 2024",
+      "duration_metadata": 1879,
+      "broadcast_date": "2024-06-25",
+      "uploader_verified": false
+    },
+    {
+      "id": "93q_HpjQbL8",
+      "url": "https://www.youtube.com/watch?v=93q_HpjQbL8",
+      "title": "Balitang Bicolandia: June 21, 2024",
+      "duration_metadata": 1815,
+      "broadcast_date": "2024-06-21",
+      "uploader_verified": false
+    }
+  ],
+  "requirements": [
+    "Full per-video metadata and official channel identity",
+    "Current availability and completed status",
+    "Bounded media selection after45GiB floor",
+    "Language/variety and rights remain unverified"
+  ]
+}

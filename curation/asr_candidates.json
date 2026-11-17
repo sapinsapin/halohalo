@@ -1,0 +1,50 @@
+{
+  "checked_at": "2026-11-14",
+  "models": [
+    {
+      "language": "ceb",
+      "repository": "sapinsapin/whisper-large-v3-pld-ceb-norm",
+      "http_status": 200,
+      "available": true,
+      "revision": "109c7f42e40bfa071d53270115734dc2d88fb521",
+      "pipeline_tag": "automatic-speech-recognition",
+      "model_card_license": "cc-by-nc-4.0",
+      "deployed_route_verified": false,
+      "model_url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ceb-norm",
+      "local_serving_registry_present": false,
+      "use_status": "candidate only; not deployed or evaluated by this workflow"
+    },
+    {
+      "language": "bcl",
+      "repository": "sapinsapin/whisper-large-v3-pld-bcl-norm",
+      "http_status": 200,
+      "available": true,
+      "revision": "a35847d1db75e5c72409be4cc7f8b03775b45fb7",
+      "pipeline_tag": "automatic-speech-recognition",
+      "model_card_license": "cc-by-nc-4.0",
+      "deployed_route_verified": false,
+      "model_url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-bcl-norm",
+      "local_serving_registry_present": false,
+      "use_status": "candidate only; not deployed or evaluated by this workflow",
+      "scope_note": "Central Bikol candidate only; do not assume coverage of other Bikol varieties"
+    },
+    {
+      "language": "ilo",
+      "repository": "sapinsapin/whisper-large-v3-pld-ilo-norm",
+      "http_status": 200,
+      "available": true,
+      "revision": "00f3c4812849d7abfc0bb3519741b466457368ab",
+      "pipeline_tag": "automatic-speech-recognition",
+      "model_card_license": "cc-by-nc-4.0",
+      "deployed_route_verified": false,
+      "model_url": "https://huggingface.co/sapinsapin/whisper-large-v3-pld-ilo-norm",
+      "local_serving_registry_present": false,
+      "use_status": "candidate only; not deployed or evaluated by this workflow"
+    }
+  ],
+  "notes": [
+    "Public model metadata was queried directly after connector/API wrapper failures.",
+    "Model cards declare cc-by-nc-4.0; this is not commercial-use clearance.",
+    "No weights downloaded, no serving configuration changed, no new-language transcription performed."
+  ]
+}

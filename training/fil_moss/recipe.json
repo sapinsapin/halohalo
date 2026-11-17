@@ -1,0 +1,13 @@
+{
+  "status": "authorized_pending_data",
+  "host": "dwnd-01",
+  "language": "fil",
+  "preserve_code_switching": true,
+  "model": {"repo": "OpenMOSS-Team/MOSS-TTS-Realtime", "revision": "75682787d8e2fcc73faca37ba2931453ca9c4022"},
+  "codec": {"repo": "OpenMOSS-Team/MOSS-Audio-Tokenizer", "revision": "3cd226ba2947efa357ef453bcad111b6eafba782"},
+  "upstream_revision": "934d6826b084c46a0d033402174d5f8ac4ed2519",
+  "baseline": {"optimizer": "AdamW8bit", "weights_dtype": "float32", "gradient_dtype": "float32", "autocast_dtype": "bfloat16", "batch_size": 1, "learning_rate": 0.00001, "seed": 42, "codec_precomputed": true, "text_tokenizer": "unchanged pretrained", "start_from": "pinned pretrained model; not Hiligaynon-adapted checkpoint"},
+  "pilot_data_gate": {"min_train_hours": 1.0, "min_validation_hours": 0.1, "min_test_hours": 0.1, "min_clip_seconds": 2, "max_clip_seconds": 15, "audio_review": "content-bound audio_verified", "training_rights": "allowed with evidence", "speaker_id": "required", "splits": "frozen; recording, audio and known speaker disjoint"},
+  "tokenizer_experiment": {"requested_name": "tokeniser morphormer", "status": "awaiting_exact_method", "baseline_blocked_by_clarification": false, "preserve_pretrained_token_ids": true, "acoustic_codec_changes": false},
+  "execution": {"gpu_lock": "/tmp/sapinsapin-gpu.lock", "min_available_host_gib": 25, "overwrite_existing_run": false, "launch_state": "not_launched", "next": "curate eligible manifest, run readiness on host, encode/reconstruct, one-step save/reload smoke, bounded baseline, held-out evaluation"}
+}

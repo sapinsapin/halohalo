@@ -1,0 +1,19 @@
+{
+  "source": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-dedup-v1/input.jsonl",
+  "source_sha256": "4ff38136ca6c36ddd17c6133331bed55174a72f3782df32499a6680f3be38284",
+  "input_rows": 82260,
+  "canonical_rows": 82226,
+  "alias_rows": 34,
+  "audio_hashes_verified": 82260,
+  "canonical_sha256": "99df3ba812e981e8dfafff1639465dfc8ade3ce6b4755c82548d84d7467cddfd",
+  "aliases_sha256": "f5f23695619ddabc750a6f2eeb9ca4b64250982b40422972bb43a21be682a6e9",
+  "rows_modified": 0,
+  "audio_deleted": 0,
+  "review_note": "Existing rows preserved verbatim; no new review approval.",
+  "limitation": "Exact byte deduplication only; acoustic duplicates remain possible.",
+  "host": "dwnd-01",
+  "canonical_manifest": "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-dedup-v1/deduplicated/manifest.jsonl",
+  "independent_check": "Recomputed canonical/alias selection and exact row equality; rechecked input/output hashes",
+  "canonical_candidate_hours": 101.6909209375,
+  "alias_candidate_hours": 0.046746666666666666
+}

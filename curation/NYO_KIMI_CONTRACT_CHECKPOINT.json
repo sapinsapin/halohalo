@@ -1,0 +1,31 @@
+{
+  "synthetic_smoke_only": true,
+  "production_dataset_writes": false,
+  "max_attempts_per_item": 1,
+  "results": [
+    {
+      "id": "smoke-hil-eng-v1",
+      "cache_key": "1de218a2584747bbc99130fd8617a0336680f8b3725cb44e78d813d8986e5b2a",
+      "model_requested": "us.kimi-k3",
+      "model_returned": "global.moonshotai.kimi-k3.1",
+      "triage": "no_obvious_text_issue",
+      "status": "text_review_only",
+      "audio_verified": false,
+      "human_approved": false
+    },
+    {
+      "id": "smoke-fil-eng-v1",
+      "cache_key": "d7645f3da2be06213ef9d0dbf5e5e90d82e9855652dac0616e23640193833641",
+      "model_requested": "us.kimi-k3",
+      "model_returned": "global.moonshotai.kimi-k3.1",
+      "triage": "no_obvious_text_issue",
+      "status": "text_review_only",
+      "audio_verified": false,
+      "human_approved": false
+    }
+  ],
+  "scope": "Two synthetic text-only contract examples; not a quality benchmark or dataset contribution.",
+  "script_sha256": "04bbe3d0f21dbcde7dc3c29d68eee7975d7fc22fb19ea0140bde6253f2f26d7e",
+  "offload_answer": "20261115-020705-71186.md",
+  "responses_retained_privately": true
+}

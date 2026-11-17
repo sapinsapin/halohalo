@@ -1,0 +1,34 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:35:58.638744+00:00",
+  "launch": {
+    "pid": 750568,
+    "args": [
+      "/home/iotim/chika-curation/.venv-compute/bin/python",
+      "-m",
+      "curation.vad",
+      "--manifest",
+      "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v2/prepared/manifest.jsonl",
+      "--output",
+      "/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2/vad",
+      "--max-minutes",
+      "1900",
+      "--max-rows",
+      "4007"
+    ]
+  },
+  "input_sha256": "aad0fb4764ff5ef77bdd8f70181b0d8a92e1d5c8d9019986815a2dac8881202a",
+  "verified_windows": 4007,
+  "preparation_summary": {
+    "windows": 4007,
+    "window_hours": 29.86666951388889,
+    "transcribed_hours": 0,
+    "exact_decoded_duplicate_groups": [],
+    "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+  },
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.vad', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v2/prepared/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2/vad', '--max-minutes', '1900', '--max-rows', '4007'])\nif r.returncode==0:\n from curation.audit_vad import audit\n try:\n  report=audit('/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v2/prepared/manifest.jsonl',root/'vad/manifest.jsonl')\n  (root/'pcm-audit.json').write_text(json.dumps(report,indent=2))\n except Exception as e:\n  s.update(status='audit_failed',error=str(e),finished_at=time.time());(root/'worker.json').write_text(json.dumps(s));raise\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "required_environment": {
+    "PYTHONPATH": "/home/iotim/chika-curation"
+  },
+  "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-fil-vad-v2/run.py"
+}

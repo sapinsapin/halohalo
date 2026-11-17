@@ -1,0 +1,8 @@
+{
+  "host": "dwnd-01",
+  "rows": 2000,
+  "exact_pcm_samples": 130990240,
+  "manifest_sha256": "fec302c6987dfe6309f4c5ea203416bbac993fc10970f3835f9aa23fab444765",
+  "summary_sha256": "1a5a6423e96394c551208748c242522b51abd20142d86449453739bf43607662",
+  "scope": "All exported embedded PCM equals hash-verified source audio; exact transcripts preserved; curation draft only"
+}

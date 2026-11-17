@@ -1,0 +1,1103 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:08:18.114028+00:00",
+  "jobs": [
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/cebuano-next",
+      "pid": 438136,
+      "process": "",
+      "downloaded": 19,
+      "raw_hours": 9.706021944444446,
+      "verified_recordings": [
+        {
+          "id": "aGG_AS2ztnQ",
+          "sha256": "7a48ef75a64d3b42721c2f8ccc01551dc5c0e8cf3143a8def3b05f0a91d64644",
+          "bytes": 25486048,
+          "duration": 1914.241,
+          "metadata_path": "curation/outputs/cebuano-next/aGG_AS2ztnQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/aGG_AS2ztnQ.webm"
+        },
+        {
+          "id": "6pln9h1xIVo",
+          "sha256": "a7767f5d542bb483062a564dce9ff40599bbf9be44c0fa0016aeb8607192e9a9",
+          "bytes": 24094872,
+          "duration": 1846.101,
+          "metadata_path": "curation/outputs/cebuano-next/6pln9h1xIVo.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/6pln9h1xIVo.webm"
+        },
+        {
+          "id": "_H663MUO0ew",
+          "sha256": "ba658acc1e9180d0656198fcf0da1f7146dcdc7d6085974b07b2a7b14cde8161",
+          "bytes": 24715310,
+          "duration": 1868.081,
+          "metadata_path": "curation/outputs/cebuano-next/_H663MUO0ew.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/_H663MUO0ew.webm"
+        },
+        {
+          "id": "vsDrLRdbkP8",
+          "sha256": "524775ef70a423401ffc837075c16f83ea57f652c327421ad10cb449560c841d",
+          "bytes": 22451268,
+          "duration": 1707.861,
+          "metadata_path": "curation/outputs/cebuano-next/vsDrLRdbkP8.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/vsDrLRdbkP8.webm"
+        },
+        {
+          "id": "DRzGgv7Uk8k",
+          "sha256": "1246a34b526730c6057fad3c6b47f234caae3a4932bc59426555f63212e9f870",
+          "bytes": 25464346,
+          "duration": 1913.401,
+          "metadata_path": "curation/outputs/cebuano-next/DRzGgv7Uk8k.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/DRzGgv7Uk8k.webm"
+        },
+        {
+          "id": "m9v2dPBij1g",
+          "sha256": "f2cbe78a33f05873698118db8fc4dffe008eea5a9fdd6bdad2ec379f58bd3f71",
+          "bytes": 25680222,
+          "duration": 1937.901,
+          "metadata_path": "curation/outputs/cebuano-next/m9v2dPBij1g.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/m9v2dPBij1g.webm"
+        },
+        {
+          "id": "0CkLodw-KdI",
+          "sha256": "baa125ba40676b7e2ccea68c6aad1bd0085770a28e5c72cee49befea3d6c5389",
+          "bytes": 25112483,
+          "duration": 1867.501,
+          "metadata_path": "curation/outputs/cebuano-next/0CkLodw-KdI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/0CkLodw-KdI.webm"
+        },
+        {
+          "id": "x8kzBsquv9A",
+          "sha256": "592079a3e1be96c8d059d157d1082d0b616933805e63463cf05392b4fa9a42c5",
+          "bytes": 22200766,
+          "duration": 1694.921,
+          "metadata_path": "curation/outputs/cebuano-next/x8kzBsquv9A.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/x8kzBsquv9A.webm"
+        },
+        {
+          "id": "Q_UfeujikJY",
+          "sha256": "7c6f50b25d84e1e54285fb342077b11277f98770128498f0087dd9dffaf85b09",
+          "bytes": 23790277,
+          "duration": 1793.861,
+          "metadata_path": "curation/outputs/cebuano-next/Q_UfeujikJY.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/Q_UfeujikJY.webm"
+        },
+        {
+          "id": "JjWhI0mzZZM",
+          "sha256": "1b1f7200c82cd0a893bc2530747529a7f9d82ed39e0368151b9a325dfe0ac3b7",
+          "bytes": 22628220,
+          "duration": 1716.481,
+          "metadata_path": "curation/outputs/cebuano-next/JjWhI0mzZZM.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/JjWhI0mzZZM.webm"
+        },
+        {
+          "id": "cx25tIQHh1Q",
+          "sha256": "a8f6a649c015127fab466cd774fd20dc862707d96bd9701d9021d660bdf94b5b",
+          "bytes": 23582929,
+          "duration": 1748.841,
+          "metadata_path": "curation/outputs/cebuano-next/cx25tIQHh1Q.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/cx25tIQHh1Q.webm"
+        },
+        {
+          "id": "rB3DpnrDyA4",
+          "sha256": "c97163673dd4d2222047e6539cf2f26af5baa5b65e745e3e3dc916ae86fe588c",
+          "bytes": 23524576,
+          "duration": 1818.141,
+          "metadata_path": "curation/outputs/cebuano-next/rB3DpnrDyA4.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/rB3DpnrDyA4.webm"
+        },
+        {
+          "id": "gZ0Le0_rMgQ",
+          "sha256": "c82a233f724e084549a170a1c89540362810ddc835f372e126ab2b5e05211cea",
+          "bytes": 25045208,
+          "duration": 1886.441,
+          "metadata_path": "curation/outputs/cebuano-next/gZ0Le0_rMgQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/gZ0Le0_rMgQ.webm"
+        },
+        {
+          "id": "_KjXM2qCYrY",
+          "sha256": "f97c1f3097427e8ed5aacdaba3cd996c20e254a14ae8d3516a7b1f42e3fcd5f9",
+          "bytes": 22317668,
+          "duration": 1690.281,
+          "metadata_path": "curation/outputs/cebuano-next/_KjXM2qCYrY.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/_KjXM2qCYrY.webm"
+        },
+        {
+          "id": "R7WBI7kpJvs",
+          "sha256": "5c8d31d865e9202fe27a21ad3adbd310f2fc8d72b475f562c5ba5a4bce9d4318",
+          "bytes": 27207252,
+          "duration": 2073.101,
+          "metadata_path": "curation/outputs/cebuano-next/R7WBI7kpJvs.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/R7WBI7kpJvs.webm"
+        },
+        {
+          "id": "3JTjh5bW_v0",
+          "sha256": "17a1cfcc2c6634c9fcec10a3bb6a12618c7c5f352eff65b09bdb32d868de6c86",
+          "bytes": 24530155,
+          "duration": 1856.081,
+          "metadata_path": "curation/outputs/cebuano-next/3JTjh5bW_v0.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/3JTjh5bW_v0.webm"
+        },
+        {
+          "id": "ME0Q22j8f24",
+          "sha256": "0698cf7cdabf97e8d9d632a0082c9f6cbd7007cfdea408d01bc39f3dd38a9e33",
+          "bytes": 24530487,
+          "duration": 1871.741,
+          "metadata_path": "curation/outputs/cebuano-next/ME0Q22j8f24.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/ME0Q22j8f24.webm"
+        },
+        {
+          "id": "AGzm7fuNMiA",
+          "sha256": "8389c89ce0cbfac2b71d934b72c72826d34a27e8fe45728be8f6de1264fbca47",
+          "bytes": 22184664,
+          "duration": 1680.321,
+          "metadata_path": "curation/outputs/cebuano-next/AGzm7fuNMiA.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/AGzm7fuNMiA.webm"
+        },
+        {
+          "id": "Vwhh6UUnH20",
+          "sha256": "74a9c4537e474dd423d7a3d5044a088a8a63a0fbe02bbccb54e9e634cfbf91d0",
+          "bytes": 27018092,
+          "duration": 2056.381,
+          "metadata_path": "curation/outputs/cebuano-next/Vwhh6UUnH20.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/cebuano-next/Vwhh6UUnH20.webm"
+        }
+      ],
+      "failures": [],
+      "worker": {
+        "pid": 438136,
+        "status": "process_exited",
+        "started_at": 1794711460.5976715,
+        "returncode": 0,
+        "finished_at": 1794711687.64069
+      }
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/bikolano-next",
+      "pid": 438137,
+      "process": "",
+      "downloaded": 17,
+      "raw_hours": 9.72959361111111,
+      "verified_recordings": [
+        {
+          "id": "U8NnWzKs7zE",
+          "sha256": "d3a84c0b1da4455dc7d51493494a3a662475ed774cd121438ca005e482bda9c0",
+          "bytes": 26294484,
+          "duration": 1921.041,
+          "metadata_path": "curation/outputs/bikolano-next/U8NnWzKs7zE.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/U8NnWzKs7zE.webm"
+        },
+        {
+          "id": "DTzZPtxyM_k",
+          "sha256": "97c7b6e872e7995ca9bbf1e69bf999760828c983d11e19efb90656b0d43c3d57",
+          "bytes": 32970412,
+          "duration": 2210.701,
+          "metadata_path": "curation/outputs/bikolano-next/DTzZPtxyM_k.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/DTzZPtxyM_k.webm"
+        },
+        {
+          "id": "XrbclGYO6sw",
+          "sha256": "500b2d6acb11aba392a0cbbabe0a52d23a06d23e7aa83e7a41f9d20641ebbbcf",
+          "bytes": 40429815,
+          "duration": 2466.821,
+          "metadata_path": "curation/outputs/bikolano-next/XrbclGYO6sw.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/XrbclGYO6sw.webm"
+        },
+        {
+          "id": "gMxImz7vscI",
+          "sha256": "467daabe725996cb69f6faa42b875788b84c52fc6311f46ad313b73daf34f367",
+          "bytes": 25601052,
+          "duration": 1887.181,
+          "metadata_path": "curation/outputs/bikolano-next/gMxImz7vscI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/gMxImz7vscI.webm"
+        },
+        {
+          "id": "vZAOsxqzNro",
+          "sha256": "e4f068e294b4b2b5940deefdc2d8174f7ed4a5444cddd2419f5fedcdc0a9ce8c",
+          "bytes": 33898588,
+          "duration": 2197.501,
+          "metadata_path": "curation/outputs/bikolano-next/vZAOsxqzNro.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/vZAOsxqzNro.webm"
+        },
+        {
+          "id": "6R9q6TZSUbo",
+          "sha256": "fdb2ed513658fa51354acc0f24f2797845cbe201ae1454de7d2d89fe8f4a7828",
+          "bytes": 25715741,
+          "duration": 1648.241,
+          "metadata_path": "curation/outputs/bikolano-next/6R9q6TZSUbo.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/6R9q6TZSUbo.webm"
+        },
+        {
+          "id": "3DKgn4_pLBc",
+          "sha256": "2a0c7d96337df5c6c04ffa0d5fdbee70c1b613ea682d410c9f4f672e4a315d2c",
+          "bytes": 24626598,
+          "duration": 1782.201,
+          "metadata_path": "curation/outputs/bikolano-next/3DKgn4_pLBc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/3DKgn4_pLBc.webm"
+        },
+        {
+          "id": "Qcxhylz8cHg",
+          "sha256": "2e62bb8982a0ff9726122aeacbda5c3cd61303f4714e4566de824980edd477d4",
+          "bytes": 35513275,
+          "duration": 2300.381,
+          "metadata_path": "curation/outputs/bikolano-next/Qcxhylz8cHg.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/Qcxhylz8cHg.webm"
+        },
+        {
+          "id": "iundYlC4F3M",
+          "sha256": "e36d6eb7867f47f6229b192e2a517c3313f7f366102a44aa7084351b324a725d",
+          "bytes": 36600706,
+          "duration": 2307.121,
+          "metadata_path": "curation/outputs/bikolano-next/iundYlC4F3M.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/iundYlC4F3M.webm"
+        },
+        {
+          "id": "qtoePjFQUI4",
+          "sha256": "be4dcc5b4d35fba4e67d89e2b5e0d4963d73ec178d5747bc693aa587157f80f4",
+          "bytes": 22618876,
+          "duration": 1735.961,
+          "metadata_path": "curation/outputs/bikolano-next/qtoePjFQUI4.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/qtoePjFQUI4.webm"
+        },
+        {
+          "id": "MtR-U7UooUU",
+          "sha256": "6e996378fa830f1e096ed0e9046407cd6f091dddb9d4c02bda49180dedfa32db",
+          "bytes": 26628321,
+          "duration": 1950.341,
+          "metadata_path": "curation/outputs/bikolano-next/MtR-U7UooUU.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/MtR-U7UooUU.webm"
+        },
+        {
+          "id": "eZK-X5UvOMU",
+          "sha256": "fb9747be543474bebbf5b0bbf64526e963a2a645b466f51861fbea8dfbb726ac",
+          "bytes": 23644086,
+          "duration": 1759.921,
+          "metadata_path": "curation/outputs/bikolano-next/eZK-X5UvOMU.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/eZK-X5UvOMU.webm"
+        },
+        {
+          "id": "Rv6FpbPoiYc",
+          "sha256": "a44767145e49bbd5281f96433df14c15822d1ea9e118bd70f607b3a8903c97b8",
+          "bytes": 36511039,
+          "duration": 2289.241,
+          "metadata_path": "curation/outputs/bikolano-next/Rv6FpbPoiYc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/Rv6FpbPoiYc.webm"
+        },
+        {
+          "id": "yxZHs2PZal4",
+          "sha256": "ba0601d00847cffafec0dc751b115026b14d2b729a2b1abb6605dadbcd058428",
+          "bytes": 31677120,
+          "duration": 2352.121,
+          "metadata_path": "curation/outputs/bikolano-next/yxZHs2PZal4.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/yxZHs2PZal4.webm"
+        },
+        {
+          "id": "hpNVkO6fl10",
+          "sha256": "209644dc10b266d8d932bffacd357df403ffc5143e3e3e87e2c3eb03a0f0d6eb",
+          "bytes": 26055432,
+          "duration": 1924.881,
+          "metadata_path": "curation/outputs/bikolano-next/hpNVkO6fl10.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/hpNVkO6fl10.webm"
+        },
+        {
+          "id": "EUFRCGQDl-o",
+          "sha256": "0283a399bf17c84d0b02b7cb97d590df0193b87bd6c746ce134681c303720952",
+          "bytes": 39067605,
+          "duration": 2443.881,
+          "metadata_path": "curation/outputs/bikolano-next/EUFRCGQDl-o.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/EUFRCGQDl-o.webm"
+        },
+        {
+          "id": "U_wzk2BrZf0",
+          "sha256": "c3406b48184c9865e69d0d9b679da36f8e44e36b57a7f6492a968bcb386113f3",
+          "bytes": 25208684,
+          "duration": 1849.001,
+          "metadata_path": "curation/outputs/bikolano-next/U_wzk2BrZf0.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/bikolano-next/U_wzk2BrZf0.webm"
+        }
+      ],
+      "failures": [],
+      "worker": {
+        "pid": 438137,
+        "status": "process_exited",
+        "started_at": 1794711460.6107962,
+        "returncode": 0,
+        "finished_at": 1794711705.5360734
+      }
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/ilocano-next",
+      "pid": 438138,
+      "process": "",
+      "downloaded": 19,
+      "raw_hours": 9.772842485555556,
+      "verified_recordings": [
+        {
+          "id": "l8Wn8IMnGhQ",
+          "sha256": "705e07ca64f196f1fc175ec50bae6b97852b6ac4504a878fd1105949643f74b6",
+          "bytes": 26701622,
+          "duration": 1651.008435,
+          "metadata_path": "curation/outputs/ilocano-next/l8Wn8IMnGhQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/l8Wn8IMnGhQ.m4a"
+        },
+        {
+          "id": "SroFCmQVAqA",
+          "sha256": "025464d75dd1e4d9f81991abe87207981c5742c9050beee26f15faf5a628b056",
+          "bytes": 19270576,
+          "duration": 1468.501,
+          "metadata_path": "curation/outputs/ilocano-next/SroFCmQVAqA.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/SroFCmQVAqA.webm"
+        },
+        {
+          "id": "XEBCnMVQ1Lg",
+          "sha256": "f2269e293373a7d3e61d1011cf2841219df6b99250492149179358660802d219",
+          "bytes": 27542798,
+          "duration": 1703.021134,
+          "metadata_path": "curation/outputs/ilocano-next/XEBCnMVQ1Lg.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/XEBCnMVQ1Lg.m4a"
+        },
+        {
+          "id": "jV1yx0plsZI",
+          "sha256": "94447d869002028f85c87655a46818cdb084f997897a882791012aa6655ce073",
+          "bytes": 28684480,
+          "duration": 1773.609796,
+          "metadata_path": "curation/outputs/ilocano-next/jV1yx0plsZI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/jV1yx0plsZI.m4a"
+        },
+        {
+          "id": "k_K9D4D_UrQ",
+          "sha256": "ebf5bd86651d5606131697a01564d7a2d4eac9cb158a8ffa9bb109232557d779",
+          "bytes": 21878307,
+          "duration": 1658.581,
+          "metadata_path": "curation/outputs/ilocano-next/k_K9D4D_UrQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/k_K9D4D_UrQ.webm"
+        },
+        {
+          "id": "_idAyg4aenE",
+          "sha256": "d089c3e3c8482898d6f0dc39b82d516094afffac442d3cc6ffd03429b94e21ab",
+          "bytes": 28802321,
+          "duration": 1780.900862,
+          "metadata_path": "curation/outputs/ilocano-next/_idAyg4aenE.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/_idAyg4aenE.m4a"
+        },
+        {
+          "id": "bat-C3GsIjc",
+          "sha256": "9c78df745d8cb8f8cf09c6e525ab8976afad35ed99e443b0bd053a597495afac",
+          "bytes": 34327029,
+          "duration": 2122.512834,
+          "metadata_path": "curation/outputs/ilocano-next/bat-C3GsIjc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/bat-C3GsIjc.m4a"
+        },
+        {
+          "id": "Ken2BFsTG8E",
+          "sha256": "45690145874b86b42c536e673aee603734a0e7d9d680faf3c707f3e93c60332e",
+          "bytes": 29686953,
+          "duration": 1835.607075,
+          "metadata_path": "curation/outputs/ilocano-next/Ken2BFsTG8E.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/Ken2BFsTG8E.m4a"
+        },
+        {
+          "id": "wtRnLlAYa04",
+          "sha256": "f8e58975e650ea8e51c2057a75bf6255082f0806c4c68cae84ff9b3562c82c4a",
+          "bytes": 31313778,
+          "duration": 1936.195918,
+          "metadata_path": "curation/outputs/ilocano-next/wtRnLlAYa04.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/wtRnLlAYa04.m4a"
+        },
+        {
+          "id": "fQSMp4rf4ZI",
+          "sha256": "de323577480fa8b125b824fa00f07b31bfb224122576e097e084b0bbaa92b5f2",
+          "bytes": 27843219,
+          "duration": 2128.361,
+          "metadata_path": "curation/outputs/ilocano-next/fQSMp4rf4ZI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/fQSMp4rf4ZI.webm"
+        },
+        {
+          "id": "wMPFYrY6lpg",
+          "sha256": "6754bd10d809b8ccbcd1f73a042d0c13e26aee0a9908b58542161bfcb9dcf09b",
+          "bytes": 24493228,
+          "duration": 1845.781,
+          "metadata_path": "curation/outputs/ilocano-next/wMPFYrY6lpg.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/wMPFYrY6lpg.webm"
+        },
+        {
+          "id": "OXCBmItzGOc",
+          "sha256": "8d5ed3c5388b549eb041cdee08043021f696204aa38a7765ac176add5553543f",
+          "bytes": 22814292,
+          "duration": 1732.001,
+          "metadata_path": "curation/outputs/ilocano-next/OXCBmItzGOc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/OXCBmItzGOc.webm"
+        },
+        {
+          "id": "bZ-N_WBr2gA",
+          "sha256": "c15cf79666e2bd2accd93d20641904442b287bd1a09e0878542ec0e3d4069eee",
+          "bytes": 32320198,
+          "duration": 1998.425397,
+          "metadata_path": "curation/outputs/ilocano-next/bZ-N_WBr2gA.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/bZ-N_WBr2gA.m4a"
+        },
+        {
+          "id": "xYNhlpvkHNc",
+          "sha256": "327fb1d91583905e1f5b14e35010209a57ca55621e35227ce7ba7fc6a556749b",
+          "bytes": 25982428,
+          "duration": 1911.721,
+          "metadata_path": "curation/outputs/ilocano-next/xYNhlpvkHNc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/xYNhlpvkHNc.webm"
+        },
+        {
+          "id": "Fvu1kS5qG6g",
+          "sha256": "371514bf48a37b229219404e4e7338506a67547d46f4221426cb90153214d2bb",
+          "bytes": 30500471,
+          "duration": 1885.901497,
+          "metadata_path": "curation/outputs/ilocano-next/Fvu1kS5qG6g.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/Fvu1kS5qG6g.m4a"
+        },
+        {
+          "id": "OQOPPiDsww0",
+          "sha256": "4a3cdd32072207127802e6ed7190bf10ce5bcdf991f2482d7b6c0000c64e4396",
+          "bytes": 28395066,
+          "duration": 2094.841,
+          "metadata_path": "curation/outputs/ilocano-next/OQOPPiDsww0.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/OQOPPiDsww0.webm"
+        },
+        {
+          "id": "yWSqhJKJiAY",
+          "sha256": "6e6d964f55d4d1db3514ca7fd57c7e7db83a15a8b1df523352f3b2fe5f640232",
+          "bytes": 26019650,
+          "duration": 1930.581,
+          "metadata_path": "curation/outputs/ilocano-next/yWSqhJKJiAY.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/yWSqhJKJiAY.webm"
+        },
+        {
+          "id": "kIdm6bQkN3g",
+          "sha256": "79620ba5d25815b9001b0d0ef4c87803ff04c89a87cfb29bdec0bc6786029d08",
+          "bytes": 23077113,
+          "duration": 1734.701,
+          "metadata_path": "curation/outputs/ilocano-next/kIdm6bQkN3g.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/kIdm6bQkN3g.webm"
+        },
+        {
+          "id": "QMdvAadVxFU",
+          "sha256": "9d08af75e31063c530a88c7893d09c78a2c2ad49f2e6e6f9b6de5e11b4aafcd2",
+          "bytes": 26435671,
+          "duration": 1989.981,
+          "metadata_path": "curation/outputs/ilocano-next/QMdvAadVxFU.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/ilocano-next/QMdvAadVxFU.webm"
+        }
+      ],
+      "failures": [],
+      "worker": {
+        "pid": 438138,
+        "status": "process_exited",
+        "started_at": 1794711460.612004,
+        "returncode": 0,
+        "finished_at": 1794711659.6130898
+      }
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada",
+      "pid": 440397,
+      "process": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/gma-ratsada.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada --language hil --source-id gma-ratsada --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824",
+      "downloaded": 34,
+      "raw_hours": 16.846615,
+      "verified_recordings": [
+        {
+          "id": "L3465HUVqk8",
+          "sha256": "bd2b1f62ae1db2e45f9f80e89797d36d4c6b98bc9da73fcabc801ccd9314e29c",
+          "bytes": 22695887,
+          "duration": 1733.201,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/L3465HUVqk8.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/L3465HUVqk8.webm"
+        },
+        {
+          "id": "IjYr-vsfgTM",
+          "sha256": "c7be6d7a43a8d4fdd5cd6fb7738cbe161ba66693d6d80336da3cb29fbd8873cc",
+          "bytes": 25060086,
+          "duration": 1926.021,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/IjYr-vsfgTM.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/IjYr-vsfgTM.webm"
+        },
+        {
+          "id": "owaf0-jXiFo",
+          "sha256": "0ac790009262930e161af054d528d817e02cf1a838e3d426c4ee7596bc3d78e7",
+          "bytes": 24669894,
+          "duration": 1966.061,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/owaf0-jXiFo.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/owaf0-jXiFo.webm"
+        },
+        {
+          "id": "cQfOLRZagrI",
+          "sha256": "b0459a2f6359d745308085ae3408634ea24924607ead861a92cad17df02a4725",
+          "bytes": 23379171,
+          "duration": 1779.841,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/cQfOLRZagrI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/cQfOLRZagrI.webm"
+        },
+        {
+          "id": "F_6To75078E",
+          "sha256": "8a3cd82835683fe9bf9c95712ba14a3b9f366b0315ac9aed312081462fe73bd9",
+          "bytes": 24978368,
+          "duration": 1981.041,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/F_6To75078E.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/F_6To75078E.webm"
+        },
+        {
+          "id": "WkRe7PxC_CM",
+          "sha256": "56756a94e9a11d2ba7696fc5b77be5cf6195e929c54231e4fa0e3686ecf5aaa2",
+          "bytes": 22839693,
+          "duration": 1755.581,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/WkRe7PxC_CM.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/WkRe7PxC_CM.webm"
+        },
+        {
+          "id": "vbzwocZ_AQk",
+          "sha256": "152dc7847cdda31a787bdf7dc8d87bb0b787d20a2af1491b70c27c8c650b1ecd",
+          "bytes": 22334713,
+          "duration": 1711.081,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/vbzwocZ_AQk.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/vbzwocZ_AQk.webm"
+        },
+        {
+          "id": "ljYKA7M7zYc",
+          "sha256": "f0e8b3f350131910e3b6813f8726a89ac1f07028afcf696ce147a9f5fc0eba95",
+          "bytes": 23054103,
+          "duration": 1770.181,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/ljYKA7M7zYc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/ljYKA7M7zYc.webm"
+        },
+        {
+          "id": "0P0F317SmF4",
+          "sha256": "db4375a1813bd02fde5b1fb2804a87414f7e0ff87a66377e74d83fd15a6a6a97",
+          "bytes": 23950034,
+          "duration": 1834.821,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/0P0F317SmF4.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/0P0F317SmF4.webm"
+        },
+        {
+          "id": "HiPNlZb-84A",
+          "sha256": "85b69a9b895732be8c70555a2e5d921e0a2bd6d6e1470e7239aaee5450165cc8",
+          "bytes": 23361562,
+          "duration": 1770.221,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/HiPNlZb-84A.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/HiPNlZb-84A.webm"
+        },
+        {
+          "id": "eS5uJ_TBHkY",
+          "sha256": "294fef795e184684df3ab727a3e828593472f84c632a2d17c5d728b9b8c23b87",
+          "bytes": 22453354,
+          "duration": 1730.721,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/eS5uJ_TBHkY.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/eS5uJ_TBHkY.webm"
+        },
+        {
+          "id": "QuncMgGJT6s",
+          "sha256": "d3d12dae32f2f7d535b5d69bf97a1f918c876ceae892a734c194d3e8ef54491e",
+          "bytes": 22582157,
+          "duration": 1709.261,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/QuncMgGJT6s.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/QuncMgGJT6s.webm"
+        },
+        {
+          "id": "Ca9QepAIQbU",
+          "sha256": "a6be3b722689a3643065c5b0d52b8d7d31e9f547bda5bd850a8f5e1a38734aad",
+          "bytes": 24549330,
+          "duration": 1897.761,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/Ca9QepAIQbU.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/Ca9QepAIQbU.webm"
+        },
+        {
+          "id": "AkWoN7vZv98",
+          "sha256": "ea4b911625f6108a9232c18908ff71869dd985b018405ab36182899b3dc89846",
+          "bytes": 21626125,
+          "duration": 1671.821,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/AkWoN7vZv98.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/AkWoN7vZv98.webm"
+        },
+        {
+          "id": "yT1OydtIK-0",
+          "sha256": "58716d61a7e7c710a9ced341a7c61bf7e8a6246cb0a21dceb468a4a925110d26",
+          "bytes": 23570352,
+          "duration": 1799.161,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/yT1OydtIK-0.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/yT1OydtIK-0.webm"
+        },
+        {
+          "id": "SpJVfkdbVig",
+          "sha256": "7bb7fbbfc196190852b4b56da72e5161ef44beba79703d058fcb10afd5fa864b",
+          "bytes": 11612243,
+          "duration": 1805.761,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/SpJVfkdbVig.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/SpJVfkdbVig.webm"
+        },
+        {
+          "id": "q4VxKL_adyE",
+          "sha256": "cdc4463c0e22539513f4506514de037c1b305bf0a62759ac421cad399f435d46",
+          "bytes": 23157794,
+          "duration": 1787.701,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/q4VxKL_adyE.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/q4VxKL_adyE.webm"
+        },
+        {
+          "id": "stpKloiYx8A",
+          "sha256": "a9516d8dea1c690a0f66dbb49c2741b9dc9c024c1becb23c482f3637b74cbf92",
+          "bytes": 22989898,
+          "duration": 1755.541,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/stpKloiYx8A.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/stpKloiYx8A.webm"
+        },
+        {
+          "id": "Pp2mlTX4yDg",
+          "sha256": "7c7cad1fed6bb80aea69e2ca386ab9bd15fc5ba15308b2f8b19c01fa6ae89818",
+          "bytes": 23357789,
+          "duration": 1798.821,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/Pp2mlTX4yDg.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/Pp2mlTX4yDg.webm"
+        },
+        {
+          "id": "QirS6BRCwGo",
+          "sha256": "36783782bdc333c3ab76328074d429b548c4345eea60644f06a5a342e0c7405b",
+          "bytes": 22313769,
+          "duration": 1698.561,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/QirS6BRCwGo.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/QirS6BRCwGo.webm"
+        },
+        {
+          "id": "kux0V7mwkLE",
+          "sha256": "4a66fcc86ada540acb254c2cf6b53a426a7492be0b94ede131f87e2b5514dbe4",
+          "bytes": 24954312,
+          "duration": 1979.041,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/kux0V7mwkLE.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/kux0V7mwkLE.webm"
+        },
+        {
+          "id": "S8jOqsnlOqA",
+          "sha256": "1f6c8b7ff409c9e8b755a7cc770d0ffda72ea830da540a1fb071e0ccf9e09b6e",
+          "bytes": 21423598,
+          "duration": 1678.201,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/S8jOqsnlOqA.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/S8jOqsnlOqA.webm"
+        },
+        {
+          "id": "-wHj-NB7flU",
+          "sha256": "8c223ecbc863a21ee51b5678ec7c660db4ccb0db2bd4e93805aaa1d9f5301422",
+          "bytes": 24141890,
+          "duration": 1830.021,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/-wHj-NB7flU.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/-wHj-NB7flU.webm"
+        },
+        {
+          "id": "TtLYdJHoFI4",
+          "sha256": "34f5fcbcdff1e2c5f7d807e20df62c370fc3b93ecb0196b6e8d85dca74d6100c",
+          "bytes": 23181011,
+          "duration": 1789.181,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/TtLYdJHoFI4.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/TtLYdJHoFI4.webm"
+        },
+        {
+          "id": "M504J7iGoFQ",
+          "sha256": "69b0cf445ba2ced813470f3b57e2ac5ab567edf42a98160547e2d4c692210b9f",
+          "bytes": 21809791,
+          "duration": 1684.781,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/M504J7iGoFQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/M504J7iGoFQ.webm"
+        },
+        {
+          "id": "4fAmP3k59CQ",
+          "sha256": "0bbf590fe55b02a5b0eed19daad34262dce059fe1c75aada805f7329b4003bda",
+          "bytes": 22467288,
+          "duration": 1735.521,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/4fAmP3k59CQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/4fAmP3k59CQ.webm"
+        },
+        {
+          "id": "wLgJ9w3FL_o",
+          "sha256": "4eb6cfc6b5675a0581ed55ee0dce8c4be63bd232dda6e17df96f63041b167458",
+          "bytes": 24285089,
+          "duration": 1838.061,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/wLgJ9w3FL_o.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/wLgJ9w3FL_o.webm"
+        },
+        {
+          "id": "FYmaT92zR3E",
+          "sha256": "7244fc4f7ab58967629f203bfeccb8abe5075f1c73fea474515a77b20a367be4",
+          "bytes": 24765118,
+          "duration": 1893.021,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/FYmaT92zR3E.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/FYmaT92zR3E.webm"
+        },
+        {
+          "id": "xy1lG7FP29g",
+          "sha256": "a6d851a9f7c70aac53a8a60e306728422d3d6b20c33bc0e18b8aee42ff2700c8",
+          "bytes": 21985180,
+          "duration": 1693.721,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/xy1lG7FP29g.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/xy1lG7FP29g.webm"
+        },
+        {
+          "id": "bZeYK_aD9MQ",
+          "sha256": "3d19dd870b6f003744f4995eb9b9a32f86ffe55862797922b59cf446b5a35a5f",
+          "bytes": 20358233,
+          "duration": 1530.061,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/bZeYK_aD9MQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/bZeYK_aD9MQ.webm"
+        },
+        {
+          "id": "scQMvJFT5IQ",
+          "sha256": "2fcecf98a62c67135d4e54aadd9a066b9daf9ec1a222fa2ce08f2c979ecde271",
+          "bytes": 22804212,
+          "duration": 1733.361,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/scQMvJFT5IQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/scQMvJFT5IQ.webm"
+        },
+        {
+          "id": "tMI5f7Ghe8k",
+          "sha256": "cd202d1d4aa943c0da4ff566f1e3d3ea0317e1aaf42430c87cb6757da740b9a8",
+          "bytes": 22505667,
+          "duration": 1747.401,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/tMI5f7Ghe8k.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/tMI5f7Ghe8k.webm"
+        },
+        {
+          "id": "GxlK7iDTI9U",
+          "sha256": "e4d7912f2bd1385c8e896ca4647db8a8a54dd28d5871daeb24a3c738e2f8187e",
+          "bytes": 22394989,
+          "duration": 1737.461,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/GxlK7iDTI9U.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/GxlK7iDTI9U.webm"
+        },
+        {
+          "id": "XQHugGoGcYY",
+          "sha256": "b0191604425e0fecbfeb6905f2ef29696d5559cd9d521c06372c6b39a9a48d7e",
+          "bytes": 24806853,
+          "duration": 1894.821,
+          "metadata_path": "curation/outputs/hiligaynon-next/gma-ratsada/XQHugGoGcYY.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/XQHugGoGcYY.webm"
+        }
+      ],
+      "failures": [
+        {
+          "id": "a4nvTm0m_ws",
+          "error": "yt-dlp failed; inspect /home/iotim/chika-curation/curation/outputs/hiligaynon-next/gma-ratsada/a4nvTm0m_ws.download.log"
+        }
+      ],
+      "worker": null
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos",
+      "pid": 440399,
+      "process": "",
+      "downloaded": 17,
+      "raw_hours": 2.2178991666666668,
+      "verified_recordings": [
+        {
+          "id": "Kvpn0BCN-ww",
+          "sha256": "8ff3396d5dec0b3e414a83dec82fb6602fe8ce013db3f57386c42fd1e46a0fb5",
+          "bytes": 8853983,
+          "duration": 574.521,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/Kvpn0BCN-ww.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/Kvpn0BCN-ww.webm"
+        },
+        {
+          "id": "bCceg3K0l70",
+          "sha256": "93fe6bef4cf84f065c0c2a6e67e0d55f7c34b410c39b49144db094fdd8d7de79",
+          "bytes": 64054679,
+          "duration": 3931.441,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/bCceg3K0l70.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/bCceg3K0l70.webm"
+        },
+        {
+          "id": "d16E6lKvacs",
+          "sha256": "80eb48a4c8c163007ac8c1020beba520a859079c650b337c1ffc3ca008ce486e",
+          "bytes": 817391,
+          "duration": 55.461,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/d16E6lKvacs.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/d16E6lKvacs.webm"
+        },
+        {
+          "id": "fawti2ZkYWQ",
+          "sha256": "725adda8697e42f89b4d36b5e01aacbd291a9abd86fcfddc56e5823c396c8841",
+          "bytes": 1013114,
+          "duration": 67.861,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/fawti2ZkYWQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/fawti2ZkYWQ.webm"
+        },
+        {
+          "id": "UaDyhejkedQ",
+          "sha256": "0e2c48863eacae8ea5a3355526769e57b7a5e4804b3a93655acf8e00d7331e47",
+          "bytes": 3843263,
+          "duration": 222.861,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/UaDyhejkedQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/UaDyhejkedQ.webm"
+        },
+        {
+          "id": "vSV6dhLPBn4",
+          "sha256": "7cc3e9a3a53ac640ed78d6153964972c2dea2177fd8aa452b22c2d84b75201d2",
+          "bytes": 934859,
+          "duration": 61.721,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/vSV6dhLPBn4.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/vSV6dhLPBn4.webm"
+        },
+        {
+          "id": "DiW1WN6qiIk",
+          "sha256": "f320c82f0688e0b010ce3b53f7a8dc700356efe655dda6385083fe32e9fcd05f",
+          "bytes": 9379645,
+          "duration": 604.181,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/DiW1WN6qiIk.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/DiW1WN6qiIk.webm"
+        },
+        {
+          "id": "XSKeSPPHdbc",
+          "sha256": "82d05bee3827957698a98787888b221c52934f6b327a1a62b667529437a1ea22",
+          "bytes": 9728769,
+          "duration": 617.221,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/XSKeSPPHdbc.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/XSKeSPPHdbc.webm"
+        },
+        {
+          "id": "k5FGwhA_NeM",
+          "sha256": "7e56e03674c88aa0807d9c96255bc1a3d540c94f32ae0f8cbaacf3185494138f",
+          "bytes": 789991,
+          "duration": 54.861,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/k5FGwhA_NeM.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/k5FGwhA_NeM.webm"
+        },
+        {
+          "id": "7paBJ-08mdI",
+          "sha256": "2b54d3d932fbe13258c79f6e0c6bc7016028e873a5d88af0d6f81b78b9be8923",
+          "bytes": 2280133,
+          "duration": 140.861,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/7paBJ-08mdI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/7paBJ-08mdI.webm"
+        },
+        {
+          "id": "0p3DNk18GPA",
+          "sha256": "d5f0e384bebff006cf56a786123591bcfda2382598b1f93a73002eb8adcfceef",
+          "bytes": 2938081,
+          "duration": 175.221,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/0p3DNk18GPA.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/0p3DNk18GPA.webm"
+        },
+        {
+          "id": "ZgQQDer97n0",
+          "sha256": "d29b6c6ab0737d869a7bb7d80415b67d27b155860123103d90d968206533ab35",
+          "bytes": 2060423,
+          "duration": 124.921,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/ZgQQDer97n0.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/ZgQQDer97n0.webm"
+        },
+        {
+          "id": "K0Aj1CCqD1c",
+          "sha256": "f33cba8c6a5cc1379eb7d7e842ad986491dc931a138a9eff53cb5c8a6930b8e5",
+          "bytes": 3349931,
+          "duration": 202.781,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/K0Aj1CCqD1c.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/K0Aj1CCqD1c.webm"
+        },
+        {
+          "id": "qFHr3ykA1kU",
+          "sha256": "095e4add258c7c25ee8d036de9bd2136d4f2b09a575d5f0a6010c587ff7667e4",
+          "bytes": 3949693,
+          "duration": 240.661,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/qFHr3ykA1kU.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/qFHr3ykA1kU.webm"
+        },
+        {
+          "id": "c6MBBrq-4LY",
+          "sha256": "52df8107543eb9347c58b28f3c2e558ff682bcfa631c2538ade5efd4e50ea2bf",
+          "bytes": 1089472,
+          "duration": 70.461,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/c6MBBrq-4LY.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/c6MBBrq-4LY.webm"
+        },
+        {
+          "id": "g5TcfO6Nch8",
+          "sha256": "02ac84d8cc829d748e9528f863738d424f78b44287899c18c8651c95744314a6",
+          "bytes": 8544081,
+          "duration": 550.941,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/g5TcfO6Nch8.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/g5TcfO6Nch8.webm"
+        },
+        {
+          "id": "PL4l6yqBjJo",
+          "sha256": "390b35aaaa9b03f631cfbea8fcb2ed5814803c908b94882324ae1ea363c4299d",
+          "bytes": 4738496,
+          "duration": 288.461,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-videos/PL4l6yqBjJo.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/PL4l6yqBjJo.webm"
+        }
+      ],
+      "failures": [
+        {
+          "id": "yEB3YF2ITDc",
+          "error": "yt-dlp failed; inspect /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/yEB3YF2ITDc.download.log"
+        },
+        {
+          "id": "HFSIiHbiAd0",
+          "error": "yt-dlp failed; inspect /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-videos/HFSIiHbiAd0.download.log"
+        }
+      ],
+      "worker": null
+    },
+    {
+      "root": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams",
+      "pid": 440398,
+      "process": "/home/iotim/chika-curation/.venv/bin/python -m curation.acquire_inventory --inventory /home/iotim/chika-curation/hiligaynon-continuation/aksyon-streams.json --root /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams --language hil --source-id aksyon-streams --max-hours 100 --max-items 10000 --min-free-gib 100 --max-transfer-bytes 1073741824",
+      "downloaded": 15,
+      "raw_hours": 19.298654166666665,
+      "verified_recordings": [
+        {
+          "id": "wJGT4L96jQI",
+          "sha256": "6ee7bbdc0fa04593d974e386c477a733cb113200bde043bb9e32e2432083e38c",
+          "bytes": 151495602,
+          "duration": 9940.021,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/wJGT4L96jQI.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/wJGT4L96jQI.webm"
+        },
+        {
+          "id": "VRLRWQkWoLQ",
+          "sha256": "0b193f354650170ae7c896eb2dd667a89beb1f7a195449a1884095647c295dc9",
+          "bytes": 118821161,
+          "duration": 7686.121,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/VRLRWQkWoLQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/VRLRWQkWoLQ.webm"
+        },
+        {
+          "id": "CasLklV1xM0",
+          "sha256": "65d0851d0d0c88faa0a84098cc6662e9b2a01e819b357368f7967657f8d93395",
+          "bytes": 70242121,
+          "duration": 4650.361,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/CasLklV1xM0.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/CasLklV1xM0.webm"
+        },
+        {
+          "id": "UUoV0p1g_ao",
+          "sha256": "dec193041e2a2185f522dcce2c9303e7c2a8d2942d02189821b0ad1094e4ef12",
+          "bytes": 51153231,
+          "duration": 3243.501,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/UUoV0p1g_ao.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/UUoV0p1g_ao.webm"
+        },
+        {
+          "id": "O235kEPYGN8",
+          "sha256": "d8fdd176603e72297c8d9a7b74b8c264c84e5d39223909aa2e13d648c2e5a9d4",
+          "bytes": 45657118,
+          "duration": 2934.261,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/O235kEPYGN8.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/O235kEPYGN8.webm"
+        },
+        {
+          "id": "Ew5GX0RIvYQ",
+          "sha256": "eb80fbb55da2ddd4d0dda4f00811fcd084293e7013d2219dfec3efbee5f65c2a",
+          "bytes": 85485557,
+          "duration": 5228.901,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/Ew5GX0RIvYQ.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/Ew5GX0RIvYQ.webm"
+        },
+        {
+          "id": "GFATYmyQKyE",
+          "sha256": "d3af30dc74fc5f50ee4f404c4cddc2bd4e0d6acc6eca420a282cb590f47facd3",
+          "bytes": 41759585,
+          "duration": 2897.721,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/GFATYmyQKyE.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/GFATYmyQKyE.webm"
+        },
+        {
+          "id": "BGYIluW_czA",
+          "sha256": "2bd3cc00444d0891af05df540d7ec8fb4724f08b5f62f3ecb5aa7527448236fa",
+          "bytes": 39614009,
+          "duration": 2983.881,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/BGYIluW_czA.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/BGYIluW_czA.webm"
+        },
+        {
+          "id": "beH25kunKjw",
+          "sha256": "949a62fd01542c0e2d2d55f0020ec1397ed2542ef85933a6bdee9a6ec805c932",
+          "bytes": 124495588,
+          "duration": 8086.361,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/beH25kunKjw.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/beH25kunKjw.webm"
+        },
+        {
+          "id": "Cb6zqGekrVk",
+          "sha256": "930e0ae5258d2ba1f1f05d3c0c2a3925d9ce4027dae6ee2de99f4e8b6c2f648a",
+          "bytes": 53440086,
+          "duration": 3505.381,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/Cb6zqGekrVk.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/Cb6zqGekrVk.webm"
+        },
+        {
+          "id": "B4aULc9V_30",
+          "sha256": "4e5bac3c262cc855c9be3db8b48b89dbb142a41d230ed2573e25a056772aade6",
+          "bytes": 23293311,
+          "duration": 1540.561,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/B4aULc9V_30.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/B4aULc9V_30.webm"
+        },
+        {
+          "id": "VF8R5O_6g_o",
+          "sha256": "13a3aba64b361c82f0c2f7e5c2ebf8a4477aab6b584d98138296d580087c78b9",
+          "bytes": 53218952,
+          "duration": 3507.701,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/VF8R5O_6g_o.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/VF8R5O_6g_o.webm"
+        },
+        {
+          "id": "P07q6v_3vsM",
+          "sha256": "2cdf0aaeb0f24c03421237e94eb873748660f2617283c99e3db1cbb69ab4ef6c",
+          "bytes": 93505702,
+          "duration": 6120.061,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/P07q6v_3vsM.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/P07q6v_3vsM.webm"
+        },
+        {
+          "id": "nrswDVrdU7c",
+          "sha256": "8ab59b2de3bfee9fba87f0678114fd812f3625b9e70f9482eb5dd80acf8ccb12",
+          "bytes": 54041437,
+          "duration": 3572.741,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/nrswDVrdU7c.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/nrswDVrdU7c.webm"
+        },
+        {
+          "id": "yEcjtYx4Iw8",
+          "sha256": "c6b6243c74321fed2ab5fecae2a8ef2d6c0fb0204cb1b952f2c14b67614f57fd",
+          "bytes": 54898585,
+          "duration": 3577.581,
+          "metadata_path": "curation/outputs/hiligaynon-next/aksyon-streams/yEcjtYx4Iw8.json",
+          "audio_path": "/home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/yEcjtYx4Iw8.webm"
+        }
+      ],
+      "failures": [
+        {
+          "id": "N_tQxIeesgY",
+          "error": "yt-dlp failed; inspect /home/iotim/chika-curation/curation/outputs/hiligaynon-next/aksyon-streams/N_tQxIeesgY.download.log"
+        }
+      ],
+      "worker": null
+    }
+  ],
+  "free_gib": 1832.148826599121,
+  "transcribed_hours": 0,
+  "preparation": {
+    "worker": {
+      "pid": 440843,
+      "status": "complete",
+      "started_at": 1794711720.3650832,
+      "returncode": 0,
+      "finished_at": 1794711901.7511759
+    },
+    "summary": {
+      "windows": 1233,
+      "window_hours": 9.18717501736111,
+      "transcribed_hours": 0,
+      "exact_decoded_duplicate_groups": [],
+      "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+    },
+    "verified_manifests": [
+      {
+        "path": "/home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1/prepared/manifest.jsonl",
+        "sha256": "01709dcb12f43ce258454ea3ccb3a194bcf58dc8aac812d086d22d756b14c018",
+        "rows": 1233
+      }
+    ]
+  },
+  "limits": "Raw acquisition and fixed transport windows only; language, speech, rights, near-duplicates and transcription remain pending. Snapshot of live jobs, not an all-source completion claim."
+}

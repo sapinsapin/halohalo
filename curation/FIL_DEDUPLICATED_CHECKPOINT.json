@@ -1,0 +1,24 @@
+{
+  "source": "curation/outputs/collected-fil-7946-v1/manifest.jsonl",
+  "source_sha256": "4d89a8443b2f160eb6f1032cc110650b4934b23431155f013ddb4c7092a248e0",
+  "input_rows": 7946,
+  "canonical_rows": 7460,
+  "alias_rows": 486,
+  "audio_hashes_verified": 7946,
+  "canonical_sha256": "aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73",
+  "aliases_sha256": "e89027910f695d6ff6acf38aa8cc82409509cfead34bc64ff00e73c598e1253c",
+  "rows_modified": 0,
+  "audio_deleted": 0,
+  "review_note": "Existing rows preserved verbatim; no new review approval.",
+  "limitation": "Exact byte deduplication only; acoustic duplicates remain possible.",
+  "independent_reconstruction_verified": true,
+  "review_statuses": {
+    "draft": 5377,
+    "text_reviewed": 2083
+  },
+  "padded_seconds": 32911.370375000035,
+  "manifest": "curation/outputs/collected-fil-7460-v1/manifest.jsonl",
+  "status": "deduplicated_staging_not_exported",
+  "nyo_requested_model": "us.kimi-k3",
+  "nyo_returned_model": "global.moonshotai.kimi-k3.1"
+}

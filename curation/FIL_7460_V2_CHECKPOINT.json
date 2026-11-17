@@ -1,0 +1,47 @@
+{
+  "status": "staged_not_exported",
+  "rows": 7460,
+  "new_reviews_joined": 984,
+  "reviewed_alternate_ids_not_transferred": [
+    "6ba63429edb3f4fbdd2ae0dcd0beee06042fee3e48935cd7964dfd87bdbe7561",
+    "c3b3cf977ea01a38b710f13248e974c2fdf8dd1fb8685a603bbfb1d9ef17994a",
+    "71542b3cfdeaeef8e5f9c223b61378f7390f8664a8407a5739942595d6345dee",
+    "859d79a915936ac275de7c79fdfe9bd163e116f9b3c942ed6119a5186df35786"
+  ],
+  "review_statuses": {
+    "text_reviewed": 3067,
+    "draft": 4393
+  },
+  "manifest": "curation/outputs/collected-fil-7460-v2/manifest.jsonl",
+  "manifest_sha256": "0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf",
+  "source_manifest_sha256": "aee3c22b711aabdb76eb9c2a418899dd50a8d717735bf6693f0885293ba43a73",
+  "review_manifest_sha256": "9df6cf5fa8a8fd5ba9c22c0e9785e490394d0c58e493e2e7adae07e2bdad8aec",
+  "transcript_changes": 0,
+  "audio_approvals": 0,
+  "alternate_id_mapping": [
+    {
+      "reviewed_alias_id": "6ba63429edb3f4fbdd2ae0dcd0beee06042fee3e48935cd7964dfd87bdbe7561",
+      "canonical_id": "48f1025008f73f5bfd20c97969046ada7011ef273dca4c2e804ce84d9d525464",
+      "canonical_review_status": "text_reviewed",
+      "same_audio_and_sentence": true
+    },
+    {
+      "reviewed_alias_id": "c3b3cf977ea01a38b710f13248e974c2fdf8dd1fb8685a603bbfb1d9ef17994a",
+      "canonical_id": "23ac0fabdea6b0554dd05e45279ecbc5c356fc359cf5b2b6c94efd2e7937e138",
+      "canonical_review_status": "text_reviewed",
+      "same_audio_and_sentence": true
+    },
+    {
+      "reviewed_alias_id": "71542b3cfdeaeef8e5f9c223b61378f7390f8664a8407a5739942595d6345dee",
+      "canonical_id": "7c9d78d9ab26d22db4f495211bf2b861fe38614b74277c21bbd0387a241052ae",
+      "canonical_review_status": "text_reviewed",
+      "same_audio_and_sentence": true
+    },
+    {
+      "reviewed_alias_id": "859d79a915936ac275de7c79fdfe9bd163e116f9b3c942ed6119a5186df35786",
+      "canonical_id": "64db86a30f4d9212ab71fad589113aca067357094e900dd47ee4947be8ca8605",
+      "canonical_review_status": "text_reviewed",
+      "same_audio_and_sentence": true
+    }
+  ]
+}

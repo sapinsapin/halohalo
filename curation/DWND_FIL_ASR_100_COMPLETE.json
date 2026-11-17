@@ -1,0 +1,27 @@
+{
+  "host": "dwnd-01",
+  "worker": {
+    "pid": 715516,
+    "status": "complete",
+    "started_at": 1794713543.5431,
+    "returncode": 0,
+    "finished_at": 1794713654.8800912
+  },
+  "summary": {
+    "selected": 100,
+    "completed": 100,
+    "failed": [],
+    "manifest_rows": 100,
+    "checkpoint_every": 10,
+    "min_free_gib": 100.0,
+    "stopped_early": false,
+    "stop_reason": null,
+    "review_status": "draft",
+    "transcribed_hours": 0.2871588888888889,
+    "empty": 0
+  },
+  "verified_rows": 100,
+  "manifest_sha256": "1abe7532354b8fe157449ae9c0f16952f41696973b84875f37e1c84c3c0602d9",
+  "manifest": "/home/iotim/chika-curation/curation/outputs/remote-fil-asr-continuation-v2/responses/manifest.jsonl",
+  "scope": "Draft ASR: input identity, raw response protocol, transcript equality and audio hashes verified. No acoustic transcript correctness approval."
+}

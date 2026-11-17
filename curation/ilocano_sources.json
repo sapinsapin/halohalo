@@ -1,0 +1,56 @@
+[
+  {
+    "id": "awr-ilocano",
+    "url": "https://feeds.feedburner.com/ILOMA_VOH",
+    "language": "ilo",
+    "description": "Radio programs in Ilocano / Ilokano / Ti Pagsasao nga Iloco for the Philippines, by Adventist World Radio",
+    "language_verified": false,
+    "training_rights": "unknown",
+    "redistribution_rights": "unknown",
+    "preserve_english_code_switching": true,
+    "evidence_url": "http://feeds.feedburner.com/ILOMA_VOH",
+    "feed_title": "AWR Ilocano / Ilokano / Ti Pagsasao nga Iloco",
+    "domain": "religious_bible_teaching"
+  },
+  {
+    "id": "ttb-ilokano",
+    "url": "https://cmp.thruthebible.io/v1/feeds/studies/ilo?feedAudioFormat=CSA&sort=teaching_order&order=ASC&offset=0&enrich=true&limit=2000",
+    "language": "ilo",
+    "description": "Ammuem ti amin a Sao ti Dios babaen ti mapagtalkan a panursuro iti Biblia ti THRU the BIBLE iti Ilokano. Tunggal paset ket mangipaay iti nalawag ken praktikal a panursuro tapno matulongannaka a makaawat iti Nasantoan a Surat ken maipakat daytoy iti inaldaw a biag. Agpagna iti intero a Biblia, maysa a leksion iti tunggal gundaway, agraman dagiti dumdumngeg iti intero a lubong. Ammuem pay iti TTB.BIBLE",
+    "language_verified": false,
+    "training_rights": "unknown",
+    "redistribution_rights": "unknown",
+    "preserve_english_code_switching": true,
+    "evidence_url": "https://cmp.thruthebible.io/v1/feeds/studies/ilo?feedAudioFormat=CSA&sort=teaching_order&order=ASC&offset=0&enrich=true&limit=2000",
+    "feed_title": "TTB Ilokano Panagadal ti Biblia (Ilokano)",
+    "domain": "religious_bible_teaching"
+  },
+  {
+    "id": "norma-ilocano",
+    "url": "https://media.rss.com/normahennessy/feed.xml",
+    "language": "ilo",
+    "description": "Story narratives of historical and heroic inspirational figures around the globe in two Philippine language versions:  Tagalog and Ilocano.",
+    "language_verified": false,
+    "training_rights": "unknown",
+    "redistribution_rights": "unknown",
+    "preserve_english_code_switching": true,
+    "evidence_url": "https://media.rss.com/normahennessy/feed.xml",
+    "feed_title": "Kuwentong  Pilipino sa Tagalog at Ilocano",
+    "selection_rule": "Only episode titles explicitly containing Ilocano or Ilokano; enforced on every discovery by include_title_regex.",
+    "domain": "history_narrative",
+    "include_title_regex": "(?i)ilocano|ilokano"
+  },
+  {
+    "id": "subtle-ilokano-traits",
+    "url": "https://www.spreaker.com/show/4368082/episodes/feed",
+    "language": "ilo",
+    "description": "This is a tungtongan session with our fellow gagayem in Ilokano class. Come and listen to us as we share our thoughts, feels and reactions about life.",
+    "language_verified": false,
+    "training_rights": "unknown",
+    "redistribution_rights": "unknown",
+    "preserve_english_code_switching": true,
+    "evidence_url": "https://www.spreaker.com/show/4368082/episodes/feed",
+    "feed_title": "Subtle Ilokano Traits Show",
+    "domain": "conversation"
+  }
+]

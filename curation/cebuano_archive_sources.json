@@ -1,0 +1,42 @@
+[
+  {
+    "id": "gma-balitang-bisdak",
+    "url": "https://www.gmanetwork.com/regionaltv/balitangbisdak/",
+    "language": "ceb",
+    "description": "GMA official dated Balitang Bisdak full-episode archive; show-specific selection only, not whole national/regional channel.",
+    "language_evidence_url": "https://www.gmanetwork.com/regionaltv/specials/13621/gma-regional-tv-newscasts-balitang-bisdak-and-balitang-amianan-no-1-in-ratings/story/",
+    "channel_url": "https://www.youtube.com/channel/UCVoawkpW12kgtXgInbPCrhQ",
+    "language_status": "provisional; publisher identifies Cebuano newscast, exact audio language and regional variety unverified",
+    "languages_expected": [
+      "ceb",
+      "eng",
+      "fil",
+      "war"
+    ],
+    "english_code_switching": "preserve; valid data, do not normalize or translate",
+    "rights": {
+      "training": "unknown",
+      "commercial": "unknown",
+      "redistribution": "unknown"
+    },
+    "pilot_inventory": "curation/outputs/cebuano/archive-expansion/inventory.json",
+    "evidence_snapshots": "curation/outputs/cebuano/archive-expansion/evidence",
+    "inventory_scope": "22 acquired recordings (nine full broadcasts and13clips), plus a separate300-candidate discovery inventory. Exact-byte checks do not establish acoustic uniqueness.",
+    "expanded_inventory": "curation/outputs/cebuano/archive-expansion/expanded-inventory.json",
+    "expanded_selection": {
+      "completed_clips": 13,
+      "excluded_candidates": 17,
+      "metadata_hours": 0.4563888888888889,
+      "download_status": "13 clips completed and hash-verified; pilot plus clips total 15 recordings",
+      "max_new_recordings": 30,
+      "max_inventory_raw_hours": 20,
+      "min_free_gib": 45,
+      "measured_clip_hours": 0.4564758333333333
+    },
+    "frozen_inventory": "curation/cebuano_archive_inventory.json",
+    "discovery_inventory": "curation/cebuano_discovery_inventory.json",
+    "discovery_receipt": "curation/cebuano_discovery_receipt.json",
+    "publisher_program_id": "2",
+    "publisher_grid_url": "https://data.igma.tv/regionaltv2023/data/grid/videos/2.gz"
+  }
+]

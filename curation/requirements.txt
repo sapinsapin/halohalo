@@ -1,0 +1,7 @@
+pyarrow>=16,<27
+soundfile>=0.12,<1
+scipy>=1.11,<2
+huggingface_hub>=0.26,<2
+websockets>=14,<17
+datasets>=3,<5
+onnxruntime>=1.23,<2

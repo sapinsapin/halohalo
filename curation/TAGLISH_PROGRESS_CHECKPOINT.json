@@ -1,0 +1,23 @@
+{
+  "repo": "sapinsapin/chika",
+  "checkpoint": "checkpoints/taglish-rss/6bbfa8933a92a9c2fe4419f927d05809bcc0b30cac02d2cc15cdbc6bbadc9321.sqlite",
+  "revision": "b230dd4efec58eade728883a12f0f30289c56018",
+  "checkpoint_sha256": "6bbfa8933a92a9c2fe4419f927d05809bcc0b30cac02d2cc15cdbc6bbadc9321",
+  "checkpoint_download_verified": true,
+  "eviction_applied": true,
+  "dry_run_result": "checkpoint does not prove this item backup",
+  "reason": "Live backup advanced from 7 to 8 receipts while the independent checkpoint was uploaded. New candidate sorts first; no proven prefix can be evicted with existing selector.",
+  "next_action": "Remaining backups continue; no ASR restart until storage floor satisfied.",
+  "evicted_files": 7,
+  "unlinked_bytes": 602607050,
+  "independent_local_absence_and_remote_status_verified": true,
+  "selected_hashes": [
+    "4924dd588ec772918542ded4228c81f4aa33a4ba4e6fc1ff33ffee8f2459598d",
+    "70abcae78799153bd371436eb4f39012d8f5ed1419bdafcb22181fe0a4f069e2",
+    "96efa6f02e3347dd2105e72c23f3b4a0cc629d6b853a908bd01cdf3aefeec213",
+    "a4709ff24a9aa2cba27e99016a331b506dc516ba9c3168b7cafa513c903f7e32",
+    "a602cb19cf0bfea80afbc9080bc6ecd4d082cf9eb308120ac58304ea8f1f5078",
+    "dc2d115e91b20b62f2cdeefcdedb9dd56270c66a1b1fc3cdbc53cd46445ad042",
+    "fd89cc5889f0bd3f82f379f635656203febf5c7658fa651056f4623ef14c0682"
+  ]
+}

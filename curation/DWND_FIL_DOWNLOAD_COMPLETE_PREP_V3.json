@@ -1,0 +1,1960 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:38:23.734932+00:00",
+  "download_worker": {
+    "pid": 570576,
+    "status": "process_exited",
+    "started_at": 1794712675.7895827,
+    "returncode": 0,
+    "finished_at": 1794713773.505674
+  },
+  "verified_downloaded_recordings": [
+    {
+      "id": "4134cdd31a7e05ca0a7ab0df5f911700",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "bad2735ca58430004686a24f17c31f22215e77d7df9c972e70deeb5b1a6c9066",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/4134cdd31a7e05ca0a7ab0df5f911700.media",
+      "duration": 528.114583,
+      "bytes": 12696282
+    },
+    {
+      "id": "ed9ce8948ab9c72bf49abda456b7acf0",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "ece8e8f9fc2dc2c303c0229acf34cc6fd11835b14fa735a1808b86588df99d1c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/ed9ce8948ab9c72bf49abda456b7acf0.media",
+      "duration": 1088.627563,
+      "bytes": 17418365
+    },
+    {
+      "id": "d0a045f78829391e0c2e23e3de9f3a4e",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "099ca521372edea29e176c293b00912beb543e7718f7018c94c774ce88341dc3",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/d0a045f78829391e0c2e23e3de9f3a4e.media",
+      "duration": 6379.901429,
+      "bytes": 103179257
+    },
+    {
+      "id": "7f40573a248496034e868eb65263bce2",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "8add3af13c90444deeb467045e2d42b1f65a5d63e671b1f239e66d9145d43672",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/7f40573a248496034e868eb65263bce2.media",
+      "duration": 827.794286,
+      "bytes": 13273178
+    },
+    {
+      "id": "dfaaa214b91867ad26b70c7e72b77bca",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "d41b0b95b0150567ec349b0f811b61ed5653d96c6bf0608e4b7b163992ee547e",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/dfaaa214b91867ad26b70c7e72b77bca.media",
+      "duration": 4343.645333,
+      "bytes": 104255181
+    },
+    {
+      "id": "bd3c146ce36b17f409fbc7cf8d788fd9",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "33038a204aa2330b6a22db3584a0aee0352b2fd51842722f0f70e6203d0c5e27",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/bd3c146ce36b17f409fbc7cf8d788fd9.media",
+      "duration": 4582.164898,
+      "bytes": 72727101
+    },
+    {
+      "id": "afec26fc45cb12523acfeaf0f5a0b0c9",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "1aaa2defb387ff51ee55b7a68b11aead84ebcbdc7ba1c02a30efd5566c9514b6",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/afec26fc45cb12523acfeaf0f5a0b0c9.media",
+      "duration": 7127.562449,
+      "bytes": 114041416
+    },
+    {
+      "id": "e4edd3110c925f208babf2222b1220be",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "c3895b0412a9061ebe78a631f408bd1f0699af5399eeebe90c49e4f37be2f4f7",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/e4edd3110c925f208babf2222b1220be.media",
+      "duration": 2484.793375,
+      "bytes": 19878709
+    },
+    {
+      "id": "9772bdda8ce2caf91c627dcf2a27a61f",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "e918de8d3407b086c8ad32d22805171c51e88b09dfcd8b4ddbe9d9fe0f7b0264",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/9772bdda8ce2caf91c627dcf2a27a61f.media",
+      "duration": 2803.382857,
+      "bytes": 44854542
+    },
+    {
+      "id": "a0794743ba84604879d40ae3c4dbd4b6",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "b2c82048fd50163cc3758a8a85b4bfaa3e55c04b3f9579b50952efbde148fdab",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/a0794743ba84604879d40ae3c4dbd4b6.media",
+      "duration": 487.340408,
+      "bytes": 7797863
+    },
+    {
+      "id": "8892abc02e88a1053ae932de05b92679",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "04faed58ecd7498b64368a607d1e8e5566dfd1d96a9708fd838e9fc8cb7b9a99",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/8892abc02e88a1053ae932de05b92679.media",
+      "duration": 2981.450938,
+      "bytes": 47703501
+    },
+    {
+      "id": "0ab239cfdd3de553ce86afe5dee8fabe",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "686b4dedf381884f1d9b60eddf178cd87c47493dad2e2c8ee5eb8a563f91564f",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/0ab239cfdd3de553ce86afe5dee8fabe.media",
+      "duration": 3467.677007,
+      "bytes": 56082511
+    },
+    {
+      "id": "d83092f67c4de508916ce9047eb377c3",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "0b75a7aa95f0f2259bd63c91ebc17fb17fbe6b9344d470ab56290d180dd24e38",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/d83092f67c4de508916ce9047eb377c3.media",
+      "duration": 2522.618776,
+      "bytes": 40440648
+    },
+    {
+      "id": "8ad95d7665c5042792fbec5e57b54767",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "c7b86870095804f0d9f17bee85ea6ba0c5b857a3704bfc50d45cf000459ecc58",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/8ad95d7665c5042792fbec5e57b54767.media",
+      "duration": 4199.525333,
+      "bytes": 100796273
+    },
+    {
+      "id": "ea2c4d2ff26c1cd6a1ace1846195b306",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "daf848c53d00dcfef1f096d7778ce845da5b4e2a3bd434143784781992c4ce7f",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/ea2c4d2ff26c1cd6a1ace1846195b306.media",
+      "duration": 4103.6432,
+      "bytes": 164157699
+    },
+    {
+      "id": "2f184bfed1b429cf2fe0f49fe5caaa28",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "8206f7fddeed8a9bbdcddbf0a1561ad114306c273ac1044c349a7f6ac00d6c83",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/2f184bfed1b429cf2fe0f49fe5caaa28.media",
+      "duration": 2174.90285,
+      "bytes": 43502153
+    },
+    {
+      "id": "2a4b54da22a4b2ddd5ba0cf0c1739990",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "97058db0ba90ad8621c8216582078664f0c443be669cfd9a081ed8b56dc129c8",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/2a4b54da22a4b2ddd5ba0cf0c1739990.media",
+      "duration": 682.553438,
+      "bytes": 10921275
+    },
+    {
+      "id": "f4ebf290a1b96ce3a2855cee927838b4",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "6213ec9953501d17610b5870eac218c4463b94a99802849d5847b6fbb1d00b8c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/f4ebf290a1b96ce3a2855cee927838b4.media",
+      "duration": 2873.417143,
+      "bytes": 45975091
+    },
+    {
+      "id": "43db5a11a7e4b365f78f5f934a36de21",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "500ea038f520f48995cdc3b55a0b46e6b6c47c564847bd65b6657775ca83fc58",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/43db5a11a7e4b365f78f5f934a36de21.media",
+      "duration": 280.397333,
+      "bytes": 6792392
+    },
+    {
+      "id": "fed8e30b0dae731a00c64b20d8c0dfda",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "63a0a8ee585647bae2c9bbf26b0b5440c02f2c99875034f6b4bb0b6f47ddb302",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/fed8e30b0dae731a00c64b20d8c0dfda.media",
+      "duration": 2963.426125,
+      "bytes": 47415114
+    },
+    {
+      "id": "5ba8571ef1ec1e5d881a09c63a51f541",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "c8ee6df6926f3411fe085693b1f690cbb98f412927eaae1e7bb4b543417dda96",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/5ba8571ef1ec1e5d881a09c63a51f541.media",
+      "duration": 3013.799313,
+      "bytes": 97123339
+    },
+    {
+      "id": "7e7d55e932830ba2c7b4ce7acddf476b",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "36616109b64a2bf1fea1e2534072b3e78592348f8653444e996b8f4879910ab8",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/7e7d55e932830ba2c7b4ce7acddf476b.media",
+      "duration": 1940.767347,
+      "bytes": 31108443
+    },
+    {
+      "id": "a6653f7018891ce6f81012583f3a00ad",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "650b8be554f3653a745c159aa8ea8fc1c4cafcb9df079e6de36e1c31a042dc45",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/a6653f7018891ce6f81012583f3a00ad.media",
+      "duration": 4150.061333,
+      "bytes": 99610603
+    },
+    {
+      "id": "17fc1f6e40c2c0225e085216277e4fba",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "0364722be91d8dda77ffc53a7c22b45315d082e7f549737c445d943ed8cdab5c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/17fc1f6e40c2c0225e085216277e4fba.media",
+      "duration": 4185.513447,
+      "bytes": 67691367
+    },
+    {
+      "id": "e6790a0a5566fb1bf5888b232fe34ecf",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "18302748026bbaea71eb586f99bd8380df5f87ff6e851d0fb1f7618857ce1167",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/e6790a0a5566fb1bf5888b232fe34ecf.media",
+      "duration": 4223.999975,
+      "bytes": 168959999
+    },
+    {
+      "id": "fa70f889f82b7d7738c8bc815c764f50",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "df308ab78deadb5eb523dd29439b782de6401d054759ee136391d4d25a03218e",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/fa70f889f82b7d7738c8bc815c764f50.media",
+      "duration": 2823.41875,
+      "bytes": 45175154
+    },
+    {
+      "id": "e698a74d4757840d7249a46df9c478d5",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "796a763627f33ce5bdee661896435be5b71cf0f5ffca1bfc1305e8827ddecd0a",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/e698a74d4757840d7249a46df9c478d5.media",
+      "duration": 1955.647,
+      "bytes": 15690284
+    },
+    {
+      "id": "06bbe2544085eec9b48dc77693b04d0e",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "bb66082d507924d06c2bab54944f3b1919100c16b3cb67f8ed2f8b2123a42814",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/06bbe2544085eec9b48dc77693b04d0e.media",
+      "duration": 2242.560094,
+      "bytes": 71766019
+    },
+    {
+      "id": "0cf814ae19b40afe103538d8e8cf1825",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "c29a1c208f3ba96497d6202347c7dc0c205ae4d54554ac8aef8f1c6213f25663",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/0cf814ae19b40afe103538d8e8cf1825.media",
+      "duration": 1993.846938,
+      "bytes": 31901881
+    },
+    {
+      "id": "9308965da22035b5f03db9cad4add3fb",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "f8e9860a73c2aefd1702e35172dab09fbe2cd8233d0bd0b7d9e5c47417972686",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/9308965da22035b5f03db9cad4add3fb.media",
+      "duration": 6638.629002,
+      "bytes": 107364055
+    },
+    {
+      "id": "5446e704353f751d36398f30e05a9870",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "dad9fad3ecb89ca5a3a83a48934f78907643794ec6ec3f498db66df7bb7e322b",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/5446e704353f751d36398f30e05a9870.media",
+      "duration": 3733.890612,
+      "bytes": 59788814
+    },
+    {
+      "id": "20260e4cea9e3e6b68339c5ae1f97a67",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "2cf4620eb279b67b7af17f46c025ef55a8fe8ce78c1917bdf8fed328f102cea1",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/20260e4cea9e3e6b68339c5ae1f97a67.media",
+      "duration": 3716.765333,
+      "bytes": 89210759
+    },
+    {
+      "id": "9fbe848b3be9a7e316ea12630f5835f5",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "f65e97b440682898d4b72f77ed4e645f833f730fd4193e5c9c988d7b9b53553e",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/9fbe848b3be9a7e316ea12630f5835f5.media",
+      "duration": 4686.450431,
+      "bytes": 75792496
+    },
+    {
+      "id": "bf7573fd70874daccb8bf04b6ae3149e",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "4c9a33fc8145a29540104bd171642cf8baef3a787fb5c13bc2eec2f07d7ebdea",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/bf7573fd70874daccb8bf04b6ae3149e.media",
+      "duration": 1920.574694,
+      "bytes": 30729612
+    },
+    {
+      "id": "8ef5707adc8ecfa015b3c16fcdf710c8",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "d74e1d7578594c22e7ea18039e933fb69f7e23f0a1995e634afaca15ebb9e2d2",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/8ef5707adc8ecfa015b3c16fcdf710c8.media",
+      "duration": 1555.853063,
+      "bytes": 24894125
+    },
+    {
+      "id": "9ac01736b6275d4a1e557397920b9612",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "70ce541b62697c10af25b9192b0c153aa98042496850e781b27ccbe76bb489ec",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/9ac01736b6275d4a1e557397920b9612.media",
+      "duration": 1280.313469,
+      "bytes": 20485432
+    },
+    {
+      "id": "aa055a66c11667604314294017b8241b",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "a53ac7600790ec93e16ac39b9cab37bd4288c3b391c71381b54a62bc76d8767a",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/aa055a66c11667604314294017b8241b.media",
+      "duration": 558.106122,
+      "bytes": 8930114
+    },
+    {
+      "id": "18aa1432ea459824c7cf70582852f993",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "c6d70726028ae8572ed35f936612dba8794fcd6c3088261c910ee200db01f499",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/18aa1432ea459824c7cf70582852f993.media",
+      "duration": 1617.519688,
+      "bytes": 25880623
+    },
+    {
+      "id": "93b44367f971484cbfaa7f55e869af79",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "02b118f36aa53aeb3792b2d9183bde578c9b07e241a5535bf837c579637a89fa",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/93b44367f971484cbfaa7f55e869af79.media",
+      "duration": 3704.816469,
+      "bytes": 118558223
+    },
+    {
+      "id": "37dbc39230428065cc9eee385c35143f",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "b1fd41d9baecaceea2bacddc413ab6059ce6dcd46bc49a791fa2a90a900582e5",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/37dbc39230428065cc9eee385c35143f.media",
+      "duration": 3545.129796,
+      "bytes": 56800820
+    },
+    {
+      "id": "62169cd5aa3a78949f23fed20643e2f7",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "9e4c6c0616ec4ee360f4b8854d0d26d9a060017b1556c022b0767594005198f5",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/62169cd5aa3a78949f23fed20643e2f7.media",
+      "duration": 3512.842449,
+      "bytes": 56205896
+    },
+    {
+      "id": "a57bea9e30a7843907f41692dcf7f06d",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "4909cf598fdcf92fab57931e6ea5e9113d2651fe5b0e3e01feab68bc10179efa",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/a57bea9e30a7843907f41692dcf7f06d.media",
+      "duration": 4732.447347,
+      "bytes": 78538944
+    },
+    {
+      "id": "92b71faeb2c868dab9ecba45c54b104d",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "33d5a15f5d6e8508f3930cee3369b431b928257e0f9ab940ffc97b391e727e1d",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/92b71faeb2c868dab9ecba45c54b104d.media",
+      "duration": 3297.38449,
+      "bytes": 52758568
+    },
+    {
+      "id": "3bcade96ac11428692e17113fb5d27d2",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "ba9479f6c51ceec5d058ac3bdeae053604a2bd9a597091382a10167763a9d7c9",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/3bcade96ac11428692e17113fb5d27d2.media",
+      "duration": 1167.464438,
+      "bytes": 18679837
+    },
+    {
+      "id": "f37df7cf9624171f3c7a7793033eef8d",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "8686550fb9089fc264a3bd2acdcdd0c4ab2347f1a3e4fca6802a4b500c073e27",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/f37df7cf9624171f3c7a7793033eef8d.media",
+      "duration": 1774.132245,
+      "bytes": 28386532
+    },
+    {
+      "id": "b53f96a1f34b6b7ef778ced136f0edc5",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "ccbea40866c3c2c49a220da1abb818adff31c4242f95ab8ff2d174e22c5b5759",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/b53f96a1f34b6b7ef778ced136f0edc5.media",
+      "duration": 589.071333,
+      "bytes": 14188424
+    },
+    {
+      "id": "43706455820763a432fdcf8daa7ce494",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "8811e694f0417cb5ab60a4f1703658071ab73db65856a9d12cc498787bb17642",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/43706455820763a432fdcf8daa7ce494.media",
+      "duration": 518.276063,
+      "bytes": 8292675
+    },
+    {
+      "id": "7074b7699db435a750bce8cfd8dd35e8",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "782dba4a9fe7c7d0cfdf279d6c0d2501f778a242c1e848b2f6759b2892aae9d7",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/7074b7699db435a750bce8cfd8dd35e8.media",
+      "duration": 2884.440792,
+      "bytes": 69226649
+    },
+    {
+      "id": "a7af1c66e2b452df2ac2833d91f78420",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "52492827105502889a8ad6e45e19007d2f37bb507af949d406d4a120103dfabf",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/a7af1c66e2b452df2ac2833d91f78420.media",
+      "duration": 2302.667755,
+      "bytes": 36887270
+    },
+    {
+      "id": "fa352fe898eec6edb91d87ba801ed5c4",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "88d4590fbc75ce85b7938441e1fdfb2e4aa0c5f9e605d36e7193834211a481c5",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/fa352fe898eec6edb91d87ba801ed5c4.media",
+      "duration": 6371.405333,
+      "bytes": 152924306
+    },
+    {
+      "id": "2cd96414182eecf3afcfc3822d88f286",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "87a47c1ed42d84263170dd938f95d7ce67df72421041bdf6ac53d487b50d62e3",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/2cd96414182eecf3afcfc3822d88f286.media",
+      "duration": 4178.033667,
+      "bytes": 100281387
+    },
+    {
+      "id": "b2f4ab8793a3927f26c8cab45495eeb7",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "402ae8089420c75a19f7d264281887ef79922c9202e6d383ee475bfdfaad4894",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/b2f4ab8793a3927f26c8cab45495eeb7.media",
+      "duration": 4729.991837,
+      "bytes": 75680286
+    },
+    {
+      "id": "ba94323cc1e1dc1f42927722b0b89cc7",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "186b24ff608ec0b9ad1108fcf9ef1a3b5c5dc2fb9f5fa4d1b20b11833ce3b6a3",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/ba94323cc1e1dc1f42927722b0b89cc7.media",
+      "duration": 1635.78775,
+      "bytes": 26172956
+    },
+    {
+      "id": "bd2b7fba204b49f274acf2835e63737d",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "d6213379112534a93bbd4cf1e3674669c071229afbcdcfc7b4a28d6fcb2e530b",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/bd2b7fba204b49f274acf2835e63737d.media",
+      "duration": 2456.006531,
+      "bytes": 39296521
+    },
+    {
+      "id": "6396c885d53a1e0eba85f1ac6b796e4f",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "dd44adae992b25f51911e5b82943f8d791d94a4737421ac0fa094215b88a086f",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/6396c885d53a1e0eba85f1ac6b796e4f.media",
+      "duration": 497.381333,
+      "bytes": 12002924
+    },
+    {
+      "id": "4e386f4e7898bd59acd7ee66e45d809c",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "be4ef6423d846f8549fc9862f474c53830209191957362c5502138b447e16e0d",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/4e386f4e7898bd59acd7ee66e45d809c.media",
+      "duration": 915.7195,
+      "bytes": 14651866
+    },
+    {
+      "id": "2d70847695cb17397c3353d75255ef60",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "b051ccd53fe1e243a833332f81dd851a84403425f0d4e9b647f4f76971d5404c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/2d70847695cb17397c3353d75255ef60.media",
+      "duration": 3782.112781,
+      "bytes": 121031705
+    },
+    {
+      "id": "92daf2c674595ba6560eed0dbe89b1d2",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "0fa17846d68c5214c75611b5fc4d439d80e55cf38adab02ede81bf1451341c48",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/92daf2c674595ba6560eed0dbe89b1d2.media",
+      "duration": 3286.282449,
+      "bytes": 52627033
+    },
+    {
+      "id": "32054fc2f3c1d3f53c9546543b84f55c",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "db0dac1be51bac708ad0fe362ec7e45a62a0fe3947facd3af06cdfc2eea09acf",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/32054fc2f3c1d3f53c9546543b84f55c.media",
+      "duration": 4634.044082,
+      "bytes": 74145122
+    },
+    {
+      "id": "8217410e86ee6c2deada913d651f7777",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "025999ddab9d8e541f8d9b556e54f507c024be7b77652de167aa8f10f09a936f",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/8217410e86ee6c2deada913d651f7777.media",
+      "duration": 2525.5958,
+      "bytes": 101164890
+    },
+    {
+      "id": "bbd4003da9224f39e530355a2dfeccd3",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "b1dda0aa08fd27c613daba0871a113fa98853fd66771f0344a44b47573d3550b",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/bbd4003da9224f39e530355a2dfeccd3.media",
+      "duration": 3141.1461,
+      "bytes": 62827018
+    },
+    {
+      "id": "f69dff201d3e3fe09f823ff164cff9cc",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "37898e9ccb6f8bdafa1571ce3672f4ec40eec27bdae1187932512cb3d58235cc",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/f69dff201d3e3fe09f823ff164cff9cc.media",
+      "duration": 2893.71425,
+      "bytes": 46299854
+    },
+    {
+      "id": "3c899bd7c47f1b6d3158f6585fcb50ef",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "07234c70326ace7402a3dd477d3e00d6ca2debf5d065d26e8382aac6facd49d9",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/3c899bd7c47f1b6d3158f6585fcb50ef.media",
+      "duration": 2233.563756,
+      "bytes": 17913650
+    },
+    {
+      "id": "351ae9170afd96197b1d1d8feae3a26a",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "f7f9e4c78fcbd7687d7439f3ce072f01c8047aaee3efb5c3811ab3fd378ca58e",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/351ae9170afd96197b1d1d8feae3a26a.media",
+      "duration": 332.355918,
+      "bytes": 5318111
+    },
+    {
+      "id": "09f6bd0ec2130904cd0be44a901dd257",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "99a1056673f208d7812c1089b289d31b504871c2c18b242873784376740aa831",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/09f6bd0ec2130904cd0be44a901dd257.media",
+      "duration": 4053.5775,
+      "bytes": 64857552
+    },
+    {
+      "id": "edd6460ee515d6274960e47706873e76",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "97048d4c5f6fd9d452f39fe727b559d3a539d24949e3e73614f6e70b7cd2beb3",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/edd6460ee515d6274960e47706873e76.media",
+      "duration": 3739.010998,
+      "bytes": 60470474
+    },
+    {
+      "id": "1a8652c334647f296864470685a35674",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "f86f1f32d8bd85d909586006e2ae472ea4afc8bbf72ab58eaa9e83d35829f921",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/1a8652c334647f296864470685a35674.media",
+      "duration": 3281.084082,
+      "bytes": 52544784
+    },
+    {
+      "id": "22bd354a8e5903f04883b64ef6c41a2f",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "bdaceb54b17a54d6f010fd1c73c315f53d2f87ebe62d33dc0c50969fa3820eff",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/22bd354a8e5903f04883b64ef6c41a2f.media",
+      "duration": 5407.397333,
+      "bytes": 129785209
+    },
+    {
+      "id": "e4a20b0ff9a0ca29927a2965ee72a478",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "0b8e978d175599f7e3e564db594d4e28d319ee6b61e5fbbfb1d4f7a2480fae9b",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/e4a20b0ff9a0ca29927a2965ee72a478.media",
+      "duration": 5794.584,
+      "bytes": 92524017
+    },
+    {
+      "id": "d43c48faccfc172809885485599a04a6",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "eda8140ce1b54c92b188b25a05ddf446e4bccd352c5275b204700eafb7f34a45",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/d43c48faccfc172809885485599a04a6.media",
+      "duration": 2856.5159,
+      "bytes": 57134414
+    },
+    {
+      "id": "5e630b88c937ac6d31d7861f8a5cb34b",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "b04d5ab9b792f74209259bcbed526d8f4adc4b6c9415fd40685b3d33902ab631",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/5e630b88c937ac6d31d7861f8a5cb34b.media",
+      "duration": 2881.149375,
+      "bytes": 23049593
+    },
+    {
+      "id": "6bdd76ffce217ac463a68bf9be7ddead",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "3573564faf3f422af953515f69a424101927f8ebba0a9b78c4e534855c697be6",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/6bdd76ffce217ac463a68bf9be7ddead.media",
+      "duration": 1986.533878,
+      "bytes": 31784959
+    },
+    {
+      "id": "176fe56400b493ee20f78b2d95524da2",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "86e0ed17878e4ef149175da864de45f679f746937e55bfa4cff42cf361f5480e",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/176fe56400b493ee20f78b2d95524da2.media",
+      "duration": 1193.3155,
+      "bytes": 9579852
+    },
+    {
+      "id": "91d633ffcf6960c17210a3f329e88ed4",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "7599bad12dabce675cebcd2bef43741964fe7939d950ff364208a3732d2a263b",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/91d633ffcf6960c17210a3f329e88ed4.media",
+      "duration": 2081.383625,
+      "bytes": 33302470
+    },
+    {
+      "id": "196edcf4e7c9093c11f9391f6d4b880b",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "c95e6c0009ff64b179ab89dab35de6239011e240a785ed9d51e3b619a9aa0c52",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/196edcf4e7c9093c11f9391f6d4b880b.media",
+      "duration": 3578.514406,
+      "bytes": 114516557
+    },
+    {
+      "id": "008eccc13c4bbc4d4cf630c296b99801",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "31d73b7cfde664338ea184d11ab763d86df189a7b61af8050fdbe37aa6ae1594",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/008eccc13c4bbc4d4cf630c296b99801.media",
+      "duration": 2147.84,
+      "bytes": 34444192
+    },
+    {
+      "id": "de96c83834bda17e89713baf196ec020",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "d0b5a4e70cb2ad0be43ff52cdd1655e30c83486c6574d713a96721d524987465",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/de96c83834bda17e89713baf196ec020.media",
+      "duration": 4150.877333,
+      "bytes": 99631148
+    },
+    {
+      "id": "8427958aa8f99fa019bf6bc903cc5d0d",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "eeb01a649ad4a7436dcbbc96d8d5041c03501b69b5c10f9a77ff222a4b9e9970",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/8427958aa8f99fa019bf6bc903cc5d0d.media",
+      "duration": 3854.52,
+      "bytes": 56384808
+    },
+    {
+      "id": "14730fe740c7dd9d38e1ca451fad808c",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "ce11408cc81e8e69b67c294b1024d7374edf561f0de22eb3c63ad7f152db6515",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/14730fe740c7dd9d38e1ca451fad808c.media",
+      "duration": 2378.997551,
+      "bytes": 38064377
+    },
+    {
+      "id": "120a9ddcb4f39de3455e6918217cf027",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "3791336f8b7100b290a5f488eeaf59025b25ededfc51343fe6f1c416d0faa405",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/120a9ddcb4f39de3455e6918217cf027.media",
+      "duration": 2046.432625,
+      "bytes": 32743310
+    },
+    {
+      "id": "a3d51c956e7df805bafbc93f14b36f2d",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "70ce8cb1d5e9916b6656e2ef84ad61fbb05e0960b5722665b1eb68b810acce25",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/a3d51c956e7df805bafbc93f14b36f2d.media",
+      "duration": 1894.948571,
+      "bytes": 30319594
+    },
+    {
+      "id": "b35fd1ec11df2c634a4e33fd72a7e1ef",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "8c2b3fe02d83e1232bdaad68d546f533036f9409a19f71b23bc806bedbe8cf84",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/b35fd1ec11df2c634a4e33fd72a7e1ef.media",
+      "duration": 635.05625,
+      "bytes": 15280890
+    },
+    {
+      "id": "1a7e50fa2e3baed6a7384254ace97d07",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "1ad66ea69688b8312a6bec7f50c868d32248c3b0a5a342055a6cdd55ee17b5bc",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/1a7e50fa2e3baed6a7384254ace97d07.media",
+      "duration": 1675.14775,
+      "bytes": 26802672
+    },
+    {
+      "id": "ac56dced46ed861729d72c13e76f6511",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "cd51b4673ddf989b827c9a77481e2c5b66bd6271840e36633ff79ad3ca62a896",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/ac56dced46ed861729d72c13e76f6511.media",
+      "duration": 5554.26,
+      "bytes": 89827349
+    },
+    {
+      "id": "e621d90febca70cecde70e0e857b8333",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "5193305c605be66ef5652087d7a842d558e6a2d14421555b54ef6721cc7c1609",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/e621d90febca70cecde70e0e857b8333.media",
+      "duration": 2714.514286,
+      "bytes": 43510972
+    },
+    {
+      "id": "c6741ca56eca8e5fb1f1b7b38b5d3d9a",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "6208cfa8fc4ca224efa61142eaa0ee556d6517a03c15dfdacc0e9ebb8d8ad680",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/c6741ca56eca8e5fb1f1b7b38b5d3d9a.media",
+      "duration": 6876.791995,
+      "bytes": 111216128
+    },
+    {
+      "id": "0df8a3d7275a7a11cee8258e63ac7982",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "e0c154245cfb48b7bfd2b4fdec32f5d661ad5a634499a380ced81a1d915e8881",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/0df8a3d7275a7a11cee8258e63ac7982.media",
+      "duration": 5462.065442,
+      "bytes": 88336247
+    },
+    {
+      "id": "e628b5cf488c2fec48b644d9d5adb525",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "d5ce15c72f91a82b05b9b7eabeaa388e766e7c02667cfdbc3b826df8ec821fe4",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/e628b5cf488c2fec48b644d9d5adb525.media",
+      "duration": 5544.907755,
+      "bytes": 88718941
+    },
+    {
+      "id": "fc6010c18e72cc2f7dcd99bf92eb73b1",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "ad92417a47e5c39aa5a6dc9ef8ed98039af031021a5d88175f50a058ce3af64d",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/fc6010c18e72cc2f7dcd99bf92eb73b1.media",
+      "duration": 4090.644875,
+      "bytes": 65450670
+    },
+    {
+      "id": "ea0fb77cb568a61f6d4b16f3fc0d4c13",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "ca1f8406d04cee17e9cd441115447bbdd0bd13cfe603d65627e3b9d0628ecf0d",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/ea0fb77cb568a61f6d4b16f3fc0d4c13.media",
+      "duration": 2880.757551,
+      "bytes": 46092537
+    },
+    {
+      "id": "8a817127be8d88f5f697301c139431b8",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "8c919c7ab012469f99dbf4f1eb6d33941e79c242364c0df6ad6578dde4601934",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/8a817127be8d88f5f697301c139431b8.media",
+      "duration": 308.936,
+      "bytes": 5018967
+    },
+    {
+      "id": "abb4bc04416b939fdb4714378221798c",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "e9b8b42edf3fd8a29a3c0e722b99bd311a43c392a0e3ae930e928f23f4d560c9",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/abb4bc04416b939fdb4714378221798c.media",
+      "duration": 1620.475375,
+      "bytes": 25927928
+    },
+    {
+      "id": "154778343227e1b0e5280121b9666bca",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "f9f7e3f5f83ffeb31456731e31df1e01c0cca1088223743f72a1afd9a2e08ff5",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/154778343227e1b0e5280121b9666bca.media",
+      "duration": 2521.912993,
+      "bytes": 40787096
+    },
+    {
+      "id": "26745f86c8a410def741681b50274349",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "3096684b332863379a65b0a4036a7184ecabc75b7aa5017026b997912eb25e56",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/26745f86c8a410def741681b50274349.media",
+      "duration": 3634.285714,
+      "bytes": 58192993
+    },
+    {
+      "id": "85e51bbd175127a32fd2c94a56f8f151",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "de31fed509d28782691f6cef1309dd6bb74b55cba3ae55359b04a8dd5b609999",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/85e51bbd175127a32fd2c94a56f8f151.media",
+      "duration": 6278.429333,
+      "bytes": 150689981
+    },
+    {
+      "id": "03bb85f1de764032e5eb228e1ec4a24f",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "39e2cb83b1223424263af15fe0326735b8686c0ffb285f0a849eb25743196708",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/03bb85f1de764032e5eb228e1ec4a24f.media",
+      "duration": 3782.164898,
+      "bytes": 52174649
+    },
+    {
+      "id": "96f93a4f539aa65ab3ee6f2b291d546a",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "f65ac29690b2894f2432dfe63600f524b28897624f39651cf4e67a7138db2fef",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/96f93a4f539aa65ab3ee6f2b291d546a.media",
+      "duration": 2374.39995,
+      "bytes": 47492095
+    },
+    {
+      "id": "04d5c7c40790d587b74e2853df6b2cf1",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "984e920e035ca17cf975629a1b493d61993ee67b7ad64212730184f53fc9d8fe",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/04d5c7c40790d587b74e2853df6b2cf1.media",
+      "duration": 2446.942,
+      "bytes": 19575986
+    },
+    {
+      "id": "0ea1c417add5e8b8f9557aa9dd69ecf2",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "d38b7148bda9a2e35c4e4985f1a9a73d712861139ec25a3528411161df2f347c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/0ea1c417add5e8b8f9557aa9dd69ecf2.media",
+      "duration": 2165.353447,
+      "bytes": 35019943
+    },
+    {
+      "id": "ae1addefc55f4bec281e527f2a6c031a",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "9b33f680c209b75e61dca9aa2142a7a88e531b4334d61fb66b0bc0a36143609d",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/ae1addefc55f4bec281e527f2a6c031a.media",
+      "duration": 627.826939,
+      "bytes": 10045648
+    },
+    {
+      "id": "705be9e0286ec59d628adca50a68748f",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "b4ba86de225fc9e7bc961104b6ebefd1e5dd187e35fec76f61dc6d8c97801c12",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/705be9e0286ec59d628adca50a68748f.media",
+      "duration": 3264.217188,
+      "bytes": 52227819
+    },
+    {
+      "id": "0e1004196228e373196f3ef36d87af27",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "e842b513b2f70e82cfc4772396fcee1fdc11ae61fd9f1d191760cc31c1b4ef39",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/0e1004196228e373196f3ef36d87af27.media",
+      "duration": 8982.454422,
+      "bytes": 145268731
+    },
+    {
+      "id": "343798c6142a161abf7a4605275067ca",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "d68b6a4c4c65ac09a56a6ba1e17e513dffe151312bba0335d1eb94442fa8f5cc",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/343798c6142a161abf7a4605275067ca.media",
+      "duration": 3374.524082,
+      "bytes": 54036966
+    },
+    {
+      "id": "57960884b41baab3bca78724ae8c6f3c",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "13e38dedfcb76c270c2208c7d1e9cf612cbdf89e946b66c88619545e3525af00",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/57960884b41baab3bca78724ae8c6f3c.media",
+      "duration": 3500.069333,
+      "bytes": 84009329
+    },
+    {
+      "id": "078241bc63804eda1bd62c00f8828527",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "49c851bdafccf03daa12799a4d345f28e862ed40178b89fd264d739cc2da2d0e",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/078241bc63804eda1bd62c00f8828527.media",
+      "duration": 4686.658667,
+      "bytes": 112487173
+    },
+    {
+      "id": "d03fbf46356e9f02bd66f56ad426fea2",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "eaf06292b8853ab71634fb4b41b2279ad708189e94b271d0a0deba76a15af612",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/d03fbf46356e9f02bd66f56ad426fea2.media",
+      "duration": 3734.961633,
+      "bytes": 59759803
+    },
+    {
+      "id": "e470f0eef2c872fbf51db35e767b655a",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "43a6f24398598754d4b1e2aa22f747a52b4f8f5fc81b3589cafb2e40d0e08ceb",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/e470f0eef2c872fbf51db35e767b655a.media",
+      "duration": 1783.693063,
+      "bytes": 28539477
+    },
+    {
+      "id": "eec6272f2707faa2cb36a970f6177975",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "5ff63b3a6be51aea8347538b175e9ea27036a4eb3830fe292be19d4ae9e02ccd",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/eec6272f2707faa2cb36a970f6177975.media",
+      "duration": 2027.885714,
+      "bytes": 32446588
+    },
+    {
+      "id": "84afdd8f86a237078241a3ece04c4e73",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "a004afa252b57685ebd6a2e6a9ad28377530412ed1ab72d217cc54a0915d66c3",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/84afdd8f86a237078241a3ece04c4e73.media",
+      "duration": 543.461333,
+      "bytes": 13101554
+    },
+    {
+      "id": "3da3ce92cb0cf42b76792a7d5ad92e10",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "667082c4264509d793d6015dd4c0022abb640c0628e48f9cef6e202023953fa0",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/3da3ce92cb0cf42b76792a7d5ad92e10.media",
+      "duration": 1155.180375,
+      "bytes": 18483196
+    },
+    {
+      "id": "258e8a11691af871afe52549246b9ad0",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "cad041b85da7b94265792bc68e7b9d4ed301b973da9dd8814a37b6308576f7e1",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/258e8a11691af871afe52549246b9ad0.media",
+      "duration": 4955.115011,
+      "bytes": 80137801
+    },
+    {
+      "id": "67dae46811aa126923b6cdc0f8cc4441",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "b34a032fc115814220b003dc0d3a6daccd7771c3a5d54ba6a4f7ae50d7a1f6a2",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/67dae46811aa126923b6cdc0f8cc4441.media",
+      "duration": 2927.934694,
+      "bytes": 46894395
+    },
+    {
+      "id": "c064ea89b5dbcfe368514108b11ece33",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "7a1c5ef4ac0121069151c1d162e33eeb8131c97d8d269fb721bb492efbac5605",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/c064ea89b5dbcfe368514108b11ece33.media",
+      "duration": 5798.29551,
+      "bytes": 92773145
+    },
+    {
+      "id": "54159e1fab675e5dd3ed63a304bd645b",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "44635d664ec04a1999e5d70355f456687523bc60a4dbfa8c38431d2ff568370c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/54159e1fab675e5dd3ed63a304bd645b.media",
+      "duration": 5316.876463,
+      "bytes": 85988033
+    },
+    {
+      "id": "31c6ac4e92582e54cd224702dee9372d",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "f66ba58ec9fd5993d547551306a9abf96648fa8c56f8d800730cb8d0a1a637c2",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/31c6ac4e92582e54cd224702dee9372d.media",
+      "duration": 4169.50855,
+      "bytes": 83394267
+    },
+    {
+      "id": "dd25930526552a54e85dd2c027794da1",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "c1159d977a7649018d4b231ecd36b8ffd937d654a0881db419b8900a47393253",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/dd25930526552a54e85dd2c027794da1.media",
+      "duration": 1889.905938,
+      "bytes": 30238921
+    },
+    {
+      "id": "5c7e6fba43af24443085cc5da9a783e1",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "e44e0f21f8f1994e614948dc7702b993f67bfc82d4dc01c6d9fd33614ac87199",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/5c7e6fba43af24443085cc5da9a783e1.media",
+      "duration": 2451.356735,
+      "bytes": 39222124
+    },
+    {
+      "id": "78f15b57635b6c7c937b02eb1322e01c",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "7b9092c0218e445627e267b6d5bf8008fdf2886e08437e70260ace5207d325c4",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/78f15b57635b6c7c937b02eb1322e01c.media",
+      "duration": 1309.623417,
+      "bytes": 31479244
+    },
+    {
+      "id": "dcf25e84813abb4e4892273a724798db",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "688066d088729a3dc578dfeea570e80acdf4efdae8cf75b6abb6d394925d6dc0",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/dcf25e84813abb4e4892273a724798db.media",
+      "duration": 2217.270313,
+      "bytes": 35476633
+    },
+    {
+      "id": "5ca58e7f2afe541f1bd73f943aeca4a7",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "1d6451bdec98c7e3db80d1da0f4cf7aa06c845ce8ca3d332f69fc88118a77dcc",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/5ca58e7f2afe541f1bd73f943aeca4a7.media",
+      "duration": 2601.247333,
+      "bytes": 62430006
+    },
+    {
+      "id": "0ac82269174a3434d37f2ea8b1e1cda4",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "7396c3d3b11bdd4f8fa23ba7ccf7ca94b45f7f7440474ac2d8a944422b953473",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/0ac82269174a3434d37f2ea8b1e1cda4.media",
+      "duration": 2256.587755,
+      "bytes": 36184144
+    },
+    {
+      "id": "10e69a3a4f3b40459ec8d04020ed17c0",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "dfb602059d3b9836db550f2f3e60c2cb874f4638ff8e822caaac1f5b248f0570",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/10e69a3a4f3b40459ec8d04020ed17c0.media",
+      "duration": 5133.191837,
+      "bytes": 82131486
+    },
+    {
+      "id": "9988f10b3cf82c7d6b7914159dd795ec",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "72d7013175dced4047ea45dbe75c119391d20eba827c35ee71335cc7b3349589",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/9988f10b3cf82c7d6b7914159dd795ec.media",
+      "duration": 4260.981451,
+      "bytes": 68911861
+    },
+    {
+      "id": "ba487e08b9b27a65b6986d54253e38bd",
+      "source_id": "the-linya-linya-show",
+      "status": "downloaded",
+      "sha256": "de158133cbed4d311d245b21053427042f277a9f046caad2a847954b3d412d0a",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/ba487e08b9b27a65b6986d54253e38bd.media",
+      "duration": 3597.479184,
+      "bytes": 57560083
+    },
+    {
+      "id": "411afa90761ad751f07e48f20ac53b0c",
+      "source_id": "underpaid-with-stanley-chi",
+      "status": "downloaded",
+      "sha256": "a8ce6039c0e445a3b6f300473792b893561baede4049198a1bca613f5f3b35a9",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/411afa90761ad751f07e48f20ac53b0c.media",
+      "duration": 817.136313,
+      "bytes": 13074671
+    },
+    {
+      "id": "d310750c0efa03d0415adaa998d127f4",
+      "source_id": "wake-up-with-jim-and-saab",
+      "status": "downloaded",
+      "sha256": "fbea493a4a658920d8cefd9d06a881d78f01db7fce529bce648b97b9f9f9d83c",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/d310750c0efa03d0415adaa998d127f4.media",
+      "duration": 3380.009796,
+      "bytes": 54080573
+    },
+    {
+      "id": "0a7bd99f16a791028f1fb10a4a1488aa",
+      "source_id": "adulting-with-joyce-pring",
+      "status": "downloaded",
+      "sha256": "30ee76644f3df4d54a1f1b290b9f09113ff115db5805765c0de94bd77510b913",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/adulting-with-joyce-pring/0a7bd99f16a791028f1fb10a4a1488aa.media",
+      "duration": 359.016333,
+      "bytes": 8670500
+    },
+    {
+      "id": "85efea762e15ee0f1ebefde45d1f99cf",
+      "source_id": "boiling-waters-ph",
+      "status": "downloaded",
+      "sha256": "e3639798a5bd5765f7d3d4990d43af914473add3ec1fa20d7d94b2627cf5ec6a",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/85efea762e15ee0f1ebefde45d1f99cf.media",
+      "duration": 509.775625,
+      "bytes": 8156688
+    },
+    {
+      "id": "a3e8b1176444d2d60b57de87ddd11a47",
+      "source_id": "creepsilog",
+      "status": "downloaded",
+      "sha256": "b072d7d698e832cd5a1fe574d3a12c68112e75186073e0bbb0d828a25c67347d",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/a3e8b1176444d2d60b57de87ddd11a47.media",
+      "duration": 3242.9312,
+      "bytes": 129717248
+    },
+    {
+      "id": "4d0e29eb8b76ba86a6ef6b3cd9d26af2",
+      "source_id": "kudazzers",
+      "status": "downloaded",
+      "sha256": "1843dddc0a996fbea35eb9051dc228b9d92e4925edff3a0037f42a967dd47510",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/4d0e29eb8b76ba86a6ef6b3cd9d26af2.media",
+      "duration": 3958.282449,
+      "bytes": 63379956
+    },
+    {
+      "id": "505ac806cd75e488bf3c205983198f46",
+      "source_id": "tamang-usapan",
+      "status": "downloaded",
+      "sha256": "b52a63667161f4485c7b4f6d1959a2278fb40ff6ca068251e8d57922f35490f5",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/505ac806cd75e488bf3c205983198f46.media",
+      "duration": 8551.706122,
+      "bytes": 136827714
+    },
+    {
+      "id": "b124327cf202faa1bc147f4adcac51d7",
+      "source_id": "the-koolpals",
+      "status": "downloaded",
+      "sha256": "17fc6e27facec43a04d4e1dc6d4cd8472c9bda6713dd473a05d4a200574ef8f3",
+      "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/b124327cf202faa1bc147f4adcac51d7.media",
+      "duration": 4640.058435,
+      "bytes": 75042169
+    }
+  ],
+  "raw_hours": 111.86150602861107,
+  "new_preparation_hours": 74.39522785499999,
+  "excluded_previous_ids": [
+    "06bbe2544085eec9b48dc77693b04d0e",
+    "09f6bd0ec2130904cd0be44a901dd257",
+    "0a7bd99f16a791028f1fb10a4a1488aa",
+    "0ab239cfdd3de553ce86afe5dee8fabe",
+    "0cf814ae19b40afe103538d8e8cf1825",
+    "176fe56400b493ee20f78b2d95524da2",
+    "17fc1f6e40c2c0225e085216277e4fba",
+    "18aa1432ea459824c7cf70582852f993",
+    "20260e4cea9e3e6b68339c5ae1f97a67",
+    "2a4b54da22a4b2ddd5ba0cf0c1739990",
+    "2f184bfed1b429cf2fe0f49fe5caaa28",
+    "351ae9170afd96197b1d1d8feae3a26a",
+    "37dbc39230428065cc9eee385c35143f",
+    "3bcade96ac11428692e17113fb5d27d2",
+    "4134cdd31a7e05ca0a7ab0df5f911700",
+    "43706455820763a432fdcf8daa7ce494",
+    "43db5a11a7e4b365f78f5f934a36de21",
+    "4e386f4e7898bd59acd7ee66e45d809c",
+    "5446e704353f751d36398f30e05a9870",
+    "5ba8571ef1ec1e5d881a09c63a51f541",
+    "6396c885d53a1e0eba85f1ac6b796e4f",
+    "78f15b57635b6c7c937b02eb1322e01c",
+    "7e7d55e932830ba2c7b4ce7acddf476b",
+    "7f40573a248496034e868eb65263bce2",
+    "84afdd8f86a237078241a3ece04c4e73",
+    "8892abc02e88a1053ae932de05b92679",
+    "8a817127be8d88f5f697301c139431b8",
+    "8ad95d7665c5042792fbec5e57b54767",
+    "8ef5707adc8ecfa015b3c16fcdf710c8",
+    "9308965da22035b5f03db9cad4add3fb",
+    "9772bdda8ce2caf91c627dcf2a27a61f",
+    "9ac01736b6275d4a1e557397920b9612",
+    "9fbe848b3be9a7e316ea12630f5835f5",
+    "a0794743ba84604879d40ae3c4dbd4b6",
+    "a6653f7018891ce6f81012583f3a00ad",
+    "a7af1c66e2b452df2ac2833d91f78420",
+    "aa055a66c11667604314294017b8241b",
+    "ae1addefc55f4bec281e527f2a6c031a",
+    "afec26fc45cb12523acfeaf0f5a0b0c9",
+    "b35fd1ec11df2c634a4e33fd72a7e1ef",
+    "b53f96a1f34b6b7ef778ced136f0edc5",
+    "ba94323cc1e1dc1f42927722b0b89cc7",
+    "bd2b7fba204b49f274acf2835e63737d",
+    "bd3c146ce36b17f409fbc7cf8d788fd9",
+    "d0a045f78829391e0c2e23e3de9f3a4e",
+    "d83092f67c4de508916ce9047eb377c3",
+    "dfaaa214b91867ad26b70c7e72b77bca",
+    "e4edd3110c925f208babf2222b1220be",
+    "e6790a0a5566fb1bf5888b232fe34ecf",
+    "e698a74d4757840d7249a46df9c478d5",
+    "ea2c4d2ff26c1cd6a1ace1846195b306",
+    "ed9ce8948ab9c72bf49abda456b7acf0",
+    "f37df7cf9624171f3c7a7793033eef8d",
+    "f4ebf290a1b96ce3a2855cee927838b4",
+    "f69dff201d3e3fe09f823ff164cff9cc",
+    "fa70f889f82b7d7738c8bc815c764f50",
+    "fed8e30b0dae731a00c64b20d8c0dfda"
+  ],
+  "launch": {
+    "pid": 803554,
+    "args": [
+      "/home/iotim/chika-curation/.venv-compute/bin/python",
+      "-m",
+      "curation.prepare",
+      "--rss-root",
+      "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/rss-snapshot",
+      "--output",
+      "/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/prepared",
+      "--max-recordings",
+      "75",
+      "--window-seconds",
+      "27",
+      "--min-free-gib",
+      "100"
+    ],
+    "selected_recordings": [
+      {
+        "id": "bf7573fd70874daccb8bf04b6ae3149e",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "4c9a33fc8145a29540104bd171642cf8baef3a787fb5c13bc2eec2f07d7ebdea",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/bf7573fd70874daccb8bf04b6ae3149e.media",
+        "duration": 1920.574694,
+        "bytes": 30729612
+      },
+      {
+        "id": "93b44367f971484cbfaa7f55e869af79",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "02b118f36aa53aeb3792b2d9183bde578c9b07e241a5535bf837c579637a89fa",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/93b44367f971484cbfaa7f55e869af79.media",
+        "duration": 3704.816469,
+        "bytes": 118558223
+      },
+      {
+        "id": "62169cd5aa3a78949f23fed20643e2f7",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "9e4c6c0616ec4ee360f4b8854d0d26d9a060017b1556c022b0767594005198f5",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/62169cd5aa3a78949f23fed20643e2f7.media",
+        "duration": 3512.842449,
+        "bytes": 56205896
+      },
+      {
+        "id": "a57bea9e30a7843907f41692dcf7f06d",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "4909cf598fdcf92fab57931e6ea5e9113d2651fe5b0e3e01feab68bc10179efa",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/a57bea9e30a7843907f41692dcf7f06d.media",
+        "duration": 4732.447347,
+        "bytes": 78538944
+      },
+      {
+        "id": "92b71faeb2c868dab9ecba45c54b104d",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "33d5a15f5d6e8508f3930cee3369b431b928257e0f9ab940ffc97b391e727e1d",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/92b71faeb2c868dab9ecba45c54b104d.media",
+        "duration": 3297.38449,
+        "bytes": 52758568
+      },
+      {
+        "id": "7074b7699db435a750bce8cfd8dd35e8",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "782dba4a9fe7c7d0cfdf279d6c0d2501f778a242c1e848b2f6759b2892aae9d7",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/7074b7699db435a750bce8cfd8dd35e8.media",
+        "duration": 2884.440792,
+        "bytes": 69226649
+      },
+      {
+        "id": "fa352fe898eec6edb91d87ba801ed5c4",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "88d4590fbc75ce85b7938441e1fdfb2e4aa0c5f9e605d36e7193834211a481c5",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/fa352fe898eec6edb91d87ba801ed5c4.media",
+        "duration": 6371.405333,
+        "bytes": 152924306
+      },
+      {
+        "id": "2cd96414182eecf3afcfc3822d88f286",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "87a47c1ed42d84263170dd938f95d7ce67df72421041bdf6ac53d487b50d62e3",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/2cd96414182eecf3afcfc3822d88f286.media",
+        "duration": 4178.033667,
+        "bytes": 100281387
+      },
+      {
+        "id": "b2f4ab8793a3927f26c8cab45495eeb7",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "402ae8089420c75a19f7d264281887ef79922c9202e6d383ee475bfdfaad4894",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/b2f4ab8793a3927f26c8cab45495eeb7.media",
+        "duration": 4729.991837,
+        "bytes": 75680286
+      },
+      {
+        "id": "2d70847695cb17397c3353d75255ef60",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "b051ccd53fe1e243a833332f81dd851a84403425f0d4e9b647f4f76971d5404c",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/2d70847695cb17397c3353d75255ef60.media",
+        "duration": 3782.112781,
+        "bytes": 121031705
+      },
+      {
+        "id": "92daf2c674595ba6560eed0dbe89b1d2",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "0fa17846d68c5214c75611b5fc4d439d80e55cf38adab02ede81bf1451341c48",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/92daf2c674595ba6560eed0dbe89b1d2.media",
+        "duration": 3286.282449,
+        "bytes": 52627033
+      },
+      {
+        "id": "32054fc2f3c1d3f53c9546543b84f55c",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "db0dac1be51bac708ad0fe362ec7e45a62a0fe3947facd3af06cdfc2eea09acf",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/32054fc2f3c1d3f53c9546543b84f55c.media",
+        "duration": 4634.044082,
+        "bytes": 74145122
+      },
+      {
+        "id": "8217410e86ee6c2deada913d651f7777",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "025999ddab9d8e541f8d9b556e54f507c024be7b77652de167aa8f10f09a936f",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/8217410e86ee6c2deada913d651f7777.media",
+        "duration": 2525.5958,
+        "bytes": 101164890
+      },
+      {
+        "id": "bbd4003da9224f39e530355a2dfeccd3",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "b1dda0aa08fd27c613daba0871a113fa98853fd66771f0344a44b47573d3550b",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/bbd4003da9224f39e530355a2dfeccd3.media",
+        "duration": 3141.1461,
+        "bytes": 62827018
+      },
+      {
+        "id": "3c899bd7c47f1b6d3158f6585fcb50ef",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "07234c70326ace7402a3dd477d3e00d6ca2debf5d065d26e8382aac6facd49d9",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/3c899bd7c47f1b6d3158f6585fcb50ef.media",
+        "duration": 2233.563756,
+        "bytes": 17913650
+      },
+      {
+        "id": "edd6460ee515d6274960e47706873e76",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "97048d4c5f6fd9d452f39fe727b559d3a539d24949e3e73614f6e70b7cd2beb3",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/edd6460ee515d6274960e47706873e76.media",
+        "duration": 3739.010998,
+        "bytes": 60470474
+      },
+      {
+        "id": "1a8652c334647f296864470685a35674",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "f86f1f32d8bd85d909586006e2ae472ea4afc8bbf72ab58eaa9e83d35829f921",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/1a8652c334647f296864470685a35674.media",
+        "duration": 3281.084082,
+        "bytes": 52544784
+      },
+      {
+        "id": "22bd354a8e5903f04883b64ef6c41a2f",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "bdaceb54b17a54d6f010fd1c73c315f53d2f87ebe62d33dc0c50969fa3820eff",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/22bd354a8e5903f04883b64ef6c41a2f.media",
+        "duration": 5407.397333,
+        "bytes": 129785209
+      },
+      {
+        "id": "e4a20b0ff9a0ca29927a2965ee72a478",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "0b8e978d175599f7e3e564db594d4e28d319ee6b61e5fbbfb1d4f7a2480fae9b",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/e4a20b0ff9a0ca29927a2965ee72a478.media",
+        "duration": 5794.584,
+        "bytes": 92524017
+      },
+      {
+        "id": "d43c48faccfc172809885485599a04a6",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "eda8140ce1b54c92b188b25a05ddf446e4bccd352c5275b204700eafb7f34a45",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/d43c48faccfc172809885485599a04a6.media",
+        "duration": 2856.5159,
+        "bytes": 57134414
+      },
+      {
+        "id": "5e630b88c937ac6d31d7861f8a5cb34b",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "b04d5ab9b792f74209259bcbed526d8f4adc4b6c9415fd40685b3d33902ab631",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/5e630b88c937ac6d31d7861f8a5cb34b.media",
+        "duration": 2881.149375,
+        "bytes": 23049593
+      },
+      {
+        "id": "6bdd76ffce217ac463a68bf9be7ddead",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "3573564faf3f422af953515f69a424101927f8ebba0a9b78c4e534855c697be6",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/6bdd76ffce217ac463a68bf9be7ddead.media",
+        "duration": 1986.533878,
+        "bytes": 31784959
+      },
+      {
+        "id": "91d633ffcf6960c17210a3f329e88ed4",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "7599bad12dabce675cebcd2bef43741964fe7939d950ff364208a3732d2a263b",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/91d633ffcf6960c17210a3f329e88ed4.media",
+        "duration": 2081.383625,
+        "bytes": 33302470
+      },
+      {
+        "id": "196edcf4e7c9093c11f9391f6d4b880b",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "c95e6c0009ff64b179ab89dab35de6239011e240a785ed9d51e3b619a9aa0c52",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/196edcf4e7c9093c11f9391f6d4b880b.media",
+        "duration": 3578.514406,
+        "bytes": 114516557
+      },
+      {
+        "id": "008eccc13c4bbc4d4cf630c296b99801",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "31d73b7cfde664338ea184d11ab763d86df189a7b61af8050fdbe37aa6ae1594",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/008eccc13c4bbc4d4cf630c296b99801.media",
+        "duration": 2147.84,
+        "bytes": 34444192
+      },
+      {
+        "id": "de96c83834bda17e89713baf196ec020",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "d0b5a4e70cb2ad0be43ff52cdd1655e30c83486c6574d713a96721d524987465",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/de96c83834bda17e89713baf196ec020.media",
+        "duration": 4150.877333,
+        "bytes": 99631148
+      },
+      {
+        "id": "8427958aa8f99fa019bf6bc903cc5d0d",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "eeb01a649ad4a7436dcbbc96d8d5041c03501b69b5c10f9a77ff222a4b9e9970",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/8427958aa8f99fa019bf6bc903cc5d0d.media",
+        "duration": 3854.52,
+        "bytes": 56384808
+      },
+      {
+        "id": "14730fe740c7dd9d38e1ca451fad808c",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "ce11408cc81e8e69b67c294b1024d7374edf561f0de22eb3c63ad7f152db6515",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/14730fe740c7dd9d38e1ca451fad808c.media",
+        "duration": 2378.997551,
+        "bytes": 38064377
+      },
+      {
+        "id": "120a9ddcb4f39de3455e6918217cf027",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "3791336f8b7100b290a5f488eeaf59025b25ededfc51343fe6f1c416d0faa405",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/120a9ddcb4f39de3455e6918217cf027.media",
+        "duration": 2046.432625,
+        "bytes": 32743310
+      },
+      {
+        "id": "a3d51c956e7df805bafbc93f14b36f2d",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "70ce8cb1d5e9916b6656e2ef84ad61fbb05e0960b5722665b1eb68b810acce25",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/a3d51c956e7df805bafbc93f14b36f2d.media",
+        "duration": 1894.948571,
+        "bytes": 30319594
+      },
+      {
+        "id": "1a7e50fa2e3baed6a7384254ace97d07",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "1ad66ea69688b8312a6bec7f50c868d32248c3b0a5a342055a6cdd55ee17b5bc",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/1a7e50fa2e3baed6a7384254ace97d07.media",
+        "duration": 1675.14775,
+        "bytes": 26802672
+      },
+      {
+        "id": "ac56dced46ed861729d72c13e76f6511",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "cd51b4673ddf989b827c9a77481e2c5b66bd6271840e36633ff79ad3ca62a896",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/ac56dced46ed861729d72c13e76f6511.media",
+        "duration": 5554.26,
+        "bytes": 89827349
+      },
+      {
+        "id": "e621d90febca70cecde70e0e857b8333",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "5193305c605be66ef5652087d7a842d558e6a2d14421555b54ef6721cc7c1609",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/e621d90febca70cecde70e0e857b8333.media",
+        "duration": 2714.514286,
+        "bytes": 43510972
+      },
+      {
+        "id": "c6741ca56eca8e5fb1f1b7b38b5d3d9a",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "6208cfa8fc4ca224efa61142eaa0ee556d6517a03c15dfdacc0e9ebb8d8ad680",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/c6741ca56eca8e5fb1f1b7b38b5d3d9a.media",
+        "duration": 6876.791995,
+        "bytes": 111216128
+      },
+      {
+        "id": "0df8a3d7275a7a11cee8258e63ac7982",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "e0c154245cfb48b7bfd2b4fdec32f5d661ad5a634499a380ced81a1d915e8881",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/0df8a3d7275a7a11cee8258e63ac7982.media",
+        "duration": 5462.065442,
+        "bytes": 88336247
+      },
+      {
+        "id": "e628b5cf488c2fec48b644d9d5adb525",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "d5ce15c72f91a82b05b9b7eabeaa388e766e7c02667cfdbc3b826df8ec821fe4",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/e628b5cf488c2fec48b644d9d5adb525.media",
+        "duration": 5544.907755,
+        "bytes": 88718941
+      },
+      {
+        "id": "fc6010c18e72cc2f7dcd99bf92eb73b1",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "ad92417a47e5c39aa5a6dc9ef8ed98039af031021a5d88175f50a058ce3af64d",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/fc6010c18e72cc2f7dcd99bf92eb73b1.media",
+        "duration": 4090.644875,
+        "bytes": 65450670
+      },
+      {
+        "id": "ea0fb77cb568a61f6d4b16f3fc0d4c13",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "ca1f8406d04cee17e9cd441115447bbdd0bd13cfe603d65627e3b9d0628ecf0d",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/ea0fb77cb568a61f6d4b16f3fc0d4c13.media",
+        "duration": 2880.757551,
+        "bytes": 46092537
+      },
+      {
+        "id": "abb4bc04416b939fdb4714378221798c",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "e9b8b42edf3fd8a29a3c0e722b99bd311a43c392a0e3ae930e928f23f4d560c9",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/abb4bc04416b939fdb4714378221798c.media",
+        "duration": 1620.475375,
+        "bytes": 25927928
+      },
+      {
+        "id": "154778343227e1b0e5280121b9666bca",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "f9f7e3f5f83ffeb31456731e31df1e01c0cca1088223743f72a1afd9a2e08ff5",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/154778343227e1b0e5280121b9666bca.media",
+        "duration": 2521.912993,
+        "bytes": 40787096
+      },
+      {
+        "id": "26745f86c8a410def741681b50274349",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "3096684b332863379a65b0a4036a7184ecabc75b7aa5017026b997912eb25e56",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/26745f86c8a410def741681b50274349.media",
+        "duration": 3634.285714,
+        "bytes": 58192993
+      },
+      {
+        "id": "85e51bbd175127a32fd2c94a56f8f151",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "de31fed509d28782691f6cef1309dd6bb74b55cba3ae55359b04a8dd5b609999",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/85e51bbd175127a32fd2c94a56f8f151.media",
+        "duration": 6278.429333,
+        "bytes": 150689981
+      },
+      {
+        "id": "03bb85f1de764032e5eb228e1ec4a24f",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "39e2cb83b1223424263af15fe0326735b8686c0ffb285f0a849eb25743196708",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/03bb85f1de764032e5eb228e1ec4a24f.media",
+        "duration": 3782.164898,
+        "bytes": 52174649
+      },
+      {
+        "id": "96f93a4f539aa65ab3ee6f2b291d546a",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "f65ac29690b2894f2432dfe63600f524b28897624f39651cf4e67a7138db2fef",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/96f93a4f539aa65ab3ee6f2b291d546a.media",
+        "duration": 2374.39995,
+        "bytes": 47492095
+      },
+      {
+        "id": "04d5c7c40790d587b74e2853df6b2cf1",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "984e920e035ca17cf975629a1b493d61993ee67b7ad64212730184f53fc9d8fe",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/04d5c7c40790d587b74e2853df6b2cf1.media",
+        "duration": 2446.942,
+        "bytes": 19575986
+      },
+      {
+        "id": "0ea1c417add5e8b8f9557aa9dd69ecf2",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "d38b7148bda9a2e35c4e4985f1a9a73d712861139ec25a3528411161df2f347c",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/0ea1c417add5e8b8f9557aa9dd69ecf2.media",
+        "duration": 2165.353447,
+        "bytes": 35019943
+      },
+      {
+        "id": "705be9e0286ec59d628adca50a68748f",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "b4ba86de225fc9e7bc961104b6ebefd1e5dd187e35fec76f61dc6d8c97801c12",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/705be9e0286ec59d628adca50a68748f.media",
+        "duration": 3264.217188,
+        "bytes": 52227819
+      },
+      {
+        "id": "0e1004196228e373196f3ef36d87af27",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "e842b513b2f70e82cfc4772396fcee1fdc11ae61fd9f1d191760cc31c1b4ef39",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/0e1004196228e373196f3ef36d87af27.media",
+        "duration": 8982.454422,
+        "bytes": 145268731
+      },
+      {
+        "id": "343798c6142a161abf7a4605275067ca",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "d68b6a4c4c65ac09a56a6ba1e17e513dffe151312bba0335d1eb94442fa8f5cc",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/343798c6142a161abf7a4605275067ca.media",
+        "duration": 3374.524082,
+        "bytes": 54036966
+      },
+      {
+        "id": "57960884b41baab3bca78724ae8c6f3c",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "13e38dedfcb76c270c2208c7d1e9cf612cbdf89e946b66c88619545e3525af00",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/57960884b41baab3bca78724ae8c6f3c.media",
+        "duration": 3500.069333,
+        "bytes": 84009329
+      },
+      {
+        "id": "078241bc63804eda1bd62c00f8828527",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "49c851bdafccf03daa12799a4d345f28e862ed40178b89fd264d739cc2da2d0e",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/078241bc63804eda1bd62c00f8828527.media",
+        "duration": 4686.658667,
+        "bytes": 112487173
+      },
+      {
+        "id": "d03fbf46356e9f02bd66f56ad426fea2",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "eaf06292b8853ab71634fb4b41b2279ad708189e94b271d0a0deba76a15af612",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/d03fbf46356e9f02bd66f56ad426fea2.media",
+        "duration": 3734.961633,
+        "bytes": 59759803
+      },
+      {
+        "id": "e470f0eef2c872fbf51db35e767b655a",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "43a6f24398598754d4b1e2aa22f747a52b4f8f5fc81b3589cafb2e40d0e08ceb",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/e470f0eef2c872fbf51db35e767b655a.media",
+        "duration": 1783.693063,
+        "bytes": 28539477
+      },
+      {
+        "id": "eec6272f2707faa2cb36a970f6177975",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "5ff63b3a6be51aea8347538b175e9ea27036a4eb3830fe292be19d4ae9e02ccd",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/eec6272f2707faa2cb36a970f6177975.media",
+        "duration": 2027.885714,
+        "bytes": 32446588
+      },
+      {
+        "id": "3da3ce92cb0cf42b76792a7d5ad92e10",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "667082c4264509d793d6015dd4c0022abb640c0628e48f9cef6e202023953fa0",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/3da3ce92cb0cf42b76792a7d5ad92e10.media",
+        "duration": 1155.180375,
+        "bytes": 18483196
+      },
+      {
+        "id": "258e8a11691af871afe52549246b9ad0",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "cad041b85da7b94265792bc68e7b9d4ed301b973da9dd8814a37b6308576f7e1",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/258e8a11691af871afe52549246b9ad0.media",
+        "duration": 4955.115011,
+        "bytes": 80137801
+      },
+      {
+        "id": "67dae46811aa126923b6cdc0f8cc4441",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "b34a032fc115814220b003dc0d3a6daccd7771c3a5d54ba6a4f7ae50d7a1f6a2",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/67dae46811aa126923b6cdc0f8cc4441.media",
+        "duration": 2927.934694,
+        "bytes": 46894395
+      },
+      {
+        "id": "c064ea89b5dbcfe368514108b11ece33",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "7a1c5ef4ac0121069151c1d162e33eeb8131c97d8d269fb721bb492efbac5605",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/c064ea89b5dbcfe368514108b11ece33.media",
+        "duration": 5798.29551,
+        "bytes": 92773145
+      },
+      {
+        "id": "54159e1fab675e5dd3ed63a304bd645b",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "44635d664ec04a1999e5d70355f456687523bc60a4dbfa8c38431d2ff568370c",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/54159e1fab675e5dd3ed63a304bd645b.media",
+        "duration": 5316.876463,
+        "bytes": 85988033
+      },
+      {
+        "id": "31c6ac4e92582e54cd224702dee9372d",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "f66ba58ec9fd5993d547551306a9abf96648fa8c56f8d800730cb8d0a1a637c2",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/31c6ac4e92582e54cd224702dee9372d.media",
+        "duration": 4169.50855,
+        "bytes": 83394267
+      },
+      {
+        "id": "dd25930526552a54e85dd2c027794da1",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "c1159d977a7649018d4b231ecd36b8ffd937d654a0881db419b8900a47393253",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/dd25930526552a54e85dd2c027794da1.media",
+        "duration": 1889.905938,
+        "bytes": 30238921
+      },
+      {
+        "id": "5c7e6fba43af24443085cc5da9a783e1",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "e44e0f21f8f1994e614948dc7702b993f67bfc82d4dc01c6d9fd33614ac87199",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/5c7e6fba43af24443085cc5da9a783e1.media",
+        "duration": 2451.356735,
+        "bytes": 39222124
+      },
+      {
+        "id": "dcf25e84813abb4e4892273a724798db",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "688066d088729a3dc578dfeea570e80acdf4efdae8cf75b6abb6d394925d6dc0",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/dcf25e84813abb4e4892273a724798db.media",
+        "duration": 2217.270313,
+        "bytes": 35476633
+      },
+      {
+        "id": "5ca58e7f2afe541f1bd73f943aeca4a7",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "1d6451bdec98c7e3db80d1da0f4cf7aa06c845ce8ca3d332f69fc88118a77dcc",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/5ca58e7f2afe541f1bd73f943aeca4a7.media",
+        "duration": 2601.247333,
+        "bytes": 62430006
+      },
+      {
+        "id": "0ac82269174a3434d37f2ea8b1e1cda4",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "7396c3d3b11bdd4f8fa23ba7ccf7ca94b45f7f7440474ac2d8a944422b953473",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/0ac82269174a3434d37f2ea8b1e1cda4.media",
+        "duration": 2256.587755,
+        "bytes": 36184144
+      },
+      {
+        "id": "10e69a3a4f3b40459ec8d04020ed17c0",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "dfb602059d3b9836db550f2f3e60c2cb874f4638ff8e822caaac1f5b248f0570",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/10e69a3a4f3b40459ec8d04020ed17c0.media",
+        "duration": 5133.191837,
+        "bytes": 82131486
+      },
+      {
+        "id": "9988f10b3cf82c7d6b7914159dd795ec",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "72d7013175dced4047ea45dbe75c119391d20eba827c35ee71335cc7b3349589",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/9988f10b3cf82c7d6b7914159dd795ec.media",
+        "duration": 4260.981451,
+        "bytes": 68911861
+      },
+      {
+        "id": "ba487e08b9b27a65b6986d54253e38bd",
+        "source_id": "the-linya-linya-show",
+        "status": "downloaded",
+        "sha256": "de158133cbed4d311d245b21053427042f277a9f046caad2a847954b3d412d0a",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-linya-linya-show/ba487e08b9b27a65b6986d54253e38bd.media",
+        "duration": 3597.479184,
+        "bytes": 57560083
+      },
+      {
+        "id": "411afa90761ad751f07e48f20ac53b0c",
+        "source_id": "underpaid-with-stanley-chi",
+        "status": "downloaded",
+        "sha256": "a8ce6039c0e445a3b6f300473792b893561baede4049198a1bca613f5f3b35a9",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/underpaid-with-stanley-chi/411afa90761ad751f07e48f20ac53b0c.media",
+        "duration": 817.136313,
+        "bytes": 13074671
+      },
+      {
+        "id": "d310750c0efa03d0415adaa998d127f4",
+        "source_id": "wake-up-with-jim-and-saab",
+        "status": "downloaded",
+        "sha256": "fbea493a4a658920d8cefd9d06a881d78f01db7fce529bce648b97b9f9f9d83c",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/wake-up-with-jim-and-saab/d310750c0efa03d0415adaa998d127f4.media",
+        "duration": 3380.009796,
+        "bytes": 54080573
+      },
+      {
+        "id": "85efea762e15ee0f1ebefde45d1f99cf",
+        "source_id": "boiling-waters-ph",
+        "status": "downloaded",
+        "sha256": "e3639798a5bd5765f7d3d4990d43af914473add3ec1fa20d7d94b2627cf5ec6a",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/boiling-waters-ph/85efea762e15ee0f1ebefde45d1f99cf.media",
+        "duration": 509.775625,
+        "bytes": 8156688
+      },
+      {
+        "id": "a3e8b1176444d2d60b57de87ddd11a47",
+        "source_id": "creepsilog",
+        "status": "downloaded",
+        "sha256": "b072d7d698e832cd5a1fe574d3a12c68112e75186073e0bbb0d828a25c67347d",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/creepsilog/a3e8b1176444d2d60b57de87ddd11a47.media",
+        "duration": 3242.9312,
+        "bytes": 129717248
+      },
+      {
+        "id": "4d0e29eb8b76ba86a6ef6b3cd9d26af2",
+        "source_id": "kudazzers",
+        "status": "downloaded",
+        "sha256": "1843dddc0a996fbea35eb9051dc228b9d92e4925edff3a0037f42a967dd47510",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/kudazzers/4d0e29eb8b76ba86a6ef6b3cd9d26af2.media",
+        "duration": 3958.282449,
+        "bytes": 63379956
+      },
+      {
+        "id": "505ac806cd75e488bf3c205983198f46",
+        "source_id": "tamang-usapan",
+        "status": "downloaded",
+        "sha256": "b52a63667161f4485c7b4f6d1959a2278fb40ff6ca068251e8d57922f35490f5",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/tamang-usapan/505ac806cd75e488bf3c205983198f46.media",
+        "duration": 8551.706122,
+        "bytes": 136827714
+      },
+      {
+        "id": "b124327cf202faa1bc147f4adcac51d7",
+        "source_id": "the-koolpals",
+        "status": "downloaded",
+        "sha256": "17fc6e27facec43a04d4e1dc6d4cd8472c9bda6713dd473a05d4a200574ef8f3",
+        "path": "/home/iotim/chika-curation/curation/outputs/taglish-rss-v1/audio/the-koolpals/b124327cf202faa1bc147f4adcac51d7.media",
+        "duration": 4640.058435,
+        "bytes": 75042169
+      }
+    ]
+  },
+  "snapshot_sha256": "c431c212cd925132871e31cd7004cca8799af5187ba1553c8a94f3d089940230",
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.prepare', '--rss-root', '/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/rss-snapshot', '--output', '/home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/prepared', '--max-recordings', '75', '--window-seconds', '27', '--min-free-gib', '100'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-fil-preparation-v3/run.py"
+}

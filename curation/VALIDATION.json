@@ -1,0 +1,166 @@
+{
+  "updated_at": "2026-11-14T22:39:14.655466+00:00",
+  "unit_tests": 147,
+  "pld_rows_locally_decoded": 229,
+  "hf_v2_remote_shards_hash_verified": 3,
+  "hf_v2_streaming_rows_checked": 1,
+  "rss_restore_drill": {
+    "local_restored_files": 1,
+    "remote_rows": 1,
+    "pending_rows": 424,
+    "original_root_unchanged": true
+  },
+  "archive_metadata_checkpoint": {
+    "files": 55,
+    "bytes": 8139017,
+    "revision": "5f146ae8b11c0ffe1021eaa483931d23bf6dc8e5"
+  },
+  "prepared_transport_windows": {
+    "hil": 169,
+    "fil": 74,
+    "new_transcribed_hours": 0
+  },
+  "llm_integration": {
+    "model": "glm-5.3-flash-nebius",
+    "returned_model": "zai-org/GLM-5.3-Flash",
+    "real_drafts_checked": 2,
+    "text_only_probes": 4,
+    "probes_with_no_obvious_issue": 4,
+    "known_probe_included_as_prompt_example": true,
+    "new_probes": 3,
+    "audio_verified": false,
+    "limitations": "Small instruction regression check, not a linguistic accuracy benchmark. Prompt v1 overflagged phonetic English; v2 fixed known example, but actual draft triage still needs listening."
+  },
+  "pld_v2_rows_locally_decoded": 229,
+  "storage_eviction": {
+    "live_downloader_lock_refused": true,
+    "real_hub_backed_dry_run_verified": true,
+    "real_files_deleted": 0,
+    "crash_and_restore_journal_tests_passed": true
+  },
+  "radio_completed_captures_verified": 4,
+  "asr_live": {
+    "hil_draft_windows": 3,
+    "hil_draft_seconds": 90,
+    "fil_draft_windows": 2,
+    "fil_draft_seconds": 60,
+    "cache_reuse_network_disabled": true,
+    "bulk_status": "stopped after server finalize_timeout",
+    "audio_verified": false
+  },
+  "new_audio_llm": {
+    "selected": 2,
+    "valid_text_reviews": 1,
+    "rejected_invalid_identity_or_triage": 1,
+    "audio_verified": false
+  },
+  "storage_supervisor": {
+    "running": true,
+    "rss_only": true,
+    "real_files_deleted": 0
+  },
+  "radio_backup": {
+    "recordings": 4,
+    "verified_bytes_including_metadata": 63062567,
+    "revision": "efee21af400cf66d7a7b85d7761eab70d99fe811",
+    "receipt_revision": "6bf32ac31fde5c3cb20c9d40012d1169f80a5392",
+    "local_files_deleted": 0
+  },
+  "imported_archive_radio": {
+    "recordings": 29,
+    "sources": 11,
+    "measured_media_hours": 21.356142,
+    "exact_byte_duplicates": 0,
+    "excluded_noncompleted": 2,
+    "snapshot": "37910b28e3574faf4b7f022da3831a22c9ccb6ca9e1f272165d2692e774753fd",
+    "verified_speech_hours": 0
+  },
+  "imported_prepare": {
+    "recordings": 1,
+    "windows": 6,
+    "window_seconds": 28,
+    "schema_hash_coverage_checked": true,
+    "cached_rerun": true,
+    "asr_completed": false
+  },
+  "new_collected_exports": {
+    "hil_rows": 3,
+    "fil_rows": 2,
+    "audio_decoded_rows": 5,
+    "remote_files_hash_verified": 9,
+    "hub_revision": "db224906b9ca13c8eb14b382443f9080c99c62d1",
+    "audio_verified": false,
+    "hf_streaming_rows_checked": 5,
+    "hf_streaming_configs_checked": 2
+  },
+  "publication_recovery": {
+    "real_existing_prefix_verified": true,
+    "new_commits_created": 0
+  },
+  "five_language_targets": {
+    "hours_each": 250,
+    "total_target_hours": 1250,
+    "asr_validated_languages": [
+      "fil",
+      "hil"
+    ],
+    "new_language_asr_validated": false
+  },
+  "archive_backup": {
+    "real_recordings_verified": 1,
+    "audio_bytes": 361031,
+    "revision": "9b41b04eca96af05c7d524e327f0af0580117d11",
+    "resume_with_commit_creation_disabled": true,
+    "local_files_deleted": 0
+  },
+  "vad": {
+    "version": 3,
+    "model_revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+    "model_sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+    "maximum_segment_seconds": 27,
+    "smoke_languages": [
+      "hil",
+      "fil",
+      "ceb",
+      "bik",
+      "ilo"
+    ],
+    "quality_benchmarked": false,
+    "audio_verified_hours": 0,
+    "cebuano_smoke_segments_hash_checked": 9
+  },
+  "short_segment_asr": {
+    "hil_windows": 2,
+    "fil_windows": 2,
+    "failures": 0,
+    "bulk_reliability_proven": false,
+    "bounded_followup_pid": 33933,
+    "subsequent_failures_note": "Four finalize timeouts observed on0.588\u20132.508-second candidates; long utterance cuts are not the only possible cause."
+  },
+  "persistent_asr": {
+    "live_items_per_language": {
+      "hil": 2,
+      "fil": 2
+    },
+    "live_sessions_per_language": 1,
+    "sample_clock_contiguous": true,
+    "cache_network_disabled": true,
+    "sustained_throughput_proven": false
+  },
+  "llm_v4": {
+    "live_rows_checked": 7,
+    "valid_reviews": 7,
+    "request_id_shortening": true,
+    "transcripts_changed": 0,
+    "audio_verifications_granted": 0
+  },
+  "collected_hil_vad_200_v1": {
+    "rows": 200,
+    "padded_seconds": 489.686,
+    "text_reviewed": 5,
+    "audio_verified": 0,
+    "all_rows_pcm_compared": true,
+    "all_rows_hf_streamed": true,
+    "export_revision": "ae2abab424fcf6535672d3fdcf8a1f11117a07b9"
+  }
+}

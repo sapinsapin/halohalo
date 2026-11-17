@@ -1,0 +1,42 @@
+{
+  "pid": 520128,
+  "args": [
+    "/home/iotim/chika-curation/.venv-compute/bin/python",
+    "-m",
+    "curation.vad",
+    "--manifest",
+    "/home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1/prepared/manifest.jsonl",
+    "--output",
+    "/home/iotim/chika-curation/curation/outputs/remote-ceb-vad-full-v1/vad",
+    "--max-minutes",
+    "600",
+    "--max-rows",
+    "1233"
+  ],
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:13:10.231425+00:00",
+  "worker": {
+    "pid": 520128,
+    "status": "running",
+    "started_at": 1794712374.133138
+  },
+  "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-ceb-vad-full-v1/run.py",
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.vad', '--manifest', '/home/iotim/chika-curation/curation/outputs/remote-ceb-preparation-v1/prepared/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-ceb-vad-full-v1/vad', '--max-minutes', '600', '--max-rows', '1233'])\ns.update(status='complete' if r.returncode==0 else 'failed',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "smoke_summary": {
+    "input_windows": 4,
+    "input_hours": 0.03,
+    "segments": 15,
+    "candidate_hours": 0.028866666666666662,
+    "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+    "transcribed_hours": 0,
+    "verified_hours": 0,
+    "manifest_sha256": "914465e4e489c5b3b83d81fbbc59ff6e9e996a7d9d0b7c91ea336901b13549c8",
+    "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+  },
+  "dependencies": {
+    "python": "3.11.16",
+    "onnxruntime": "1.32.0",
+    "numpy": "2.4.6",
+    "soundfile": "0.14.0"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "observed_at": "2026-11-15T02:35:51.601072+00:00",
+  "processed_at_observation": 813,
+  "failures_audited": 11,
+  "counts": {
+    "suggestion changes lexical content; listening review required": 3,
+    "invalid response request identity": 3,
+    "completion did not finish normally": 1,
+    "no-obvious-issue result contains flagged issues": 1,
+    "invalid issue structure": 2,
+    "no_saved_response": 1
+  },
+  "records": [
+    {
+      "id": "6568a1f6c229de2b93caa44a4b86da1843f59c607d630a4902f76a46b4aac00a",
+      "reported_kind": "ValueError",
+      "response_sha256": "ff448e0a09fb7fc3085670ca15b8d20680ed62b10b9b3dd21f7db4d2b0b1ac49",
+      "result": "rejected",
+      "validation_error": "suggestion changes lexical content; listening review required"
+    },
+    {
+      "id": "18884ccf954bc132f8b2cd8f4dd1ee3c4eee81fcde944f3545dac2adafb1e3d0",
+      "reported_kind": "ValueError",
+      "response_sha256": "2ba8c51ab983cb7ba572b61a138746429e7353aa0487ff1f3408f4ce96c8be2c",
+      "result": "rejected",
+      "validation_error": "invalid response request identity"
+    },
+    {
+      "id": "9cbe3137c5dafd13adca5dbff1ae8c21fd7e60faa994013f0316294b1d9869b3",
+      "reported_kind": "ValueError",
+      "response_sha256": "af82049805bb772cca20faf7ba58aa88cfd747027f214b58847e172908b792aa",
+      "result": "rejected",
+      "validation_error": "completion did not finish normally"
+    },
+    {
+      "id": "82c7a60d85cbd338674319af498b4df755a4745e8ab7bf38d85bdbda97fb8ab5",
+      "reported_kind": "ValueError",
+      "response_sha256": "3492dbf4be81448d1e4fa3d42b39afca1f7041fdc5d7ba4d0ea0b50708034fa5",
+      "result": "rejected",
+      "validation_error": "invalid response request identity"
+    },
+    {
+      "id": "d41c900646db8f915491c19d5b0a525db489b199af495b996458895eeac75cd1",
+      "reported_kind": "ValueError",
+      "response_sha256": "b896fee10eba314d7111821787ad744c4f0c47875f2b2f762c85f945e3ef9a53",
+      "result": "rejected",
+      "validation_error": "no-obvious-issue result contains flagged issues"
+    },
+    {
+      "id": "0fb3c1073c8eaac83d03c75c16ea54b23e6a285e5fa8e2fd5fd010b3567a1cb1",
+      "reported_kind": "ValueError",
+      "response_sha256": "69f02972ae56ecf131e97ecd1fbf22d6ff8c21695041b8f80a16d7a53fd06b90",
+      "result": "rejected",
+      "validation_error": "invalid issue structure"
+    },
+    {
+      "id": "2fbe0dc2e4c00de2d97c6a37fdda4b6cadb513ad3b52e830ef9c46ec12d5ad69",
+      "reported_kind": "ValueError",
+      "response_sha256": "3ae42415ccb426a17978cca3c7c142dabefc433f08550a4aa105ad03eee3b995",
+      "result": "rejected",
+      "validation_error": "invalid issue structure"
+    },
+    {
+      "id": "4fbc7c01a25a29703ace61bdb5e195e797dc923cf94a27169a8e584f23b26be5",
+      "reported_kind": "RuntimeError",
+      "result": "no_saved_response"
+    },
+    {
+      "id": "767a1d58937060e6f1d85253a64e8b4e8ad5b9db001347d68e893f6accfb5633",
+      "reported_kind": "ValueError",
+      "response_sha256": "4c4db7319e14689dbbcab3e34281239abac9167c30f3c4bf100b59257a1c19ff",
+      "result": "rejected",
+      "validation_error": "invalid response request identity"
+    },
+    {
+      "id": "6510e0531d217a47191b2837e5dfb1909a0ff554788920867046cb0a9ee05d77",
+      "reported_kind": "ValueError",
+      "response_sha256": "203d1eb31c1400f096cffc106960d3b765a1a4f0f560999af48bb797ec6104a1",
+      "result": "rejected",
+      "validation_error": "suggestion changes lexical content; listening review required"
+    },
+    {
+      "id": "b85fb4c6ce19c9904850125873116ca39e990d6530bd5fd2c5f054c4f97ad407",
+      "reported_kind": "ValueError",
+      "response_sha256": "8b7155bdc8fededf2ee43600fb584fbc0643769fac11b2e87cd47049c031c2f6",
+      "result": "rejected",
+      "validation_error": "suggestion changes lexical content; listening review required"
+    }
+  ],
+  "requests_made": 0,
+  "retries": 0,
+  "prompt_changed": false
+}

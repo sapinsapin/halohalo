@@ -1,0 +1,27 @@
+{
+  "pid": 87590,
+  "args": [
+    "/Users/timsan/halohalo/repo/curation/.venv/bin/python",
+    "-m",
+    "curation.review",
+    "--manifest",
+    "/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v1/input.jsonl",
+    "--output",
+    "/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v1/reviews",
+    "--model",
+    "us.kimi-k3",
+    "--max-attempts",
+    "1",
+    "--timeout",
+    "60",
+    "--max-consecutive-failures",
+    "2",
+    "--max-tokens",
+    "2500"
+  ],
+  "input_sha256": "bbb8d6ec0fbd1efdf6a1c61520ba194a308951f936c15ed3178f4b2f5588c177",
+  "selected": 259,
+  "excluded_local_manifest_sha256": "0b5e5bfd27fc1fcef3b16fd4d80ec9c8f5aa3d30feebc56f8ab0ea7b8ed620bf",
+  "recovery_code": "import json,os,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','started_at':time.time()}\n(root/'worker.json').write_text(json.dumps(s))\nr=subprocess.run(['/Users/timsan/halohalo/repo/curation/.venv/bin/python', '-m', 'curation.review', '--manifest', '/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v1/input.jsonl', '--output', '/Users/timsan/halohalo/repo/curation/outputs/dwnd-fil-review-v1/reviews', '--model', 'us.kimi-k3', '--max-attempts', '1', '--timeout', '60', '--max-consecutive-failures', '2', '--max-tokens', '2500'])\ns.update(status='process_exited',returncode=r.returncode,finished_at=time.time())\n(root/'worker.json').write_text(json.dumps(s))\n",
+  "scope": "NYO text-only review; no audio verification, no transcript rewriting"
+}

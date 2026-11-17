@@ -1,0 +1,50 @@
+{
+  "counts": {
+    "candidates": 3570,
+    "excluded": 1600,
+    "ineligible": 19,
+    "selected": 500
+  },
+  "exclusions": [
+    {
+      "path": "curation/outputs/fil-review-100-v1/input.jsonl",
+      "rows": 100,
+      "sha256": "5c7efff0a28dc74b1d87ea71ac8d9a7803393a0eb0ec2f38ed56ca47e25e11c4"
+    },
+    {
+      "path": "curation/outputs/fil-review-382-v1/input.jsonl",
+      "rows": 382,
+      "sha256": "853c67fa5818b9465999b5e4bca77be9c661e94ebb3a00bf0f70c637695901b5"
+    },
+    {
+      "path": "curation/outputs/fil-review-next-500-v1/input.jsonl",
+      "rows": 500,
+      "sha256": "c6b3c4b4ef6d77bf78976fe38a154a6ffe4dce060cdf8098b171d08835a854f3"
+    },
+    {
+      "path": "curation/outputs/fil-review-next-1000-v1/input.jsonl",
+      "rows": 1000,
+      "sha256": "fa5f7e35983536f81a2a885ff02fe4f8002905a971d68206cdde5bd378c9bfb1"
+    },
+    {
+      "path": "curation/outputs/fil-kimi-review-100-v1/input.jsonl",
+      "rows": 100,
+      "sha256": "5e948c91aae75718fe1ccd3a9afe4b75da494369a2957d5be6fe634505006057"
+    }
+  ],
+  "limit": 500,
+  "output": {
+    "path": "curation/outputs/fil-kimi-review-next-500-v1/input.jsonl",
+    "rows": 500,
+    "sha256": "94e99fcd3475a0efbc067236ceffae73760dac5d070ec2c9584156b3a4fb65e8"
+  },
+  "source": {
+    "path": "curation/outputs/fil-persistent-batch-v4/asr/manifest.jsonl",
+    "rows": 5189,
+    "sha256": "05af9616f5097280e3f46906b818871d1691f408b870e637d1737ae272d0439e"
+  },
+  "status": "launched",
+  "model_requested": "us.kimi-k3",
+  "prerequisite": "100-item prior batch complete and all 100 content-bound reviews independently attached",
+  "pid": 72144
+}

@@ -1,0 +1,172 @@
+{
+  "host": "dwnd-01",
+  "observed_at": "2026-11-15T03:37:10.747869+00:00",
+  "jobs": [
+    {
+      "language": "ceb",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v2",
+      "launch": {
+        "pid": 763121,
+        "args": [
+          "/home/iotim/chika-curation/.venv-compute/bin/python",
+          "-m",
+          "curation.prepare",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/canonical-ceb-remote-v2/snapshots/58ce98e19162b818b6173a0ceee1dc6614f677ebe4eeac28babb9caa2836ab7c/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v2/prepared",
+          "--max-recordings",
+          "47",
+          "--window-seconds",
+          "27",
+          "--min-free-gib",
+          "100"
+        ]
+      },
+      "manifest_sha256": "0e98fd6bfcc58b398b0e9006d69a1b2ad90ecf5c9734d6b3719faa8bd421474f",
+      "import_report": {
+        "exact_byte_duplicates": [],
+        "excluded": [
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/ceb-v2/source/worker-before-path-fix.json",
+            "reason": "not completed"
+          },
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/ceb-v2/source/worker.json",
+            "reason": "not completed"
+          }
+        ],
+        "imported_recordings": 47,
+        "measured_media_hours": 23.639785277777776,
+        "note": "Measured media duration only; not unique speech. Exact byte deduplication does not detect decoded repeats, clips, simulcasts, music or language. Rights and speakers unknown.",
+        "source_count": 1,
+        "sources": {
+          "gma-balitang-bisdak": {
+            "measured_media_hours": 23.639785277777783,
+            "recordings": 47
+          }
+        },
+        "transcribed_hours": 0,
+        "verified_completed_recordings": 47,
+        "verified_speech_hours": 0
+      },
+      "recovery_code": "import json,os,subprocess,time,math,shutil,sys\nfrom pathlib import Path\nfrom curation.schema import load_manifest,digest\nfrom curation.audit_vad import audit\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','stage':'preparation','started_at':time.time()}\ndef save():\n tmp=root/'worker.tmp';tmp.write_text(json.dumps(s));tmp.replace(root/'worker.json')\nsave()\ntry:\n subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.prepare', '--manifest', '/home/iotim/chika-curation/curation/outputs/canonical-ceb-remote-v2/snapshots/58ce98e19162b818b6173a0ceee1dc6614f677ebe4eeac28babb9caa2836ab7c/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v2/prepared', '--max-recordings', '47', '--window-seconds', '27', '--min-free-gib', '100'],check=True)\n manifest=root/'prepared/manifest.jsonl';rows=load_manifest(manifest)\n for row in rows:\n  if digest(row['audio_path'])!=row['audio_sha256']:raise ValueError('prepared audio hash mismatch')\n if shutil.disk_usage(root).free<100*2**30:raise RuntimeError('storage floor before VAD')\n s.update(stage='vad',verified_windows=len(rows));save()\n subprocess.run([sys.executable,'-m','curation.vad','--manifest',str(manifest),'--output',str(root/'vad'),'--max-rows',str(len(rows)),'--max-minutes',str(math.ceil(sum(r['duration'] for r in rows)/60)+1)],check=True)\n s.update(stage='audit');save()\n report=audit(manifest,root/'vad/manifest.jsonl');(root/'pcm-audit.json').write_text(json.dumps(report,indent=2))\n s.update(status='complete',stage='complete',finished_at=time.time());save()\nexcept Exception as e:\n s.update(status='failed',error_kind=type(e).__name__,finished_at=time.time());save();raise\n",
+      "required_environment": {
+        "PYTHONPATH": "/home/iotim/chika-curation"
+      },
+      "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-ceb-processing-v2/run.py"
+    },
+    {
+      "language": "bik",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-bik-processing-v2",
+      "launch": {
+        "pid": 763123,
+        "args": [
+          "/home/iotim/chika-curation/.venv-compute/bin/python",
+          "-m",
+          "curation.prepare",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/canonical-bik-remote-v2/snapshots/dabd4cc7c27c300b42983b1e5786138509dde4bd4cefd7ecfa4457ce2c7b9666/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-bik-processing-v2/prepared",
+          "--max-recordings",
+          "48",
+          "--window-seconds",
+          "27",
+          "--min-free-gib",
+          "100"
+        ]
+      },
+      "manifest_sha256": "d60a16f91aaf1981397bc80a853099f78e028cb24d424714363da480581a95b2",
+      "import_report": {
+        "exact_byte_duplicates": [],
+        "excluded": [
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/bik-v2/source/HP-HBD8WVN0.json",
+            "reason": "not completed"
+          },
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/bik-v2/source/worker-before-path-fix.json",
+            "reason": "not completed"
+          },
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/bik-v2/source/worker.json",
+            "reason": "not completed"
+          }
+        ],
+        "imported_recordings": 48,
+        "measured_media_hours": 27.314391111111114,
+        "note": "Measured media duration only; not unique speech. Exact byte deduplication does not detect decoded repeats, clips, simulcasts, music or language. Rights and speakers unknown.",
+        "source_count": 1,
+        "sources": {
+          "gma-balitang-bicolandia": {
+            "measured_media_hours": 27.3143911111111,
+            "recordings": 48
+          }
+        },
+        "transcribed_hours": 0,
+        "verified_completed_recordings": 48,
+        "verified_speech_hours": 0
+      },
+      "recovery_code": "import json,os,subprocess,time,math,shutil,sys\nfrom pathlib import Path\nfrom curation.schema import load_manifest,digest\nfrom curation.audit_vad import audit\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','stage':'preparation','started_at':time.time()}\ndef save():\n tmp=root/'worker.tmp';tmp.write_text(json.dumps(s));tmp.replace(root/'worker.json')\nsave()\ntry:\n subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.prepare', '--manifest', '/home/iotim/chika-curation/curation/outputs/canonical-bik-remote-v2/snapshots/dabd4cc7c27c300b42983b1e5786138509dde4bd4cefd7ecfa4457ce2c7b9666/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-bik-processing-v2/prepared', '--max-recordings', '48', '--window-seconds', '27', '--min-free-gib', '100'],check=True)\n manifest=root/'prepared/manifest.jsonl';rows=load_manifest(manifest)\n for row in rows:\n  if digest(row['audio_path'])!=row['audio_sha256']:raise ValueError('prepared audio hash mismatch')\n if shutil.disk_usage(root).free<100*2**30:raise RuntimeError('storage floor before VAD')\n s.update(stage='vad',verified_windows=len(rows));save()\n subprocess.run([sys.executable,'-m','curation.vad','--manifest',str(manifest),'--output',str(root/'vad'),'--max-rows',str(len(rows)),'--max-minutes',str(math.ceil(sum(r['duration'] for r in rows)/60)+1)],check=True)\n s.update(stage='audit');save()\n report=audit(manifest,root/'vad/manifest.jsonl');(root/'pcm-audit.json').write_text(json.dumps(report,indent=2))\n s.update(status='complete',stage='complete',finished_at=time.time());save()\nexcept Exception as e:\n s.update(status='failed',error_kind=type(e).__name__,finished_at=time.time());save();raise\n",
+      "required_environment": {
+        "PYTHONPATH": "/home/iotim/chika-curation"
+      },
+      "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-bik-processing-v2/run.py"
+    },
+    {
+      "language": "ilo",
+      "root": "/home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v2",
+      "launch": {
+        "pid": 763143,
+        "args": [
+          "/home/iotim/chika-curation/.venv-compute/bin/python",
+          "-m",
+          "curation.prepare",
+          "--manifest",
+          "/home/iotim/chika-curation/curation/outputs/canonical-ilo-remote-v2/snapshots/da7de37be34451b4a8d6d0422c46d06bd09d662b08e033a69f5db754ccc52b78/manifest.jsonl",
+          "--output",
+          "/home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v2/prepared",
+          "--max-recordings",
+          "50",
+          "--window-seconds",
+          "27",
+          "--min-free-gib",
+          "100"
+        ]
+      },
+      "manifest_sha256": "5eb28c918d2bf4439dfce7164476ffb840ad84ce78a3a8a8e26801f239769272",
+      "import_report": {
+        "exact_byte_duplicates": [],
+        "excluded": [
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/ilo-v2/source/worker-before-path-fix.json",
+            "reason": "not completed"
+          },
+          {
+            "metadata_path": "/home/iotim/chika-curation/views/ilo-v2/source/worker.json",
+            "reason": "not completed"
+          }
+        ],
+        "imported_recordings": 50,
+        "measured_media_hours": 23.93934656916667,
+        "note": "Measured media duration only; not unique speech. Exact byte deduplication does not detect decoded repeats, clips, simulcasts, music or language. Rights and speakers unknown.",
+        "source_count": 1,
+        "sources": {
+          "abscbn-tvpatrol-ilocos": {
+            "measured_media_hours": 23.939346569166666,
+            "recordings": 50
+          }
+        },
+        "transcribed_hours": 0,
+        "verified_completed_recordings": 50,
+        "verified_speech_hours": 0
+      },
+      "recovery_code": "import json,os,subprocess,time,math,shutil,sys\nfrom pathlib import Path\nfrom curation.schema import load_manifest,digest\nfrom curation.audit_vad import audit\nroot=Path(__file__).parent\ns={'pid':os.getpid(),'status':'running','stage':'preparation','started_at':time.time()}\ndef save():\n tmp=root/'worker.tmp';tmp.write_text(json.dumps(s));tmp.replace(root/'worker.json')\nsave()\ntry:\n subprocess.run(['/home/iotim/chika-curation/.venv-compute/bin/python', '-m', 'curation.prepare', '--manifest', '/home/iotim/chika-curation/curation/outputs/canonical-ilo-remote-v2/snapshots/da7de37be34451b4a8d6d0422c46d06bd09d662b08e033a69f5db754ccc52b78/manifest.jsonl', '--output', '/home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v2/prepared', '--max-recordings', '50', '--window-seconds', '27', '--min-free-gib', '100'],check=True)\n manifest=root/'prepared/manifest.jsonl';rows=load_manifest(manifest)\n for row in rows:\n  if digest(row['audio_path'])!=row['audio_sha256']:raise ValueError('prepared audio hash mismatch')\n if shutil.disk_usage(root).free<100*2**30:raise RuntimeError('storage floor before VAD')\n s.update(stage='vad',verified_windows=len(rows));save()\n subprocess.run([sys.executable,'-m','curation.vad','--manifest',str(manifest),'--output',str(root/'vad'),'--max-rows',str(len(rows)),'--max-minutes',str(math.ceil(sum(r['duration'] for r in rows)/60)+1)],check=True)\n s.update(stage='audit');save()\n report=audit(manifest,root/'vad/manifest.jsonl');(root/'pcm-audit.json').write_text(json.dumps(report,indent=2))\n s.update(status='complete',stage='complete',finished_at=time.time());save()\nexcept Exception as e:\n s.update(status='failed',error_kind=type(e).__name__,finished_at=time.time());save();raise\n",
+      "required_environment": {
+        "PYTHONPATH": "/home/iotim/chika-curation"
+      },
+      "process": "/home/iotim/chika-curation/.venv-compute/bin/python /home/iotim/chika-curation/curation/outputs/remote-ilo-processing-v2/run.py"
+    }
+  ]
+}

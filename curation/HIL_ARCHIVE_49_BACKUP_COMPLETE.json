@@ -1,0 +1,992 @@
+{
+  "status": "complete_independently_reverified",
+  "recordings": 49,
+  "audio_bytes": 3342182733,
+  "raw_hours": 40.727967870555545,
+  "manifest_sha256": "c01bcdf6bbb5c31638cd579ae6e767502edf07148073f20e4f01f7f252da25d4",
+  "metadata_fresh_downloads_verified": 49,
+  "audio_proof": "Pinned remote LFS SHA256 and size, or downloaded hash when LFS unavailable",
+  "local_files_deleted": 0,
+  "records": [
+    {
+      "id": "5fe5c26d6f8ffac278fa5e06ac901453ddf7b1b694be37315fb5ff93b435ff0f",
+      "audio_sha256": "62841cfcee38e8a1a9e0056654acb24aee4222bcbfc3a0e550b451f55e312990",
+      "bytes": 159442307,
+      "receipt_sha256": "2ac3b55be7ae53ebc59a5f48b867fd25d987521685c11036ebbdad377dcae766",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 159442307,
+          "path": "raw/archive/sha256/62841cfcee38e8a1a9e0056654acb24aee4222bcbfc3a0e550b451f55e312990/audio",
+          "sha256": "62841cfcee38e8a1a9e0056654acb24aee4222bcbfc3a0e550b451f55e312990"
+        },
+        {
+          "bytes": 1316,
+          "path": "raw/archive/metadata/ab884be28ff5a7fcbe6aaa5ab9e79312c5582fdd82f511d04771082dff02273b.json",
+          "sha256": "ab884be28ff5a7fcbe6aaa5ab9e79312c5582fdd82f511d04771082dff02273b"
+        }
+      ]
+    },
+    {
+      "id": "49d5b43806fc9f6eb1578a86bbba0516abbd8659d59a165939caa798d17fba45",
+      "audio_sha256": "7f2197e6f3d9fa60fd4d714fbc88031c8c163bf5f47093939725d3312e3ec5c2",
+      "bytes": 95848660,
+      "receipt_sha256": "4595056bccff15dee6bf9719aac52931d0c5de27afa668a42d57052f4a43f7ba",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 95848660,
+          "path": "raw/archive/sha256/7f2197e6f3d9fa60fd4d714fbc88031c8c163bf5f47093939725d3312e3ec5c2/audio",
+          "sha256": "7f2197e6f3d9fa60fd4d714fbc88031c8c163bf5f47093939725d3312e3ec5c2"
+        },
+        {
+          "bytes": 1312,
+          "path": "raw/archive/metadata/0f721c89455556e18d13c614630253a6d998639118155611fc7b348b4b7c8849.json",
+          "sha256": "0f721c89455556e18d13c614630253a6d998639118155611fc7b348b4b7c8849"
+        }
+      ]
+    },
+    {
+      "id": "69e22ed66ccd7e1b158dc88ff1143f701631622328b95ac1e859b8272a1139ac",
+      "audio_sha256": "1c73655f2f05e9d8c7bb3b5bc7ae1d113e4b04dd0f42a108ccd65f4b2e523de3",
+      "bytes": 49625134,
+      "receipt_sha256": "a6f5ada3640ef1fa180000231bb3ca1c488a916d08f1b4d3ca15146945e651c2",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 49625134,
+          "path": "raw/archive/sha256/1c73655f2f05e9d8c7bb3b5bc7ae1d113e4b04dd0f42a108ccd65f4b2e523de3/audio",
+          "sha256": "1c73655f2f05e9d8c7bb3b5bc7ae1d113e4b04dd0f42a108ccd65f4b2e523de3"
+        },
+        {
+          "bytes": 1313,
+          "path": "raw/archive/metadata/fa094bc47f242620ec51ae71e4d17f2fd44d0bd71602fa1bd75f43b9ffce49ca.json",
+          "sha256": "fa094bc47f242620ec51ae71e4d17f2fd44d0bd71602fa1bd75f43b9ffce49ca"
+        }
+      ]
+    },
+    {
+      "id": "f53fe403f38e6bb5de4e0a9a94ef340ef674ce7fb2f1915c8669685ea4ac0871",
+      "audio_sha256": "247b7113c118c4a24fe0d6190966ab44e5809dc6dabba14005ae893eaaa65b5d",
+      "bytes": 157824347,
+      "receipt_sha256": "02735d0435d7a8d434485ec614a54e6a91feeb1e69e7bae9d15075c6c1795bf2",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 157824347,
+          "path": "raw/archive/sha256/247b7113c118c4a24fe0d6190966ab44e5809dc6dabba14005ae893eaaa65b5d/audio",
+          "sha256": "247b7113c118c4a24fe0d6190966ab44e5809dc6dabba14005ae893eaaa65b5d"
+        },
+        {
+          "bytes": 1327,
+          "path": "raw/archive/metadata/916c99af6fd0070b1c966cd11a778418eea66d2957ccd5969775bde6980b8330.json",
+          "sha256": "916c99af6fd0070b1c966cd11a778418eea66d2957ccd5969775bde6980b8330"
+        }
+      ]
+    },
+    {
+      "id": "c1d416ba1a161fe787efcf41373235d4a5ac064280e833be8c6d1b4952e4ea52",
+      "audio_sha256": "0b37bb9c23d3eb45014932964eec6febce4acb5937f224ba06b7fddc073af569",
+      "bytes": 153729747,
+      "receipt_sha256": "c0241dfe6f6ba835f3f59b837bfd694428936207ea05200696f5a280ffc999d4",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 153729747,
+          "path": "raw/archive/sha256/0b37bb9c23d3eb45014932964eec6febce4acb5937f224ba06b7fddc073af569/audio",
+          "sha256": "0b37bb9c23d3eb45014932964eec6febce4acb5937f224ba06b7fddc073af569"
+        },
+        {
+          "bytes": 1306,
+          "path": "raw/archive/metadata/2adad65108e0166f124bad983e4e2f10b0c2e3e63b3e73da5a7795d747217def.json",
+          "sha256": "2adad65108e0166f124bad983e4e2f10b0c2e3e63b3e73da5a7795d747217def"
+        }
+      ]
+    },
+    {
+      "id": "665d4b08debcf47328e096bc6a8414c835ed32d43d61bae71dec02a858545cb2",
+      "audio_sha256": "c3b0e80cd266d7ef38ffba5168581e4359198250cfdbdea2490607c352d08a2f",
+      "bytes": 9440064,
+      "receipt_sha256": "e71980fb342756c9ef629fe4a9d6f9c05dd2ce420baa0618e14a9764fb2d17af",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 9440064,
+          "path": "raw/archive/sha256/c3b0e80cd266d7ef38ffba5168581e4359198250cfdbdea2490607c352d08a2f/audio",
+          "sha256": "c3b0e80cd266d7ef38ffba5168581e4359198250cfdbdea2490607c352d08a2f"
+        },
+        {
+          "bytes": 1320,
+          "path": "raw/archive/metadata/895a0a6d80ea2ef12abbbf8bf14fa33a4783f9a516330dfc5beb17226e492c16.json",
+          "sha256": "895a0a6d80ea2ef12abbbf8bf14fa33a4783f9a516330dfc5beb17226e492c16"
+        }
+      ]
+    },
+    {
+      "id": "ca50904c8fa4f4349654b0e1691c7a2cf7a14a3413efaddda40cd64a3e513c3a",
+      "audio_sha256": "7e2e3e9b9b5e9af9b01c49c99b53bf398682f4426c1597be9cba4478aec75b36",
+      "bytes": 9541092,
+      "receipt_sha256": "8051aa3131404bfd5acbdff1767742e0d39062b9a7ff4323263ace853f59a157",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 9541092,
+          "path": "raw/archive/sha256/7e2e3e9b9b5e9af9b01c49c99b53bf398682f4426c1597be9cba4478aec75b36/audio",
+          "sha256": "7e2e3e9b9b5e9af9b01c49c99b53bf398682f4426c1597be9cba4478aec75b36"
+        },
+        {
+          "bytes": 1312,
+          "path": "raw/archive/metadata/c856405562ba23e768caf1ae80afe81bccd5ef5c54ae557e4617275a45d1525a.json",
+          "sha256": "c856405562ba23e768caf1ae80afe81bccd5ef5c54ae557e4617275a45d1525a"
+        }
+      ]
+    },
+    {
+      "id": "e027615a75a9d259f46dfade95c3682b2ff7ced66e6ccf63abb8236cd5b66030",
+      "audio_sha256": "ac1bf239a0167dffb8e408162b315ad24355c1bcf150d72e66c291d27dfbc601",
+      "bytes": 8648570,
+      "receipt_sha256": "ee8c738f066d2969406b2691be53b5bc8d9330488601ba4537dab4d08f4dff98",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 8648570,
+          "path": "raw/archive/sha256/ac1bf239a0167dffb8e408162b315ad24355c1bcf150d72e66c291d27dfbc601/audio",
+          "sha256": "ac1bf239a0167dffb8e408162b315ad24355c1bcf150d72e66c291d27dfbc601"
+        },
+        {
+          "bytes": 1330,
+          "path": "raw/archive/metadata/66b660371ad04ef459cfe7b3fb21a906cc356baba8598dd5cb793260420e28b1.json",
+          "sha256": "66b660371ad04ef459cfe7b3fb21a906cc356baba8598dd5cb793260420e28b1"
+        }
+      ]
+    },
+    {
+      "id": "344a54be5023e00aaa3d115fab10b0f76ec4bf53007861b380f662c2ad0b2e0c",
+      "audio_sha256": "f76d5642d239c44bbac92d3e2ea8344fa8df4cf53b68103fff8f6ba2f67ac2c3",
+      "bytes": 9667102,
+      "receipt_sha256": "55deef75c1bcb6e3fdecb4817b8d0ef66d3575e95a237be33b47791a3b7868c4",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 9667102,
+          "path": "raw/archive/sha256/f76d5642d239c44bbac92d3e2ea8344fa8df4cf53b68103fff8f6ba2f67ac2c3/audio",
+          "sha256": "f76d5642d239c44bbac92d3e2ea8344fa8df4cf53b68103fff8f6ba2f67ac2c3"
+        },
+        {
+          "bytes": 1319,
+          "path": "raw/archive/metadata/89fd41f3d8441f87b251e41291965ffd4dddad382af1af88d1ccc26e173bd8ec.json",
+          "sha256": "89fd41f3d8441f87b251e41291965ffd4dddad382af1af88d1ccc26e173bd8ec"
+        }
+      ]
+    },
+    {
+      "id": "87d8b976f198891d8068d96ed7e0c3678f7f408048627531f27707a45e744720",
+      "audio_sha256": "8e3d0e323c7c7db82063ceff014995e80c61befa063be6e1893118f6074a754e",
+      "bytes": 37325296,
+      "receipt_sha256": "44fa6539645c5a881634a487e22ec151edb7d02f374be49f6533e40f5432c263",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 37325296,
+          "path": "raw/archive/sha256/8e3d0e323c7c7db82063ceff014995e80c61befa063be6e1893118f6074a754e/audio",
+          "sha256": "8e3d0e323c7c7db82063ceff014995e80c61befa063be6e1893118f6074a754e"
+        },
+        {
+          "bytes": 1363,
+          "path": "raw/archive/metadata/581fa9d99e069776228c4090aa29cc76dd8489d5cbd469f14ae3aa74effbfd50.json",
+          "sha256": "581fa9d99e069776228c4090aa29cc76dd8489d5cbd469f14ae3aa74effbfd50"
+        }
+      ]
+    },
+    {
+      "id": "2627dfc51308e0977b86a4aa43bb8519be425396887c3bdfb51177893aea73b1",
+      "audio_sha256": "051134090648309b8ea6d57d325fe34da620f9d15e5414ef2b890008440e1d67",
+      "bytes": 9739575,
+      "receipt_sha256": "9c71a1573add49bd9990339f7c1b5d3225f0d000c0634973ef2570aaeed9fc7c",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 9739575,
+          "path": "raw/archive/sha256/051134090648309b8ea6d57d325fe34da620f9d15e5414ef2b890008440e1d67/audio",
+          "sha256": "051134090648309b8ea6d57d325fe34da620f9d15e5414ef2b890008440e1d67"
+        },
+        {
+          "bytes": 1320,
+          "path": "raw/archive/metadata/80db0cc215126406673749c1ce1540151f3c8a37e8236d640a158d41768a0c93.json",
+          "sha256": "80db0cc215126406673749c1ce1540151f3c8a37e8236d640a158d41768a0c93"
+        }
+      ]
+    },
+    {
+      "id": "f7198f6717f4913a5b8df3f0eb1f09dd7148d4aa6ca213ed58f41704e401bb69",
+      "audio_sha256": "7db082d97c006cbd82ef135d28ecf4d69684c9cb10f5835107742f1371210b6e",
+      "bytes": 9704855,
+      "receipt_sha256": "a9bfc2179c25a035b6f34c84486629fd389742e57589db6416aa795522a862a9",
+      "repo": "sapinsapin/chika",
+      "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+      "entries": [
+        {
+          "bytes": 9704855,
+          "path": "raw/archive/sha256/7db082d97c006cbd82ef135d28ecf4d69684c9cb10f5835107742f1371210b6e/audio",
+          "sha256": "7db082d97c006cbd82ef135d28ecf4d69684c9cb10f5835107742f1371210b6e"
+        },
+        {
+          "bytes": 1321,
+          "path": "raw/archive/metadata/9e73f51e121a0e525e91533b25dfe9801ca89ec611ff90c0d2467270e92a42b2.json",
+          "sha256": "9e73f51e121a0e525e91533b25dfe9801ca89ec611ff90c0d2467270e92a42b2"
+        }
+      ]
+    },
+    {
+      "id": "54f4d99cb2a038734ded5f7d38e974eaf2228327c44a1fc8fc5162a73aa90f98",
+      "audio_sha256": "688db4a122e5d32318ecf40588d5f5cd025738eb79f6a416dd95977b8d23cfac",
+      "bytes": 20339015,
+      "receipt_sha256": "8746f7ad44b24cb9431f2dd47c32d545eac68835e8c693263657445756ce9e92",
+      "repo": "sapinsapin/chika",
+      "revision": "7f40e4b15e35bea8155a81f3baa8c67164bc0a14",
+      "entries": [
+        {
+          "bytes": 20339015,
+          "path": "raw/archive/sha256/688db4a122e5d32318ecf40588d5f5cd025738eb79f6a416dd95977b8d23cfac/audio",
+          "sha256": "688db4a122e5d32318ecf40588d5f5cd025738eb79f6a416dd95977b8d23cfac"
+        },
+        {
+          "bytes": 1342,
+          "path": "raw/archive/metadata/a7889c4f6520663af9289c9939ace106e1a9f92be8497a2e15682734a79461f3.json",
+          "sha256": "a7889c4f6520663af9289c9939ace106e1a9f92be8497a2e15682734a79461f3"
+        }
+      ]
+    },
+    {
+      "id": "34161b068bc974c8ef7ec3f18af6b8d8cf93519ed0bb9978349573f40eb0356d",
+      "audio_sha256": "f897a4a781d2a2931747d28e76fd5a6927d8f44bc9d651c104f8d84022f95d65",
+      "bytes": 18983553,
+      "receipt_sha256": "f9a937dac74ab58fdb0aa84ede86169a717bf3d055eafbbca9fd17ae5a62b2c7",
+      "repo": "sapinsapin/chika",
+      "revision": "ae8ca4236ea121b24063d94bc3ae15201a8b83e3",
+      "entries": [
+        {
+          "bytes": 18983553,
+          "path": "raw/archive/sha256/f897a4a781d2a2931747d28e76fd5a6927d8f44bc9d651c104f8d84022f95d65/audio",
+          "sha256": "f897a4a781d2a2931747d28e76fd5a6927d8f44bc9d651c104f8d84022f95d65"
+        },
+        {
+          "bytes": 1358,
+          "path": "raw/archive/metadata/970d2ab1449b524df77ad9383d43a3196716c67add44afc1386490eeec289837.json",
+          "sha256": "970d2ab1449b524df77ad9383d43a3196716c67add44afc1386490eeec289837"
+        }
+      ]
+    },
+    {
+      "id": "54662fe0764d3035cedb137bbf514e2551e2d9eac65a24febfe433ad7bac94ae",
+      "audio_sha256": "50796a3e60962c917c2d3ba0a6420a7c3f6b721461baad1a0a79772c8af9aa61",
+      "bytes": 21703468,
+      "receipt_sha256": "2fe1b7b7280ac713f135fa6bbd06a95480a3550acf2ebbf0782b75f9eb976227",
+      "repo": "sapinsapin/chika",
+      "revision": "ec22a68934cee07b315678584e096f6a77ebb596",
+      "entries": [
+        {
+          "bytes": 21703468,
+          "path": "raw/archive/sha256/50796a3e60962c917c2d3ba0a6420a7c3f6b721461baad1a0a79772c8af9aa61/audio",
+          "sha256": "50796a3e60962c917c2d3ba0a6420a7c3f6b721461baad1a0a79772c8af9aa61"
+        },
+        {
+          "bytes": 1326,
+          "path": "raw/archive/metadata/c5b8c4a84e8464a6383f06b02c6cc2b84e14c3b392f0ee26af413365772500e4.json",
+          "sha256": "c5b8c4a84e8464a6383f06b02c6cc2b84e14c3b392f0ee26af413365772500e4"
+        }
+      ]
+    },
+    {
+      "id": "521aa75b724b3e0ab9c2f4d4692cb9f4a43e43e4b2b80b66d2e5946d32b31637",
+      "audio_sha256": "0397b75619405efe8409ff8ac147dad98797239cd6c06311e09e56e1630fafc9",
+      "bytes": 18413088,
+      "receipt_sha256": "43edd7ae03a8a17cb389ac8cd2f2a295d600045588cfd9af61b257778245a4ba",
+      "repo": "sapinsapin/chika",
+      "revision": "d5fa922b4b11ae0944ce9c15e849dbac046c73e3",
+      "entries": [
+        {
+          "bytes": 18413088,
+          "path": "raw/archive/sha256/0397b75619405efe8409ff8ac147dad98797239cd6c06311e09e56e1630fafc9/audio",
+          "sha256": "0397b75619405efe8409ff8ac147dad98797239cd6c06311e09e56e1630fafc9"
+        },
+        {
+          "bytes": 1342,
+          "path": "raw/archive/metadata/a41631edcffeec9a3e3084c4204c9bf3c9d25e3e5477c30c14f25d3c19ac42a7.json",
+          "sha256": "a41631edcffeec9a3e3084c4204c9bf3c9d25e3e5477c30c14f25d3c19ac42a7"
+        }
+      ]
+    },
+    {
+      "id": "60151453e4a66f788c19ad19f4a7342e5df80fbe857fce7edf82cbfb49418774",
+      "audio_sha256": "caf0f1b31d85648922bcc9c2590e1b310e4be51e2c8538b6d92e81e0b87516ae",
+      "bytes": 21157051,
+      "receipt_sha256": "637185e0056287bdfdceff088434b75b8ef5afb080b80c7dfd944a74e42bf8e2",
+      "repo": "sapinsapin/chika",
+      "revision": "5e0cce839e3e2aec857f14ea3547b0bc455900eb",
+      "entries": [
+        {
+          "bytes": 21157051,
+          "path": "raw/archive/sha256/caf0f1b31d85648922bcc9c2590e1b310e4be51e2c8538b6d92e81e0b87516ae/audio",
+          "sha256": "caf0f1b31d85648922bcc9c2590e1b310e4be51e2c8538b6d92e81e0b87516ae"
+        },
+        {
+          "bytes": 1342,
+          "path": "raw/archive/metadata/884f8cb4f7bdeb89900ca4073edb9d62c0a9d7a37a1b2c41ea4912ab1991a95f.json",
+          "sha256": "884f8cb4f7bdeb89900ca4073edb9d62c0a9d7a37a1b2c41ea4912ab1991a95f"
+        }
+      ]
+    },
+    {
+      "id": "0f0c8b0a1d1077f53ce4507e3eda66d1bcbb08f9439c91675d0dfa366d6f2ea6",
+      "audio_sha256": "96bd732b86e5f41544a87d3a54bdc9de8c7fbad0d37ce38a40689e5cc11f103b",
+      "bytes": 22246796,
+      "receipt_sha256": "aaa18822e1481445dc1d3f857406e171ae9a5b03581a3398cd18e18cfd42e789",
+      "repo": "sapinsapin/chika",
+      "revision": "98d9228af8198691f742a2f1c194d85979b93243",
+      "entries": [
+        {
+          "bytes": 22246796,
+          "path": "raw/archive/sha256/96bd732b86e5f41544a87d3a54bdc9de8c7fbad0d37ce38a40689e5cc11f103b/audio",
+          "sha256": "96bd732b86e5f41544a87d3a54bdc9de8c7fbad0d37ce38a40689e5cc11f103b"
+        },
+        {
+          "bytes": 1342,
+          "path": "raw/archive/metadata/2db68cecf0084fab4c4fb621e24e132619c21d979d37880e7e6312c964931e16.json",
+          "sha256": "2db68cecf0084fab4c4fb621e24e132619c21d979d37880e7e6312c964931e16"
+        }
+      ]
+    },
+    {
+      "id": "594be810a5e40853449e35b5c52a7ffac3108e912da9a4993ab775125e3640e0",
+      "audio_sha256": "f905cb96f54cdcee6a2ea359dd20c1793166dd915b16d16188e9b54529e1939c",
+      "bytes": 18526983,
+      "receipt_sha256": "6650fe2b8ab2ad68fd7330373b258e08fc63993cbca51af0c4d2795b2461342a",
+      "repo": "sapinsapin/chika",
+      "revision": "53f4d697fc304d4e5138e0761a86ab669b2a60f5",
+      "entries": [
+        {
+          "bytes": 18526983,
+          "path": "raw/archive/sha256/f905cb96f54cdcee6a2ea359dd20c1793166dd915b16d16188e9b54529e1939c/audio",
+          "sha256": "f905cb96f54cdcee6a2ea359dd20c1793166dd915b16d16188e9b54529e1939c"
+        },
+        {
+          "bytes": 1342,
+          "path": "raw/archive/metadata/56a1e4c4d91f4abed762d13ef99be72ee4636cd4b016276194b070f6444da823.json",
+          "sha256": "56a1e4c4d91f4abed762d13ef99be72ee4636cd4b016276194b070f6444da823"
+        }
+      ]
+    },
+    {
+      "id": "302de40a6f0bbbfa55531676d8345cd72c1582a10a78be8db086fffb57c40bf6",
+      "audio_sha256": "fa3e51549fed29f42ba5c636f0c758bf1ae6c80ceb806be9c0624b1fa71845a5",
+      "bytes": 17954483,
+      "receipt_sha256": "a9e02fc7c5a199bba822664f20f03c2904d20bf068d282292f382a5d15e4e383",
+      "repo": "sapinsapin/chika",
+      "revision": "ca017036505a4d39cc2dbaff23ca5d1ca1596c0c",
+      "entries": [
+        {
+          "bytes": 17954483,
+          "path": "raw/archive/sha256/fa3e51549fed29f42ba5c636f0c758bf1ae6c80ceb806be9c0624b1fa71845a5/audio",
+          "sha256": "fa3e51549fed29f42ba5c636f0c758bf1ae6c80ceb806be9c0624b1fa71845a5"
+        },
+        {
+          "bytes": 1326,
+          "path": "raw/archive/metadata/859c9f30d146f7d96b66af5882d3ccc16d5bbb13dffa875203ae919746cb6782.json",
+          "sha256": "859c9f30d146f7d96b66af5882d3ccc16d5bbb13dffa875203ae919746cb6782"
+        }
+      ]
+    },
+    {
+      "id": "c3ad723f6f237ea21e57539c922094948d797e1102a7437dae005f1679844c4b",
+      "audio_sha256": "4ade3052ea3d5876e0268f330dd98e4d3e5b990f7fbcaef2e10d5a7c0baeba42",
+      "bytes": 114621367,
+      "receipt_sha256": "de875ae78475e5bb1db92d7449c5c62d52ce4c760dcdee89b7da698fe8f283bb",
+      "repo": "sapinsapin/chika",
+      "revision": "5823766888aafdff89dc4e123b094b97c54f5c8d",
+      "entries": [
+        {
+          "bytes": 114621367,
+          "path": "raw/archive/sha256/4ade3052ea3d5876e0268f330dd98e4d3e5b990f7fbcaef2e10d5a7c0baeba42/audio",
+          "sha256": "4ade3052ea3d5876e0268f330dd98e4d3e5b990f7fbcaef2e10d5a7c0baeba42"
+        },
+        {
+          "bytes": 1162,
+          "path": "raw/archive/metadata/67048e5a6566d18b1d24255b837273b0722d90d73368545dbe63b596993fbddf.json",
+          "sha256": "67048e5a6566d18b1d24255b837273b0722d90d73368545dbe63b596993fbddf"
+        }
+      ]
+    },
+    {
+      "id": "0fe501292989b6df91fa7a4b0ad071a322b4eaa27e516e6d483399457f00b30c",
+      "audio_sha256": "d2e4b630f6add05b0c677bdbccdafe8ecc0ce2297ee09a1aa5086475c5351a61",
+      "bytes": 118031282,
+      "receipt_sha256": "67b4a5b688fa05bc3fafb212270a2340e79e68bf824eda8cb5ab5b47295936b7",
+      "repo": "sapinsapin/chika",
+      "revision": "79bb83238b9b29305d1463a6f5e06ab26d581fca",
+      "entries": [
+        {
+          "bytes": 118031282,
+          "path": "raw/archive/sha256/d2e4b630f6add05b0c677bdbccdafe8ecc0ce2297ee09a1aa5086475c5351a61/audio",
+          "sha256": "d2e4b630f6add05b0c677bdbccdafe8ecc0ce2297ee09a1aa5086475c5351a61"
+        },
+        {
+          "bytes": 1170,
+          "path": "raw/archive/metadata/e87389ab054a11efe9c20acbff38564c8249be586905cb14d44a4306f0c3bdfc.json",
+          "sha256": "e87389ab054a11efe9c20acbff38564c8249be586905cb14d44a4306f0c3bdfc"
+        }
+      ]
+    },
+    {
+      "id": "9e1e1fdda9fc5fb4b496b9f133f5fcbbe0f396369f81885bc78f2c3caf972d11",
+      "audio_sha256": "1f2fb053a92fbc2026e0c31c649032c50781d409b1be85766bb13a3ed652135e",
+      "bytes": 125848043,
+      "receipt_sha256": "92f74729d94e2027c8d47715e83b957b1935baf8ca48efddc666c47744560b6f",
+      "repo": "sapinsapin/chika",
+      "revision": "8cbbc3a2c2a2eb19444448678225f2ab09a70cb4",
+      "entries": [
+        {
+          "bytes": 125848043,
+          "path": "raw/archive/sha256/1f2fb053a92fbc2026e0c31c649032c50781d409b1be85766bb13a3ed652135e/audio",
+          "sha256": "1f2fb053a92fbc2026e0c31c649032c50781d409b1be85766bb13a3ed652135e"
+        },
+        {
+          "bytes": 1164,
+          "path": "raw/archive/metadata/8899e96dfa30fff8c2f00dc8ac68418bdc845ff095b86048e21624dfe01c24f0.json",
+          "sha256": "8899e96dfa30fff8c2f00dc8ac68418bdc845ff095b86048e21624dfe01c24f0"
+        }
+      ]
+    },
+    {
+      "id": "0c8920f42842c205e9b93580cbbcce5d1a3e39b6ad1c0ebdcf627973d41bbea8",
+      "audio_sha256": "1fc80388b35f46b60baa5557484b24d9b10895e5ce971753cbfb7d96d3d8a087",
+      "bytes": 147919054,
+      "receipt_sha256": "e8d077541b45f7c33c54c6aa78effe0f1572bfae65e59d9dc11148ac1dd2ee38",
+      "repo": "sapinsapin/chika",
+      "revision": "66605444b08611b4d4b704c81f52a7e4d0f3f979",
+      "entries": [
+        {
+          "bytes": 147919054,
+          "path": "raw/archive/sha256/1fc80388b35f46b60baa5557484b24d9b10895e5ce971753cbfb7d96d3d8a087/audio",
+          "sha256": "1fc80388b35f46b60baa5557484b24d9b10895e5ce971753cbfb7d96d3d8a087"
+        },
+        {
+          "bytes": 1164,
+          "path": "raw/archive/metadata/68f8489486a4876f401139de19d5d8aae5f4701d4f6c928bf32e5c35fd6b3fec.json",
+          "sha256": "68f8489486a4876f401139de19d5d8aae5f4701d4f6c928bf32e5c35fd6b3fec"
+        }
+      ]
+    },
+    {
+      "id": "67341ff32eb824fccc6ce88053aa5cad439a4913e4538137b845bdb86af306f2",
+      "audio_sha256": "1e376d420d4782880d87b8f08c2363fd943e17ec6cbc3992f32119a5fa8b583a",
+      "bytes": 141482151,
+      "receipt_sha256": "8e222ef352657f5b904d6009527ca19cd2b91b4d6306d7c9478337c850ec0c78",
+      "repo": "sapinsapin/chika",
+      "revision": "866cd8ffe0f49db0ad337908fe4a49455f9acf42",
+      "entries": [
+        {
+          "bytes": 141482151,
+          "path": "raw/archive/sha256/1e376d420d4782880d87b8f08c2363fd943e17ec6cbc3992f32119a5fa8b583a/audio",
+          "sha256": "1e376d420d4782880d87b8f08c2363fd943e17ec6cbc3992f32119a5fa8b583a"
+        },
+        {
+          "bytes": 1170,
+          "path": "raw/archive/metadata/9d015b8abb6a1f9af0814161907462786694bc2104889588cfb72b97b1760b09.json",
+          "sha256": "9d015b8abb6a1f9af0814161907462786694bc2104889588cfb72b97b1760b09"
+        }
+      ]
+    },
+    {
+      "id": "675dd540054cc17dd6bcb2d4ef41f2fdd594c514e3e7393e6ef82a48b202d6d5",
+      "audio_sha256": "aa498402ceeea3cdc4d6995aa0e091e93e4980bfe471afa26e47b7f76bf6689a",
+      "bytes": 146332837,
+      "receipt_sha256": "559999b7807cae69e49e99912fc67b18ee0d471c05414ad4f3d659cbec32b726",
+      "repo": "sapinsapin/chika",
+      "revision": "1a4b499058af5dd974423cdf16d50d3bc2fe8d66",
+      "entries": [
+        {
+          "bytes": 146332837,
+          "path": "raw/archive/sha256/aa498402ceeea3cdc4d6995aa0e091e93e4980bfe471afa26e47b7f76bf6689a/audio",
+          "sha256": "aa498402ceeea3cdc4d6995aa0e091e93e4980bfe471afa26e47b7f76bf6689a"
+        },
+        {
+          "bytes": 1170,
+          "path": "raw/archive/metadata/e2ed8b16c5b37c56bb7a6c8b4d7d6def3b5451f7bb2df12e500f59dea2984a9b.json",
+          "sha256": "e2ed8b16c5b37c56bb7a6c8b4d7d6def3b5451f7bb2df12e500f59dea2984a9b"
+        }
+      ]
+    },
+    {
+      "id": "2874e02b012ea8e6497746ea431c9a65e7c870253be96d9786db98ff6205fc15",
+      "audio_sha256": "248a7482a42cae2bb3733776f1fb2cd14a639a32690205257bc898b54a7e1510",
+      "bytes": 135181164,
+      "receipt_sha256": "48edcdf0ff2d58d21cb7ea3e6980662294904c11daf79ce0d55ac2f1cb9248a1",
+      "repo": "sapinsapin/chika",
+      "revision": "149a3096bbaebfee9d683e1ca52f30bac9f82f77",
+      "entries": [
+        {
+          "bytes": 135181164,
+          "path": "raw/archive/sha256/248a7482a42cae2bb3733776f1fb2cd14a639a32690205257bc898b54a7e1510/audio",
+          "sha256": "248a7482a42cae2bb3733776f1fb2cd14a639a32690205257bc898b54a7e1510"
+        },
+        {
+          "bytes": 1170,
+          "path": "raw/archive/metadata/d43eaa793a68232d82c25ed8a95b3ad2bd797668c3608fa027ff2890722faea5.json",
+          "sha256": "d43eaa793a68232d82c25ed8a95b3ad2bd797668c3608fa027ff2890722faea5"
+        }
+      ]
+    },
+    {
+      "id": "e04539c57530bc41660d464be6f6233a1b93a77a9f46ff4a773184d7b26f9013",
+      "audio_sha256": "8bbb5fc35d9c4a9fda0040272b4eed37f9d5fd2ef4ad57ac8b770935c485e753",
+      "bytes": 135365049,
+      "receipt_sha256": "2fb11432c19ab576e1e9b28b1e468b5fe86795c037a8d75a006d0cb9a92ec02d",
+      "repo": "sapinsapin/chika",
+      "revision": "556239ea6820f328a290d920c55465fc9ac443bb",
+      "entries": [
+        {
+          "bytes": 135365049,
+          "path": "raw/archive/sha256/8bbb5fc35d9c4a9fda0040272b4eed37f9d5fd2ef4ad57ac8b770935c485e753/audio",
+          "sha256": "8bbb5fc35d9c4a9fda0040272b4eed37f9d5fd2ef4ad57ac8b770935c485e753"
+        },
+        {
+          "bytes": 1162,
+          "path": "raw/archive/metadata/c5f765e4915056698c7dcfed19c5e61f589c4faa82c7dfb6b2ae1c8ed606ef8a.json",
+          "sha256": "c5f765e4915056698c7dcfed19c5e61f589c4faa82c7dfb6b2ae1c8ed606ef8a"
+        }
+      ]
+    },
+    {
+      "id": "b03560b9c1b7bbc864a88b5d1dd1a788042855ea2b66b2bf9bc3dfa62f4e8493",
+      "audio_sha256": "11e6b4cfae5b082399a27640f0383d1e05c224d1aa4d647ff01806b65fe66a34",
+      "bytes": 152706262,
+      "receipt_sha256": "bb4212545f52eddc364e1baa97ff31a587ab2a9c26133b778acb0effd90ffcbe",
+      "repo": "sapinsapin/chika",
+      "revision": "51cb560552f4dac6a6f4abc99e3445167f9696f5",
+      "entries": [
+        {
+          "bytes": 152706262,
+          "path": "raw/archive/sha256/11e6b4cfae5b082399a27640f0383d1e05c224d1aa4d647ff01806b65fe66a34/audio",
+          "sha256": "11e6b4cfae5b082399a27640f0383d1e05c224d1aa4d647ff01806b65fe66a34"
+        },
+        {
+          "bytes": 1170,
+          "path": "raw/archive/metadata/aa6d863e41d28ccad3a1a635c0ed5755378b7cd1b1385df85306a11822295577.json",
+          "sha256": "aa6d863e41d28ccad3a1a635c0ed5755378b7cd1b1385df85306a11822295577"
+        }
+      ]
+    },
+    {
+      "id": "b2080ca836ce07eec265a95c5d80e02388a5a5d3a4600d5e5fcc48d274457595",
+      "audio_sha256": "0782bcb85b8a17e29ef55b6c251f63d8b9e8add2197f4b4a4804e7777d687ece",
+      "bytes": 139267290,
+      "receipt_sha256": "16dd8045ad51b9d8bde64b6aa9952e3ba825f5ce10ef4a6cc25e3b6ba757f313",
+      "repo": "sapinsapin/chika",
+      "revision": "37eb97de91d085707a0cabb0ac66b0b19ab62289",
+      "entries": [
+        {
+          "bytes": 139267290,
+          "path": "raw/archive/sha256/0782bcb85b8a17e29ef55b6c251f63d8b9e8add2197f4b4a4804e7777d687ece/audio",
+          "sha256": "0782bcb85b8a17e29ef55b6c251f63d8b9e8add2197f4b4a4804e7777d687ece"
+        },
+        {
+          "bytes": 1164,
+          "path": "raw/archive/metadata/19b31a890f6bf76b35ab4803252a76e458907d38881d6684c3cb47cf7e2301a1.json",
+          "sha256": "19b31a890f6bf76b35ab4803252a76e458907d38881d6684c3cb47cf7e2301a1"
+        }
+      ]
+    },
+    {
+      "id": "16c6ce6987c077f00b6531210488223bf7c528854e3757f4840ac563564fc5dd",
+      "audio_sha256": "9893a7dd171d27b411562f226fc3ab12ffe3aa883355e31bb7c4caa492bb2287",
+      "bytes": 122217660,
+      "receipt_sha256": "9aa252d7f0fa8182ab040284f2724389e7853ecdcd7c5ff4db79df15dadc4c69",
+      "repo": "sapinsapin/chika",
+      "revision": "c61818c93efbee49a765217c78f9518e3c60dcb3",
+      "entries": [
+        {
+          "bytes": 122217660,
+          "path": "raw/archive/sha256/9893a7dd171d27b411562f226fc3ab12ffe3aa883355e31bb7c4caa492bb2287/audio",
+          "sha256": "9893a7dd171d27b411562f226fc3ab12ffe3aa883355e31bb7c4caa492bb2287"
+        },
+        {
+          "bytes": 1170,
+          "path": "raw/archive/metadata/d9a3a46786c8726610ade5faf36b4d4d092cbac23d532ab005b08ef0507483ea.json",
+          "sha256": "d9a3a46786c8726610ade5faf36b4d4d092cbac23d532ab005b08ef0507483ea"
+        }
+      ]
+    },
+    {
+      "id": "a235c653ff959bc967a09a0374e202e84c0f07ee35add8a2b4427b166b8d7953",
+      "audio_sha256": "efe8e8d7fa27d6908613dab0094f150f9428097a5fc53186e314c47483a35f1a",
+      "bytes": 21738697,
+      "receipt_sha256": "6338157ea9a3bb353e9e0a2ca5fe71f8e9a56659e8618a4cc85d4a1ca9b7792a",
+      "repo": "sapinsapin/chika",
+      "revision": "6f35e60dfb17893ea8c7cada2fc9f7ff6ac778c4",
+      "entries": [
+        {
+          "bytes": 21738697,
+          "path": "raw/archive/sha256/efe8e8d7fa27d6908613dab0094f150f9428097a5fc53186e314c47483a35f1a/audio",
+          "sha256": "efe8e8d7fa27d6908613dab0094f150f9428097a5fc53186e314c47483a35f1a"
+        },
+        {
+          "bytes": 1304,
+          "path": "raw/archive/metadata/966c3cc93767685d3091a0c456eaf79018d2269d78ca97402c64ffe25e2ccb21.json",
+          "sha256": "966c3cc93767685d3091a0c456eaf79018d2269d78ca97402c64ffe25e2ccb21"
+        }
+      ]
+    },
+    {
+      "id": "ac0fa61e02d9190c5c6ff1abc2d0530479c6e9d0edaded50c104e9f9f8127645",
+      "audio_sha256": "11370e0ee846ac2e1187de1a0542518b531d7da1b542890734d5ca0df7f4cd8a",
+      "bytes": 23376333,
+      "receipt_sha256": "9f15cab2cefdee7e4c4a24bebba581998127ebaa3748308c141beccd141b6e4b",
+      "repo": "sapinsapin/chika",
+      "revision": "c1e6c8e407175ea5bc458a55c93e54ca7d3ca8b0",
+      "entries": [
+        {
+          "bytes": 23376333,
+          "path": "raw/archive/sha256/11370e0ee846ac2e1187de1a0542518b531d7da1b542890734d5ca0df7f4cd8a/audio",
+          "sha256": "11370e0ee846ac2e1187de1a0542518b531d7da1b542890734d5ca0df7f4cd8a"
+        },
+        {
+          "bytes": 1306,
+          "path": "raw/archive/metadata/c6f99898501b073b3030eae2cabacfeeea1af2d02374d5551cbd4f2a157a6bea.json",
+          "sha256": "c6f99898501b073b3030eae2cabacfeeea1af2d02374d5551cbd4f2a157a6bea"
+        }
+      ]
+    },
+    {
+      "id": "828c78b0ef01ce8e759e0fbdbb3e214f70aabbdd3bca8407d6282a17ba23c487",
+      "audio_sha256": "ae8a4374dd11b1869f511335bf4d83b5c67e646072e1c8ccb03d15bf4974e69e",
+      "bytes": 23898599,
+      "receipt_sha256": "fb781474dc7054d5c8454da2a4c09833b31594f39edcf21a00b764544ca243d9",
+      "repo": "sapinsapin/chika",
+      "revision": "23c07afb54e48f3a3f3db7464edca3b2d6647e1f",
+      "entries": [
+        {
+          "bytes": 23898599,
+          "path": "raw/archive/sha256/ae8a4374dd11b1869f511335bf4d83b5c67e646072e1c8ccb03d15bf4974e69e/audio",
+          "sha256": "ae8a4374dd11b1869f511335bf4d83b5c67e646072e1c8ccb03d15bf4974e69e"
+        },
+        {
+          "bytes": 1305,
+          "path": "raw/archive/metadata/01b057135836532e1d8885c77df9caa3d289e1f043ee809883fc5e8328918314.json",
+          "sha256": "01b057135836532e1d8885c77df9caa3d289e1f043ee809883fc5e8328918314"
+        }
+      ]
+    },
+    {
+      "id": "fe2e3e3d46443a7ecf24f68e4692b681f7efa8f32a6e2ec6c626a1f95f56ae1c",
+      "audio_sha256": "55271af82ebe09e6cf01d68329e2084d5b351784b3bec548671974a395485b13",
+      "bytes": 24342035,
+      "receipt_sha256": "840e9051c6ebc9e7f16966ed6a0329c6e3af2751d6e37081202cfa4bcb453d4a",
+      "repo": "sapinsapin/chika",
+      "revision": "4a06479f4a28da437bf686ce13b493189edc6fb0",
+      "entries": [
+        {
+          "bytes": 24342035,
+          "path": "raw/archive/sha256/55271af82ebe09e6cf01d68329e2084d5b351784b3bec548671974a395485b13/audio",
+          "sha256": "55271af82ebe09e6cf01d68329e2084d5b351784b3bec548671974a395485b13"
+        },
+        {
+          "bytes": 1305,
+          "path": "raw/archive/metadata/3fb751ab9996503dbb6205d56dae49f1e53239705486a49a6db49fd2b3bb9020.json",
+          "sha256": "3fb751ab9996503dbb6205d56dae49f1e53239705486a49a6db49fd2b3bb9020"
+        }
+      ]
+    },
+    {
+      "id": "bdf514fa4fb5dd00dbff4100b32f9b16bb6ddf06efe916af3dbfab9400b071b9",
+      "audio_sha256": "416bd0de18e80ba2ecb35c5b3c8eb36407a572fe6af37a0f0a5d9e667e494618",
+      "bytes": 22588312,
+      "receipt_sha256": "8a0635faed88a43ffa65eb1bfd501547bd86831bf63558440b2f4a766e8a23fd",
+      "repo": "sapinsapin/chika",
+      "revision": "dffe23c37ddd95cc3ef2f7c5a5c1cbd515bd63d3",
+      "entries": [
+        {
+          "bytes": 22588312,
+          "path": "raw/archive/sha256/416bd0de18e80ba2ecb35c5b3c8eb36407a572fe6af37a0f0a5d9e667e494618/audio",
+          "sha256": "416bd0de18e80ba2ecb35c5b3c8eb36407a572fe6af37a0f0a5d9e667e494618"
+        },
+        {
+          "bytes": 1304,
+          "path": "raw/archive/metadata/2cbb0ef8130afcf8dd92ca44610728e935bddd30ff6afc240699200843b95022.json",
+          "sha256": "2cbb0ef8130afcf8dd92ca44610728e935bddd30ff6afc240699200843b95022"
+        }
+      ]
+    },
+    {
+      "id": "9ad43e06d0a31f80b3e320cac23592bdc1e2fc2c5bc1ae50f27beecfb49a414f",
+      "audio_sha256": "d65a068c3ae7bd4f948169ac5ee3fc19a670bf4f591af85887e969e3b4370654",
+      "bytes": 23483278,
+      "receipt_sha256": "6693e0d3ccadd5ea51bbb054911cf407590a2aaa3fd8fdbf097114bbb413ba7b",
+      "repo": "sapinsapin/chika",
+      "revision": "90cb024deacf7edfc7322a0d8495db85d98fa950",
+      "entries": [
+        {
+          "bytes": 23483278,
+          "path": "raw/archive/sha256/d65a068c3ae7bd4f948169ac5ee3fc19a670bf4f591af85887e969e3b4370654/audio",
+          "sha256": "d65a068c3ae7bd4f948169ac5ee3fc19a670bf4f591af85887e969e3b4370654"
+        },
+        {
+          "bytes": 1307,
+          "path": "raw/archive/metadata/a2973aab6a2f9f929f976b7727331253820ca74c8f0928886dccb259537fbd84.json",
+          "sha256": "a2973aab6a2f9f929f976b7727331253820ca74c8f0928886dccb259537fbd84"
+        }
+      ]
+    },
+    {
+      "id": "c309d822c798b38a1ebb6645912e1e51ae446539f798a140ec80e6e8bdb11d74",
+      "audio_sha256": "ed3fc2dabae26060ad4c51a490dc40eab753197dd626dbf160efbf2b3f309653",
+      "bytes": 25219852,
+      "receipt_sha256": "8908d3a2cd49f5561a3e13da91adb3cbd65ce86fbc5ee5693c3d1b64276bbf6d",
+      "repo": "sapinsapin/chika",
+      "revision": "88f5c71bf5d1177276a1fab01c3cfa1e4bc2e65e",
+      "entries": [
+        {
+          "bytes": 25219852,
+          "path": "raw/archive/sha256/ed3fc2dabae26060ad4c51a490dc40eab753197dd626dbf160efbf2b3f309653/audio",
+          "sha256": "ed3fc2dabae26060ad4c51a490dc40eab753197dd626dbf160efbf2b3f309653"
+        },
+        {
+          "bytes": 1304,
+          "path": "raw/archive/metadata/949c4e587f95dfcfa6801e7cc79d0cc4a1a5e80476cf39fe0af8694e95353e71.json",
+          "sha256": "949c4e587f95dfcfa6801e7cc79d0cc4a1a5e80476cf39fe0af8694e95353e71"
+        }
+      ]
+    },
+    {
+      "id": "a2b7d81e75603d521892557e5353a6b417b3d4cec8da7e32a46650a240ddce10",
+      "audio_sha256": "9b2b63ccb1445655c06c4427d2a4d12943198f2fc3eaa3efa0f72c77cbab16cb",
+      "bytes": 23280279,
+      "receipt_sha256": "5b3908ec6a6a6b0286c883753ca780875687ec7bdb5b3e2569b8abfc13d50ff9",
+      "repo": "sapinsapin/chika",
+      "revision": "8d51a6d67c3806464fcc8a77ba64ecbfe40a68b2",
+      "entries": [
+        {
+          "bytes": 23280279,
+          "path": "raw/archive/sha256/9b2b63ccb1445655c06c4427d2a4d12943198f2fc3eaa3efa0f72c77cbab16cb/audio",
+          "sha256": "9b2b63ccb1445655c06c4427d2a4d12943198f2fc3eaa3efa0f72c77cbab16cb"
+        },
+        {
+          "bytes": 1306,
+          "path": "raw/archive/metadata/3520511ff6e63741efa763fec46994a9d97e5a26818959a2e9d5b0f24618ec1e.json",
+          "sha256": "3520511ff6e63741efa763fec46994a9d97e5a26818959a2e9d5b0f24618ec1e"
+        }
+      ]
+    },
+    {
+      "id": "f209d76eeb790feb983700e240e477c2e2ce9c1eecba33d05742ce112c7f05f3",
+      "audio_sha256": "41eeaf8ddf6a065d71798aa708c273b29892bc981315ab90f2c8ac573cdb3331",
+      "bytes": 18209502,
+      "receipt_sha256": "2a73575c0869ca6b15bdcae4752542b127009c3fb25f6c757cf08893e5c83936",
+      "repo": "sapinsapin/chika",
+      "revision": "4ca130ffc79acd5ec34ad9617fc48956d621608a",
+      "entries": [
+        {
+          "bytes": 18209502,
+          "path": "raw/archive/sha256/41eeaf8ddf6a065d71798aa708c273b29892bc981315ab90f2c8ac573cdb3331/audio",
+          "sha256": "41eeaf8ddf6a065d71798aa708c273b29892bc981315ab90f2c8ac573cdb3331"
+        },
+        {
+          "bytes": 1334,
+          "path": "raw/archive/metadata/7e8c00565c04aa51401248b5c1d97c85e0e84cbedb12e5d021887f265ff10022.json",
+          "sha256": "7e8c00565c04aa51401248b5c1d97c85e0e84cbedb12e5d021887f265ff10022"
+        }
+      ]
+    },
+    {
+      "id": "b2b387b7953ef1353e4c7c6fcb5239299cd178bb121a1ed1c0327a89d83141ed",
+      "audio_sha256": "9b49b1872bae1652f5dd70fa39e765069780f074a08e07d7e70e9620ac8eaf5f",
+      "bytes": 2210242,
+      "receipt_sha256": "0f0bbd3dd70771c8845843e21a513287efd9ae372f74e04101eb200a7150fef9",
+      "repo": "sapinsapin/chika",
+      "revision": "d78c8ccfb05422574dc1d0e7bdbf3cf318a45ed4",
+      "entries": [
+        {
+          "bytes": 2210242,
+          "path": "raw/archive/sha256/9b49b1872bae1652f5dd70fa39e765069780f074a08e07d7e70e9620ac8eaf5f/audio",
+          "sha256": "9b49b1872bae1652f5dd70fa39e765069780f074a08e07d7e70e9620ac8eaf5f"
+        },
+        {
+          "bytes": 1348,
+          "path": "raw/archive/metadata/fb5bd78e96a21dfbd0011b4c184964527eee8084a15092ad1263f1c854b9534e.json",
+          "sha256": "fb5bd78e96a21dfbd0011b4c184964527eee8084a15092ad1263f1c854b9534e"
+        }
+      ]
+    },
+    {
+      "id": "656c5fa2aacd7266377639f39c27925c995ca7615719992e9761e8a5524c992c",
+      "audio_sha256": "494e31f2586ba5101986e4a1d5e5fdb0f444ee24ae001621a5cb1d884100dbd6",
+      "bytes": 51666779,
+      "receipt_sha256": "129f6623296ea4157f84ffc1bb16e6a8660ec6497c7a174c091f3bc9dbf89582",
+      "repo": "sapinsapin/chika",
+      "revision": "bae208bf1ca81e9382604a8783acb9fd8795263b",
+      "entries": [
+        {
+          "bytes": 51666779,
+          "path": "raw/archive/sha256/494e31f2586ba5101986e4a1d5e5fdb0f444ee24ae001621a5cb1d884100dbd6/audio",
+          "sha256": "494e31f2586ba5101986e4a1d5e5fdb0f444ee24ae001621a5cb1d884100dbd6"
+        },
+        {
+          "bytes": 1378,
+          "path": "raw/archive/metadata/1107badd94e1a34ca4443e9cdac44dc983bc64997f5a8a1e491fc614788ad096.json",
+          "sha256": "1107badd94e1a34ca4443e9cdac44dc983bc64997f5a8a1e491fc614788ad096"
+        }
+      ]
+    },
+    {
+      "id": "51fd230ff103314b08c376b73c51cac4b37124f1400dba02e68da93985991782",
+      "audio_sha256": "bdfb9036bb48049e74cc0d8920c8721454b7ded5648bfeca8d3150574cf1f09d",
+      "bytes": 179662334,
+      "receipt_sha256": "e9f8a36e2a432a2eefd4ad348ef1324c485e126caa2d7880fa8de711db068a8d",
+      "repo": "sapinsapin/chika",
+      "revision": "78b43e45aca300e396a1c495466eacf43bbcf876",
+      "entries": [
+        {
+          "bytes": 179662334,
+          "path": "raw/archive/sha256/bdfb9036bb48049e74cc0d8920c8721454b7ded5648bfeca8d3150574cf1f09d/audio",
+          "sha256": "bdfb9036bb48049e74cc0d8920c8721454b7ded5648bfeca8d3150574cf1f09d"
+        },
+        {
+          "bytes": 1375,
+          "path": "raw/archive/metadata/afde8937796165dde9294e0ad09abfdfd56a087c5838a34412a74f3d1f7e2578.json",
+          "sha256": "afde8937796165dde9294e0ad09abfdfd56a087c5838a34412a74f3d1f7e2578"
+        }
+      ]
+    },
+    {
+      "id": "e73c89ef037bdcc09d2395d346a74934c8b2f0a0b1db98f361143541e3101e4c",
+      "audio_sha256": "b96a3861164ea21af4f2361174f03fd7278447cf11b85bee71f039efa9e64da5",
+      "bytes": 117568085,
+      "receipt_sha256": "c3d488ededb24e38e2bab35183b5d79e1b04d41ccd0ab48ea4dec7db57b5b746",
+      "repo": "sapinsapin/chika",
+      "revision": "b200cf6cd5a2d057abbfa4275a3ca1ae0465ef9f",
+      "entries": [
+        {
+          "bytes": 117568085,
+          "path": "raw/archive/sha256/b96a3861164ea21af4f2361174f03fd7278447cf11b85bee71f039efa9e64da5/audio",
+          "sha256": "b96a3861164ea21af4f2361174f03fd7278447cf11b85bee71f039efa9e64da5"
+        },
+        {
+          "bytes": 1318,
+          "path": "raw/archive/metadata/d99b4852105d9104d38592ae66377fe46d856391167583fd25d76a5f8f822c19.json",
+          "sha256": "d99b4852105d9104d38592ae66377fe46d856391167583fd25d76a5f8f822c19"
+        }
+      ]
+    },
+    {
+      "id": "f788b2b74a43b5bc86b38baea74f423fc3d894bc529787f1c1ce0965228aa3a0",
+      "audio_sha256": "93d2c853d6a08b2253332612426b7e561fc4242970be0db36e9eb58aaa23279e",
+      "bytes": 7166487,
+      "receipt_sha256": "69ff8f112d2eb1a52d0636eb39b7d6fd12b90947ff633bacc3f1de78545425de",
+      "repo": "sapinsapin/chika",
+      "revision": "6a49ac677d41ef25a44335dab6822eabc01c0c5f",
+      "entries": [
+        {
+          "bytes": 7166487,
+          "path": "raw/archive/sha256/93d2c853d6a08b2253332612426b7e561fc4242970be0db36e9eb58aaa23279e/audio",
+          "sha256": "93d2c853d6a08b2253332612426b7e561fc4242970be0db36e9eb58aaa23279e"
+        },
+        {
+          "bytes": 1315,
+          "path": "raw/archive/metadata/246b71cedac481d029ca093cbb71e960dd843e12b9b61b55cc4382a6f0de0a07.json",
+          "sha256": "246b71cedac481d029ca093cbb71e960dd843e12b9b61b55cc4382a6f0de0a07"
+        }
+      ]
+    },
+    {
+      "id": "92d6c4d61d113012749601887710544f4fe2e72dfeee63b6f43531a5c2bd479d",
+      "audio_sha256": "87deabfbf790982baf8a7130087db393b0473d3f471934a5c59076612e943ed9",
+      "bytes": 181247904,
+      "receipt_sha256": "f5395949f37542145e386845b6294200ef191af34b21a2cfde652771c275d91a",
+      "repo": "sapinsapin/chika",
+      "revision": "c88565d92a8507a495a0066e7717f99a0686072d",
+      "entries": [
+        {
+          "bytes": 181247904,
+          "path": "raw/archive/sha256/87deabfbf790982baf8a7130087db393b0473d3f471934a5c59076612e943ed9/audio",
+          "sha256": "87deabfbf790982baf8a7130087db393b0473d3f471934a5c59076612e943ed9"
+        },
+        {
+          "bytes": 1330,
+          "path": "raw/archive/metadata/ac0cf61da88bd4323e86911e79da2200b879e82f864cd1588f2ff8092c865e9c.json",
+          "sha256": "ac0cf61da88bd4323e86911e79da2200b879e82f864cd1588f2ff8092c865e9c"
+        }
+      ]
+    },
+    {
+      "id": "b736f57aaea4e5a079ffd0042ae961afca9057e3da57195353b4ca66ecc19b54",
+      "audio_sha256": "a4f4df267402419e1ea08b8e8422e5f9769087b946d2c02033f5402cd0c8ed73",
+      "bytes": 311450,
+      "receipt_sha256": "141b28e6b3159b466b59bca2dbcc77ac35c43fa73fd2aaac908633bd3cf0b744",
+      "repo": "sapinsapin/chika",
+      "revision": "4bc681397b5ab539a1da1189c4cd450aa70d738f",
+      "entries": [
+        {
+          "bytes": 311450,
+          "path": "raw/archive/sha256/a4f4df267402419e1ea08b8e8422e5f9769087b946d2c02033f5402cd0c8ed73/audio",
+          "sha256": "a4f4df267402419e1ea08b8e8422e5f9769087b946d2c02033f5402cd0c8ed73"
+        },
+        {
+          "bytes": 1302,
+          "path": "raw/archive/metadata/3580c91315ef7ab06db9b22a74c3331f918847499abe6e40574677eff5231a25.json",
+          "sha256": "3580c91315ef7ab06db9b22a74c3331f918847499abe6e40574677eff5231a25"
+        }
+      ]
+    },
+    {
+      "id": "aada9d46c1364ff6c57fce05abf31beabe5e1579df41d67190c54908e4003dae",
+      "audio_sha256": "538be1c2f4a259e4dbbee47e02321116456d0b96469ee34fb0c6bf0dc8b44679",
+      "bytes": 129797005,
+      "receipt_sha256": "3f21d150159be7a12aa9269fd994aaf6291ccce1e4d92643d947886512629223",
+      "repo": "sapinsapin/chika",
+      "revision": "a7690120893248c56aacba7141c72550082fc9c2",
+      "entries": [
+        {
+          "bytes": 129797005,
+          "path": "raw/archive/sha256/538be1c2f4a259e4dbbee47e02321116456d0b96469ee34fb0c6bf0dc8b44679/audio",
+          "sha256": "538be1c2f4a259e4dbbee47e02321116456d0b96469ee34fb0c6bf0dc8b44679"
+        },
+        {
+          "bytes": 1314,
+          "path": "raw/archive/metadata/27061640143ea10de74375df28645b3aa1f198413dc986be99348815fa1d5a52.json",
+          "sha256": "27061640143ea10de74375df28645b3aa1f198413dc986be99348815fa1d5a52"
+        }
+      ]
+    },
+    {
+      "id": "fa3c64ea6960f052d2cf0058a9bb9813fe139f14e80365a476336b352379db8f",
+      "audio_sha256": "c6016480617c0c8717a18b826522107e3ff0d9f2296be274a96f4efafed01c0e",
+      "bytes": 117582215,
+      "receipt_sha256": "7c9ca29b8b88d15554832aede51f5f077da9f63cb70ae4bc6c16a2a8c9d34700",
+      "repo": "sapinsapin/chika",
+      "revision": "42d146cb52f4c37446a2683aef367a18d02f557d",
+      "entries": [
+        {
+          "bytes": 117582215,
+          "path": "raw/archive/sha256/c6016480617c0c8717a18b826522107e3ff0d9f2296be274a96f4efafed01c0e/audio",
+          "sha256": "c6016480617c0c8717a18b826522107e3ff0d9f2296be274a96f4efafed01c0e"
+        },
+        {
+          "bytes": 1313,
+          "path": "raw/archive/metadata/2dde78d0ce94790ec6ad8334abfddaba89a197e601771cb56a1ef569648d7c38.json",
+          "sha256": "2dde78d0ce94790ec6ad8334abfddaba89a197e601771cb56a1ef569648d7c38"
+        }
+      ]
+    }
+  ]
+}

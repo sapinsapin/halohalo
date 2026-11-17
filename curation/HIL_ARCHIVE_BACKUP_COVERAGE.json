@@ -1,0 +1,790 @@
+{
+  "observed_at": "2026-11-15T02:23:03.480154+00:00",
+  "manifest": "curation/outputs/imported-hil-archives-current-v2/snapshots/78ad3d5453bcc1e866437e3bac3d2d7f92c9c772ffae82eae085ed85995b2b92/manifest.jsonl",
+  "manifest_sha256": "1834130edf864c9c9963b2b86bcf105af17b7d31014c71ed4da75a08c40d013e",
+  "snapshot_rows": 152,
+  "rows_with_local_backup_receipts": 43,
+  "rows_without_receipts": 109,
+  "covered_bytes": 2788509587,
+  "uncovered_bytes": 5228252983,
+  "coverage": [
+    {
+      "id": "5fe5c26d6f8ffac278fa5e06ac901453ddf7b1b694be37315fb5ff93b435ff0f",
+      "audio_sha256": "62841cfcee38e8a1a9e0056654acb24aee4222bcbfc3a0e550b451f55e312990",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/2183df5ba6222831fcdea2b31cdd629d54f5dee1b2417aff41aa89adf1505f34.json",
+          "receipt_sha256": "2183df5ba6222831fcdea2b31cdd629d54f5dee1b2417aff41aa89adf1505f34",
+          "revision": "b53ba777174932bceb4c3883b126460746ca43d1",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 159442307
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/2ac3b55be7ae53ebc59a5f48b867fd25d987521685c11036ebbdad377dcae766.json",
+          "receipt_sha256": "2ac3b55be7ae53ebc59a5f48b867fd25d987521685c11036ebbdad377dcae766",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 159442307
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/f06cc4552265ed0a5d74579c0cb98878270d7a32f8d54664720a2d1cfd27a662.json",
+          "receipt_sha256": "f06cc4552265ed0a5d74579c0cb98878270d7a32f8d54664720a2d1cfd27a662",
+          "revision": "0a1441d12d549f03c63d625ad4a1a698d73cb81a",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 159442307
+        }
+      ]
+    },
+    {
+      "id": "49d5b43806fc9f6eb1578a86bbba0516abbd8659d59a165939caa798d17fba45",
+      "audio_sha256": "7f2197e6f3d9fa60fd4d714fbc88031c8c163bf5f47093939725d3312e3ec5c2",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/3d29fabbf0ed046044bd55fe0cd63a360116274026e59e52668edc60d1c39402.json",
+          "receipt_sha256": "3d29fabbf0ed046044bd55fe0cd63a360116274026e59e52668edc60d1c39402",
+          "revision": "0a1441d12d549f03c63d625ad4a1a698d73cb81a",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 95848660
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/4595056bccff15dee6bf9719aac52931d0c5de27afa668a42d57052f4a43f7ba.json",
+          "receipt_sha256": "4595056bccff15dee6bf9719aac52931d0c5de27afa668a42d57052f4a43f7ba",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 95848660
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/7e01c56ced9b6d91940bb4e8d8f5caf52a105d32d5eb2f247b99368813fbe2bc.json",
+          "receipt_sha256": "7e01c56ced9b6d91940bb4e8d8f5caf52a105d32d5eb2f247b99368813fbe2bc",
+          "revision": "e604a63320f36e7e0796f691046a8a17c38f0cfe",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 95848660
+        }
+      ]
+    },
+    {
+      "id": "69e22ed66ccd7e1b158dc88ff1143f701631622328b95ac1e859b8272a1139ac",
+      "audio_sha256": "1c73655f2f05e9d8c7bb3b5bc7ae1d113e4b04dd0f42a108ccd65f4b2e523de3",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/21605ca39cf53912577dfdb64f9955458bc1035b6a21c903a5965a9bbd4957c4.json",
+          "receipt_sha256": "21605ca39cf53912577dfdb64f9955458bc1035b6a21c903a5965a9bbd4957c4",
+          "revision": "0a1441d12d549f03c63d625ad4a1a698d73cb81a",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 49625134
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/5d747c1b205d9c26a3f561c55cb683b390491daca9ace40bc9b21726d03af787.json",
+          "receipt_sha256": "5d747c1b205d9c26a3f561c55cb683b390491daca9ace40bc9b21726d03af787",
+          "revision": "3adfaba725f1d99647b961342eb07b9de9813a45",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 49625134
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/a6f5ada3640ef1fa180000231bb3ca1c488a916d08f1b4d3ca15146945e651c2.json",
+          "receipt_sha256": "a6f5ada3640ef1fa180000231bb3ca1c488a916d08f1b4d3ca15146945e651c2",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 49625134
+        }
+      ]
+    },
+    {
+      "id": "f53fe403f38e6bb5de4e0a9a94ef340ef674ce7fb2f1915c8669685ea4ac0871",
+      "audio_sha256": "247b7113c118c4a24fe0d6190966ab44e5809dc6dabba14005ae893eaaa65b5d",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/02735d0435d7a8d434485ec614a54e6a91feeb1e69e7bae9d15075c6c1795bf2.json",
+          "receipt_sha256": "02735d0435d7a8d434485ec614a54e6a91feeb1e69e7bae9d15075c6c1795bf2",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 157824347
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/1681a0f829ced754d0ee03bbdec07bc0056417621c540467ec531421543ee3a8.json",
+          "receipt_sha256": "1681a0f829ced754d0ee03bbdec07bc0056417621c540467ec531421543ee3a8",
+          "revision": "f58175933140590ad8350c83c4d67dcef61cf71b",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 157824347
+        }
+      ]
+    },
+    {
+      "id": "c1d416ba1a161fe787efcf41373235d4a5ac064280e833be8c6d1b4952e4ea52",
+      "audio_sha256": "0b37bb9c23d3eb45014932964eec6febce4acb5937f224ba06b7fddc073af569",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/664bb2c152c820c0e343a14174172fe5f14acca566867ab73888477c9b6435fd.json",
+          "receipt_sha256": "664bb2c152c820c0e343a14174172fe5f14acca566867ab73888477c9b6435fd",
+          "revision": "730852618687b9bb07ce162a96c0e5e74482eac0",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 153729747
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/c0241dfe6f6ba835f3f59b837bfd694428936207ea05200696f5a280ffc999d4.json",
+          "receipt_sha256": "c0241dfe6f6ba835f3f59b837bfd694428936207ea05200696f5a280ffc999d4",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 153729747
+        }
+      ]
+    },
+    {
+      "id": "665d4b08debcf47328e096bc6a8414c835ed32d43d61bae71dec02a858545cb2",
+      "audio_sha256": "c3b0e80cd266d7ef38ffba5168581e4359198250cfdbdea2490607c352d08a2f",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/d26406d5157bc179c314045553b23897b98b6a24dd3ceff66a4e35e218b20aad.json",
+          "receipt_sha256": "d26406d5157bc179c314045553b23897b98b6a24dd3ceff66a4e35e218b20aad",
+          "revision": "8bd2dace763f81ffaa450f58ad5f5313f4ef8639",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9440064
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/e71980fb342756c9ef629fe4a9d6f9c05dd2ce420baa0618e14a9764fb2d17af.json",
+          "receipt_sha256": "e71980fb342756c9ef629fe4a9d6f9c05dd2ce420baa0618e14a9764fb2d17af",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9440064
+        }
+      ]
+    },
+    {
+      "id": "ca50904c8fa4f4349654b0e1691c7a2cf7a14a3413efaddda40cd64a3e513c3a",
+      "audio_sha256": "7e2e3e9b9b5e9af9b01c49c99b53bf398682f4426c1597be9cba4478aec75b36",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/452ac82e0e216a6de6c9b59b23bca9bd96a77e91e0067573ef5c7e48f31d4e2f.json",
+          "receipt_sha256": "452ac82e0e216a6de6c9b59b23bca9bd96a77e91e0067573ef5c7e48f31d4e2f",
+          "revision": "d7d67aab2081aeb1f78018bf7f44e4c8992c7d5e",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9541092
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/8051aa3131404bfd5acbdff1767742e0d39062b9a7ff4323263ace853f59a157.json",
+          "receipt_sha256": "8051aa3131404bfd5acbdff1767742e0d39062b9a7ff4323263ace853f59a157",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9541092
+        }
+      ]
+    },
+    {
+      "id": "e027615a75a9d259f46dfade95c3682b2ff7ced66e6ccf63abb8236cd5b66030",
+      "audio_sha256": "ac1bf239a0167dffb8e408162b315ad24355c1bcf150d72e66c291d27dfbc601",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/ee8c738f066d2969406b2691be53b5bc8d9330488601ba4537dab4d08f4dff98.json",
+          "receipt_sha256": "ee8c738f066d2969406b2691be53b5bc8d9330488601ba4537dab4d08f4dff98",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 8648570
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/eeaee13467473b74ebb2f6536709a45688b63294b1e19accc57787e3d86e122e.json",
+          "receipt_sha256": "eeaee13467473b74ebb2f6536709a45688b63294b1e19accc57787e3d86e122e",
+          "revision": "f712011e7f814b4a51064b8a609a613dc2c465bd",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 8648570
+        }
+      ]
+    },
+    {
+      "id": "344a54be5023e00aaa3d115fab10b0f76ec4bf53007861b380f662c2ad0b2e0c",
+      "audio_sha256": "f76d5642d239c44bbac92d3e2ea8344fa8df4cf53b68103fff8f6ba2f67ac2c3",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/55deef75c1bcb6e3fdecb4817b8d0ef66d3575e95a237be33b47791a3b7868c4.json",
+          "receipt_sha256": "55deef75c1bcb6e3fdecb4817b8d0ef66d3575e95a237be33b47791a3b7868c4",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9667102
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/b9ab0aa9054e12421e2a743a0876611e7da5aa530354d89878a3776f40d43c6c.json",
+          "receipt_sha256": "b9ab0aa9054e12421e2a743a0876611e7da5aa530354d89878a3776f40d43c6c",
+          "revision": "7192d930c4b125a2170fa69e351034b9c51da3ac",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9667102
+        }
+      ]
+    },
+    {
+      "id": "87d8b976f198891d8068d96ed7e0c3678f7f408048627531f27707a45e744720",
+      "audio_sha256": "8e3d0e323c7c7db82063ceff014995e80c61befa063be6e1893118f6074a754e",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/1c84c5817ed9581f17a4d23e080957e74efe2283294af21b4aa62d5709d04cd9.json",
+          "receipt_sha256": "1c84c5817ed9581f17a4d23e080957e74efe2283294af21b4aa62d5709d04cd9",
+          "revision": "e4283fcfd86bb3bac172157b27b7d9fc23fab41a",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 37325296
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/44fa6539645c5a881634a487e22ec151edb7d02f374be49f6533e40f5432c263.json",
+          "receipt_sha256": "44fa6539645c5a881634a487e22ec151edb7d02f374be49f6533e40f5432c263",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 37325296
+        }
+      ]
+    },
+    {
+      "id": "2627dfc51308e0977b86a4aa43bb8519be425396887c3bdfb51177893aea73b1",
+      "audio_sha256": "051134090648309b8ea6d57d325fe34da620f9d15e5414ef2b890008440e1d67",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/9c71a1573add49bd9990339f7c1b5d3225f0d000c0634973ef2570aaeed9fc7c.json",
+          "receipt_sha256": "9c71a1573add49bd9990339f7c1b5d3225f0d000c0634973ef2570aaeed9fc7c",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9739575
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/db031706cf0fc61ecdfec3100a8589758ee326da02a3d3684e89b10573cc53fe.json",
+          "receipt_sha256": "db031706cf0fc61ecdfec3100a8589758ee326da02a3d3684e89b10573cc53fe",
+          "revision": "43baf59ca361dc7baaec34835ae2e7fb50b45919",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9739575
+        }
+      ]
+    },
+    {
+      "id": "f7198f6717f4913a5b8df3f0eb1f09dd7148d4aa6ca213ed58f41704e401bb69",
+      "audio_sha256": "7db082d97c006cbd82ef135d28ecf4d69684c9cb10f5835107742f1371210b6e",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/7737a71fa3693acee37567940410e8de2ba6f1fbe5eaff158e005e3a7d31fb53.json",
+          "receipt_sha256": "7737a71fa3693acee37567940410e8de2ba6f1fbe5eaff158e005e3a7d31fb53",
+          "revision": "ee29f28ad95d15ce3b78bf735972b63f0f8424ad",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9704855
+        },
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/a9bfc2179c25a035b6f34c84486629fd389742e57589db6416aa795522a862a9.json",
+          "receipt_sha256": "a9bfc2179c25a035b6f34c84486629fd389742e57589db6416aa795522a862a9",
+          "revision": "aa3b647061474e2d66e8677ebc80e66e26372dca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 9704855
+        }
+      ]
+    },
+    {
+      "id": "54f4d99cb2a038734ded5f7d38e974eaf2228327c44a1fc8fc5162a73aa90f98",
+      "audio_sha256": "688db4a122e5d32318ecf40588d5f5cd025738eb79f6a416dd95977b8d23cfac",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/8746f7ad44b24cb9431f2dd47c32d545eac68835e8c693263657445756ce9e92.json",
+          "receipt_sha256": "8746f7ad44b24cb9431f2dd47c32d545eac68835e8c693263657445756ce9e92",
+          "revision": "7f40e4b15e35bea8155a81f3baa8c67164bc0a14",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 20339015
+        }
+      ]
+    },
+    {
+      "id": "34161b068bc974c8ef7ec3f18af6b8d8cf93519ed0bb9978349573f40eb0356d",
+      "audio_sha256": "f897a4a781d2a2931747d28e76fd5a6927d8f44bc9d651c104f8d84022f95d65",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/f9a937dac74ab58fdb0aa84ede86169a717bf3d055eafbbca9fd17ae5a62b2c7.json",
+          "receipt_sha256": "f9a937dac74ab58fdb0aa84ede86169a717bf3d055eafbbca9fd17ae5a62b2c7",
+          "revision": "ae8ca4236ea121b24063d94bc3ae15201a8b83e3",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 18983553
+        }
+      ]
+    },
+    {
+      "id": "54662fe0764d3035cedb137bbf514e2551e2d9eac65a24febfe433ad7bac94ae",
+      "audio_sha256": "50796a3e60962c917c2d3ba0a6420a7c3f6b721461baad1a0a79772c8af9aa61",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/2fe1b7b7280ac713f135fa6bbd06a95480a3550acf2ebbf0782b75f9eb976227.json",
+          "receipt_sha256": "2fe1b7b7280ac713f135fa6bbd06a95480a3550acf2ebbf0782b75f9eb976227",
+          "revision": "ec22a68934cee07b315678584e096f6a77ebb596",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 21703468
+        }
+      ]
+    },
+    {
+      "id": "521aa75b724b3e0ab9c2f4d4692cb9f4a43e43e4b2b80b66d2e5946d32b31637",
+      "audio_sha256": "0397b75619405efe8409ff8ac147dad98797239cd6c06311e09e56e1630fafc9",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/43edd7ae03a8a17cb389ac8cd2f2a295d600045588cfd9af61b257778245a4ba.json",
+          "receipt_sha256": "43edd7ae03a8a17cb389ac8cd2f2a295d600045588cfd9af61b257778245a4ba",
+          "revision": "d5fa922b4b11ae0944ce9c15e849dbac046c73e3",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 18413088
+        }
+      ]
+    },
+    {
+      "id": "60151453e4a66f788c19ad19f4a7342e5df80fbe857fce7edf82cbfb49418774",
+      "audio_sha256": "caf0f1b31d85648922bcc9c2590e1b310e4be51e2c8538b6d92e81e0b87516ae",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/637185e0056287bdfdceff088434b75b8ef5afb080b80c7dfd944a74e42bf8e2.json",
+          "receipt_sha256": "637185e0056287bdfdceff088434b75b8ef5afb080b80c7dfd944a74e42bf8e2",
+          "revision": "5e0cce839e3e2aec857f14ea3547b0bc455900eb",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 21157051
+        }
+      ]
+    },
+    {
+      "id": "0f0c8b0a1d1077f53ce4507e3eda66d1bcbb08f9439c91675d0dfa366d6f2ea6",
+      "audio_sha256": "96bd732b86e5f41544a87d3a54bdc9de8c7fbad0d37ce38a40689e5cc11f103b",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/aaa18822e1481445dc1d3f857406e171ae9a5b03581a3398cd18e18cfd42e789.json",
+          "receipt_sha256": "aaa18822e1481445dc1d3f857406e171ae9a5b03581a3398cd18e18cfd42e789",
+          "revision": "98d9228af8198691f742a2f1c194d85979b93243",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 22246796
+        }
+      ]
+    },
+    {
+      "id": "594be810a5e40853449e35b5c52a7ffac3108e912da9a4993ab775125e3640e0",
+      "audio_sha256": "f905cb96f54cdcee6a2ea359dd20c1793166dd915b16d16188e9b54529e1939c",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/6650fe2b8ab2ad68fd7330373b258e08fc63993cbca51af0c4d2795b2461342a.json",
+          "receipt_sha256": "6650fe2b8ab2ad68fd7330373b258e08fc63993cbca51af0c4d2795b2461342a",
+          "revision": "53f4d697fc304d4e5138e0761a86ab669b2a60f5",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 18526983
+        }
+      ]
+    },
+    {
+      "id": "302de40a6f0bbbfa55531676d8345cd72c1582a10a78be8db086fffb57c40bf6",
+      "audio_sha256": "fa3e51549fed29f42ba5c636f0c758bf1ae6c80ceb806be9c0624b1fa71845a5",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/a9e02fc7c5a199bba822664f20f03c2904d20bf068d282292f382a5d15e4e383.json",
+          "receipt_sha256": "a9e02fc7c5a199bba822664f20f03c2904d20bf068d282292f382a5d15e4e383",
+          "revision": "ca017036505a4d39cc2dbaff23ca5d1ca1596c0c",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 17954483
+        }
+      ]
+    },
+    {
+      "id": "c3ad723f6f237ea21e57539c922094948d797e1102a7437dae005f1679844c4b",
+      "audio_sha256": "4ade3052ea3d5876e0268f330dd98e4d3e5b990f7fbcaef2e10d5a7c0baeba42",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/de875ae78475e5bb1db92d7449c5c62d52ce4c760dcdee89b7da698fe8f283bb.json",
+          "receipt_sha256": "de875ae78475e5bb1db92d7449c5c62d52ce4c760dcdee89b7da698fe8f283bb",
+          "revision": "5823766888aafdff89dc4e123b094b97c54f5c8d",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 114621367
+        }
+      ]
+    },
+    {
+      "id": "0fe501292989b6df91fa7a4b0ad071a322b4eaa27e516e6d483399457f00b30c",
+      "audio_sha256": "d2e4b630f6add05b0c677bdbccdafe8ecc0ce2297ee09a1aa5086475c5351a61",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/67b4a5b688fa05bc3fafb212270a2340e79e68bf824eda8cb5ab5b47295936b7.json",
+          "receipt_sha256": "67b4a5b688fa05bc3fafb212270a2340e79e68bf824eda8cb5ab5b47295936b7",
+          "revision": "79bb83238b9b29305d1463a6f5e06ab26d581fca",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 118031282
+        }
+      ]
+    },
+    {
+      "id": "9e1e1fdda9fc5fb4b496b9f133f5fcbbe0f396369f81885bc78f2c3caf972d11",
+      "audio_sha256": "1f2fb053a92fbc2026e0c31c649032c50781d409b1be85766bb13a3ed652135e",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/92f74729d94e2027c8d47715e83b957b1935baf8ca48efddc666c47744560b6f.json",
+          "receipt_sha256": "92f74729d94e2027c8d47715e83b957b1935baf8ca48efddc666c47744560b6f",
+          "revision": "8cbbc3a2c2a2eb19444448678225f2ab09a70cb4",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 125848043
+        }
+      ]
+    },
+    {
+      "id": "0c8920f42842c205e9b93580cbbcce5d1a3e39b6ad1c0ebdcf627973d41bbea8",
+      "audio_sha256": "1fc80388b35f46b60baa5557484b24d9b10895e5ce971753cbfb7d96d3d8a087",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/e8d077541b45f7c33c54c6aa78effe0f1572bfae65e59d9dc11148ac1dd2ee38.json",
+          "receipt_sha256": "e8d077541b45f7c33c54c6aa78effe0f1572bfae65e59d9dc11148ac1dd2ee38",
+          "revision": "66605444b08611b4d4b704c81f52a7e4d0f3f979",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 147919054
+        }
+      ]
+    },
+    {
+      "id": "67341ff32eb824fccc6ce88053aa5cad439a4913e4538137b845bdb86af306f2",
+      "audio_sha256": "1e376d420d4782880d87b8f08c2363fd943e17ec6cbc3992f32119a5fa8b583a",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/8e222ef352657f5b904d6009527ca19cd2b91b4d6306d7c9478337c850ec0c78.json",
+          "receipt_sha256": "8e222ef352657f5b904d6009527ca19cd2b91b4d6306d7c9478337c850ec0c78",
+          "revision": "866cd8ffe0f49db0ad337908fe4a49455f9acf42",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 141482151
+        }
+      ]
+    },
+    {
+      "id": "675dd540054cc17dd6bcb2d4ef41f2fdd594c514e3e7393e6ef82a48b202d6d5",
+      "audio_sha256": "aa498402ceeea3cdc4d6995aa0e091e93e4980bfe471afa26e47b7f76bf6689a",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/559999b7807cae69e49e99912fc67b18ee0d471c05414ad4f3d659cbec32b726.json",
+          "receipt_sha256": "559999b7807cae69e49e99912fc67b18ee0d471c05414ad4f3d659cbec32b726",
+          "revision": "1a4b499058af5dd974423cdf16d50d3bc2fe8d66",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 146332837
+        }
+      ]
+    },
+    {
+      "id": "2874e02b012ea8e6497746ea431c9a65e7c870253be96d9786db98ff6205fc15",
+      "audio_sha256": "248a7482a42cae2bb3733776f1fb2cd14a639a32690205257bc898b54a7e1510",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/48edcdf0ff2d58d21cb7ea3e6980662294904c11daf79ce0d55ac2f1cb9248a1.json",
+          "receipt_sha256": "48edcdf0ff2d58d21cb7ea3e6980662294904c11daf79ce0d55ac2f1cb9248a1",
+          "revision": "149a3096bbaebfee9d683e1ca52f30bac9f82f77",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 135181164
+        }
+      ]
+    },
+    {
+      "id": "e04539c57530bc41660d464be6f6233a1b93a77a9f46ff4a773184d7b26f9013",
+      "audio_sha256": "8bbb5fc35d9c4a9fda0040272b4eed37f9d5fd2ef4ad57ac8b770935c485e753",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/2fb11432c19ab576e1e9b28b1e468b5fe86795c037a8d75a006d0cb9a92ec02d.json",
+          "receipt_sha256": "2fb11432c19ab576e1e9b28b1e468b5fe86795c037a8d75a006d0cb9a92ec02d",
+          "revision": "556239ea6820f328a290d920c55465fc9ac443bb",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 135365049
+        }
+      ]
+    },
+    {
+      "id": "b03560b9c1b7bbc864a88b5d1dd1a788042855ea2b66b2bf9bc3dfa62f4e8493",
+      "audio_sha256": "11e6b4cfae5b082399a27640f0383d1e05c224d1aa4d647ff01806b65fe66a34",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/bb4212545f52eddc364e1baa97ff31a587ab2a9c26133b778acb0effd90ffcbe.json",
+          "receipt_sha256": "bb4212545f52eddc364e1baa97ff31a587ab2a9c26133b778acb0effd90ffcbe",
+          "revision": "51cb560552f4dac6a6f4abc99e3445167f9696f5",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 152706262
+        }
+      ]
+    },
+    {
+      "id": "b2080ca836ce07eec265a95c5d80e02388a5a5d3a4600d5e5fcc48d274457595",
+      "audio_sha256": "0782bcb85b8a17e29ef55b6c251f63d8b9e8add2197f4b4a4804e7777d687ece",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/16dd8045ad51b9d8bde64b6aa9952e3ba825f5ce10ef4a6cc25e3b6ba757f313.json",
+          "receipt_sha256": "16dd8045ad51b9d8bde64b6aa9952e3ba825f5ce10ef4a6cc25e3b6ba757f313",
+          "revision": "37eb97de91d085707a0cabb0ac66b0b19ab62289",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 139267290
+        }
+      ]
+    },
+    {
+      "id": "16c6ce6987c077f00b6531210488223bf7c528854e3757f4840ac563564fc5dd",
+      "audio_sha256": "9893a7dd171d27b411562f226fc3ab12ffe3aa883355e31bb7c4caa492bb2287",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/9aa252d7f0fa8182ab040284f2724389e7853ecdcd7c5ff4db79df15dadc4c69.json",
+          "receipt_sha256": "9aa252d7f0fa8182ab040284f2724389e7853ecdcd7c5ff4db79df15dadc4c69",
+          "revision": "c61818c93efbee49a765217c78f9518e3c60dcb3",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 122217660
+        }
+      ]
+    },
+    {
+      "id": "a235c653ff959bc967a09a0374e202e84c0f07ee35add8a2b4427b166b8d7953",
+      "audio_sha256": "efe8e8d7fa27d6908613dab0094f150f9428097a5fc53186e314c47483a35f1a",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/6338157ea9a3bb353e9e0a2ca5fe71f8e9a56659e8618a4cc85d4a1ca9b7792a.json",
+          "receipt_sha256": "6338157ea9a3bb353e9e0a2ca5fe71f8e9a56659e8618a4cc85d4a1ca9b7792a",
+          "revision": "6f35e60dfb17893ea8c7cada2fc9f7ff6ac778c4",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 21738697
+        }
+      ]
+    },
+    {
+      "id": "ac0fa61e02d9190c5c6ff1abc2d0530479c6e9d0edaded50c104e9f9f8127645",
+      "audio_sha256": "11370e0ee846ac2e1187de1a0542518b531d7da1b542890734d5ca0df7f4cd8a",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/9f15cab2cefdee7e4c4a24bebba581998127ebaa3748308c141beccd141b6e4b.json",
+          "receipt_sha256": "9f15cab2cefdee7e4c4a24bebba581998127ebaa3748308c141beccd141b6e4b",
+          "revision": "c1e6c8e407175ea5bc458a55c93e54ca7d3ca8b0",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 23376333
+        }
+      ]
+    },
+    {
+      "id": "828c78b0ef01ce8e759e0fbdbb3e214f70aabbdd3bca8407d6282a17ba23c487",
+      "audio_sha256": "ae8a4374dd11b1869f511335bf4d83b5c67e646072e1c8ccb03d15bf4974e69e",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/fb781474dc7054d5c8454da2a4c09833b31594f39edcf21a00b764544ca243d9.json",
+          "receipt_sha256": "fb781474dc7054d5c8454da2a4c09833b31594f39edcf21a00b764544ca243d9",
+          "revision": "23c07afb54e48f3a3f3db7464edca3b2d6647e1f",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 23898599
+        }
+      ]
+    },
+    {
+      "id": "fe2e3e3d46443a7ecf24f68e4692b681f7efa8f32a6e2ec6c626a1f95f56ae1c",
+      "audio_sha256": "55271af82ebe09e6cf01d68329e2084d5b351784b3bec548671974a395485b13",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/840e9051c6ebc9e7f16966ed6a0329c6e3af2751d6e37081202cfa4bcb453d4a.json",
+          "receipt_sha256": "840e9051c6ebc9e7f16966ed6a0329c6e3af2751d6e37081202cfa4bcb453d4a",
+          "revision": "4a06479f4a28da437bf686ce13b493189edc6fb0",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 24342035
+        }
+      ]
+    },
+    {
+      "id": "bdf514fa4fb5dd00dbff4100b32f9b16bb6ddf06efe916af3dbfab9400b071b9",
+      "audio_sha256": "416bd0de18e80ba2ecb35c5b3c8eb36407a572fe6af37a0f0a5d9e667e494618",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/8a0635faed88a43ffa65eb1bfd501547bd86831bf63558440b2f4a766e8a23fd.json",
+          "receipt_sha256": "8a0635faed88a43ffa65eb1bfd501547bd86831bf63558440b2f4a766e8a23fd",
+          "revision": "dffe23c37ddd95cc3ef2f7c5a5c1cbd515bd63d3",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 22588312
+        }
+      ]
+    },
+    {
+      "id": "9ad43e06d0a31f80b3e320cac23592bdc1e2fc2c5bc1ae50f27beecfb49a414f",
+      "audio_sha256": "d65a068c3ae7bd4f948169ac5ee3fc19a670bf4f591af85887e969e3b4370654",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/6693e0d3ccadd5ea51bbb054911cf407590a2aaa3fd8fdbf097114bbb413ba7b.json",
+          "receipt_sha256": "6693e0d3ccadd5ea51bbb054911cf407590a2aaa3fd8fdbf097114bbb413ba7b",
+          "revision": "90cb024deacf7edfc7322a0d8495db85d98fa950",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 23483278
+        }
+      ]
+    },
+    {
+      "id": "c309d822c798b38a1ebb6645912e1e51ae446539f798a140ec80e6e8bdb11d74",
+      "audio_sha256": "ed3fc2dabae26060ad4c51a490dc40eab753197dd626dbf160efbf2b3f309653",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/8908d3a2cd49f5561a3e13da91adb3cbd65ce86fbc5ee5693c3d1b64276bbf6d.json",
+          "receipt_sha256": "8908d3a2cd49f5561a3e13da91adb3cbd65ce86fbc5ee5693c3d1b64276bbf6d",
+          "revision": "88f5c71bf5d1177276a1fab01c3cfa1e4bc2e65e",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 25219852
+        }
+      ]
+    },
+    {
+      "id": "a2b7d81e75603d521892557e5353a6b417b3d4cec8da7e32a46650a240ddce10",
+      "audio_sha256": "9b2b63ccb1445655c06c4427d2a4d12943198f2fc3eaa3efa0f72c77cbab16cb",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/5b3908ec6a6a6b0286c883753ca780875687ec7bdb5b3e2569b8abfc13d50ff9.json",
+          "receipt_sha256": "5b3908ec6a6a6b0286c883753ca780875687ec7bdb5b3e2569b8abfc13d50ff9",
+          "revision": "8d51a6d67c3806464fcc8a77ba64ecbfe40a68b2",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 23280279
+        }
+      ]
+    },
+    {
+      "id": "f209d76eeb790feb983700e240e477c2e2ce9c1eecba33d05742ce112c7f05f3",
+      "audio_sha256": "41eeaf8ddf6a065d71798aa708c273b29892bc981315ab90f2c8ac573cdb3331",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/2a73575c0869ca6b15bdcae4752542b127009c3fb25f6c757cf08893e5c83936.json",
+          "receipt_sha256": "2a73575c0869ca6b15bdcae4752542b127009c3fb25f6c757cf08893e5c83936",
+          "revision": "4ca130ffc79acd5ec34ad9617fc48956d621608a",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 18209502
+        }
+      ]
+    },
+    {
+      "id": "b2b387b7953ef1353e4c7c6fcb5239299cd178bb121a1ed1c0327a89d83141ed",
+      "audio_sha256": "9b49b1872bae1652f5dd70fa39e765069780f074a08e07d7e70e9620ac8eaf5f",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/0f0bbd3dd70771c8845843e21a513287efd9ae372f74e04101eb200a7150fef9.json",
+          "receipt_sha256": "0f0bbd3dd70771c8845843e21a513287efd9ae372f74e04101eb200a7150fef9",
+          "revision": "d78c8ccfb05422574dc1d0e7bdbf3cf318a45ed4",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 2210242
+        }
+      ]
+    },
+    {
+      "id": "656c5fa2aacd7266377639f39c27925c995ca7615719992e9761e8a5524c992c",
+      "audio_sha256": "494e31f2586ba5101986e4a1d5e5fdb0f444ee24ae001621a5cb1d884100dbd6",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/129f6623296ea4157f84ffc1bb16e6a8660ec6497c7a174c091f3bc9dbf89582.json",
+          "receipt_sha256": "129f6623296ea4157f84ffc1bb16e6a8660ec6497c7a174c091f3bc9dbf89582",
+          "revision": "bae208bf1ca81e9382604a8783acb9fd8795263b",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 51666779
+        }
+      ]
+    },
+    {
+      "id": "51fd230ff103314b08c376b73c51cac4b37124f1400dba02e68da93985991782",
+      "audio_sha256": "bdfb9036bb48049e74cc0d8920c8721454b7ded5648bfeca8d3150574cf1f09d",
+      "receipts": [
+        {
+          "receipt": "curation/outputs/archive-backup-hil-49-v1/state/receipts/e9f8a36e2a432a2eefd4ad348ef1324c485e126caa2d7880fa8de711db068a8d.json",
+          "receipt_sha256": "e9f8a36e2a432a2eefd4ad348ef1324c485e126caa2d7880fa8de711db068a8d",
+          "revision": "78b43e45aca300e396a1c495466eacf43bbcf876",
+          "repo": "sapinsapin/chika",
+          "audio_bytes": 179662334
+        }
+      ]
+    }
+  ],
+  "missing_ids": [
+    "d68d2f8c306f8da563bede6913f0c3da9e95f2f4ce18dc02490d1b43658a709c",
+    "9885b7131eff9e3f9c10531cf003f78cea0d822af5ef8f5a9b62a438ceca9c9e",
+    "e65571160a3258907064a80bc15fd8ad672e32c39faea4a2d94d1fee5b77ee24",
+    "623ce16dbe03d16676a4d3b6e45d03879a481165d27d7ca2a3e0d81b9dddf10e",
+    "233604b348fd3c5b04a77e9f75c79b4b6305da1ba0d31de973cb7bf8cbcd7f76",
+    "c60b6edbd036ac991a9c39bbbd49cc38c7365525381e51ba0e010604ba725ff5",
+    "54e6ea6ba8f983f20d6881cbd290c6ba97e93bd378d3bb393e58ceff19826cfb",
+    "a467148a51e6eb4dc0694be714260c72e0b2bd2e057d0461af36799e8fe9f8ce",
+    "476228cf4d12b07472758f6c4078cc1ec47ee9273e55fb14e827bb3e6bc3045a",
+    "371edf24ee59f5750c87e4a686133226e173dc0d09610f83b382462fadd662ea",
+    "92ba841e3f8eef3891ddf53be0b5429b2b89570b0c7b6a113ae0e59d2dda0aa5",
+    "fa4889704f0729d31aa7bb65c19be11fd815373d9af07e56df3f5f80133b9b41",
+    "e347c45747930652a560d8df9b659aaf01197a771b2a30e711ab0421e21bc80f",
+    "cd9c4e8d37a47e8dd51768eb37f1d728c081a3eab983e59460ec8e51bcd9b3c3",
+    "df90c11968bfe1fde9ece15d0b0a4791ccda3876da43f5492d87475dc2cb3b40",
+    "6e31928eb315878fd6964060d8362352e2be795512fd2faf10e0badfad5e33d8",
+    "47903d653a2db8b08a57599f370be434056aa584421c4267a0c780afd36547c1",
+    "622cca931298b2e96a0adeabe8cd6ab68b7c9a04577b31f7dd2986a68e3d6d8b",
+    "25b37ef5ce88abd657d28c0ea8502ddf9e0483a2cae6cc50881e245b808df064",
+    "72fd0e00b2eb2a3134dd48aea0f7ffb88e74de11898702d99273b2da1b385fbd",
+    "4ca2d4bd94f81a98cb55a08a288f0460a6893b0d01fdc53caebb12eb6bf231ec",
+    "29a54f4f0c90b4916223bea7810f836ac8f15bc6fed3a000932c50853b6c828e",
+    "416928e3b797b2c8d98dcd5c1238a6a213b9780f3734fcc7fe82d01d6829549c",
+    "8fa788bf116112952349fbc78496b5faf8b7aa04528c5e9d7607a9d885c72f6e",
+    "f917ce0f973d18ecb96fd5c3a67bc50869bf81a21bb0e6b09ca81af83658ce22",
+    "cd70137e26436f9dcfbaa51ac098e4e66db997fe55476701d586b45266c87c3e",
+    "b5947b349dab4f633b064e919a6202b3a41be7817cf34874b37a1c1374752e05",
+    "3f4eac006c71238d736380859e6843b61b1f63f8524cf0ae81911d289cd3174c",
+    "f1fe063b282f8089be8f4c5792cb3563a8b92ddbbd1cbc8f158b856d73a2ad98",
+    "0fe133f9217f80ee8167eb91d5407da7d14bc5c3b396eb1bebec0581af0ab297",
+    "d8bd1bc560453981e53fe96b2942a8e00b386220e1259adb7f6cb05297642d68",
+    "0e5ff7ce7c8990bd768c53bbf578a7206c10b49898589b91c4c81cce5544bdaa",
+    "82e9afd3affdb705568c12f9b121ca86b6e64518aef379a5a5a3629265947dec",
+    "b015ad4ad4ebd51cb7b4672299e4645150b85d1fb103ef7a2b2a4e77f4bf0972",
+    "44c3a66a01cefc655aae498db4374ea0724e05329b080740848c106ebe9a55fb",
+    "2d30bc4b05bc93fedb7ba9b9b02acbfbd37981d8f92e1e0617a3847008caf912",
+    "fcedadeb70f868b3706a5257b0c9ef15882632fc88bb4be914c92d2cf1e56dcb",
+    "fe9a0850dfd4ec11bcfb0e5bd7566c23de524ff3d0c4396e984efa31b52e2126",
+    "22068a74d85f956fdbdc04ac88873f5e17d3bc57399e7fd733dae6545686dc98",
+    "a5f13e35e8dc937bb602937fca2a6a5732cc4b8a6c45ba4946f15021cecdb132",
+    "dc89728895c8e7a309300841f5fd4588c15994c49ee18da59c901dea65eaccad",
+    "f505fa10445b614461cff73823bb6dd466c9b3b5b784d32a5a00a0fad8646b10",
+    "3fb02bcac56f5e9421e92b7a9bab71ae00b13983717258884e499ae692baa066",
+    "fca05867a14d9dc749514f65bd56887531092a10dd60f39762d62134ccf27512",
+    "52e7d7a96d41b06e07f58bec6b571405a5d68906e6e4ad6243df8be73cd6d951",
+    "0a32f7f76025f212030bc929b2295a9e35ee2e7ec430cecfc26f267bd3d1846e",
+    "9885076edb85b0ed1907898bc74fedcb54369d5678faf3836fde08d59f74948e",
+    "202d6002e3eeb8e401f56b71d675e801760e0a7c50636de91acc7a6cad1e746b",
+    "d8cf8da0c9463aaae492dd6d60528f573ea76043f617ddc538aa62f0deed100b",
+    "b06943d97d3ec018558fd8d4072787cdb8145aac53c4eb348e12e3ee185d9fb9",
+    "42ab096f592d873812c29d4c6cbae50462998fba782822570e182611c473b413",
+    "3a87765371421c3848fc8856c84cef9418338664c53ffcfda80e72bdc089641e",
+    "049bd3c4c1cbdae36ba2c88ffde3a9288836f9be40e1ce6166dbb78f8bd82694",
+    "c989582f31aca026ac73fcd87f7db043d5b33833d293d3825698cd9d40f9473e",
+    "1c6a3dd9e62bec683c180ec4888eacf0b7da402673131f51cccc820030f4830d",
+    "fe2f802183ba82d56d9f2c93342ca7039987129b736c46a3d45cad4618c4342e",
+    "0f459be2ef1de6e68c2263899a8e5f734cbd393f08e038e47bd3a16806992548",
+    "dcd2d9dc71a1312f505704eb82b6d22062e854b8c614e31828db838c50f032c6",
+    "93265d5f828bc7a5143c19b1aefbf8379b492921ec1044f6729d12303b7f113a",
+    "844c2f5bb4f4645e84417c8f0ec5107c25373058366cc23d65fed467198da9b5",
+    "7b22d1ed8001ea6a52d6e8a27caf771fe1c19e33296f5db220a2322eaf21af60",
+    "bcfcd8a8023b1519bb2c5c62a312e2948c3300fc70561e219dab9543e09ad110",
+    "addd411b1b291d4f6a6e483142aad2e26f862741989aff3c54565cfda8721da2",
+    "a8db994d5166fa63c38758a50324ec25b37d378dc8c7c85bfd63125989017f37",
+    "8a5b002acdb9d9ca237bfae46c680b37fb4209f57c17416adc1ec3ea6affa2ef",
+    "8ba5ab4daccd4f80834eda6de6ac9e08182204b430263f9bd0d0de29a8e23563",
+    "75001f3a5059c34d970dee975a37dfbcd5e19c98b6ecdc0f8d45dff3f25b8e1d",
+    "2a77c03a97fc39f006183a73d007d1e472a19d9f44d068c2bac81edc685522f5",
+    "b01b98baca4bc05194e63fca5878eccc5c851219287968c24e461709178e285c",
+    "d38895f009ab30fbadb55d4c8631bd46fcf425e6987d543e9c0328f67974bc04",
+    "e3c8ee6e3dea4d11eccef16ba92d93dcd97fd984578b6a72a443fdee9ea2001c",
+    "dd27c7f35a8e9a471b6ce866ffbaa57be8f3e529d43d1d5204402dc57865d8d0",
+    "ee964ecba7e2e3b941ac7dbf928d6fce092a23009383eea162ea93c7f74dbf5a",
+    "43e19e58239047f5a259d0e0cfe2fd09a327a18c92b5479b1f7db6ea2e583a83",
+    "dd583ffa21fcf74eb6eb512636824c17b658071392c54a87a98ca6256e277415",
+    "1f2865b7a298620422ac29babe4484f5eb4016cb2d25d77a95cc0ff9af0bb507",
+    "12ed295d9afe7690992c9e96814186410f1634cf65c7e2de504867a857f35114",
+    "88a2fed2cec268e687e526a286ca4093dda961444543ea6cfefbfd7cfaa95843",
+    "b3ba6f77f5aa37240f9d5a3144fc4109034b96bec066ebf851e4c29e49fd735f",
+    "f5683fdf859f315eb4e833359d564af01abbc11e8d18a2565ddbe555fa1a8904",
+    "1117eb672cc5be6b6ae246d688f772c86c9db3bc74201e7d6395fb79b45f7561",
+    "85eb9cb89305bf9cbc4d18959045adda18108c70714f4183a7c749d1cb7fd9aa",
+    "a34827fd102d33accebbf1d04e6a4e997f06c5cebcefa2dc598ea0940374c720",
+    "4d4c1a30abc3c89f209d1dd64891936aaec61cd876cafbe8836dee647cb21b60",
+    "f236b2175bca3a5439dddef1c4033fdca000be86f0089936efc895b635b373bc",
+    "5dcd158bec2c436f315f927c38df8256aee075c5603463a8dfa942dabe787c8c",
+    "6abb7a9c83609aeab87b3cef473c3566886ff23edcf13c03071529f94cc91909",
+    "48ba82cf97d2106dac5f06d25419f69c11ea8ba65bcdca5422af2678b3fd53c5",
+    "6201ae82f6538b9848e21b12615662400ce51d850fbfc82b661fb2cd5b3186e3",
+    "1ba4ee712119cab5a483698d4437562f9aa9e4cdc9170b2704baa8a525cbbcc7",
+    "5e039b24567e48916a7b8bb855f32f30c116382b4152e89da945f318983dea37",
+    "6f00182e04d532396440ee3103b01680b5d3a10251e10f48d4964560a987bce3",
+    "d3ad306e94a34e8709ebdb73dbd3c984c338282f7872bd0fdba461f45fe496ab",
+    "9ce56f0dc7a2f2b08dad30a915bccc4aeac1d6f7ff5c26a88ca1eb54ba1b6498",
+    "77025373b7c8c4d37b549388463824ef2ff598ea5c28eb49bdefbe795ad10743",
+    "b1687bf891358a22fb5313885a9a28e9f40db0601c1687989c85d2aca48ed58b",
+    "a7f7e9892b3764ab94c7d2050d5c9fd3c1b6c942787c2bee2d7a1007d0c86dc5",
+    "adab0e043bfa22b34c6f3ba2e66473cddabb72922212fdc53065b9a3b69956e1",
+    "d1cadfed8fdb39f1e4f17dba406697da635c5134a7f3e1f7a95c0cd46117560f",
+    "3a11f2818f4c29441e4b6098395d8c3cef77f40427bfaac6caeabc51b110e7e3",
+    "de4b434edbb1177fb2615ef8ffa2203b7ee9f2bfae2f4d61659f282937160b4f",
+    "498736333c789ebb1f5cedd416aba5074704bd7232cdd95880a7b81d240448c5",
+    "e73c89ef037bdcc09d2395d346a74934c8b2f0a0b1db98f361143541e3101e4c",
+    "f788b2b74a43b5bc86b38baea74f423fc3d894bc529787f1c1ce0965228aa3a0",
+    "5cc544be4339f59b1e7e7e7edba59f8076562faa27129550839abd106aa3e9f9",
+    "92d6c4d61d113012749601887710544f4fe2e72dfeee63b6f43531a5c2bd479d",
+    "b736f57aaea4e5a079ffd0042ae961afca9057e3da57195353b4ca66ecc19b54",
+    "aada9d46c1364ff6c57fce05abf31beabe5e1579df41d67190c54908e4003dae",
+    "fa3c64ea6960f052d2cf0058a9bb9813fe139f14e80365a476336b352379db8f"
+  ],
+  "remote_reverified": false,
+  "deletion_authorized": false,
+  "note": "Local receipt inventory only, during a live backup. Repeated receipts count once per audio hash. Newer acquisitions outside this fixed snapshot are excluded."
+}

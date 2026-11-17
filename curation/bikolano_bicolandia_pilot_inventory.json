@@ -1,0 +1,53 @@
+{
+  "status": "metadata_preflight_only",
+  "source": "GMA Regional TV Balitang Bicolandia",
+  "items": [
+    {
+      "id": "Rv6FpbPoiYc",
+      "webpage_url": "https://www.youtube.com/watch?v=Rv6FpbPoiYc",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "title": "Balitang Bicolandia : August 26, 2022",
+      "duration": 2289,
+      "live_status": "not_live",
+      "availability": "public",
+      "upload_date": "20220826",
+      "metadata_sha256": "a9221ed15617c6024fd815d61d842459d1dd8809d4ffe2f243b2500bbcaf251d"
+    },
+    {
+      "id": "hpNVkO6fl10",
+      "webpage_url": "https://www.youtube.com/watch?v=hpNVkO6fl10",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "title": "Balitang Bicolandia: March 1, 2021",
+      "duration": 1925,
+      "live_status": "not_live",
+      "availability": "public",
+      "upload_date": "20210301",
+      "metadata_sha256": "a2b0c9bce3e6c5e9681700c72bdfa5376c42eee4a57e615521b8bb768acf112e"
+    },
+    {
+      "id": "qtoePjFQUI4",
+      "webpage_url": "https://www.youtube.com/watch?v=qtoePjFQUI4",
+      "channel_id": "UCVoawkpW12kgtXgInbPCrhQ",
+      "channel": "GMA Regional TV",
+      "title": "Balitang Bicolandia: August 3, 2023",
+      "duration": 1736,
+      "live_status": "not_live",
+      "availability": "public",
+      "upload_date": "20230803",
+      "metadata_sha256": "fb4d3be5c8d2717ad548787536afb08961b27b8e3efdbbbcea6a6d7f01e5a207"
+    }
+  ],
+  "metadata_estimated_hours": 1.6527777777777777,
+  "downloaded_hours": 0,
+  "language_verified": false,
+  "variety": "unspecified Bikol; do not assume bcl",
+  "rights": {
+    "training": "unknown",
+    "commercial": "unknown",
+    "redistribution": "unknown"
+  },
+  "media_floor_gib": 45,
+  "search_metadata_sha256": "4264e9145e05f76d9c1f8b394b770e81ac88d1ddbcaed0e05be01e6252e2f8fa"
+}

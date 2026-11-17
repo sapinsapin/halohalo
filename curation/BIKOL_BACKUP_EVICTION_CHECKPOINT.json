@@ -1,0 +1,14 @@
+{
+  "evicted_files": 20,
+  "unlinked_bytes": 839147161,
+  "all_paths_absent": true,
+  "checkpoint": {
+    "repo": "sapinsapin/chika",
+    "checkpoint": "checkpoints/bikolano-rss/3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c.sqlite",
+    "revision": "aaa52bab7b224da5d6cab4398893552832da836d",
+    "checkpoint_sha256": "3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c",
+    "uploaded_at": "2026-11-15T01:45:15.011738+00:00"
+  },
+  "actual_free_delta_bytes": 804147200,
+  "note": "Filesystem free-space delta is concurrent activity, not equal to nominal unlinked bytes"
+}

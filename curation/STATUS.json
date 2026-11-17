@@ -1,0 +1,1642 @@
+{
+  "updated_at": "2026-11-15T02:52:17.632129+00:00",
+  "tracking_issue": "https://github.com/sapinsapin/halohalo/issues/8",
+  "target_retained_transcribed_hours": {
+    "fil_taglish": 250,
+    "hil": 250,
+    "ceb": 250,
+    "bik": 250,
+    "ilo": 250
+  },
+  "priority": "acquisition first; segmented ASR retry is bounded and circuit-limited",
+  "rss": [
+    {
+      "name": "taglish-rss",
+      "root": "curation/outputs/taglish/shared",
+      "groups": [
+        {
+          "source_id": "adulting-with-joyce-pring",
+          "status": "downloaded",
+          "files": 139,
+          "measured_file_hours": 26.362861950833334,
+          "feed_estimated_hours": 26.343333333333334
+        },
+        {
+          "source_id": "adulting-with-joyce-pring",
+          "status": "failed",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 0.7208333333333333
+        },
+        {
+          "source_id": "adulting-with-joyce-pring",
+          "status": "pending",
+          "files": 427,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 154.64111111111112
+        },
+        {
+          "source_id": "boiling-waters-ph",
+          "status": "downloaded",
+          "files": 33,
+          "measured_file_hours": 26.509612051111112,
+          "feed_estimated_hours": 26.466944444444444
+        },
+        {
+          "source_id": "boiling-waters-ph",
+          "status": "pending",
+          "files": 352,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 185.7538888888889
+        },
+        {
+          "source_id": "creepsilog",
+          "status": "downloaded",
+          "files": 27,
+          "measured_file_hours": 26.66338611638889,
+          "feed_estimated_hours": 26.659444444444443
+        },
+        {
+          "source_id": "creepsilog",
+          "status": "pending",
+          "files": 150,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 168.02388888888888
+        },
+        {
+          "source_id": "kudazzers",
+          "status": "downloaded",
+          "files": 31,
+          "measured_file_hours": 26.700712925555553,
+          "feed_estimated_hours": 26.700277777777778
+        },
+        {
+          "source_id": "kudazzers",
+          "status": "pending",
+          "files": 332,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 235.9575
+        },
+        {
+          "source_id": "tamang-usapan",
+          "status": "downloaded",
+          "files": 25,
+          "measured_file_hours": 27.25284814861111,
+          "feed_estimated_hours": 27.25
+        },
+        {
+          "source_id": "tamang-usapan",
+          "status": "pending",
+          "files": 123,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 174.18027777777777
+        },
+        {
+          "source_id": "the-koolpals",
+          "status": "downloaded",
+          "files": 17,
+          "measured_file_hours": 18.60512458666667,
+          "feed_estimated_hours": 18.603055555555557
+        },
+        {
+          "source_id": "the-koolpals",
+          "status": "pending",
+          "files": 140,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 182.8786111111111
+        },
+        {
+          "source_id": "the-koolpals",
+          "status": "remote",
+          "files": 7,
+          "measured_file_hours": 8.398734662777779,
+          "feed_estimated_hours": 8.398055555555555
+        },
+        {
+          "source_id": "the-linya-linya-show",
+          "status": "downloaded",
+          "files": 22,
+          "measured_file_hours": 28.353208539999997,
+          "feed_estimated_hours": 28.350277777777777
+        },
+        {
+          "source_id": "the-linya-linya-show",
+          "status": "pending",
+          "files": 408,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 447.81583333333333
+        },
+        {
+          "source_id": "underpaid-with-stanley-chi",
+          "status": "downloaded",
+          "files": 44,
+          "measured_file_hours": 26.360371870555557,
+          "feed_estimated_hours": 26.35472222222222
+        },
+        {
+          "source_id": "underpaid-with-stanley-chi",
+          "status": "failed",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 1.08
+        },
+        {
+          "source_id": "underpaid-with-stanley-chi",
+          "status": "pending",
+          "files": 693,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 371.9475
+        },
+        {
+          "source_id": "wake-up-with-jim-and-saab",
+          "status": "downloaded",
+          "files": 51,
+          "measured_file_hours": 26.38420263861111,
+          "feed_estimated_hours": 26.378055555555555
+        },
+        {
+          "source_id": "wake-up-with-jim-and-saab",
+          "status": "pending",
+          "files": 381,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 224.4061111111111
+        }
+      ],
+      "measured_downloaded_hours": 233.19232882833336,
+      "local_raw_hours": 233.19232882833336,
+      "backed_up_remote_raw_hours": 8.398734662777779,
+      "unbacked_remote_raw_hours": 0.0,
+      "retained_raw_hours": 241.59106349111113,
+      "retention_note": "Ledger-derived raw hours; not fresh remote verification or unique speech.",
+      "worker": {
+        "pid": 13792,
+        "observation": "",
+        "process_present": false
+      }
+    },
+    {
+      "name": "hiligaynon-rss",
+      "root": "curation/outputs/rss",
+      "groups": [
+        {
+          "source_id": "awr-hiligaynon",
+          "status": "downloaded",
+          "files": 1,
+          "measured_file_hours": 0.4831681597222222,
+          "feed_estimated_hours": 0.48305555555555557
+        },
+        {
+          "source_id": "chill-men-say",
+          "status": "downloaded",
+          "files": 8,
+          "measured_file_hours": 5.233644890833333,
+          "feed_estimated_hours": 5.232777777777778
+        },
+        {
+          "source_id": "esturya-practikal",
+          "status": "downloaded",
+          "files": 2,
+          "measured_file_hours": 0.05831861305555556,
+          "feed_estimated_hours": 0.058055555555555555
+        },
+        {
+          "source_id": "ikk-podcast",
+          "status": "downloaded",
+          "files": 46,
+          "measured_file_hours": 14.761709196666667,
+          "feed_estimated_hours": 14.755555555555556
+        },
+        {
+          "source_id": "ikk-podcast-2",
+          "status": "downloaded",
+          "files": 117,
+          "measured_file_hours": 67.89879882527778,
+          "feed_estimated_hours": 67.88361111111111
+        },
+        {
+          "source_id": "ilonggo-preacher",
+          "status": "downloaded",
+          "files": 181,
+          "measured_file_hours": 191.89886988777778,
+          "feed_estimated_hours": 191.87416666666667
+        },
+        {
+          "source_id": "ilonggo-preacher",
+          "status": "failed",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 0.9452777777777778
+        },
+        {
+          "source_id": "ilonggo-preacher",
+          "status": "pending",
+          "files": 38,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 32.35194444444444
+        },
+        {
+          "source_id": "pause-pod",
+          "status": "downloaded",
+          "files": 9,
+          "measured_file_hours": 2.5029141030555557,
+          "feed_estimated_hours": 2.5016666666666665
+        },
+        {
+          "source_id": "wala-ko-kabalo",
+          "status": "downloaded",
+          "files": 23,
+          "measured_file_hours": 14.586741490277777,
+          "feed_estimated_hours": 14.584166666666667
+        }
+      ],
+      "measured_downloaded_hours": 297.4241651666667,
+      "local_raw_hours": 297.4241651666667,
+      "backed_up_remote_raw_hours": 0.0,
+      "unbacked_remote_raw_hours": 0.0,
+      "retained_raw_hours": 297.4241651666667,
+      "retention_note": "Ledger-derived raw hours; not fresh remote verification or unique speech.",
+      "worker": {
+        "pid": 13731,
+        "observation": "",
+        "process_present": false
+      },
+      "hub_checkpoint": {
+        "repo": "sapinsapin/chika",
+        "checkpoint": "checkpoints/hiligaynon-rss/c96dc2afcbabd0a472b45a1124c31071f67448f90c8485dd27c7e4acf47bac76.sqlite",
+        "revision": "4092645cbab6ae37204c2319c73b31b355c649ed",
+        "checkpoint_sha256": "c96dc2afcbabd0a472b45a1124c31071f67448f90c8485dd27c7e4acf47bac76",
+        "uploaded_at": "2026-11-14T21:11:06.744017+00:00"
+      }
+    },
+    {
+      "name": "cebuano-rss",
+      "root": "curation/outputs/cebuano/rss",
+      "groups": [
+        {
+          "source_id": "barok-and-takya",
+          "status": "downloaded",
+          "files": 8,
+          "measured_file_hours": 5.2076350775,
+          "feed_estimated_hours": 5.206666666666667
+        },
+        {
+          "source_id": "barok-and-takya",
+          "status": "pending",
+          "files": 61,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 39.00472222222222
+        },
+        {
+          "source_id": "bisaya-banter",
+          "status": "downloaded",
+          "files": 6,
+          "measured_file_hours": 5.455239159722222,
+          "feed_estimated_hours": 5.454166666666667
+        },
+        {
+          "source_id": "bisaya-banter",
+          "status": "pending",
+          "files": 9,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 6.8625
+        },
+        {
+          "source_id": "brighter-bisaya",
+          "status": "downloaded",
+          "files": 2,
+          "measured_file_hours": 4.662866067777778,
+          "feed_estimated_hours": 4.6625
+        },
+        {
+          "source_id": "brighter-bisaya",
+          "status": "failed",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 2.2311111111111113
+        },
+        {
+          "source_id": "brighter-bisaya",
+          "status": "pending",
+          "files": 2,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 4.1963888888888885
+        },
+        {
+          "source_id": "cge-storya-ta",
+          "status": "downloaded",
+          "files": 7,
+          "measured_file_hours": 5.0149676491666675,
+          "feed_estimated_hours": 5.013888888888889
+        },
+        {
+          "source_id": "cge-storya-ta",
+          "status": "pending",
+          "files": 5,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 3.0725
+        },
+        {
+          "source_id": "dili-ni-advice",
+          "status": "downloaded",
+          "files": 6,
+          "measured_file_hours": 5.123185434444444,
+          "feed_estimated_hours": 5.122777777777777
+        },
+        {
+          "source_id": "dili-ni-advice",
+          "status": "failed",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 0.735
+        },
+        {
+          "source_id": "dili-ni-advice",
+          "status": "pending",
+          "files": 154,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 138.65666666666667
+        },
+        {
+          "source_id": "kasikas",
+          "status": "downloaded",
+          "files": 5,
+          "measured_file_hours": 5.158949641388889,
+          "feed_estimated_hours": 5.158055555555555
+        },
+        {
+          "source_id": "kasikas",
+          "status": "pending",
+          "files": 49,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 43.88777777777778
+        },
+        {
+          "source_id": "kinabuhing-kristohanon",
+          "status": "downloaded",
+          "files": 6,
+          "measured_file_hours": 4.792563432222222,
+          "feed_estimated_hours": 4.791944444444445
+        },
+        {
+          "source_id": "kinabuhing-kristohanon",
+          "status": "pending",
+          "files": 113,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 102.32555555555555
+        },
+        {
+          "source_id": "naysjuan-sessions",
+          "status": "downloaded",
+          "files": 21,
+          "measured_file_hours": 5.465681337777778,
+          "feed_estimated_hours": 5.4622222222222225
+        },
+        {
+          "source_id": "naysjuan-sessions",
+          "status": "pending",
+          "files": 30,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 6.216666666666667
+        },
+        {
+          "source_id": "unsa-man-jud",
+          "status": "downloaded",
+          "files": 10,
+          "measured_file_hours": 5.1928998108333335,
+          "feed_estimated_hours": 5.191944444444444
+        },
+        {
+          "source_id": "unsa-man-jud",
+          "status": "pending",
+          "files": 10,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 5.985277777777778
+        },
+        {
+          "source_id": "wanbats-ra-besh",
+          "status": "downloaded",
+          "files": 4,
+          "measured_file_hours": 5.737567459444445,
+          "feed_estimated_hours": 5.737222222222222
+        },
+        {
+          "source_id": "wanbats-ra-besh",
+          "status": "pending",
+          "files": 22,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 28.67888888888889
+        }
+      ],
+      "measured_downloaded_hours": 51.81155507027778,
+      "local_raw_hours": 51.81155507027778,
+      "backed_up_remote_raw_hours": 0.0,
+      "unbacked_remote_raw_hours": 0.0,
+      "retained_raw_hours": 51.81155507027778,
+      "retention_note": "Ledger-derived raw hours; not fresh remote verification or unique speech.",
+      "worker": {
+        "pid": 29776,
+        "observation": "",
+        "process_present": false
+      }
+    },
+    {
+      "name": "bikolano-rss",
+      "root": "curation/outputs/bikolano/rss",
+      "groups": [
+        {
+          "source_id": "bikol-mass-readings",
+          "status": "downloaded",
+          "files": 104,
+          "measured_file_hours": 14.504458766666666,
+          "feed_estimated_hours": 14.491111111111111
+        },
+        {
+          "source_id": "kaulay-podcast",
+          "status": "downloaded",
+          "files": 27,
+          "measured_file_hours": 4.540188183888889,
+          "feed_estimated_hours": 4.5375
+        },
+        {
+          "source_id": "taga-bikol",
+          "status": "downloaded",
+          "files": 118,
+          "measured_file_hours": 87.40954629333334,
+          "feed_estimated_hours": 87.39166666666667
+        },
+        {
+          "source_id": "taga-bikol",
+          "status": "remote",
+          "files": 20,
+          "measured_file_hours": 14.454146089166667,
+          "feed_estimated_hours": 14.45111111111111
+        }
+      ],
+      "measured_downloaded_hours": 106.4541932438889,
+      "local_raw_hours": 106.4541932438889,
+      "backed_up_remote_raw_hours": 14.454146089166668,
+      "unbacked_remote_raw_hours": 0.0,
+      "retained_raw_hours": 120.90833933305557,
+      "retention_note": "Ledger-derived raw hours; not fresh remote verification or unique speech.",
+      "worker": {
+        "pid": 29761,
+        "observation": "",
+        "process_present": false
+      },
+      "hub_checkpoint": {
+        "repo": "sapinsapin/chika",
+        "checkpoint": "checkpoints/bikolano-rss/3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c.sqlite",
+        "revision": "aaa52bab7b224da5d6cab4398893552832da836d",
+        "checkpoint_sha256": "3fdfaa2b03acef120203f08c2fa3a9b96908f9c331c0dd9060bc444a1732db6c",
+        "uploaded_at": "2026-11-15T01:45:15.011738+00:00"
+      }
+    },
+    {
+      "name": "ilocano-rss",
+      "root": "curation/outputs/ilocano/rss",
+      "groups": [
+        {
+          "source_id": "awr-ilocano",
+          "status": "downloaded",
+          "files": 41,
+          "measured_file_hours": 19.78297232638889,
+          "feed_estimated_hours": 10.15
+        },
+        {
+          "source_id": "awr-ilocano",
+          "status": "pending",
+          "files": 258,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 64.71666666666667
+        },
+        {
+          "source_id": "norma-ilocano",
+          "status": "downloaded",
+          "files": 43,
+          "measured_file_hours": 20.059099624444446,
+          "feed_estimated_hours": 20.0625
+        },
+        {
+          "source_id": "norma-ilocano",
+          "status": "excluded",
+          "files": 107,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 46.42138888888889
+        },
+        {
+          "source_id": "norma-ilocano",
+          "status": "pending",
+          "files": 9,
+          "measured_file_hours": null,
+          "feed_estimated_hours": 3.2455555555555557
+        },
+        {
+          "source_id": "subtle-ilokano-traits",
+          "status": "downloaded",
+          "files": 6,
+          "measured_file_hours": 3.712868787222222,
+          "feed_estimated_hours": 3.7133333333333334
+        },
+        {
+          "source_id": "ttb-ilokano",
+          "status": "downloaded",
+          "files": 15,
+          "measured_file_hours": 19.591528848055557,
+          "feed_estimated_hours": null
+        },
+        {
+          "source_id": "ttb-ilokano",
+          "status": "failed",
+          "files": 1,
+          "measured_file_hours": null,
+          "feed_estimated_hours": null
+        },
+        {
+          "source_id": "ttb-ilokano",
+          "status": "pending",
+          "files": 1399,
+          "measured_file_hours": null,
+          "feed_estimated_hours": null
+        }
+      ],
+      "measured_downloaded_hours": 63.14646958611111,
+      "local_raw_hours": 63.14646958611111,
+      "backed_up_remote_raw_hours": 0.0,
+      "unbacked_remote_raw_hours": 0.0,
+      "retained_raw_hours": 63.14646958611111,
+      "retention_note": "Ledger-derived raw hours; not fresh remote verification or unique speech.",
+      "worker": {
+        "pid": 30164,
+        "observation": "",
+        "process_present": false
+      }
+    }
+  ],
+  "archives": {
+    "bombo-ilonggo-drama": {
+      "downloaded": 35,
+      "failed": 1,
+      "measured_file_hours": 11.643231944444445
+    },
+    "ilonggatalks": {
+      "downloaded": 1,
+      "failed": 0,
+      "measured_file_hours": 0.42652249999999997
+    },
+    "rmn-bacolod": {
+      "downloaded": 8,
+      "failed": 0,
+      "measured_file_hours": 17.76795222222222
+    },
+    "kuan-joj-jai": {
+      "downloaded": 2,
+      "failed": 0,
+      "measured_file_hours": 0.9710338888888889
+    },
+    "gma-ratsada": {
+      "downloaded": 38,
+      "failed": 1,
+      "measured_file_hours": 18.945138333333333
+    },
+    "aksyon-streams": {
+      "downloaded": 38,
+      "failed": 1,
+      "measured_file_hours": 85.378505
+    },
+    "deditos-hiligaynon": {
+      "downloaded": 11,
+      "failed": 0,
+      "measured_file_hours": 4.426340648333333
+    },
+    "aksyon-videos": {
+      "downloaded": 36,
+      "failed": 2,
+      "measured_file_hours": 7.295876666666668
+    }
+  },
+  "archives_by_language": {
+    "hil": {
+      "bombo-ilonggo-drama": {
+        "downloaded": 35,
+        "failed": 1,
+        "measured_file_hours": 11.643231944444445
+      },
+      "ilonggatalks": {
+        "downloaded": 1,
+        "failed": 0,
+        "measured_file_hours": 0.42652249999999997
+      },
+      "rmn-bacolod": {
+        "downloaded": 8,
+        "failed": 0,
+        "measured_file_hours": 17.76795222222222
+      },
+      "kuan-joj-jai": {
+        "downloaded": 2,
+        "failed": 0,
+        "measured_file_hours": 0.9710338888888889
+      },
+      "gma-ratsada": {
+        "downloaded": 38,
+        "failed": 1,
+        "measured_file_hours": 18.945138333333333
+      },
+      "aksyon-streams": {
+        "downloaded": 38,
+        "failed": 1,
+        "measured_file_hours": 85.378505
+      },
+      "deditos-hiligaynon": {
+        "downloaded": 11,
+        "failed": 0,
+        "measured_file_hours": 4.426340648333333
+      },
+      "aksyon-videos": {
+        "downloaded": 36,
+        "failed": 2,
+        "measured_file_hours": 7.295876666666668
+      }
+    },
+    "bik": {
+      "dzgb": {
+        "downloaded": 110,
+        "failed": 2,
+        "measured_file_hours": 88.7351636488889
+      },
+      "dzgb-legazpi-streams": {
+        "downloaded": 0,
+        "failed": 0,
+        "measured_file_hours": 0
+      }
+    },
+    "ceb": {
+      "gma-balitang-bisdak": {
+        "downloaded": 22,
+        "failed": 0,
+        "measured_file_hours": 5.122861666666666
+      }
+    },
+    "ilo": {
+      "abscbn-tvpatrol-ilocos": {
+        "downloaded": 21,
+        "failed": 0,
+        "measured_file_hours": 10.73041104527778
+      }
+    }
+  },
+  "radio": [
+    {
+      "station": "bombo-bacolod",
+      "candidate_language": "hil",
+      "state": "acquired",
+      "duration": 1800.011,
+      "runner_pid": 13532,
+      "ffmpeg_pid": 13535,
+      "started_at": "2026-11-14T21:02:03.617887+00:00",
+      "ended_at": "2026-11-14T21:32:00.212032+00:00",
+      "bytes": 14414717
+    },
+    {
+      "station": "rmn-bacolod",
+      "candidate_language": "hil",
+      "state": "acquired",
+      "duration": 1800.0,
+      "runner_pid": 13753,
+      "ffmpeg_pid": 13754,
+      "started_at": "2026-11-14T21:03:17.285943+00:00",
+      "ended_at": "2026-11-14T21:32:58.878119+00:00",
+      "bytes": 5414405
+    },
+    {
+      "station": "bombo-iloilo",
+      "candidate_language": "hil",
+      "state": "acquired",
+      "duration": 1800.01,
+      "runner_pid": 13531,
+      "ffmpeg_pid": 13534,
+      "started_at": "2026-11-14T21:02:03.617673+00:00",
+      "ended_at": "2026-11-14T21:32:00.225390+00:00",
+      "bytes": 14414752
+    },
+    {
+      "station": "rmn-iloilo",
+      "candidate_language": "hil",
+      "state": "failed",
+      "runner_pid": 13752,
+      "ffmpeg_pid": 13755,
+      "started_at": "2026-11-14T21:03:17.285931+00:00",
+      "ended_at": "2026-11-14T21:03:22.294296+00:00",
+      "bytes": 0
+    },
+    {
+      "station": "bombo-roxas",
+      "candidate_language": "hil",
+      "state": "acquired",
+      "duration": 1800.01,
+      "runner_pid": 13533,
+      "ffmpeg_pid": 13537,
+      "started_at": "2026-11-14T21:02:03.619570+00:00",
+      "ended_at": "2026-11-14T21:32:00.222205+00:00",
+      "bytes": 28814993
+    },
+    {
+      "station": "bombo-vigan",
+      "candidate_language": "ilo",
+      "state": "acquired",
+      "duration": 7200.0,
+      "runner_pid": 45166,
+      "ffmpeg_pid": 45167,
+      "started_at": "2026-11-14T23:10:59.923552+00:00",
+      "ended_at": "2026-11-15T01:10:58.152646+00:00",
+      "bytes": 57656965
+    },
+    {
+      "station": "bombo-vigan",
+      "candidate_language": "ilo",
+      "state": "acquired",
+      "duration": 30.016,
+      "runner_pid": 45076,
+      "ffmpeg_pid": 45085,
+      "started_at": "2026-11-14T23:10:17.976479+00:00",
+      "ended_at": "2026-11-14T23:10:43.015035+00:00",
+      "bytes": 241268
+    }
+  ],
+  "new_audio_transcribed_hours": {
+    "fil_taglish": 9.1434334375,
+    "hil": 0.5303588888888889,
+    "ceb": 0,
+    "bik": 0,
+    "ilo": 0
+  },
+  "source_coverage": {
+    "groups": {
+      "hil": {
+        "input_rows": 2983,
+        "covered_source_hours": {
+          "prepared": 0.5303588888888889,
+          "draft_transcribed": 0.5303588888888889,
+          "review_status_recorded": 0.517465,
+          "audio_verified": 0.0,
+          "training_permission_and_review": 0.0
+        }
+      },
+      "fil_taglish": {
+        "input_rows": 15214,
+        "covered_source_hours": {
+          "prepared": 9.147486770833334,
+          "draft_transcribed": 9.1434334375,
+          "review_status_recorded": 0.7203777777777778,
+          "audio_verified": 0.0,
+          "training_permission_and_review": 0.0
+        }
+      }
+    },
+    "checked_audio_files": 8673,
+    "cross_group_source_hashes": {},
+    "target_completion_assessed": false,
+    "limitations": [
+      "Overlapping windows and repeated manifests count once per source hash and group.",
+      "Source-hash equality does not detect re-encodings, excerpts or simulcasts.",
+      "Covered duration includes padding/silence/music; it is not unique retained speech.",
+      "Permission/review count is not a train split: evaluation reservations remain reserved."
+    ]
+  },
+  "segmented_asr_batch": {
+    "pid": 33933,
+    "status": "stopped_after_stage_error",
+    "started_at": 1794694968.366356,
+    "languages": {
+      "hil": {
+        "vad": {
+          "returncode": 0,
+          "finished_at": 1794694984.532253
+        },
+        "asr": {
+          "returncode": 1,
+          "finished_at": 1794696661.5360441
+        }
+      }
+    },
+    "language": "hil",
+    "stage": "asr",
+    "finished_at": 1794696661.537827,
+    "process_present": false,
+    "process_observation": ""
+  },
+  "archive_backups": [
+    {
+      "pid": 57622,
+      "status": "complete",
+      "started_at": 1794701489.038626,
+      "finished_at": 1794710500.2151449,
+      "expected_recordings": 49,
+      "max_bytes": 4294967296,
+      "root": "curation/outputs/archive-backup-hil-49-v1",
+      "local_receipt_files": 64,
+      "receipt_count_note": "Local receipt files; not an independent remote revalidation or unique-recording count.",
+      "process_present": false,
+      "process_observation": ""
+    }
+  ],
+  "candidate_preparation": {
+    "pid": 45875,
+    "status": "complete",
+    "started_at": 1794698131.242937,
+    "languages": {
+      "fil_taglish": {
+        "prepare": {
+          "returncode": 0,
+          "finished_at": 1794698171.125387
+        },
+        "vad": {
+          "returncode": 0,
+          "finished_at": 1794698254.0064352
+        }
+      },
+      "hil": {
+        "prepare": {
+          "returncode": 0,
+          "finished_at": 1794698276.501919
+        },
+        "vad": {
+          "returncode": 0,
+          "finished_at": 1794698325.007755
+        }
+      },
+      "ceb": {
+        "prepare": {
+          "returncode": 0,
+          "finished_at": 1794698374.68538
+        },
+        "vad": {
+          "returncode": 0,
+          "finished_at": 1794698473.116074
+        }
+      },
+      "bik": {
+        "prepare": {
+          "returncode": 0,
+          "finished_at": 1794698493.25791
+        },
+        "vad": {
+          "returncode": 0,
+          "finished_at": 1794698536.018993
+        }
+      },
+      "ilo": {
+        "prepare": {
+          "returncode": 0,
+          "finished_at": 1794698556.164141
+        },
+        "vad": {
+          "returncode": 0,
+          "finished_at": 1794698603.7102919
+        }
+      }
+    },
+    "language": "ilo",
+    "stage": "vad",
+    "finished_at": 1794698603.71105,
+    "process_present": false,
+    "process_observation": "",
+    "summaries": {
+      "fil_taglish": {
+        "prepared": {
+          "windows": 859,
+          "window_hours": 7.121170972222223,
+          "transcribed_hours": 0,
+          "exact_decoded_duplicate_groups": [],
+          "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+        },
+        "vad": {
+          "input_windows": 859,
+          "input_hours": 7.121170972222222,
+          "segments": 5189,
+          "candidate_hours": 6.437373993055554,
+          "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+          "transcribed_hours": 0,
+          "verified_hours": 0,
+          "manifest_sha256": "d1c0b1079e7ca889c973b137c941c29276d83571caf00ba3e40e0fc293e88b06",
+          "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+        }
+      },
+      "hil": {
+        "prepared": {
+          "windows": 482,
+          "window_hours": 3.9738735243055547,
+          "transcribed_hours": 0,
+          "exact_decoded_duplicate_groups": [],
+          "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+        },
+        "vad": {
+          "input_windows": 482,
+          "input_hours": 3.973873524305555,
+          "segments": 2755,
+          "candidate_hours": 3.5251066666666695,
+          "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+          "transcribed_hours": 0,
+          "verified_hours": 0,
+          "manifest_sha256": "f3d8e7858ca881cb039480a88bcc9321e96f694b97ba31c73d837925093f63cf",
+          "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+        }
+      },
+      "ceb": {
+        "prepared": {
+          "windows": 1020,
+          "window_hours": 8.464629097222222,
+          "transcribed_hours": 0,
+          "exact_decoded_duplicate_groups": [],
+          "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+        },
+        "vad": {
+          "input_windows": 1020,
+          "input_hours": 8.464629097222222,
+          "segments": 5800,
+          "candidate_hours": 7.831032413194419,
+          "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+          "transcribed_hours": 0,
+          "verified_hours": 0,
+          "manifest_sha256": "3729b06cb52a543b50359adb8184ec926382bd853858095a66ba45f9b4dcbfbe",
+          "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+        }
+      },
+      "bik": {
+        "prepared": {
+          "windows": 408,
+          "window_hours": 3.357250694444445,
+          "transcribed_hours": 0,
+          "exact_decoded_duplicate_groups": [],
+          "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+        },
+        "vad": {
+          "input_windows": 408,
+          "input_hours": 3.3572506944444447,
+          "segments": 1975,
+          "candidate_hours": 3.0738994444444474,
+          "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+          "transcribed_hours": 0,
+          "verified_hours": 0,
+          "manifest_sha256": "62ad85f392300b05cc315f9ee821571516ca38131406c574671aade6552982d6",
+          "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+        }
+      },
+      "ilo": {
+        "prepared": {
+          "windows": 503,
+          "window_hours": 4.157354236111111,
+          "transcribed_hours": 0,
+          "exact_decoded_duplicate_groups": [],
+          "notes": "Transport windows only. Empty sentence means pending ASR, never a verified empty transcript. No speech/language/speaker QC or acoustic near-dedup implied."
+        },
+        "vad": {
+          "input_windows": 503,
+          "input_hours": 4.157354236111111,
+          "segments": 3638,
+          "candidate_hours": 3.5373816666666715,
+          "candidate_hours_kind": "padded VAD segments, including retained silence; not verified speech",
+          "transcribed_hours": 0,
+          "verified_hours": 0,
+          "manifest_sha256": "3101793db2eb9a01ca19e77655796770bbc6384b7f91b8677f40bcc614351747",
+          "limitations": "Speech heuristic only; languages not benchmarked; no music, speaker, language or rights verification. Window-edge context resets; hard cuts require alignment."
+        }
+      }
+    }
+  },
+  "preparation_batches": [
+    {
+      "pid": 57825,
+      "status": "complete",
+      "started_at": 1794701540.079456,
+      "finished_at": 1794701830.259101,
+      "stage": "audit",
+      "completed_recordings": 20,
+      "root": "curation/outputs/fil-preparation-next-20-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": ""
+    }
+  ],
+  "asr_queues": [
+    {
+      "pid": 63315,
+      "status": "retired_before_launch",
+      "started_at": 1794701871.0938659,
+      "finished_at": 1794704352.791571,
+      "root": "curation/outputs/fil-asr-queue-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": ""
+    },
+    {
+      "pid": 70548,
+      "status": "stopped_after_error",
+      "started_at": 1794704353.156638,
+      "finished_at": 1794705571.242059,
+      "root": "curation/outputs/fil-asr-queue-v2",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": ""
+    },
+    {
+      "pid": 74936,
+      "status": "stopped_after_error",
+      "started_at": 1794706693.146107,
+      "finished_at": 1794707722.9691231,
+      "root": "curation/outputs/fil-asr-queue-v3",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": ""
+    }
+  ],
+  "storage_jobs": [
+    {
+      "pid": 67570,
+      "status": "complete",
+      "started_at": 1794703391.105303,
+      "finished_at": 1794707121.171524,
+      "root": "curation/outputs/bikolano-preemptive-backup-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": ""
+    },
+    {
+      "pid": 78938,
+      "status": "waiting_for_supervisor_lock",
+      "started_at": 1794708703.063402,
+      "root": "curation/outputs/bikolano-preemptive-backup-v2",
+      "process_present": true,
+      "process_matches_job": true,
+      "process_observation": "78938 40:34 curation/.venv/bin/python -m curation.outputs.bikolano-preemptive-backup-v2.run"
+    }
+  ],
+  "publication_jobs": [
+    {
+      "pid": 72364,
+      "status": "complete",
+      "started_at": 1794705438.905618,
+      "finished_at": 1794707931.1680079,
+      "root": "curation/outputs/collected-fil-5671-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "finalizer": {
+        "pid": 74118,
+        "status": "complete",
+        "started_at": 1794706206.123893,
+        "finished_at": 1794708610.513098,
+        "root": "curation/outputs/collected-fil-5671-v1",
+        "process_present": false,
+        "process_matches_job": false,
+        "process_observation": ""
+      },
+      "recorded_receipts": {
+        "hub-receipt.json": {
+          "repo": "sapinsapin/chika",
+          "prefix": "data/fil_collected_vad_5671_v1",
+          "revision": "d1daed197a5ea2fbaae3eb25e2b52802f356a418",
+          "rows": 5671,
+          "private": true,
+          "verified": true
+        },
+        "card-receipt.json": {
+          "revision": "e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3",
+          "config": "fil_collected_vad_5671_v1",
+          "card_verified": true
+        },
+        "stream-check.json": {
+          "revision": "e3d9886dbcb63f8dc784f2e37d8638fdde05f0f3",
+          "config": "fil_collected_vad_5671_v1",
+          "rows": 5671,
+          "statuses": {
+            "text_reviewed": 1061,
+            "draft": 4610
+          },
+          "exact_ids_and_sentences": true
+        }
+      },
+      "note": "Recorded receipts only; worker completion alone does not prove card or streaming completion."
+    }
+  ],
+  "persistent_asr_batches": [
+    {
+      "pid": 43528,
+      "status": "stopped_after_error",
+      "started_at": 1794697252.9053628,
+      "finished_at": 1794697264.143044,
+      "returncode": 1,
+      "root": "curation/outputs/fil-persistent-batch-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 100,
+        "completed": 13,
+        "failed": 1,
+        "stopped_early": true,
+        "transcribed_hours": 0.009973333333333334,
+        "empty": 0
+      }
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v10"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v11"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v12"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v13"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v14"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v15"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v16"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v17"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v18"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v19"
+    },
+    {
+      "pid": 51649,
+      "status": "complete",
+      "started_at": 1794698833.086428,
+      "finished_at": 1794698916.690413,
+      "returncode": 0,
+      "cached_items": 14,
+      "max_new_items": 86,
+      "root": "curation/outputs/fil-persistent-batch-v2",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 100,
+        "completed": 100,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.08124333333333339,
+        "empty": 0
+      }
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v20"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v21"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v22"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v23"
+    },
+    {
+      "status": "queued",
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v24"
+    },
+    {
+      "status": "queued",
+      "rows": 215,
+      "root": "curation/outputs/fil-persistent-batch-v25"
+    },
+    {
+      "pid": 51875,
+      "status": "complete",
+      "started_at": 1794698951.411788,
+      "finished_at": 1794699349.7572448,
+      "returncode": 0,
+      "cached_items": 100,
+      "max_new_items": 382,
+      "root": "curation/outputs/fil-persistent-batch-v3",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 482,
+        "completed": 482,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.5346333333333331,
+        "empty": 0
+      }
+    },
+    {
+      "pid": 52886,
+      "status": "complete",
+      "started_at": 1794699447.3018298,
+      "finished_at": 1794704797.3390179,
+      "returncode": 0,
+      "rows": 5189,
+      "max_new_items": 4707,
+      "root": "curation/outputs/fil-persistent-batch-v4",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 5189,
+        "completed": 5189,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 6.4343978819444425,
+        "empty": 19
+      }
+    },
+    {
+      "pid": 71191,
+      "status": "stopped_after_error",
+      "started_at": 1794704803.5862389,
+      "finished_at": 1794705571.2121239,
+      "returncode": 1,
+      "rows": 10000,
+      "root": "curation/outputs/fil-persistent-batch-v5",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 10000,
+        "completed": 780,
+        "failed": 1,
+        "stopped_early": true,
+        "transcribed_hours": 1.0052155555555562,
+        "empty": 4,
+        "manifest_rows": 780,
+        "checkpoint_every": 25,
+        "min_free_gib": 30.0,
+        "stop_reason": "RuntimeError"
+      }
+    },
+    {
+      "status": "queued",
+      "rows": 118,
+      "root": "curation/outputs/fil-persistent-batch-v6"
+    },
+    {
+      "pid": 73807,
+      "status": "complete",
+      "started_at": 1794706013.041688,
+      "finished_at": 1794706555.012265,
+      "returncode": 0,
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v7",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 500,
+        "completed": 500,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.6218549999999999,
+        "empty": 4,
+        "manifest_rows": 500,
+        "checkpoint_every": 25,
+        "min_free_gib": 30.0,
+        "stop_reason": null
+      }
+    },
+    {
+      "pid": 74939,
+      "status": "complete",
+      "started_at": 1794706693.167246,
+      "finished_at": 1794707240.9407969,
+      "returncode": 0,
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v8",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 500,
+        "completed": 500,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.5373500000000004,
+        "empty": 0,
+        "manifest_rows": 500,
+        "checkpoint_every": 25,
+        "min_free_gib": 30.0,
+        "stop_reason": null
+      }
+    },
+    {
+      "pid": 76024,
+      "status": "stopped_after_error",
+      "started_at": 1794707240.981903,
+      "finished_at": 1794707722.961848,
+      "returncode": 1,
+      "rows": 500,
+      "root": "curation/outputs/fil-persistent-batch-v9",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 500,
+        "completed": 495,
+        "failed": 1,
+        "stopped_early": true,
+        "transcribed_hours": 0.5406850000000001,
+        "empty": 0,
+        "manifest_rows": 495,
+        "checkpoint_every": 25,
+        "min_free_gib": 30.0,
+        "stop_reason": "StorageFloor"
+      }
+    },
+    {
+      "pid": 61894,
+      "status": "complete",
+      "started_at": 1794701711.018868,
+      "finished_at": 1794701726.481428,
+      "returncode": 0,
+      "cached_items": 0,
+      "max_new_items": 10,
+      "root": "curation/outputs/hil-persistent-new-10-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 10,
+        "completed": 10,
+        "failed": 0,
+        "stopped_early": false,
+        "transcribed_hours": 0.02290222222222222,
+        "empty": 0,
+        "manifest_rows": 10,
+        "checkpoint_every": 25
+      }
+    },
+    {
+      "pid": 62781,
+      "status": "stopped_after_error",
+      "started_at": 1794701776.483563,
+      "finished_at": 1794701833.427831,
+      "returncode": 1,
+      "cached_items": 10,
+      "max_new_items": 1370,
+      "root": "curation/outputs/hil-persistent-new-batch-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 1380,
+        "completed": 51,
+        "failed": 1,
+        "stopped_early": true,
+        "transcribed_hours": 0.08233055555555555,
+        "empty": 0,
+        "manifest_rows": 51,
+        "checkpoint_every": 25
+      }
+    }
+  ],
+  "text_review_batches": [
+    {
+      "pid": 51907,
+      "status": "stopped_with_failures",
+      "started_at": 1794698971.750185,
+      "finished_at": 1794699243.0517812,
+      "returncode": 1,
+      "rows": 100,
+      "root": "curation/outputs/fil-review-100-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 100,
+        "completed": 99,
+        "failed": 1,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 52922,
+      "status": "stopped_with_failures",
+      "started_at": 1794699463.054695,
+      "finished_at": 1794700595.122325,
+      "returncode": 1,
+      "rows": 382,
+      "root": "curation/outputs/fil-review-382-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 382,
+        "completed": 372,
+        "failed": 10,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 64412,
+      "status": "stopped_with_failures",
+      "started_at": 1794702464.668892,
+      "finished_at": 1794706287.728041,
+      "returncode": 1,
+      "rows": 1000,
+      "root": "curation/outputs/fil-review-next-1000-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 1000,
+        "completed": 952,
+        "failed": 48,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 56739,
+      "status": "stopped_with_failures",
+      "started_at": 1794701141.331839,
+      "finished_at": 1794702366.155731,
+      "returncode": 1,
+      "rows": 500,
+      "root": "curation/outputs/fil-review-next-500-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 500,
+        "completed": 490,
+        "failed": 10,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 71443,
+      "status": "complete",
+      "started_at": 1794704908.6711712,
+      "finished_at": 1794705292.1252139,
+      "returncode": 0,
+      "rows": 100,
+      "root": "curation/outputs/fil-kimi-review-100-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 100,
+        "completed": 100,
+        "failed": 0,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 76018,
+      "status": "stopped_with_failures",
+      "started_at": 1794707236.970796,
+      "finished_at": 1794710762.862237,
+      "returncode": 1,
+      "rows": 1000,
+      "root": "curation/outputs/fil-kimi-review-next-1000-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 1000,
+        "completed": 988,
+        "failed": 12,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 82185,
+      "status": "running",
+      "started_at": 1794710849.549509,
+      "rows": 1000,
+      "root": "curation/outputs/fil-kimi-review-next-1000-v2",
+      "process_present": true,
+      "process_matches_job": true,
+      "process_observation": "82185 04:48 curation/.venv/bin/python curation/outputs/fil-kimi-review-next-1000-v2/run.py",
+      "summary": {
+        "selected": 84,
+        "completed": 82,
+        "failed": 2,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 72144,
+      "status": "stopped_with_failures",
+      "started_at": 1794705324.4445262,
+      "finished_at": 1794707204.8346791,
+      "returncode": 1,
+      "rows": 500,
+      "root": "curation/outputs/fil-kimi-review-next-500-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 500,
+        "completed": 491,
+        "failed": 9,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 54691,
+      "status": "stopped_with_failures",
+      "started_at": 1794700110.398997,
+      "finished_at": 1794700521.827117,
+      "returncode": 1,
+      "rows": 125,
+      "root": "curation/outputs/collected-hil-remaining-125-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 125,
+        "completed": 123,
+        "failed": 2,
+        "stopped_early": false
+      }
+    },
+    {
+      "pid": 49717,
+      "status": "stopped_with_failures",
+      "started_at": 1794698473.795073,
+      "finished_at": 1794699811.323648,
+      "returncode": 1,
+      "rows": 467,
+      "root": "curation/outputs/collected-hil-remaining-467-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 342,
+        "completed": 337,
+        "failed": 5,
+        "stopped_early": true
+      }
+    },
+    {
+      "pid": 63586,
+      "status": "complete",
+      "started_at": 1794702001.108238,
+      "finished_at": 1794702144.2847471,
+      "returncode": 0,
+      "rows": 51,
+      "root": "curation/outputs/collected-hil-new-51-review-v1",
+      "process_present": false,
+      "process_matches_job": false,
+      "process_observation": "",
+      "summary": {
+        "selected": 51,
+        "completed": 51,
+        "failed": 0,
+        "stopped_early": false
+      }
+    }
+  ],
+  "pld_pilot": {
+    "recordings": 229,
+    "hours": 2.9521978298611113,
+    "reserved_test_recordings": 39,
+    "audio_verified": 0
+  },
+  "limitations": [
+    "Raw runtime includes ads/music/silence. Source language labels unverified.",
+    "Cross-source and acoustic near-duplicate checks pending. Not unique speech-hour totals.",
+    "Original PLD pilot is separate from newly collected Chika audio.",
+    "ASR figures are draft transport-window runtime, not verified unique speech. Segmentation, new-audio review and final training exports remain incomplete."
+  ]
+}
