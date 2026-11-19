@@ -1052,3 +1052,20 @@ Both the deployed fine-tunes and the Cebuano/Bikol/Ilocano candidates carry `cc-
 reth5et: `nyo-asr-fw@flipvox` and `nyo-tts@orpheus-fil` were stopped (not disabled) at the owner's request to free the RTX 3070; the two gateways still run. Restore with `systemctl --user start nyo-asr-fw@flipvox nyo-tts@orpheus-fil`. A reboot or new login starts them again, so check `/usr/lib/wsl/lib/nvidia-smi` (not `torch.cuda.mem_get_info`, which misreports under WSL) before launching batch work there.
 
 Filipino `fil_dwnd_asr_9927_v1` (queue v6) is published and verified; the Filipino 4,000 text review is complete and attached on dwnd-01 (`remote-fil-4000-text-review-v1/reviewed-manifest.jsonl`, 3,929 text-reviewed, not yet published). Records: `curation/DWND_FIL_9927_PUBLICATION_COMPLETE.json`, `curation/DWND_FIL_4000_TEXT_REVIEW_COMPLETE.json`.
+
+## English translation column
+
+Rows can carry an optional English translation of `sentence`, exported as the nullable Parquet column `translation_en`
+(full record, model and status in `provenance_json`). It is a separate column: translation never edits the transcript.
+
+```sh
+python3 -m curation.translations job --manifest M.jsonl --output translate-job.jsonl
+# hand translate-job.jsonl to Antigravity / ChatGPT / an API script; each returns
+# {"id", "source_sentence_sha256", "translation_en", "model"} per line
+python3 -m curation.translations attach --manifest M.jsonl --translations done.jsonl --output M-translated.jsonl
+```
+
+Each translation is bound to the SHA-256 of the exact sentence it translated; if the sentence later changes, validation
+rejects the stale translation. Status is `machine_draft` unless an attributable person reviewed it (`human_reviewed`
+with reviewer and time). Translations inherit transcript errors and are not verified English. Earlier exports have no
+`translation_en` column; new exports always include it (null where absent).

@@ -39,6 +39,8 @@ def validate(row):
             raise ValueError('audio verification requires attributable, content-bound review')
         if decision['audio_sha256'] != row['audio_sha256'] or decision['sentence_sha256'] != hashlib.sha256(row['sentence'].encode()).hexdigest():
             raise ValueError('stale audio review')
+    if 'translation' in row:
+        validate_translation(row)
     for key in ('training', 'commercial', 'redistribution'):
         if row['rights'].get(key) not in {'allowed', 'denied', 'unknown'}:
             raise ValueError(f'invalid rights.{key}')
@@ -49,6 +51,30 @@ def validate(row):
     if not isinstance(row['languages'], list) or row['language'] not in row['languages']:
         raise ValueError('languages must include primary language')
     return row
+
+
+TRANSLATION_STATUSES = {'machine_draft', 'human_reviewed'}
+
+
+def validate_translation(row):
+    """Optional English translation of `sentence`, bound to the exact sentence it translates (never the reverse)."""
+    t = row['translation']
+    if not isinstance(t, dict) or t.get('language') != 'en' or not isinstance(t.get('text'), str):
+        raise ValueError('translation must be {language: en, text: str, ...}')
+    if t.get('source_sentence_sha256') != hashlib.sha256(row['sentence'].encode()).hexdigest():
+        raise ValueError('stale translation: sentence changed since it was translated')
+    if bool(t['text'].strip()) != bool(row['sentence'].strip()):
+        raise ValueError('translation must be empty exactly when the sentence is empty')
+    if t.get('status') not in TRANSLATION_STATUSES or not t.get('model'):
+        raise ValueError('translation needs a status and the producing model or translator')
+    if t['status'] == 'human_reviewed' and not (t.get('reviewer') and t.get('reviewed_at')):
+        raise ValueError('human-reviewed translation must be attributable')
+
+
+def translation_en(row):
+    """Flat export value: the English text, or None when absent."""
+    t = row.get('translation')
+    return t['text'] if t else None
 
 
 def load_manifest(path):

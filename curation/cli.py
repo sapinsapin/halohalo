@@ -6,7 +6,7 @@ import json
 import math
 from pathlib import Path
 
-from .schema import VERSION, check_splits, digest, load_manifest, validate
+from .schema import VERSION, check_splits, digest, load_manifest, translation_en, validate
 
 
 def write_jsonl(path, rows):
@@ -89,13 +89,15 @@ def export(args):
         ('schema_version', pa.string()), ('provenance_json', pa.string()),
         ('text_is_prompt', pa.bool_()), ('prompt', pa.string()),
         ('source_id', pa.string()), ('recording_id', pa.string()),
+        ('translation_en', pa.string()),
     ])
     hf = {'info': {'features': {k: {'dtype': str(t), '_type': 'Value'} for k, t in [
         ('sentence', 'string'), ('duration', 'float64'), ('speaker_id', 'string'),
         ('speech_type', 'string'), ('language', 'string'), ('num_words', 'int64'),
         ('id', 'string'), ('split', 'string'), ('review_status', 'string'),
         ('schema_version', 'string'), ('provenance_json', 'string'),
-        ('text_is_prompt', 'bool'), ('prompt', 'string'), ('source_id', 'string'), ('recording_id', 'string')]}}}
+        ('text_is_prompt', 'bool'), ('prompt', 'string'), ('source_id', 'string'), ('recording_id', 'string'),
+        ('translation_en', 'string')]}}}
     hf['info']['features']['audio'] = {'sampling_rate': rate, '_type': 'Audio'}
     schema = schema.with_metadata({b'huggingface': json.dumps(hf).encode()})
     artifacts = []
@@ -115,7 +117,8 @@ def export(args):
                     mono = resample_poly(mono, rate // g, sr // g)
                 buffer = io.BytesIO()
                 sf.write(buffer, mono, rate, format='FLAC', subtype='PCM_16')
-                r = {k: row[k] for k in schema.names if k not in {'audio', 'provenance_json'}}
+                r = {k: row[k] for k in schema.names if k not in {'audio', 'provenance_json', 'translation_en'}}
+                r['translation_en'] = translation_en(row)
                 r['audio'] = {'bytes': buffer.getvalue(), 'path': None}
                 r['provenance_json'] = json.dumps({**row, 'export_sample_rate': rate, 'original_sample_rate': sr}, ensure_ascii=False)
                 batch.append(r)
@@ -133,7 +136,8 @@ def export(args):
     (out / 'README.md').write_text('# SapinSapin speech export\n\n'
         + f'Profile: {args.profile}. {len(rows)} rows. Sample rate: {rate} Hz.\n\n'
         + 'Curation rows are unverified drafts, not training-approved labels. Source questions remain in provenance, never in sentence. '
-        + 'Hiligaynon–English code-switching is valid. Rights are recorded per row; this export grants no new rights. '
+        + 'Hiligaynon–English code-switching is valid. translation_en, when present, is an English translation of sentence '
+        + '(a machine draft unless provenance_json marks it human_reviewed); it never changes the transcript. Rights are recorded per row; this export grants no new rights. '
         + 'Reserved test rows must never be used for training. See manifest.jsonl for original metadata and source hashes.\n')
     print(json.dumps(summary))
 
