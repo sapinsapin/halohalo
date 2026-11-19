@@ -32,3 +32,16 @@ All credentials stay in private external files/environment or server secret stor
 ## Skill authoring
 
 Use `/Users/timsan/.codex/skills/.system/skill-creator/SKILL.md` and validate with its quick_validate.py. Package a concise distributable skill with protocol/schema references only as needed; test realistic contributor scenarios independently. Keep provider ASR capability assertions and live deployment status evidence-based.
+
+## Wiring check (2026-11-19)
+
+- Live: `https://boses.sapinsapin.ai/api/chika/mcp` answers unauthenticated calls with 401 and an RFC 9728 challenge; protected-resource and authorization-server discovery documents are served. A signed-in ChatGPT/Claude round trip was not exercised.
+- Voice app (`codex/chika-contributor`, with uncommitted edits): 142 tests pass. A manifest produced by its `manifest()` passes halohalo `schema.validate` and `cli export`.
+- **Broken:** `src/lib/chika/hub.server.ts` refuses delivery unless `sapinsapin/chika` is private. The dataset became public with manual gating on 2026-11-19, so every finalize would fail. Contributors consent to a private deposit (`chika-private-v1`), so the destination needs a decision, not a check removal.
+- Added `python -m curation.ingest_contributions`: verifies consent, hashes, WAV format, duration and sentence hash for each `contributor-staging/v1/<uuid>/`, and writes draft/unassigned manifest rows. It was the missing receiving end. No contributions are staged on the Hub yet.
+
+### Resolution (2026-11-19)
+
+- Contributor deliveries now go to the new **private** `sapinsapin/chika-contributions` (Voice app `hub.server.ts`, test and docs updated; 142 tests pass). Gated public `sapinsapin/chika` receives no private-deposit uploads.
+- Live check: the app's real `publishPrivate` delivered one synthetic record (`00000000-0000-4000-8000-5e57c0ffee01`, `source_id` `synthetic-wiring-test`, silence) at revision `9b492728278ed98e09d0ef8b56ad5593cf77cd57`; a retry recovered the same revision; `curation.ingest_contributions --repo sapinsapin/chika-contributions` ingested it as a valid draft row. The ingester skips that test record.
+- Still required before activation: a fine-grained `CHIKA_HF_TOKEN` limited to `sapinsapin/chika-contributions` in Lovable Secrets, publishing the app change, a signed-in ChatGPT/Claude round trip, hosted cleanup runs, then `CHIKA_CONTRIBUTOR_ENABLED=true`.
